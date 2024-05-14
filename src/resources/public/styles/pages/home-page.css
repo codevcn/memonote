@@ -1,0 +1,15 @@
+#page-main {
+    padding: 10px 50px;
+    background-color: #f3f3f3;
+}
+#page-main .user-actions .user-action {
+    background-color: white;
+}
+#page-main .notes .note-container .useful-actions .action {
+    background-color: white;
+}
+#page-main .bottom-actions .bottom-action {
+    background-color: white;
+}
+
+/*# sourceMappingURL=home-page.css.map */

@@ -1,0 +1,41 @@
+#page-main {
+    padding: 20px 0;
+}
+#page-main .about .container {
+    width: 80%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+#page-main .about h2 {
+    text-align: center;
+    margin-top: 0;
+}
+#page-main .about h3 {
+    margin-top: 20px;
+}
+#page-main .about ul {
+    list-style: none;
+    padding: 0;
+}
+#page-main .about ul li {
+    margin: 10px 0;
+}
+#page-main .about ul li strong {
+    display: inline-block;
+    width: 120px;
+}
+#page-main .about p {
+    text-align: center;
+}
+
+.page-footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/*# sourceMappingURL=about-page.css.map */

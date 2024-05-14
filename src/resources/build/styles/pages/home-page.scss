@@ -1,0 +1,33 @@
+@use '../global/colors';
+
+#page-main {
+    padding: 10px 50px;
+    background-color: colors.$mmn-regular-bg-cl;
+
+    & .user-actions {
+        & .user-action {
+            background-color: white;
+        }
+    }
+
+    & .notes {
+        & .note-container {
+            & .note-editor-wrapper {
+                & .note-editor {
+                }
+            }
+
+            & .useful-actions {
+                & .action {
+                    background-color: white;
+                }
+            }
+        }
+    }
+
+    & .bottom-actions {
+        & .bottom-action {
+            background-color: white;
+        }
+    }
+}

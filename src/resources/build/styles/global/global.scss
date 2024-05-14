@@ -1,0 +1,37 @@
+@use 'text-fonts';
+@use 'colors';
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: white;
+}
+
+div,
+a,
+p,
+button,
+input,
+section {
+    font-family: text-fonts.$mmn-primary-fontf;
+    color: colors.$mmn-primary-cl;
+}
+
+i {
+    color: colors.$mmn-primary-cl;
+    font-size: 1rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}

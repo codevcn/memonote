@@ -1,0 +1,72 @@
+$mmn-primary-fontf: 'Work Sans regular', Arial, sans-serif;
+$mmn-poppins-bold-fontf: 'Poppins bold', Arial, sans-serif;
+$mmn-poppins-regular-fontf: 'Poppins regular', Arial, sans-serif;
+$mmn-arial-fontf: Arial, Helvetica, sans-serif;
+$mmn-times-new-roman-fontf: 'Times New Roman', Times, serif;
+$mmn-roboto-regular-fontf: 'Roboto regular', Times, serif;
+
+/* =================================================== */
+/* ==================== Poppins ====================== */
+@font-face {
+    font-family: 'Poppins bold';
+    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Poppins medium';
+    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Poppins light';
+    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Poppins regular';
+    src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+}
+
+/* =================================================== */
+/* ==================== Work Sans ==================== */
+@font-face {
+    font-family: 'Work Sans bold';
+    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Work Sans regular';
+    src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Work Sans light';
+    src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Work Sans thin';
+    src: url('../fonts/worksans/WorkSans-Thin.woff2') format('woff2');
+}
+
+/* =================================================== */
+/* ==================== Roboto ==================== */
+@font-face {
+    font-family: 'Roboto bold';
+    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto regular';
+    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto light';
+    src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Roboto thin';
+    src: url('../fonts/roboto/roboto-thin-webfont.woff2') format('woff2');
+}

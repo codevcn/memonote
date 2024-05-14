@@ -1,0 +1,48 @@
+#page-main {
+    padding: 20px 0;
+
+    & .about {
+        & .container {
+            width: 80%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        & h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        & h3 {
+            margin-top: 20px;
+        }
+
+        & ul {
+            list-style: none;
+            padding: 0;
+
+            & li {
+                margin: 10px 0;
+
+                & strong {
+                    display: inline-block;
+                    width: 120px;
+                }
+            }
+        }
+
+        & p {
+            text-align: center;
+        }
+    }
+}
+
+.page-footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}

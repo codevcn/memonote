@@ -3,6 +3,8 @@ import { AppModule } from './app.module'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import { ValidationPipe } from '@nestjs/common'
+import { HttpExceptionFilter } from './utils/exception/http-exception.filter'
+import { HttpExceptionValidation } from './utils/validation/http-exception.validation'
 
 const resourcesFolder = 'resources'
 
@@ -22,6 +24,9 @@ async function bootstrap() {
             transform: true,
         }),
     )
+
+    // exception filter
+    app.useGlobalFilters(new HttpExceptionFilter(new HttpExceptionValidation()))
 
     await app.listen(PORT)
     console.log('>>> Server is working on http://localhost:' + PORT)
