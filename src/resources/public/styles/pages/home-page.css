@@ -1,15 +1,339 @@
+/* =================================================== */
+/* ==================== Poppins ====================== */
+@font-face {
+    font-family: 'Poppins bold';
+    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Poppins medium';
+    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Poppins light';
+    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Poppins regular';
+    src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+}
+/* =================================================== */
+/* ==================== Work Sans ==================== */
+@font-face {
+    font-family: 'Work Sans bold';
+    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Work Sans regular';
+    src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Work Sans light';
+    src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Work Sans thin';
+    src: url('../fonts/worksans/WorkSans-Thin.woff2') format('woff2');
+}
+/* =================================================== */
+/* ==================== Roboto ==================== */
+@font-face {
+    font-family: 'Roboto bold';
+    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Roboto regular';
+    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Roboto light';
+    src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Roboto thin';
+    src: url('../fonts/roboto/roboto-thin-webfont.woff2') format('woff2');
+}
 #page-main {
-    padding: 10px 50px;
-    background-color: #f3f3f3;
+    padding: 10px 50px 30px;
+}
+#page-main .user-actions {
+    display: flex;
+    column-gap: 10px;
 }
 #page-main .user-actions .user-action {
-    background-color: white;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: #ffff36;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 2px #18181b solid;
 }
-#page-main .notes .note-container .useful-actions .action {
-    background-color: white;
+#page-main .user-actions .user-action i {
+    display: flex;
+    font-size: 0.9rem;
 }
-#page-main .bottom-actions .bottom-action {
+#page-main .user-actions .user-action:hover {
+    outline: 2px #ffff36 solid;
+}
+#page-main .user-actions .user-action.add-note-password {
+    color: #fff;
+    background-color: #ff2424;
+}
+#page-main .user-actions .user-action.add-note-password i {
+    color: #fff;
+}
+#page-main .user-actions .user-action.add-note-password:hover {
+    outline: 2px #ff2424 solid;
+}
+#page-main .notes {
+    margin-top: 20px;
+}
+#page-main .notes .note-container .note-editor-title input {
+    background-color: transparent;
+    color: #fff;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+#page-main .notes .note-container .note-editor-title input::placeholder {
+    color: #a9a9a9;
+}
+#page-main .notes .note-container .note-editor-board {
+    margin-top: 5px;
+}
+#page-main .notes .note-container .note-editor-board .note-editor-container {
+    height: 100%;
+    width: 100%;
+}
+#page-main .notes .note-container .note-editor-board .note-editor-container .note-editor-wrapper {
+    display: grid;
+    max-height: 500px;
+    overflow-y: auto;
+}
+#page-main
+    .notes
+    .note-container
+    .note-editor-board
+    .note-editor-container
+    .note-editor-wrapper
+    .replicated-value-box,
+#page-main
+    .notes
+    .note-container
+    .note-editor-board
+    .note-editor-container
+    .note-editor-wrapper
+    .note-editor {
+    grid-area: 1/1/2/2;
+    padding: 10px;
+    font-size: 1rem;
+    height: 100%;
+    overflow: hidden;
+}
+#page-main
+    .notes
+    .note-container
+    .note-editor-board
+    .note-editor-container
+    .note-editor-wrapper
+    .note-editor {
     background-color: white;
+    height: 100%;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    white-space: pre-line;
+    resize: none;
+}
+#page-main
+    .notes
+    .note-container
+    .note-editor-board
+    .note-editor-container
+    .note-editor-wrapper
+    .replicated-value-box {
+    content: attr(data-replicated-value);
+    white-space: pre-wrap;
+    visibility: hidden;
+}
+#page-main .notes .note-container .note-editor-board .note-editor-container .letters-count {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #a9a9a9;
+    line-height: 1;
+    padding-right: 5px;
+    margin-top: 5px;
+}
+#page-main .notes .note-container .note-editor-board .useful-actions {
+    display: flex;
+    column-gap: 5px;
+    width: 100%;
+    margin-top: 5px;
+}
+#page-main .notes .note-container .note-editor-board .useful-actions .action {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: #ffff36;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 2px #18181b solid;
+}
+#page-main .notes .note-container .note-editor-board .useful-actions .action i {
+    display: flex;
+    font-size: 0.9rem;
+}
+#page-main .notes .note-container .note-editor-board .useful-actions .action:hover {
+    outline: 2px #ffff36 solid;
+}
+
+#add-note-password-modal .modal-dialog .modal-content .modal-header h2 {
+    font-weight: bold;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group label {
+    font-size: 0.9rem;
+    padding-left: 5px;
+    font-weight: bold;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group .input-wrapper {
+    position: relative;
+    margin: 3px 0;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group .input-wrapper input {
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border: 1.5px #a9a9a9 solid;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5px;
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .input-wrapper
+    input:hover {
+    outline: 1px gray solid;
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .input-wrapper
+    input:focus {
+    border-color: gray;
+    border-left-width: 5px;
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .input-wrapper
+    .input-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.15s;
+    cursor: pointer;
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .input-wrapper
+    .input-actions:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .input-wrapper
+    .input-actions
+    i {
+    display: flex;
+    font-size: 1rem;
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .input-wrapper
+    .input-actions
+    .inactive {
+    display: none;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group .helper-text {
+    font-style: italic;
+    padding-left: 10px;
+    margin-top: 2px;
+}
+#add-note-password-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .form-group
+    .helper-text
+    .helper-text-item {
+    color: #919191;
+    font-size: 0.9rem;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    padding-left: 5px;
+    font-size: 1rem;
+    padding: 5px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message i {
+    display: flex;
+    color: inherit;
+    font-size: inherit;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.warning {
+    color: #ff2424;
+    background-color: #ffdbdb;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-footer .modal-close-btn,
+#add-note-password-modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 2px white solid;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-footer .modal-close-btn {
+    background-color: #ff2424;
+    color: #fff;
+    border: 2px white solid;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-footer .modal-close-btn:hover {
+    outline: 2px #ff2424 solid;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn {
+    background-color: #f0f0f0;
+    color: #18181b;
+    border: 2px white solid;
+}
+#add-note-password-modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn:hover {
+    text-decoration: underline;
 }
 
 /*# sourceMappingURL=home-page.css.map */

@@ -1,33 +1,263 @@
 @use '../global/colors';
+@use '../global/text-fonts';
+
+@mixin action-btn-styling {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: colors.$mmn-primary-cl;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    border: 2px colors.$mmn-regular-black-cl solid;
+
+    & i {
+        display: flex;
+        font-size: 0.9rem;
+    }
+
+    &:hover {
+        outline: 2px colors.$mmn-primary-cl solid;
+    }
+}
 
 #page-main {
-    padding: 10px 50px;
-    background-color: colors.$mmn-regular-bg-cl;
+    padding: 10px 50px 30px;
 
     & .user-actions {
+        display: flex;
+        column-gap: 10px;
+
         & .user-action {
-            background-color: white;
+            @include action-btn-styling();
+
+            &.add-note-password {
+                color: colors.$mmn-regular-white-cl;
+                background-color: colors.$mmn-regular-red-cl;
+
+                & i {
+                    color: colors.$mmn-regular-white-cl;
+                }
+
+                &:hover {
+                    outline: 2px colors.$mmn-regular-red-cl solid;
+                }
+            }
         }
     }
 
     & .notes {
+        margin-top: 20px;
+
         & .note-container {
-            & .note-editor-wrapper {
-                & .note-editor {
+            & .note-editor-title {
+                & input {
+                    background-color: transparent;
+                    color: colors.$mmn-regular-white-cl;
+                    width: 100%;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+
+                    &::placeholder {
+                        color: colors.$mmn-regular-gray-cl;
+                    }
                 }
             }
 
-            & .useful-actions {
-                & .action {
-                    background-color: white;
+            & .note-editor-board {
+                margin-top: 5px;
+
+                & .note-editor-container {
+                    height: 100%;
+                    width: 100%;
+
+                    & .note-editor-wrapper {
+                        display: grid;
+                        max-height: 500px;
+                        overflow-y: auto;
+
+                        & .replicated-value-box,
+                        & .note-editor {
+                            grid-area: 1 / 1 / 2 / 2;
+                            padding: 10px;
+                            font-size: 1rem;
+                            height: 100%;
+                            overflow: hidden;
+                        }
+
+                        & .note-editor {
+                            background-color: white;
+                            height: 100%;
+                            width: 100%;
+                            font-family: text-fonts.$mmn-arial-fontf;
+                            white-space: pre-line;
+                            resize: none;
+                        }
+
+                        & .replicated-value-box {
+                            content: attr(data-replicated-value);
+                            white-space: pre-wrap;
+                            visibility: hidden;
+                        }
+                    }
+
+                    & .letters-count {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.85rem;
+                        color: colors.$mmn-regular-gray-cl;
+                        line-height: 1;
+                        padding-right: 5px;
+                        margin-top: 5px;
+                    }
+                }
+
+                & .useful-actions {
+                    display: flex;
+                    column-gap: 5px;
+                    width: 100%;
+                    margin-top: 5px;
+
+                    & .action {
+                        @include action-btn-styling();
+                    }
                 }
             }
         }
     }
+}
 
-    & .bottom-actions {
-        & .bottom-action {
-            background-color: white;
+#add-note-password-modal {
+    & .modal-dialog {
+        & .modal-content {
+            & .modal-header {
+                & h2 {
+                    font-weight: bold;
+                }
+            }
+
+            & .modal-body {
+                & .form-group {
+                    & label {
+                        font-size: 0.9rem;
+                        padding-left: 5px;
+                        font-weight: bold;
+                    }
+
+                    & .input-wrapper {
+                        position: relative;
+                        margin: 3px 0;
+
+                        & input {
+                            width: 100%;
+                            padding: 5px 10px;
+                            box-sizing: border-box;
+                            border: 1.5px colors.$mmn-regular-gray-cl solid;
+                            font-family: text-fonts.$mmn-arial-fontf;
+                            border-radius: 5px;
+
+                            &:hover {
+                                outline: 1px gray solid;
+                            }
+
+                            &:focus {
+                                border-color: gray;
+                                border-left-width: 5px;
+                            }
+                        }
+
+                        & .input-actions {
+                            position: absolute;
+                            right: 10px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            transition: transform 0.15s;
+                            cursor: pointer;
+
+                            &:hover {
+                                transform: translateY(-50%) scale(1.1);
+                            }
+
+                            & i {
+                                display: flex;
+                                font-size: 1rem;
+                            }
+
+                            & .inactive {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    & .helper-text {
+                        font-style: italic;
+                        padding-left: 10px;
+                        margin-top: 2px;
+
+                        & .helper-text-item {
+                            color: #919191;
+                            font-size: 0.9rem;
+                        }
+                    }
+
+                    & .message {
+                        display: flex;
+                        column-gap: 5px;
+                        align-items: center;
+                        padding-left: 5px;
+                        font-size: 1rem;
+                        padding: 5px 10px;
+                        width: 100%;
+                        box-sizing: border-box;
+                        border-radius: 5px;
+                        margin-top: 10px;
+
+                        & i {
+                            display: flex;
+                            color: inherit;
+                            font-size: inherit;
+                        }
+
+                        &.warning {
+                            color: colors.$mmn-regular-red-cl;
+                            background-color: colors.$mmn-regular-warning-cl;
+                        }
+                    }
+                }
+            }
+
+            & .modal-footer {
+                & .modal-close-btn,
+                & .modal-save-change-btn {
+                    display: flex;
+                    column-gap: 5px;
+                    align-items: center;
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    border: 2px white solid;
+                }
+
+                & .modal-close-btn {
+                    background-color: colors.$mmn-regular-red-cl;
+                    color: colors.$mmn-regular-white-cl;
+                    border: 2px white solid;
+
+                    &:hover {
+                        outline: 2px colors.$mmn-regular-red-cl solid;
+                    }
+                }
+
+                & .modal-save-change-btn {
+                    background-color: #f0f0f0;
+                    color: colors.$mmn-regular-black-cl;
+                    border: 2px white solid;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
         }
     }
 }

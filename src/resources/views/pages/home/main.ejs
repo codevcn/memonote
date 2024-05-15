@@ -1,26 +1,112 @@
 <main id="page-main">
+    <div class="modal fade" id="add-note-password-modal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5">Add Password For This Note</h2>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Add Password</label>
+                        <div class="input-wrapper">
+                            <input type="password" placeholder="Add password here..." />
+                            <div class="input-actions">
+                                <span class="hidden">
+                                    <i class="bi bi-eye-slash"></i>
+                                </span>
+                                <span class="shown inactive">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="helper-text">
+                            <div class="helper-text-item">At least four characters</div>
+                        </div>
+                        <div class="message warning">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <span>Something went wrong...</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="modal-save-change-btn">
+                        <i class="bi bi-check-lg"></i>
+                        <span>Save Change</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="user-actions">
-        <button class="user-action add-password">Add Password</button>
+        <button
+            class="user-action add-note-password"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#add-note-password-modal"
+        >
+            <i class="bi bi-lock-fill"></i>
+            <span>Add Password</span>
+        </button>
+        <button class="user-action add-note">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add A Note</span>
+        </button>
     </section>
 
     <section class="notes">
-        <section class="note-container">
+        <section class="note-container note-container-id-1">
             <div class="note-editor-title">
-                <input type="text" />
+                <input type="text" placeholder="Add a title..." />
             </div>
-            <div class="note-editor-container">
-                <div class="note-editor-wrapper">
-                    <textarea class="note-editor"></textarea>
+            <div class="note-editor-board">
+                <div class="note-editor-container">
+                    <div class="note-editor-wrapper">
+                        <textarea
+                            class="note-editor"
+                            rows="5"
+                            placeholder="Write your note here..."
+                            oninput="noteTyping(this)"
+                            onkeyup="catchBackspaceWhenTyping(this,event)"
+                        ></textarea>
+                        <div class="replicated-value-box"></div>
+                    </div>
+                    <div class="letters-count">
+                        <span></span>
+                        <span class="count">0 / 10000</span>
+                    </div>
                 </div>
                 <div class="useful-actions">
-                    <button class="action">Clipboard Paste</button>
-                    <button class="action">Copy All</button>
+                    <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">
+                        <i class="bi bi-clipboard"></i>
+                        <span>Clipboard Paste</span>
+                    </button>
+                    <button
+                        class="action"
+                        onclick="performUsefulActions(this,'copyAllNoteContent')"
+                    >
+                        <i class="bi bi-c-circle"></i>
+                        <span>Copy All</span>
+                    </button>
+                    <button class="action" onclick="performUsefulActions(this,'undoNoteContent')">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                        <span>Undo</span>
+                    </button>
+                    <button class="action" onclick="performUsefulActions(this,'clearNoteContent')">
+                        <i class="bi bi-x-lg"></i>
+                        <span>Clear</span>
+                    </button>
                 </div>
             </div>
         </section>
-    </section>
-
-    <section class="bottom-actions">
-        <button class="bottom-action add-note">Add Note</button>
     </section>
 </main>
