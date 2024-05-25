@@ -1,8 +1,14 @@
-$mmn-primary-cl: #ffff36;
+// colors
+$mmn-primary-cl: #18181b;
 $mmn-regular-black-cl: #18181b;
 $mmn-regular-white-cl: #fff;
 $mmn-regular-red-cl: #ff2424;
-$mmn-regular-warning-cl: #ffdbdb;
-$mmn-regular-divider-border-cl: #5b5b5b;
-$mmn-regular-gray-cl: #a9a9a9;
+$mmn-regular-warning-bgcl: #ffdada;
+$mmn-regular-success-bgcl: #b5ffdd;
+$mmn-regular-green-cl: #00a149;
+$mmn-regular-gray-cl: #909090;
 $mmn-regular-bg-cl: #f3f3f3;
+
+// components
+$mmn-regular-divider-border-cl: #e6e6e6;
+$mmn-regular-background-cl: $mmn-regular-white-cl;

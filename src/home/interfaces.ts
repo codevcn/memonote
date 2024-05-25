@@ -1,5 +1,13 @@
-import type { TRedirectHomePage } from './types'
+import type { Request, Response } from 'express'
+import { GetNoteOnHomePageParamsDTO } from './home.dto'
+import { TApplicationInfo } from '@/utils/application/types'
 
 export interface IHomeController {
-    // homePage(serverHost: string): Promise<TRedirectHomePage>
+    getNoteOnHomePage(
+        params: GetNoteOnHomePageParamsDTO,
+        req: Request,
+        res: Response,
+    ): Promise<void>
+    homePage(serverEndpoint: string): Promise<{ url: string }>
+    aboutPage(): Promise<{ appInfo: TApplicationInfo }>
 }

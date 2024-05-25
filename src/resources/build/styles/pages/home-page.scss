@@ -1,47 +1,123 @@
 @use '../global/colors';
 @use '../global/text-fonts';
 
-@mixin action-btn-styling {
+$mmn-note-content-font-size: 17px;
+$mmn-note-editor-max-height: auto;
+
+@mixin action-btn-styling($is-user-action: 'true') {
     display: flex;
     align-items: center;
     column-gap: 5px;
     background-color: colors.$mmn-primary-cl;
-    font-weight: bold;
     padding: 5px 10px;
     border-radius: 5px;
     font-size: 0.9rem;
-    border: 2px colors.$mmn-regular-black-cl solid;
+    color: colors.$mmn-regular-white-cl;
 
     & i {
         display: flex;
         font-size: 0.9rem;
+        color: inherit;
     }
 
-    &:hover {
-        outline: 2px colors.$mmn-primary-cl solid;
+    @if $is-user-action == 'true' {
+        &:hover {
+            outline: 2px colors.$mmn-primary-cl solid;
+        }
     }
 }
 
 #page-main {
     padding: 10px 50px 30px;
 
-    & .user-actions {
+    & .user-actions-and-logout {
         display: flex;
-        column-gap: 10px;
+        justify-content: space-between;
+        align-items: center;
 
-        & .user-action {
-            @include action-btn-styling();
+        & .user-actions {
+            display: flex;
+            align-items: center;
+            column-gap: 10px;
 
-            &.add-note-password {
-                color: colors.$mmn-regular-white-cl;
+            & .user-action {
+                @include action-btn-styling('false');
+
+                &.set-note-password {
+                    color: colors.$mmn-regular-white-cl;
+                    background-color: colors.$mmn-regular-red-cl;
+
+                    & i {
+                        color: colors.$mmn-regular-white-cl;
+                    }
+
+                    &:hover {
+                        outline: 2px colors.$mmn-regular-red-cl solid;
+                    }
+                }
+
+                &.remove-note-password {
+                    color: colors.$mmn-regular-red-cl;
+                    background-color: colors.$mmn-regular-white-cl;
+
+                    &.on-progress {
+                        opacity: 0.6;
+                        pointer-events: none;
+                    }
+
+                    & i {
+                        color: colors.$mmn-regular-red-cl;
+                    }
+
+                    &:hover {
+                        & span {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    & .spinner {
+                        height: 20px;
+                        width: 20px;
+                    }
+                }
+            }
+        }
+
+        & .logout-btn {
+            display: flex;
+            align-items: center;
+            column-gap: 8px;
+            background-color: colors.$mmn-regular-background-cl;
+            padding: 3.5px 10px;
+            border: 1.5px colors.$mmn-regular-red-cl solid;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: colors.$mmn-regular-red-cl;
+            transition: background-color 0.2s;
+
+            & .spinner {
+                height: 20px;
+                width: 20px;
+            }
+
+            & i {
+                display: flex;
+                color: colors.$mmn-regular-red-cl;
+                font-size: 1.2rem;
+                transform: translate(2px, 0.5px);
+            }
+
+            &.on-progress {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+
+            &:hover {
                 background-color: colors.$mmn-regular-red-cl;
+                color: colors.$mmn-regular-white-cl;
 
                 & i {
                     color: colors.$mmn-regular-white-cl;
-                }
-
-                &:hover {
-                    outline: 2px colors.$mmn-regular-red-cl solid;
                 }
             }
         }
@@ -54,10 +130,28 @@
             & .note-editor-title {
                 & input {
                     background-color: transparent;
-                    color: colors.$mmn-regular-white-cl;
                     width: 100%;
                     padding: 0 10px;
                     box-sizing: border-box;
+                    font-size: 2rem;
+                    font-weight: bold;
+
+                    &::placeholder {
+                        color: colors.$mmn-regular-gray-cl;
+                    }
+                }
+            }
+
+            & .note-editor-author {
+                margin-top: 5px;
+
+                & input {
+                    background-color: transparent;
+                    width: 100%;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    font-size: 15px;
+                    font-weight: 500;
 
                     &::placeholder {
                         color: colors.$mmn-regular-gray-cl;
@@ -74,7 +168,7 @@
 
                     & .note-editor-wrapper {
                         display: grid;
-                        max-height: 500px;
+                        max-height: $mmn-note-editor-max-height;
                         overflow-y: auto;
 
                         & .replicated-value-box,
@@ -91,6 +185,7 @@
                             height: 100%;
                             width: 100%;
                             font-family: text-fonts.$mmn-arial-fontf;
+                            font-size: $mmn-note-content-font-size;
                             white-space: pre-line;
                             resize: none;
                         }
@@ -128,7 +223,7 @@
     }
 }
 
-#add-note-password-modal {
+#set-note-password-modal {
     & .modal-dialog {
         & .modal-content {
             & .modal-header {
@@ -181,7 +276,7 @@
 
                             & i {
                                 display: flex;
-                                font-size: 1rem;
+                                font-size: 1.2rem;
                             }
 
                             & .inactive {
@@ -206,12 +301,10 @@
                         column-gap: 5px;
                         align-items: center;
                         padding-left: 5px;
-                        font-size: 1rem;
-                        padding: 5px 10px;
+                        font-size: 0.9rem;
                         width: 100%;
                         box-sizing: border-box;
                         border-radius: 5px;
-                        margin-top: 10px;
 
                         & i {
                             display: flex;
@@ -221,7 +314,18 @@
 
                         &.warning {
                             color: colors.$mmn-regular-red-cl;
-                            background-color: colors.$mmn-regular-warning-cl;
+                            background-color: colors.$mmn-regular-warning-bgcl;
+                        }
+
+                        &.success {
+                            color: colors.$mmn-regular-green-cl;
+                            background-color: colors.$mmn-regular-success-bgcl;
+                        }
+
+                        &.warning,
+                        &.success {
+                            padding: 5px 10px;
+                            margin-top: 10px;
                         }
                     }
                 }
@@ -253,8 +357,18 @@
                     color: colors.$mmn-regular-black-cl;
                     border: 2px white solid;
 
+                    &.on-progress {
+                        opacity: 0.6;
+                        pointer-events: none;
+                    }
+
                     &:hover {
                         text-decoration: underline;
+                    }
+
+                    & .spinner-border {
+                        height: 1.5rem;
+                        width: 1.5rem;
                     }
                 }
             }

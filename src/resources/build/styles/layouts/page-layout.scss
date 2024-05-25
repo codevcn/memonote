@@ -1,23 +1,19 @@
 @use '../global/colors';
 
+$mmn-height-of-page-header: 60px;
+
 .page-header {
     display: flex;
     column-gap: 30px;
     justify-content: space-between;
     padding: 0 50px;
-    height: 60px;
+    height: $mmn-height-of-page-header;
     border-bottom: 1px colors.$mmn-regular-divider-border-cl solid;
 
     & .app-logo-container {
         display: flex;
         column-gap: 15px;
         align-items: center;
-
-        & .app-logo-wrapper {
-            & .app-logo {
-                height: 35px;
-            }
-        }
 
         & .app-title {
             font-size: 1.2rem;
@@ -35,7 +31,7 @@
             display: flex;
             align-items: center;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 500;
             padding: 10px;
             position: relative;
             color: colors.$mmn-primary-cl;

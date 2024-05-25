@@ -1,72 +1,96 @@
-$mmn-primary-fontf: 'Work Sans regular', Arial, sans-serif;
-$mmn-poppins-bold-fontf: 'Poppins bold', Arial, sans-serif;
-$mmn-poppins-regular-fontf: 'Poppins regular', Arial, sans-serif;
+$mmn-primary-fontf: 'Work Sans', Arial, sans-serif;
+$mmn-poppins-fontf: 'Poppins', Arial, sans-serif;
 $mmn-arial-fontf: Arial, Helvetica, sans-serif;
 $mmn-times-new-roman-fontf: 'Times New Roman', Times, serif;
-$mmn-roboto-regular-fontf: 'Roboto regular', Times, serif;
+$mmn-roboto-regular-fontf: 'Roboto', Times, serif;
+
+/* @rules
+normal - regular
+bold - bold
+500 - medium
+300 - light
+100 - thin
+*/
 
 /* =================================================== */
 /* ==================== Poppins ====================== */
 @font-face {
-    font-family: 'Poppins bold';
-    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Poppins medium';
-    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Poppins light';
-    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Poppins regular';
+    font-family: 'Poppins';
     src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
 }
 
 /* =================================================== */
 /* ==================== Work Sans ==================== */
 @font-face {
-    font-family: 'Work Sans bold';
-    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Work Sans regular';
+    font-family: 'Work Sans';
     src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
 }
 
 @font-face {
-    font-family: 'Work Sans light';
+    font-family: 'Work Sans';
+    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../fonts/worksans/WorkSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'Work Sans';
     src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Work Sans thin';
-    src: url('../fonts/worksans/WorkSans-Thin.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
 }
 
 /* =================================================== */
 /* ==================== Roboto ==================== */
 @font-face {
-    font-family: 'Roboto bold';
-    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-family: 'Roboto';
+    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
 }
 
 @font-face {
-    font-family: 'Roboto regular';
-    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    font-family: 'Roboto bold';
+    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
 }
 
 @font-face {
     font-family: 'Roboto light';
     src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
-}
-
-@font-face {
-    font-family: 'Roboto thin';
-    src: url('../fonts/roboto/roboto-thin-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
 }

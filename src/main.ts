@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
-import { NestExpressApplication } from '@nestjs/platform-express'
+import type { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
 import { ValidationPipe } from '@nestjs/common'
 import { HttpExceptionFilter } from './utils/exception/http-exception.filter'
 import { HttpExceptionValidation } from './utils/validation/http-exception.validation'
+import cookieParser from 'cookie-parser'
 
 const resourcesFolder = 'resources'
 
@@ -12,6 +13,9 @@ async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
     const PORT = process.env.PORT
+
+    // cookie
+    app.use(cookieParser())
 
     // ejs
     app.useStaticAssets(join(__dirname, '..', `src/${resourcesFolder}/public`))

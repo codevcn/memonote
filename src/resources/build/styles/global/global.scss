@@ -4,7 +4,7 @@
 body {
     padding: 0;
     margin: 0;
-    background-color: colors.$mmn-regular-black-cl;
+    background-color: colors.$mmn-regular-background-cl;
 }
 
 div,
@@ -15,6 +15,7 @@ input,
 section,
 textarea {
     font-family: text-fonts.$mmn-primary-fontf;
+    font-weight: normal;
     outline: none;
 }
 
@@ -46,4 +47,8 @@ h4,
 h5,
 h6 {
     margin: 0;
+}
+
+#page-main {
+    box-sizing: border-box;
 }

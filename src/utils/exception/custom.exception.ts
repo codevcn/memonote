@@ -1,9 +1,19 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
 
 export class BaseCustomException extends HttpException {
-    constructor(message: string, statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR) {
+    private originalException: any
+    private type: string
+
+    constructor(
+        message: string,
+        statusCode: number = HttpStatus.INTERNAL_SERVER_ERROR,
+        type: string = 'Unknown',
+        originalException: any = new Error('Something went wrong...'),
+    ) {
         super(message, statusCode)
-        this.name = 'Custom Exception'
+        this.name = 'Base Custom Exception'
+        this.originalException = originalException
+        this.type = type
     }
 }
 

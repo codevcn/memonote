@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common'
 import * as yaml from 'js-yaml'
-import * as fs from 'fs'
+import { readFile } from 'fs/promises'
 import { TApplication, TApplicationInfo } from './types'
 
 @Injectable()
 export class ApplicationService {
-    private applicationFileName: string = 'application.yml'
-    private application: TApplication = yaml.load(
-        fs.readFileSync(this.applicationFileName, 'utf8'),
-    ) as TApplication
+    private applicationFileName: string
 
-    getApplicationInfo(): TApplicationInfo {
-        return this.application.info
+    constructor() {
+        this.applicationFileName = 'application.yml'
+    }
+
+    async getApplicationInfo(): Promise<TApplicationInfo> {
+        const file = await readFile(`application/${this.applicationFileName}`, 'utf8')
+        const appInfo = yaml.load(file) as TApplication
+        return appInfo.info
     }
 }

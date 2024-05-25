@@ -1,0 +1,25 @@
+<main id="page-main">
+    <section class="type-password-section">
+        <div class="message"></div>
+        <div class="form-group">
+            <div class="input-wrapper">
+                <input type="password" onfocus="handleOnFocusTypePasswordInput(this)"
+                    onblur="handleOnBlurTypePasswordInput(this)" />
+                <div class="input-placeholder">
+                    Type password...
+                </div>
+                <div class="input-actions">
+                    <span class="hidden" onclick="hideShowPassword_signInPage(this,false)">
+                        <i class="bi bi-eye-slash"></i>
+                    </span>
+                    <span class="shown inactive" onclick="hideShowPassword_signInPage(this,true)">
+                        <i class="bi bi-eye"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <button class="submit-btn">
+            <span>Submit</span>
+        </button>
+    </section>
+</main>

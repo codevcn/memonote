@@ -1,5 +1,12 @@
-import type { TGetHomePageData } from './types'
+import type { TSuccess } from '@/utils/types'
+import { AddPasswordForNoteParamsDTO, AddPasswordForNotePayloadDTO } from './note.dto'
+import type { Response } from 'express'
 
-export interface INoteController {
-    getNote(noteUniqueName: string): Promise<TGetHomePageData>
+export interface INoteAPIController {
+    setPasswordForNote(
+        params: AddPasswordForNoteParamsDTO,
+        payload: AddPasswordForNotePayloadDTO,
+        res: Response<TSuccess>,
+    ): Promise<TSuccess>
+    removePasswordForNote(params: AddPasswordForNoteParamsDTO): Promise<TSuccess>
 }

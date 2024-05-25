@@ -4,20 +4,17 @@
     justify-content: space-between;
     padding: 0 50px;
     height: 60px;
-    border-bottom: 1px #5b5b5b solid;
+    border-bottom: 1px #e6e6e6 solid;
 }
 .page-header .app-logo-container {
     display: flex;
     column-gap: 15px;
     align-items: center;
 }
-.page-header .app-logo-container .app-logo-wrapper .app-logo {
-    height: 35px;
-}
 .page-header .app-logo-container .app-title {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #ffff36;
+    color: #18181b;
 }
 .page-header .right-side-menu {
     display: flex;
@@ -28,17 +25,17 @@
     display: flex;
     align-items: center;
     font-size: 1.1rem;
-    font-weight: bold;
+    font-weight: 500;
     padding: 10px;
     position: relative;
-    color: #ffff36;
+    color: #18181b;
     height: 100%;
     box-sizing: border-box;
 }
 .page-header .right-side-menu .menu-item::after {
     content: '';
     position: absolute;
-    border-top: 3px #ffff36 solid;
+    border-top: 3px #18181b solid;
     width: 100%;
     height: 0;
     bottom: 0;

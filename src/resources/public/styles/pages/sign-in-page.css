@@ -1,0 +1,170 @@
+/* @rules
+normal - regular
+bold - bold
+500 - medium
+300 - light
+100 - thin
+*/
+/* =================================================== */
+/* ==================== Poppins ====================== */
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Work Sans ==================== */
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../fonts/worksans/WorkSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Roboto ==================== */
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Roboto bold';
+    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Roboto light';
+    src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+#page-main {
+    padding: 0 100px;
+}
+#page-main .type-password-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    margin-top: 30px;
+}
+#page-main .type-password-section .message {
+    display: flex;
+    column-gap: 8px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    color: #ff2424;
+    background-color: #ffdada;
+    font-weight: 500;
+}
+#page-main .type-password-section .message.warning {
+    padding: 3px 20px;
+}
+#page-main .type-password-section .message i {
+    display: flex;
+    color: inherit;
+    font-size: inherit;
+}
+#page-main .type-password-section .form-group {
+    margin-top: 20px;
+    width: 100%;
+}
+#page-main .type-password-section .form-group .input-wrapper {
+    position: relative;
+    margin: 3px 0;
+}
+#page-main .type-password-section .form-group .input-wrapper .input-placeholder {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #909090;
+}
+#page-main .type-password-section .form-group .input-wrapper input {
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-bottom: 1.5px #d9d9d9 solid;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+#page-main .type-password-section .form-group .input-wrapper .input-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.15s;
+    cursor: pointer;
+}
+#page-main .type-password-section .form-group .input-wrapper .input-actions:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+#page-main .type-password-section .form-group .input-wrapper .input-actions i {
+    display: flex;
+    font-size: 1.2rem;
+}
+#page-main .type-password-section .form-group .input-wrapper .input-actions .inactive {
+    display: none;
+}
+#page-main .type-password-section .submit-btn {
+    width: fit-content;
+    border-radius: 5px;
+    padding: 5px 25px;
+    font-weight: bold;
+    margin-top: 20px;
+    border: 2px #18181b solid;
+    background-color: white;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+#page-main .type-password-section .submit-btn:hover {
+    background-color: #18181b;
+    color: #fff;
+}
+
+/*# sourceMappingURL=sign-in-page.css.map */

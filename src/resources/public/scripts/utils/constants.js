@@ -1,2 +1,4 @@
 'use strict'
+// length
 const MAX_LENGTH_OF_NOTE_CONTENT = 10000
+const MAX_LENGTH_OF_API_ERROR_MESSAGE = 100
