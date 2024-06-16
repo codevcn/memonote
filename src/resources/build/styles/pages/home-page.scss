@@ -1,0 +1,663 @@
+@use '../global/colors';
+@use '../global/text-fonts';
+
+$mmn-note-content-font-size: 17px;
+$mmn-note-editor-max-height: auto;
+$mmn-note-annotaion-border-cl: #a5a5a5;
+
+@mixin action-btn-styling($is-user-action: 'true') {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: colors.$mmn-primary-cl;
+    padding: 4px 9px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: colors.$mmn-regular-white-cl;
+
+    i {
+        display: flex;
+        font-size: 0.9rem;
+        color: inherit;
+    }
+
+    @if $is-user-action == 'true' {
+        &:hover {
+            background-color: transparent;
+            color: colors.$mmn-primary-cl;
+        }
+    }
+}
+
+@mixin modal-header-styling {
+    .btn-close:focus {
+        box-shadow: 0 0 0px 0.25rem colors.$mmn-regular-warning-bgcl;
+    }
+
+    h2 {
+        font-weight: bold;
+    }
+}
+
+@mixin modal-footer-styling {
+    display: flex;
+    overflow: hidden;
+    padding: 0;
+
+    button {
+        display: flex;
+        column-gap: 5px;
+        align-items: center;
+        padding: 10px;
+        margin: 0;
+        flex: 1;
+        justify-content: center;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .modal-close-btn {
+        background-color: colors.$mmn-regular-red-cl;
+        color: colors.$mmn-regular-white-cl;
+    }
+
+    .modal-save-change-btn {
+        background-color: colors.$mmn-regular-bg-cl;
+        color: colors.$mmn-regular-black-cl;
+
+        &.on-progress {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner-border {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+    }
+}
+
+@mixin on-focus-display-note-annotation {
+    &:focus {
+        & + .note-annotation {
+            transform: translateX(0) translateY(-50%);
+            opacity: 1;
+        }
+    }
+}
+
+#page-main {
+    padding: 10px 50px 30px;
+
+    .user-actions-and-logout {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            column-gap: 10px;
+
+            .user-action {
+                @include action-btn-styling('false');
+
+                &.set-note-password {
+                    color: colors.$mmn-regular-white-cl;
+                    background-color: colors.$mmn-regular-red-cl;
+
+                    i {
+                        color: colors.$mmn-regular-white-cl;
+                    }
+
+                    &:hover {
+                        outline: 2px colors.$mmn-regular-red-cl solid;
+                    }
+                }
+
+                &.remove-note-password {
+                    color: colors.$mmn-regular-red-cl;
+                    background-color: colors.$mmn-regular-white-cl;
+
+                    &.on-progress {
+                        opacity: 0.6;
+                        pointer-events: none;
+                    }
+
+                    i {
+                        color: colors.$mmn-regular-red-cl;
+                    }
+
+                    &:hover {
+                        span {
+                            text-decoration: underline;
+                        }
+                    }
+
+                    .spinner {
+                        height: 20px;
+                        width: 20px;
+                    }
+                }
+            }
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            column-gap: 8px;
+            background-color: colors.$mmn-regular-background-cl;
+            padding: 2.5px 10px;
+            border: 1.5px colors.$mmn-regular-red-cl solid;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            color: colors.$mmn-regular-red-cl;
+            transition: background-color 0.2s;
+
+            .spinner {
+                height: 21.5px;
+                width: 21.5px;
+            }
+
+            i {
+                display: flex;
+                color: colors.$mmn-regular-red-cl;
+                font-size: 1.2rem;
+                transform: translate(2px, 0.5px);
+            }
+
+            &.on-progress {
+                opacity: 0.6;
+                pointer-events: none;
+            }
+
+            &:hover {
+                background-color: colors.$mmn-regular-red-cl;
+                color: colors.$mmn-regular-white-cl;
+
+                i {
+                    color: colors.$mmn-regular-white-cl;
+                }
+            }
+        }
+    }
+
+    .notes {
+        margin-top: 20px;
+        padding: 0 50px;
+
+        .note-container {
+            .note-annotation {
+                position: absolute;
+                right: 101%;
+                top: 50%;
+                transform: translate(-10px, -50%);
+                border-right: 3px $mmn-note-annotaion-border-cl solid;
+                padding-right: 8px;
+                font-size: 0.9rem;
+                opacity: 0;
+                transition:
+                    opacity 0.15s,
+                    transform 0.15s;
+            }
+
+            .note-title {
+                position: relative;
+
+                input {
+                    background-color: transparent;
+                    width: 100%;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    font-size: 2rem;
+                    font-weight: bold;
+
+                    &::placeholder {
+                        color: colors.$mmn-regular-gray-cl;
+                    }
+
+                    @include on-focus-display-note-annotation;
+                }
+            }
+
+            .note-author {
+                margin-top: 5px;
+                position: relative;
+
+                input {
+                    background-color: transparent;
+                    width: 100%;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    font-size: 15px;
+                    font-weight: 500;
+
+                    &::placeholder {
+                        color: colors.$mmn-regular-gray-cl;
+                    }
+
+                    @include on-focus-display-note-annotation;
+                }
+            }
+
+            .note-editor-board {
+                margin-top: 5px;
+                position: relative;
+
+                .note-editor-container {
+                    height: 100%;
+                    width: 100%;
+
+                    .note-editor-wrapper {
+                        display: grid;
+                        max-height: $mmn-note-editor-max-height;
+                        overflow-y: auto;
+                        margin-top: 20px;
+
+                        .note-annotation {
+                            top: 0;
+                            transform: translate(-10px, 0);
+                        }
+
+                        &::after,
+                        .note-editor {
+                            grid-area: 1 / 1 / 2 / 2;
+                            padding: 0 10px;
+                            width: 100%;
+                            font-family: text-fonts.$mmn-arial-fontf;
+                            font-size: $mmn-note-content-font-size;
+                        }
+
+                        .note-editor {
+                            background-color: white;
+                            resize: none;
+                            overflow: hidden;
+
+                            &:focus {
+                                & + .note-annotation {
+                                    opacity: 1;
+                                    transform: translate(0, 0);
+                                }
+                            }
+                        }
+
+                        &::after {
+                            content: attr(data-replicated-value) ' ';
+                            white-space: pre-wrap;
+                            visibility: hidden;
+                        }
+                    }
+
+                    .letters-count {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.85rem;
+                        color: colors.$mmn-regular-gray-cl;
+                        line-height: 1;
+                        padding-right: 5px;
+                        margin-top: 5px;
+                    }
+                }
+
+                .useful-note-actions {
+                    display: flex;
+                    column-gap: 5px;
+                    width: 100%;
+                    margin-top: 5px;
+
+                    .action {
+                        @include action-btn-styling();
+                        border: 2px colors.$mmn-primary-cl solid;
+                    }
+                }
+
+                .useful-note-modes {
+                    display: flex;
+                    column-gap: 5px;
+                    width: 100%;
+                    margin-top: 15px;
+
+                    .action {
+                        @include action-btn-styling();
+                        border: 2px colors.$mmn-primary-cl solid;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.modal {
+    .modal-dialog {
+        .modal-content {
+            .modal-header {
+                @include modal-header-styling;
+            }
+
+            .modal-footer {
+                @include modal-footer-styling;
+            }
+        }
+    }
+}
+
+#set-note-password-modal {
+    .modal-dialog {
+        .modal-content {
+            .modal-body {
+                .form-group {
+                    label {
+                        font-size: 0.9rem;
+                        padding-left: 5px;
+                        font-weight: bold;
+                    }
+
+                    .input-wrapper {
+                        position: relative;
+                        margin: 3px 0;
+
+                        input {
+                            width: 100%;
+                            padding: 5px 10px;
+                            box-sizing: border-box;
+                            border: 1.5px colors.$mmn-regular-gray-cl solid;
+                            font-family: text-fonts.$mmn-arial-fontf;
+                            border-radius: 5px;
+
+                            &:hover {
+                                outline: 1px gray solid;
+                            }
+
+                            &:focus {
+                                border-color: gray;
+                                border-left-width: 5px;
+                            }
+                        }
+
+                        .input-actions {
+                            position: absolute;
+                            right: 10px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            transition: transform 0.15s;
+                            cursor: pointer;
+
+                            &:hover {
+                                transform: translateY(-50%) scale(1.1);
+                            }
+
+                            i {
+                                display: flex;
+                                font-size: 1.2rem;
+                            }
+
+                            .inactive {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    .helper-text {
+                        font-style: italic;
+                        padding-left: 10px;
+                        margin-top: 2px;
+
+                        .helper-text-item {
+                            color: colors.$mmn-regular-gray-cl;
+                            font-size: 0.9rem;
+                        }
+                    }
+
+                    .message {
+                        display: flex;
+                        column-gap: 5px;
+                        align-items: center;
+                        padding-left: 5px;
+                        font-size: 0.9rem;
+                        width: 100%;
+                        box-sizing: border-box;
+                        border-radius: 5px;
+
+                        i {
+                            display: flex;
+                            color: inherit;
+                            font-size: inherit;
+                        }
+
+                        &.warning {
+                            color: colors.$mmn-regular-red-cl;
+                            background-color: colors.$mmn-regular-warning-bgcl;
+                        }
+
+                        &.success {
+                            color: colors.$mmn-regular-green-cl;
+                            background-color: colors.$mmn-regular-success-bgcl;
+                        }
+
+                        &.warning,
+                        &.success {
+                            padding: 5px 10px;
+                            margin-top: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#remove-note-password-modal {
+    .modal-dialog {
+        .modal-content {
+            .modal-body {
+                font-size: 1.1rem;
+            }
+        }
+    }
+}
+
+#bubble-note-settings {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+
+    .bubble-note-settings-btn {
+        background-color: colors.$mmn-primary-cl;
+        border-radius: 50%;
+        padding: 4px;
+        cursor: pointer;
+        border: 2px colors.$mmn-primary-cl solid;
+        transition:
+            background-color 0.2s,
+            transform 0.2s;
+
+        i {
+            display: flex;
+            font-size: 2rem;
+            color: colors.$mmn-regular-white-cl;
+            transition: color 0.2s;
+        }
+
+        &:hover {
+            background-color: colors.$mmn-regular-white-cl;
+            transform: rotate(180deg);
+
+            i {
+                color: colors.$mmn-primary-cl;
+            }
+        }
+    }
+}
+
+#note-settings-modal {
+    .modal-dialog {
+        .modal-content {
+            .modal-header {
+                padding: 10px 20px;
+            }
+
+            .modal-body {
+                padding: 10px 0;
+
+                .note-settings-board {
+                    display: flex;
+                    border-radius: 8px;
+
+                    .note-settings-navigation {
+                        display: flex;
+                        flex-direction: column;
+                        row-gap: 30px;
+                        justify-content: space-between;
+                        border-right: 1px colors.$mmn-regular-lightgray-cl solid;
+
+                        .nav-items {
+                            display: flex;
+                            flex-direction: column;
+                            row-gap: 10px;
+                            background-color: colors.$mmn-regular-white-cl;
+                            border-radius: 8px 0 0 8px;
+                        }
+
+                        .nav-item {
+                            display: block;
+                            color: colors.$mmn-regular-black-cl;
+                            text-decoration: none;
+                            padding: 5px 15px;
+                            text-align: end;
+                            border-left: 3px colors.$mmn-regular-white-cl solid;
+
+                            &:hover,
+                            &.active {
+                                background-color: colors.$mmn-regular-bg-cl;
+                                border-left: 3px #414141 solid;
+                            }
+
+                            &.logout-btn {
+                                display: flex;
+                                justify-content: center;
+                                font-weight: bold;
+                                color: colors.$mmn-regular-red-cl;
+
+                                .spinner {
+                                    height: 24px;
+                                    width: 24px;
+                                }
+
+                                &:hover,
+                                &.active {
+                                    background-color: colors.$mmn-regular-warning-bgcl;
+                                    border-left: 3px colors.$mmn-regular-red-cl solid;
+                                }
+                            }
+                        }
+                    }
+
+                    .note-settings-form {
+                        padding: 5px 20px 0;
+                        flex: 1;
+
+                        .form-title {
+                            display: flex;
+                            align-items: end;
+                            column-gap: 5px;
+                            margin-top: 0;
+                            color: colors.$mmn-regular-black-cl;
+                            font-size: 1.3rem;
+                            font-weight: bold;
+                            margin-bottom: 20px;
+
+                            .status {
+                                .status-item {
+                                    font-size: 1rem;
+                                    color: gray;
+                                }
+                            }
+                        }
+
+                        .form-content {
+                            display: none;
+                            flex-direction: column;
+
+                            .form-group {
+                                display: flex;
+                                align-items: center;
+                                column-gap: 10px;
+
+                                .form-check-input {
+                                    height: 1.2rem;
+                                    width: 2.5rem;
+                                    margin-top: 0;
+                                    border-color: colors.$mmn-regular-lightgray-cl;
+                                    cursor: pointer;
+
+                                    &:focus,
+                                    &:hover {
+                                        box-shadow: 0 0 0 0.25rem colors.$mmn-regular-lightgray-cl;
+                                        border-color: colors.$mmn-regular-lightgray-cl;
+                                    }
+
+                                    &:checked {
+                                        background-color: colors.$mmn-primary-cl;
+                                        color: colors.$mmn-primary-cl;
+                                    }
+                                }
+
+                                .info {
+                                    display: flex;
+                                    align-items: center;
+                                    column-gap: 5px;
+
+                                    .details-btn {
+                                        cursor: pointer;
+
+                                        i {
+                                            display: flex;
+                                            font-size: 0.9rem;
+                                        }
+
+                                        &:hover {
+                                            transform: scale(1.2);
+                                        }
+                                    }
+                                }
+                            }
+
+                            &.active {
+                                display: flex;
+                            }
+                        }
+
+                        .form-save-change-btn {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            column-gap: 5px;
+                            width: 100%;
+                            border-radius: 5px;
+                            padding: 3px 20px;
+                            margin-top: 30px;
+                            background-color: colors.$mmn-regular-black-cl;
+                            border: 2px colors.$mmn-regular-black-cl solid;
+                            color: colors.$mmn-regular-white-cl;
+                            transition:
+                                background-color 0.2s,
+                                color 0.2s;
+
+                            i {
+                                display: flex;
+                                color: inherit;
+                            }
+
+                            &:hover {
+                                background-color: colors.$mmn-regular-white-cl;
+                                color: black;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

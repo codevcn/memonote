@@ -1,0 +1,242 @@
+@use 'text-fonts';
+@use 'colors';
+
+$mmn-height-of-page-header: 60px;
+
+body {
+    padding: 0;
+    margin: 0;
+    background-color: colors.$mmn-regular-background-cl;
+}
+
+div,
+a,
+p,
+button,
+input,
+section,
+textarea {
+    font-family: text-fonts.$mmn-primary-fontf;
+    font-weight: normal;
+    outline: none;
+}
+
+input,
+textarea {
+    border: none;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+i {
+    color: colors.$mmn-regular-black-cl;
+    font-size: 1rem;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
+
+#page-main {
+    box-sizing: border-box;
+}
+
+#general-app-status {
+    i {
+        font-size: 1.3rem;
+        color: colors.$mmn-general-status-cl;
+    }
+}
+
+.page-header {
+    display: flex;
+    column-gap: 30px;
+    justify-content: space-between;
+    padding: 0 50px;
+    height: $mmn-height-of-page-header;
+    border-bottom: 1px colors.$mmn-regular-divider-border-cl solid;
+
+    .app-logo-container {
+        display: flex;
+        column-gap: 20px;
+        align-items: center;
+
+        .app-logo-wrapper {
+            display: flex;
+            column-gap: 15px;
+            align-items: center;
+
+            .app-title {
+                font-size: 1.2rem;
+                font-weight: bold;
+                color: colors.$mmn-primary-cl;
+            }
+        }
+    }
+
+    .right-side-menu {
+        display: flex;
+        column-gap: 20px;
+        align-items: center;
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 10px;
+            position: relative;
+            color: colors.$mmn-primary-cl;
+            height: 100%;
+            box-sizing: border-box;
+
+            &::after {
+                content: '';
+                position: absolute;
+                border-top: 3px colors.$mmn-primary-cl solid;
+                width: 100%;
+                height: 0;
+                bottom: 0;
+                left: 0;
+                transform: scaleX(0);
+                transition: transform 0.15s;
+            }
+
+            &:hover {
+                &::after {
+                    transform: scaleX(1);
+                }
+            }
+        }
+    }
+}
+
+#app-notification {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: colors.$mmn-regular-black-cl;
+    color: colors.$mmn-regular-white-cl;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px colors.$mmn-regular-white-cl;
+    z-index: 1000;
+    visibility: hidden;
+    max-width: 250px;
+    transition:
+        visibility 0.25s,
+        opacity 0.25s;
+    opacity: 0;
+    cursor: pointer;
+    overflow: hidden;
+
+    .text-content {
+        font-size: 0.95rem;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        color: rgb(153, 153, 153);
+
+        i {
+            display: flex;
+            color: inherit;
+            font-size: 12px;
+        }
+
+        &:hover {
+            color: colors.$mmn-regular-white-cl;
+        }
+    }
+
+    .progress-container {
+        width: 100%;
+        height: 5px;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background-color: colors.$mmn-regular-white-cl;
+
+            &.running {
+                animation-name: progressBarRunning;
+                animation-timing-function: linear;
+            }
+
+            @keyframes progressBarRunning {
+                from {
+                    width: 100%;
+                }
+                to {
+                    width: 0;
+                }
+            }
+        }
+    }
+
+    .type-icon {
+        i {
+            display: flex;
+
+            &.success-icon {
+                color: colors.$mmn-regular-green-cl;
+            }
+            &.error-icon {
+                color: colors.$mmn-regular-red-cl;
+            }
+            &.info-icon {
+                color: colors.$mmn-regular-white-cl;
+            }
+        }
+    }
+
+    &.error {
+        .progress-bar {
+            background-color: colors.$mmn-regular-red-cl;
+        }
+    }
+
+    &.success {
+        .progress-bar {
+            background-color: colors.$mmn-regular-green-cl;
+        }
+    }
+
+    &.show,
+    &:hover {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &:hover {
+        box-shadow: 0 0 5px white;
+    }
+
+    &.clicked {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
