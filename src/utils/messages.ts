@@ -3,6 +3,7 @@ export enum EAuthMessages {
     FAIL_TO_VERIFY_PASSWORD = 'Fail to verify password',
     FAIL_TO_AUTH = 'Fail to auth',
     NOTE_NOT_FOUND = "Can't find the note",
+    INVALID_CREDENTIALS = 'Invalid credentials',
 }
 
 export enum EValidationMessages {
@@ -11,5 +12,9 @@ export enum EValidationMessages {
     NO_TRACE = 'No trace',
     INVALID_INPUT = 'Invalid input',
     INVALID_PASSWORD = 'Invalid password',
-    INVALID_NOTE_UNIQUE_NAME = 'Invalid unique note name',
+    INVALID_NOTE_UNIQUE_NAME = 'Invalid name of note',
+}
+
+export enum ENoteBroadcastMessages {
+    INVALID_INPUT = 'Invalid input',
 }

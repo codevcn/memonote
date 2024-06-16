@@ -1,10 +1,10 @@
 <main id="page-main">
     <section class="type-password-section">
-        <div class="message"></div>
         <div class="form-group">
             <div class="input-wrapper">
-                <input type="password" onfocus="handleOnFocusTypePasswordInput(this)"
-                    onblur="handleOnBlurTypePasswordInput(this)" />
+                <input type="password" name="password" onfocus="handleOnFocusTypePasswordInput(this)"
+                    onblur="handleOnBlurTypePasswordInput(this)" onkeyup="catchEnterKeyOfSignInInput(event)" />
+                <div class="input-animation"></div>
                 <div class="input-placeholder">
                     Type password...
                 </div>
@@ -18,8 +18,10 @@
                 </div>
             </div>
         </div>
-        <button class="submit-btn">
+        <div class="input-message"></div>
+        <button class="submit-btn" onclick="signInHandler(this)">
             <span>Submit</span>
         </button>
+        <div class="sign-in-message"></div>
     </section>
 </main>

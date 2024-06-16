@@ -24,8 +24,8 @@ class APIErrorHandler {
             } else {
                 error.isUserError = data_of_response.isUserException //check if is error due to user or not
                 error.message = data_of_response.message //update error message
-                if (error.message.length > MAX_LENGTH_OF_API_ERROR_MESSAGE) {
-                    error.message = `${error.message.slice(0, MAX_LENGTH_OF_API_ERROR_MESSAGE)}...`
+                if (error.message.length > EError.MAX_LENGTH_OF_API_ERROR_MESSAGE) {
+                    error.message = `${error.message.slice(0, EError.MAX_LENGTH_OF_API_ERROR_MESSAGE)}...`
                 }
             }
         } else if (error.originalError.request) {

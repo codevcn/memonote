@@ -13,12 +13,9 @@ export interface IJWTService {
 
 export interface IAuthAPIController {
     logout(res: Response): Promise<TSuccess>
-}
-
-export interface IAuthController {
     signIn(
         params: GetNoteOnHomePageParamsDTO,
         signInPayload: SignInPayloadDTO,
         res: Response,
-    ): Promise<void>
+    ): Promise<TSuccess>
 }

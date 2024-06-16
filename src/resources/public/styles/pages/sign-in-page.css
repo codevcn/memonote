@@ -87,34 +87,38 @@ bold - bold
     margin: auto;
     margin-top: 30px;
 }
-#page-main .type-password-section .message {
-    display: flex;
-    column-gap: 8px;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    border-radius: 5px;
-    box-sizing: border-box;
-    width: 100%;
-    color: #ff2424;
-    background-color: #ffdada;
-    font-weight: 500;
-}
-#page-main .type-password-section .message.warning {
-    padding: 3px 20px;
-}
-#page-main .type-password-section .message i {
-    display: flex;
-    color: inherit;
-    font-size: inherit;
-}
 #page-main .type-password-section .form-group {
     margin-top: 20px;
     width: 100%;
+    border-bottom: 1.5px #d9d9d9 solid;
 }
 #page-main .type-password-section .form-group .input-wrapper {
     position: relative;
     margin: 3px 0;
+    width: 100%;
+    margin-bottom: 7px;
+}
+#page-main .type-password-section .form-group .input-wrapper input {
+    width: 100%;
+    padding: 0 40px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+}
+#page-main .type-password-section .form-group .input-wrapper input:focus + .input-animation {
+    transform: scaleX(1);
+}
+#page-main .type-password-section .form-group .input-wrapper .input-animation {
+    width: 100%;
+    border-bottom: 1.5px gray solid;
+    transform: scaleX(0);
+    transition: transform 0.2s;
+    position: absolute;
+    bottom: -8.5px;
+    left: 0;
 }
 #page-main .type-password-section .form-group .input-wrapper .input-placeholder {
     pointer-events: none;
@@ -123,14 +127,6 @@ bold - bold
     top: 50%;
     transform: translate(-50%, -50%);
     color: #909090;
-}
-#page-main .type-password-section .form-group .input-wrapper input {
-    width: 100%;
-    padding: 5px 10px;
-    box-sizing: border-box;
-    border-bottom: 1.5px #d9d9d9 solid;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
 }
 #page-main .type-password-section .form-group .input-wrapper .input-actions {
     position: absolute;
@@ -150,21 +146,63 @@ bold - bold
 #page-main .type-password-section .form-group .input-wrapper .input-actions .inactive {
     display: none;
 }
+#page-main .type-password-section .input-message {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    color: #ff2424;
+    margin-top: 5px;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+#page-main .type-password-section .input-message i {
+    font-size: inherit;
+    color: inherit;
+}
 #page-main .type-password-section .submit-btn {
+    display: flex;
     width: fit-content;
     border-radius: 5px;
     padding: 5px 25px;
     font-weight: bold;
     margin-top: 20px;
-    border: 2px #18181b solid;
+    border: 2px #333 solid;
     background-color: white;
     transition:
         background-color 0.2s,
         color 0.2s;
 }
+#page-main .type-password-section .submit-btn .spinner {
+    height: 24px;
+    width: 24px;
+}
 #page-main .type-password-section .submit-btn:hover {
-    background-color: #18181b;
+    background-color: #333;
     color: #fff;
+}
+#page-main .type-password-section .submit-btn.on-progress {
+    opacity: 0.6;
+    pointer-events: none;
+}
+#page-main .type-password-section .sign-in-message {
+    display: flex;
+    column-gap: 8px;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border-radius: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    color: #ff2424;
+    background-color: #ffdddd;
+    font-weight: 500;
+    line-height: 28px;
+    margin-top: 30px;
+}
+#page-main .type-password-section .sign-in-message i {
+    display: flex;
+    color: inherit;
+    font-size: inherit;
 }
 
 /*# sourceMappingURL=sign-in-page.css.map */

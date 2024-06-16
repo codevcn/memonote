@@ -33,11 +33,10 @@ var __awaiter =
 const pageMain_homePage = document.querySelector('#page-main')
 const userActionsAndLogout = pageMain_homePage.querySelector('.user-actions-and-logout')
 const userActions = userActionsAndLogout.querySelector('.user-actions')
-const notesContainer = pageMain_homePage.querySelector('.notes')
+const notesSection = pageMain_homePage.querySelector('.notes')
 const noteContentHistory = { history: [''], index: 0 }
-const max_lenght_of_note_history = 10
 const validateNoteContent = (noteContent) => {
-    if (noteContent.length > MAX_LENGTH_OF_NOTE_CONTENT) {
+    if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
         return false
     }
     return true
@@ -51,7 +50,7 @@ const setNoteContentHistory = (noteContent) => {
             currentNoteContentHistory = currentNoteContentHistory.slice(0, currentHistoryIndex + 1)
         }
         noteContentHistory.history.push(noteContent)
-        if (currentNoteContentHistory.length > max_lenght_of_note_history) {
+        if (currentNoteContentHistory.length > ENoteLengths.MAX_LENGTH_NOTE_HISTORY) {
             currentNoteContentHistory.shift()
         } else {
             currentHistoryIndex++
@@ -65,7 +64,7 @@ const countNoteLetters = (noteEditorTarget, noteContent) => {
     noteEditorTarget
         .closest('.note-editor-container')
         .querySelector('.letters-count .count').innerHTML =
-        `${noteContent.length} / ${MAX_LENGTH_OF_NOTE_CONTENT}`
+        `${noteContent.length} / ${ENoteLengths.MAX_LENGTH_NOTE_CONTENT}`
 }
 const catchBackspaceWhenTyping = (noteEditorTarget, event) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -74,42 +73,61 @@ const catchBackspaceWhenTyping = (noteEditorTarget, event) =>
             countNoteLetters(noteEditorTarget, noteContent)
         }
     })
-const setEditorBoardUI = (noteEditorTarget, noteContent) => {
+const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
     if (validateNoteContent(noteContent)) {
         // set height of editor
-        noteEditorTarget.nextElementSibling.innerHTML = noteContent
+        noteEditorTarget.parentElement.setAttribute('data-replicated-value', noteContent)
     } else {
         noteEditorTarget.value = noteContentHistory.history[noteContentHistory.history.length - 1]
     }
 }
-const broadcastNoteChanges = (noteContent) => {
-    console.log('>>> broadcast >>>', noteContentHistory)
-}
-const broadcastNoteChangesHanlder = (noteContent) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        debounce(broadcastNoteChanges, 500)(noteContent)
-    })
+const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
+    broadcastNoteContentTyping(noteContent)
+}, ENoteTyping.NOTE_BROADCAST_DELAY)
+const broadcastNoteTitleTypingHanlder = debounce((target) => {
+    broadcastNoteTitleTyping(target.value)
+}, ENoteTyping.NOTE_BROADCAST_DELAY)
+const broadcastNoteAuthorTypingHanlder = debounce((target) => {
+    broadcastNoteAuthorTyping(target.value)
+}, ENoteTyping.NOTE_BROADCAST_DELAY)
 const noteTyping = (noteEditorTarget) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const noteContent = noteEditorTarget.value
-        broadcastNoteChangesHanlder(noteContent)
+        broadcastNoteContentTypingHanlder(noteContent)
         countNoteLetters(noteEditorTarget, noteContent)
         setNoteContentHistory(noteContent)
-        setEditorBoardUI(noteEditorTarget, noteContent)
+        setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
     })
 const selectNoteEditorFromInside = (target) => {
-    var _a
-    return (_a = target.closest('.note-container')) === null || _a === void 0
-        ? void 0
-        : _a.querySelector('.note-editor-board .note-editor-container .note-editor')
+    return target
+        .closest('.note-container')
+        .querySelector('.note-editor-board .note-editor-container .note-editor')
 }
-const setNoteContent = (noteEditorTarget, content) => {
-    noteEditorTarget.value = content
+const setForNoteFormChanged = (noteForm) => {
+    const { author, content, title } = noteForm
+    const noteEditor = document.getElementById('note-editor')
+    const noteContainer = noteEditor.closest('.note-container')
+    if (title || title === '') {
+        const noteTitle = noteContainer.querySelector('.note-title input')
+        noteTitle.value = title
+    }
+    if (author || author === '') {
+        const noteAuthor = noteContainer.querySelector('.note-author input')
+        noteAuthor.value = author
+    }
+    if (content || content === '') {
+        setNoteEditor(noteEditor, content)
+        setBoardUIOfNoteEditor(noteEditor, content)
+    }
+    countNoteLetters(noteEditor, content || '')
+}
+const setNoteEditor = (noteEditorTarget, noteContent) => {
+    noteEditorTarget.value = noteContent
 }
 const clearNoteContent = (noteEditorTarget) => {
-    setNoteContent(noteEditorTarget, '')
+    setNoteEditor(noteEditorTarget, '')
     countNoteLetters(noteEditorTarget, '')
-    setEditorBoardUI(noteEditorTarget, '')
+    setBoardUIOfNoteEditor(noteEditorTarget, '')
 }
 const copyAllNoteContent = (noteEditorTarget) => {
     navigator.clipboard.writeText(noteEditorTarget.value)
@@ -128,7 +146,6 @@ const undoNoteContent = (noteEditorTarget) => {
     }
     noteContentHistory.index = historyIndex
 }
-const redoNoteContent = (noteEditorTarget) => {}
 const performUsefulActions = (target, type) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const noteEditor = selectNoteEditorFromInside(target)
@@ -144,12 +161,12 @@ const performUsefulActions = (target, type) =>
                 break
             case 'undoNoteContent':
                 undoNoteContent(noteEditor)
-                setEditorBoardUI(noteEditor, noteEditor.value)
+                setBoardUIOfNoteEditor(noteEditor, noteEditor.value)
                 return
         }
         const updatedNoteEditorValue = noteEditor.value
         setNoteContentHistory(updatedNoteEditorValue)
-        setEditorBoardUI(noteEditor, updatedNoteEditorValue)
+        setBoardUIOfNoteEditor(noteEditor, updatedNoteEditorValue)
         countNoteLetters(noteEditor, updatedNoteEditorValue)
     })
 const hideShowPassword_homePage = (target, isShown) => {
@@ -213,7 +230,7 @@ const setUIOfRemovePasswordBtn = (isHidden) => {
     const removePasswordBtn = userActions.querySelector('.user-action.remove-note-password')
     removePasswordBtn.hidden = isHidden
 }
-const setUIOfPasswordButton = (type) => {
+const setUIAfterUpdatePassword = (type) => {
     const setPasswordBtn = userActions.querySelector('.user-action.set-note-password')
     if (type === 'add') {
         setPasswordBtn.innerHTML = `
@@ -226,6 +243,7 @@ const setUIOfPasswordButton = (type) => {
         addPasswordModal.querySelector(
             '.modal-dialog .modal-content .modal-body .form-group label',
         ).innerHTML = 'Add Password'
+        userActions.querySelector('.remove-note-password').hidden = true
     } else {
         setPasswordBtn.innerHTML = `
             <i class="bi bi-arrow-repeat"></i>
@@ -243,6 +261,16 @@ const setUIOfLogoutBtn = (isHidden) => {
     const logoutBtn = userActionsAndLogout.querySelector('.logout-btn')
     logoutBtn.hidden = isHidden
 }
+const catchEnterKeyOfSetPassword = (e) => {
+    if (e.key === 'Enter') {
+        const saveChangeBtn = e.target
+        setPasswordForNoteHanlder(
+            saveChangeBtn
+                .closest('.modal-content')
+                .querySelector('.modal-footer .modal-save-change-btn'),
+        )
+    }
+}
 const setPasswordForNoteHanlder = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
         var _a
@@ -254,21 +282,21 @@ const setPasswordForNoteHanlder = (target) =>
         const password = input.value
         if (validatePassword(formGroup, password)) {
             target.classList.add('on-progress')
-            target.innerHTML = getHTMLLoading('spin')
+            target.innerHTML = getHTMLLoading('border')
             const message = formGroup.querySelector('.message')
-            let success = false
+            let apiSuccess = false
             try {
                 yield setPasswordForNote(password)
-                success = true
+                apiSuccess = true
             } catch (error) {
                 if (error instanceof Error) {
                     const err = APIErrorHandler.handleError(error)
                     setPasswordMessage(err.message, message, 'warning')
                 }
             }
-            if (success) {
+            if (apiSuccess) {
                 setUIOfLogoutBtn(false)
-                setUIOfPasswordButton('change')
+                setUIAfterUpdatePassword('change')
                 setUIOfRemovePasswordBtn(false)
                 setPasswordMessage('Save password successfully!', message, 'success')
                 setTimeout(() => {
@@ -289,20 +317,24 @@ const removePasswordOfNote = (noteUniqueName) =>
     })
 const removePasswordOfNoteHandler = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        target.innerHTML = getHTMLLoading('grow')
-        let success = false
+        target.innerHTML = getHTMLLoading('border')
+        let apiSuccess = false
         try {
             yield removePasswordOfNote(getNoteUniqueNameFromURL())
-            success = true
-            target.hidden = true
-        } catch (error) {}
-        if (success) {
-            setUIOfPasswordButton('add')
+            apiSuccess = true
+        } catch (error) {
+            if (error instanceof Error) {
+                const err = APIErrorHandler.handleError(error)
+                LayoutUI.toast('error', err.message)
+            }
+        }
+        if (apiSuccess) {
+            setUIAfterUpdatePassword('add')
             setUIOfLogoutBtn(true)
         }
         target.innerHTML = `
-        <i class="bi bi-trash3"></i>
-        <span>Remove Password</span>`
+        <i class="bi bi-check-lg"></i>
+        <span>Save Change</span>`
     })
 const logout = (noteUniqueName) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -312,21 +344,60 @@ const logout = (noteUniqueName) =>
     })
 const logoutHandler = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        target.innerHTML = getHTMLLoading('spin')
+        target.innerHTML = getHTMLLoading('border')
         target.classList.add('on-progress')
-        let success = false
+        let apiSuccess = false
         try {
             yield logout(getNoteUniqueNameFromURL())
-            success = true
+            apiSuccess = true
         } catch (error) {
-            console.error('>>> err >>>', error)
+            if (error instanceof Error) {
+                const err = APIErrorHandler.handleError(error)
+                LayoutUI.toast('error', err.message)
+            }
         }
-        if (success) {
-            setTimeout(() => {
-                window.location.reload()
-            }, 500)
+        if (apiSuccess) {
+            refreshPageAfterMs(500)
+            LayoutUI.setUIOfGenetalAppStatus('success')
         }
+        target.classList.remove('on-progress')
         target.innerHTML = `
         <span>Logout</span>
         <i class="bi bi-box-arrow-right"></i>`
     })
+const setStatusOfChangeModesSetting = (formTarget, type) => {
+    const isSaved = type === 'saved'
+    const statusItemSaved = formTarget.querySelector('.form-title .status .status-item.saved')
+    statusItemSaved.hidden = !isSaved
+    const statusItemUnsaved = formTarget.querySelector('.form-title .status .status-item.unsaved')
+    statusItemUnsaved.hidden = isSaved
+}
+const saveChangeSettings = (e) =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        e.preventDefault()
+        const form = e.target
+        const formData = new FormData(form)
+        const realtimeMode = formData.get('realtime-mode')
+        if (realtimeMode === 'on') {
+            setRealtimeModeInDevice('sync')
+        } else if (!realtimeMode) {
+            setRealtimeModeInDevice('stop')
+        }
+        setStatusOfChangeModesSetting(form, 'saved')
+    })
+const initPage = () => {
+    // setup "change modes" form
+    const realtimeMode = getRealtimeModeInDevice()
+    if (realtimeMode && realtimeMode === 'sync') {
+        const realtimeModeInput = document.getElementById('realtime-mode-input')
+        realtimeModeInput.checked = true
+    }
+    const changeModesForm = document.getElementById('settings-form-change-modes')
+    const changeModesFormInputs = changeModesForm.querySelectorAll('input')
+    for (const input of changeModesFormInputs) {
+        input.addEventListener('change', function (e) {
+            setStatusOfChangeModesSetting(changeModesForm, 'unsaved')
+        })
+    }
+}
+initPage()

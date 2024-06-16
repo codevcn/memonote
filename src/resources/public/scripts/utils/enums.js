@@ -1,11 +1,29 @@
 'use strict'
+var ELocalStorageKeys
+;(function (ELocalStorageKeys) {
+    ELocalStorageKeys['REALTIME_MODE'] = 'realtime-mode'
+})(ELocalStorageKeys || (ELocalStorageKeys = {}))
 var ENoteLengths
 ;(function (ENoteLengths) {
     ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_UNIQUE_NAME'] = 50)] = 'MAX_LENGTH_NOTE_UNIQUE_NAME'
     ENoteLengths[(ENoteLengths['MIN_LENGTH_NOTE_UNIQUE_NAME'] = 1)] = 'MIN_LENGTH_NOTE_UNIQUE_NAME'
     ENoteLengths[(ENoteLengths['MAX_LENGTH_PASSWORD'] = 50)] = 'MAX_LENGTH_PASSWORD'
     ENoteLengths[(ENoteLengths['MIN_LENGTH_PASSWORD'] = 4)] = 'MIN_LENGTH_PASSWORD'
+    ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_CONTENT'] = 10000)] = 'MAX_LENGTH_NOTE_CONTENT'
+    ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_HISTORY'] = 100)] = 'MAX_LENGTH_NOTE_HISTORY'
 })(ENoteLengths || (ENoteLengths = {}))
+var ENoteTyping
+;(function (ENoteTyping) {
+    ENoteTyping[(ENoteTyping['NOTE_BROADCAST_DELAY'] = 1000)] = 'NOTE_BROADCAST_DELAY'
+})(ENoteTyping || (ENoteTyping = {}))
+var EError
+;(function (EError) {
+    EError[(EError['MAX_LENGTH_OF_API_ERROR_MESSAGE'] = 100)] = 'MAX_LENGTH_OF_API_ERROR_MESSAGE'
+})(EError || (EError = {}))
+var ECustomEvents
+;(function (ECustomEvents) {
+    ECustomEvents['GENERAL_APP_STATUS'] = 'GENERAL_APP_STATUS'
+})(ECustomEvents || (ECustomEvents = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {
     EHttpStatuses[(EHttpStatuses['CONTINUE'] = 100)] = 'CONTINUE'

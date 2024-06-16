@@ -106,7 +106,7 @@ button {
 }
 
 i {
-    color: #18181b;
+    color: #333;
     font-size: 1rem;
 }
 
@@ -127,6 +127,160 @@ h6 {
 
 #page-main {
     box-sizing: border-box;
+}
+
+#general-app-status i {
+    font-size: 1.3rem;
+    color: #13a765;
+}
+
+.page-header {
+    display: flex;
+    column-gap: 30px;
+    justify-content: space-between;
+    padding: 0 50px;
+    height: 60px;
+    border-bottom: 1px #e6e6e6 solid;
+}
+.page-header .app-logo-container {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+}
+.page-header .app-logo-container .app-logo-wrapper {
+    display: flex;
+    column-gap: 15px;
+    align-items: center;
+}
+.page-header .app-logo-container .app-logo-wrapper .app-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #18181b;
+}
+.page-header .right-side-menu {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+}
+.page-header .right-side-menu .menu-item {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 10px;
+    position: relative;
+    color: #18181b;
+    height: 100%;
+    box-sizing: border-box;
+}
+.page-header .right-side-menu .menu-item::after {
+    content: '';
+    position: absolute;
+    border-top: 3px #18181b solid;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    left: 0;
+    transform: scaleX(0);
+    transition: transform 0.15s;
+}
+.page-header .right-side-menu .menu-item:hover::after {
+    transform: scaleX(1);
+}
+
+#app-notification {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #fff;
+    z-index: 1000;
+    visibility: hidden;
+    max-width: 250px;
+    transition:
+        visibility 0.25s,
+        opacity 0.25s;
+    opacity: 0;
+    cursor: pointer;
+    overflow: hidden;
+}
+#app-notification .text-content {
+    font-size: 0.95rem;
+}
+#app-notification .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    color: rgb(153, 153, 153);
+}
+#app-notification .close-btn i {
+    display: flex;
+    color: inherit;
+    font-size: 12px;
+}
+#app-notification .close-btn:hover {
+    color: #fff;
+}
+#app-notification .progress-container {
+    width: 100%;
+    height: 5px;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+#app-notification .progress-container .progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: #fff;
+}
+#app-notification .progress-container .progress-bar.running {
+    animation-name: progressBarRunning;
+    animation-timing-function: linear;
+}
+@keyframes progressBarRunning {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
+#app-notification .type-icon i {
+    display: flex;
+}
+#app-notification .type-icon i.success-icon {
+    color: #13a765;
+}
+#app-notification .type-icon i.error-icon {
+    color: #ff2424;
+}
+#app-notification .type-icon i.info-icon {
+    color: #fff;
+}
+#app-notification.error .progress-bar {
+    background-color: #ff2424;
+}
+#app-notification.success .progress-bar {
+    background-color: #13a765;
+}
+#app-notification.show,
+#app-notification:hover {
+    visibility: visible;
+    opacity: 1;
+}
+#app-notification:hover {
+    box-shadow: 0 0 5px white;
+}
+#app-notification.clicked {
+    opacity: 0;
+    visibility: hidden;
 }
 
 /*# sourceMappingURL=global.css.map */

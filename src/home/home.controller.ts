@@ -41,7 +41,8 @@ export class HomeController implements IHomeController {
                     res.status(HttpStatus.OK).render(ClientViewPages.home, {
                         appInfo,
                         note: {
-                            noteContent: note.content,
+                            content: note.content,
+                            title: note.title,
                             passwordSet: true,
                         },
                     })
@@ -53,7 +54,8 @@ export class HomeController implements IHomeController {
             } else {
                 res.status(HttpStatus.OK).render(ClientViewPages.home, {
                     note: {
-                        noteContent: note.content,
+                        content: note.content,
+                        title: note.title,
                         passwordSet: false,
                     },
                     appInfo,
@@ -68,7 +70,8 @@ export class HomeController implements IHomeController {
         }
         res.status(HttpStatus.OK).render(ClientViewPages.home, {
             note: {
-                noteContent: undefined,
+                content: null,
+                title: null,
                 passwordSet: false,
             },
             appInfo,

@@ -1,3 +1,5 @@
+import path from 'path'
+
 export const generateRandomString = (strLength: number) => {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     let result = ''
@@ -8,6 +10,10 @@ export const generateRandomString = (strLength: number) => {
     }
 
     return result
+}
+
+export const extractNoteUniqueNameFromURL = (url: string): string => {
+    return path.basename(new URL(url).pathname)
 }
 
 export const logToConsoleWithLocation = (...val: any) => {

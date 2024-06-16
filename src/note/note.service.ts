@@ -8,11 +8,11 @@ import { ENoteLengths } from './enums'
 import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
 import { JWTService } from '@/auth/jwt.service'
+import { EAuthEncryption } from '@/utils/enums'
+import type { TNoteForm } from './types'
 
 @Injectable()
 export class NoteService {
-    private hashPasswordNumberOfRounds: number = 10
-
     constructor(
         @InjectModel(Note.name) private noteModel: Model<Note>,
         private jwtService: JWTService,
@@ -26,12 +26,32 @@ export class NoteService {
         return await this.noteModel.create({ noteUniqueName })
     }
 
+    async updateNoteForm(noteUniqueName: string, noteForm: TNoteForm): Promise<void> {
+        const { title, author, content } = noteForm
+        const dataForUpdate: TNoteForm = {}
+        if (title || title === '') {
+            dataForUpdate.title = title
+        }
+        if (author || author === '') {
+            dataForUpdate.author = author
+        }
+        if (content || content === '') {
+            dataForUpdate.content = content
+        }
+        await this.noteModel.updateOne(
+            { noteUniqueName: noteUniqueName },
+            {
+                $set: dataForUpdate,
+            },
+        )
+    }
+
     generateNoteUniqueName(): string {
         return generateRandomString(ENoteLengths.LENGTH_OF_RAMDOM_UNIQUE_NAME)
     }
 
     async hashPassword(rawPassword: string): Promise<string> {
-        return await bcrypt.hash(rawPassword, this.hashPasswordNumberOfRounds)
+        return await bcrypt.hash(rawPassword, EAuthEncryption.HASH_PASSWORD_NUMBER_OF_ROUNDS)
     }
 
     async setPasswordForNote(

@@ -1,11 +1,11 @@
 import { APIRoutes } from '@/utils/routes'
 import { Controller, Post, Param, Body, Delete, Res, UseGuards } from '@nestjs/common'
-import { AddPasswordForNotePayloadDTO, AddPasswordForNoteParamsDTO } from '../note.dto'
-import { NoteService } from '../note.service'
-import type { INoteAPIController } from '../interfaces'
+import { AddPasswordForNotePayloadDTO, AddPasswordForNoteParamsDTO } from './note.dto'
+import { NoteService } from './note.service'
+import type { INoteAPIController } from './interfaces'
 import type { Response } from 'express'
 import { APIAuthGuard } from '@/auth/auth.guard'
-import { SetPasswordGuard } from '../note.guard'
+import { SetPasswordGuard } from './note.guard'
 import type { TSuccess } from '@/utils/types'
 
 @Controller(APIRoutes.note)

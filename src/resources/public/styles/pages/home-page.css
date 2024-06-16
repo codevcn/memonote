@@ -95,7 +95,7 @@ bold - bold
     align-items: center;
     column-gap: 5px;
     background-color: #18181b;
-    padding: 5px 10px;
+    padding: 4px 9px;
     border-radius: 5px;
     font-size: 0.9rem;
     color: #fff;
@@ -138,7 +138,7 @@ bold - bold
     align-items: center;
     column-gap: 8px;
     background-color: #fff;
-    padding: 3.5px 10px;
+    padding: 2.5px 10px;
     border: 1.5px #ff2424 solid;
     border-radius: 15px;
     font-size: 0.9rem;
@@ -146,8 +146,8 @@ bold - bold
     transition: background-color 0.2s;
 }
 #page-main .user-actions-and-logout .logout-btn .spinner {
-    height: 20px;
-    width: 20px;
+    height: 21.5px;
+    width: 21.5px;
 }
 #page-main .user-actions-and-logout .logout-btn i {
     display: flex;
@@ -168,8 +168,25 @@ bold - bold
 }
 #page-main .notes {
     margin-top: 20px;
+    padding: 0 50px;
 }
-#page-main .notes .note-container .note-editor-title input {
+#page-main .notes .note-container .note-annotation {
+    position: absolute;
+    right: 101%;
+    top: 50%;
+    transform: translate(-10px, -50%);
+    border-right: 3px #a5a5a5 solid;
+    padding-right: 8px;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition:
+        opacity 0.15s,
+        transform 0.15s;
+}
+#page-main .notes .note-container .note-title {
+    position: relative;
+}
+#page-main .notes .note-container .note-title input {
     background-color: transparent;
     width: 100%;
     padding: 0 10px;
@@ -177,13 +194,18 @@ bold - bold
     font-size: 2rem;
     font-weight: bold;
 }
-#page-main .notes .note-container .note-editor-title input::placeholder {
+#page-main .notes .note-container .note-title input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-container .note-editor-author {
-    margin-top: 5px;
+#page-main .notes .note-container .note-title input:focus + .note-annotation {
+    transform: translateX(0) translateY(-50%);
+    opacity: 1;
 }
-#page-main .notes .note-container .note-editor-author input {
+#page-main .notes .note-container .note-author {
+    margin-top: 5px;
+    position: relative;
+}
+#page-main .notes .note-container .note-author input {
     background-color: transparent;
     width: 100%;
     padding: 0 10px;
@@ -191,11 +213,16 @@ bold - bold
     font-size: 15px;
     font-weight: 500;
 }
-#page-main .notes .note-container .note-editor-author input::placeholder {
+#page-main .notes .note-container .note-author input::placeholder {
     color: #909090;
+}
+#page-main .notes .note-container .note-author input:focus + .note-annotation {
+    transform: translateX(0) translateY(-50%);
+    opacity: 1;
 }
 #page-main .notes .note-container .note-editor-board {
     margin-top: 5px;
+    position: relative;
 }
 #page-main .notes .note-container .note-editor-board .note-editor-container {
     height: 100%;
@@ -205,6 +232,7 @@ bold - bold
     display: grid;
     max-height: auto;
     overflow-y: auto;
+    margin-top: 20px;
 }
 #page-main
     .notes
@@ -212,7 +240,16 @@ bold - bold
     .note-editor-board
     .note-editor-container
     .note-editor-wrapper
-    .replicated-value-box,
+    .note-annotation {
+    top: 0;
+    transform: translate(-10px, 0);
+}
+#page-main
+    .notes
+    .note-container
+    .note-editor-board
+    .note-editor-container
+    .note-editor-wrapper::after,
 #page-main
     .notes
     .note-container
@@ -221,10 +258,10 @@ bold - bold
     .note-editor-wrapper
     .note-editor {
     grid-area: 1/1/2/2;
-    padding: 10px;
-    font-size: 1rem;
-    height: 100%;
-    overflow: hidden;
+    padding: 0 10px;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 17px;
 }
 #page-main
     .notes
@@ -234,12 +271,8 @@ bold - bold
     .note-editor-wrapper
     .note-editor {
     background-color: white;
-    height: 100%;
-    width: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 17px;
-    white-space: pre-line;
     resize: none;
+    overflow: hidden;
 }
 #page-main
     .notes
@@ -247,8 +280,18 @@ bold - bold
     .note-editor-board
     .note-editor-container
     .note-editor-wrapper
-    .replicated-value-box {
-    content: attr(data-replicated-value);
+    .note-editor:focus
+    + .note-annotation {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+#page-main
+    .notes
+    .note-container
+    .note-editor-board
+    .note-editor-container
+    .note-editor-wrapper::after {
+    content: attr(data-replicated-value) ' ';
     white-space: pre-wrap;
     visibility: hidden;
 }
@@ -261,34 +304,99 @@ bold - bold
     padding-right: 5px;
     margin-top: 5px;
 }
-#page-main .notes .note-container .note-editor-board .useful-actions {
+#page-main .notes .note-container .note-editor-board .useful-note-actions {
     display: flex;
     column-gap: 5px;
     width: 100%;
     margin-top: 5px;
 }
-#page-main .notes .note-container .note-editor-board .useful-actions .action {
+#page-main .notes .note-container .note-editor-board .useful-note-actions .action {
     display: flex;
     align-items: center;
     column-gap: 5px;
     background-color: #18181b;
-    padding: 5px 10px;
+    padding: 4px 9px;
     border-radius: 5px;
     font-size: 0.9rem;
     color: #fff;
+    border: 2px #18181b solid;
 }
-#page-main .notes .note-container .note-editor-board .useful-actions .action i {
+#page-main .notes .note-container .note-editor-board .useful-note-actions .action i {
     display: flex;
     font-size: 0.9rem;
     color: inherit;
 }
-#page-main .notes .note-container .note-editor-board .useful-actions .action:hover {
-    outline: 2px #18181b solid;
+#page-main .notes .note-container .note-editor-board .useful-note-actions .action:hover {
+    background-color: transparent;
+    color: #18181b;
+}
+#page-main .notes .note-container .note-editor-board .useful-note-modes {
+    display: flex;
+    column-gap: 5px;
+    width: 100%;
+    margin-top: 15px;
+}
+#page-main .notes .note-container .note-editor-board .useful-note-modes .action {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: #18181b;
+    padding: 4px 9px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #fff;
+    border: 2px #18181b solid;
+}
+#page-main .notes .note-container .note-editor-board .useful-note-modes .action i {
+    display: flex;
+    font-size: 0.9rem;
+    color: inherit;
+}
+#page-main .notes .note-container .note-editor-board .useful-note-modes .action:hover {
+    background-color: transparent;
+    color: #18181b;
 }
 
-#set-note-password-modal .modal-dialog .modal-content .modal-header h2 {
+.modal .modal-dialog .modal-content .modal-header .btn-close:focus {
+    box-shadow: 0 0 0px 0.25rem #ffdddd;
+}
+.modal .modal-dialog .modal-content .modal-header h2 {
     font-weight: bold;
 }
+.modal .modal-dialog .modal-content .modal-footer {
+    display: flex;
+    overflow: hidden;
+    padding: 0;
+}
+.modal .modal-dialog .modal-content .modal-footer button {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+    flex: 1;
+    justify-content: center;
+}
+.modal .modal-dialog .modal-content .modal-footer button:hover {
+    text-decoration: underline;
+}
+.modal .modal-dialog .modal-content .modal-footer .modal-close-btn {
+    background-color: #ff2424;
+    color: #fff;
+}
+.modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn {
+    background-color: #f3f3f3;
+    color: #333;
+}
+.modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn.on-progress {
+    opacity: 0.6;
+    pointer-events: none;
+}
+.modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn .spinner-border {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
 #set-note-password-modal .modal-dialog .modal-content .modal-body .form-group label {
     font-size: 0.9rem;
     padding-left: 5px;
@@ -381,7 +489,7 @@ bold - bold
     .form-group
     .helper-text
     .helper-text-item {
-    color: #919191;
+    color: #909090;
     font-size: 0.9rem;
 }
 #set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message {
@@ -401,58 +509,366 @@ bold - bold
 }
 #set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.warning {
     color: #ff2424;
-    background-color: #ffdada;
+    background-color: #ffdddd;
 }
 #set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.success {
-    color: #00a149;
-    background-color: #b5ffdd;
+    color: #13a765;
+    background-color: #d0ffea;
 }
 #set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.warning,
 #set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.success {
     padding: 5px 10px;
     margin-top: 10px;
 }
-#set-note-password-modal .modal-dialog .modal-content .modal-footer .modal-close-btn,
-#set-note-password-modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn {
+
+#remove-note-password-modal .modal-dialog .modal-content .modal-body {
+    font-size: 1.1rem;
+}
+
+#bubble-note-settings {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+}
+#bubble-note-settings .bubble-note-settings-btn {
+    background-color: #18181b;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+    border: 2px #18181b solid;
+    transition:
+        background-color 0.2s,
+        transform 0.2s;
+}
+#bubble-note-settings .bubble-note-settings-btn i {
     display: flex;
-    column-gap: 5px;
-    align-items: center;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 2px white solid;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-footer .modal-close-btn {
-    background-color: #ff2424;
+    font-size: 2rem;
     color: #fff;
-    border: 2px white solid;
+    transition: color 0.2s;
 }
-#set-note-password-modal .modal-dialog .modal-content .modal-footer .modal-close-btn:hover {
-    outline: 2px #ff2424 solid;
+#bubble-note-settings .bubble-note-settings-btn:hover {
+    background-color: #fff;
+    transform: rotate(180deg);
 }
-#set-note-password-modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn {
-    background-color: #f0f0f0;
+#bubble-note-settings .bubble-note-settings-btn:hover i {
     color: #18181b;
-    border: 2px white solid;
 }
-#set-note-password-modal
+
+#note-settings-modal .modal-dialog .modal-content .modal-header {
+    padding: 10px 20px;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body {
+    padding: 10px 0;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board {
+    display: flex;
+    border-radius: 8px;
+}
+#note-settings-modal
     .modal-dialog
     .modal-content
-    .modal-footer
-    .modal-save-change-btn.on-progress {
-    opacity: 0.6;
-    pointer-events: none;
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    justify-content: space-between;
+    border-right: 1px lightgray solid;
 }
-#set-note-password-modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn:hover {
-    text-decoration: underline;
-}
-#set-note-password-modal
+#note-settings-modal
     .modal-dialog
     .modal-content
-    .modal-footer
-    .modal-save-change-btn
-    .spinner-border {
-    height: 1.5rem;
-    width: 1.5rem;
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-items {
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    background-color: #fff;
+    border-radius: 8px 0 0 8px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    padding: 5px 15px;
+    text-align: end;
+    border-left: 3px #fff solid;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item:hover,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.active {
+    background-color: #f3f3f3;
+    border-left: 3px #414141 solid;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn {
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    color: #ff2424;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn
+    .spinner {
+    height: 24px;
+    width: 24px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn:hover,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn.active {
+    background-color: #ffdddd;
+    border-left: 3px #ff2424 solid;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form {
+    padding: 5px 20px 0;
+    flex: 1;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-title {
+    display: flex;
+    align-items: end;
+    column-gap: 5px;
+    margin-top: 0;
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-title
+    .status
+    .status-item {
+    font-size: 1rem;
+    color: gray;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content {
+    display: none;
+    flex-direction: column;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .form-check-input {
+    height: 1.2rem;
+    width: 2.5rem;
+    margin-top: 0;
+    border-color: lightgray;
+    cursor: pointer;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .form-check-input:focus,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .form-check-input:hover {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .form-check-input:checked {
+    background-color: #18181b;
+    color: #18181b;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .info {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .info
+    .details-btn {
+    cursor: pointer;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .info
+    .details-btn
+    i {
+    display: flex;
+    font-size: 0.9rem;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content
+    .form-group
+    .info
+    .details-btn:hover {
+    transform: scale(1.2);
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-content.active {
+    display: flex;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-save-change-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 5px;
+    width: 100%;
+    border-radius: 5px;
+    padding: 3px 20px;
+    margin-top: 30px;
+    background-color: #333;
+    border: 2px #333 solid;
+    color: #fff;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-save-change-btn
+    i {
+    display: flex;
+    color: inherit;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-form
+    .form-save-change-btn:hover {
+    background-color: #fff;
+    color: black;
 }
 
 /*# sourceMappingURL=home-page.css.map */
