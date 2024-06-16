@@ -1,0 +1,1 @@
+# Build folder for Typescript files and SCSS files
