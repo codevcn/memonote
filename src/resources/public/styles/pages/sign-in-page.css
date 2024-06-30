@@ -140,7 +140,6 @@ bold - bold
     transform: translateY(-50%) scale(1.1);
 }
 #page-main .type-password-section .form-group .input-wrapper .input-actions i {
-    display: flex;
     font-size: 1.2rem;
 }
 #page-main .type-password-section .form-group .input-wrapper .input-actions .inactive {
@@ -200,7 +199,6 @@ bold - bold
     margin-top: 30px;
 }
 #page-main .type-password-section .sign-in-message i {
-    display: flex;
     color: inherit;
     font-size: inherit;
 }

@@ -62,7 +62,7 @@ clientSocket.on('connect_error', (err) =>
             clientSocketReconnecting.value = true
         } else {
             LayoutUI.toast('error', "Can't connect with the server.")
-            console.error(`connect_error due to ${err.message}`)
+            console.error(`>>> connect_error due to ${err.message}`)
         }
     }),
 )
@@ -74,18 +74,19 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, (data) =>
         }
     }),
 )
-const broadcastNoteContentTyping = (content) =>
+// handlers
+const broadcastNoteTyping = (note) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        clientSocket.emit(ENoteEvents.NOTE_TYPING, { content })
-        console.log('>>> content broadcasts >>>', content)
-    })
-const broadcastNoteTitleTyping = (title) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        clientSocket.emit(ENoteEvents.NOTE_TYPING, { title })
-        console.log('>>> title broadcasts >>>', title)
-    })
-const broadcastNoteAuthorTyping = (author) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        clientSocket.emit(ENoteEvents.NOTE_TYPING, { author })
-        console.log('>>> title broadcasts >>>', author)
+        clientSocket
+            .timeout(EBroadcastTimeout.NOTE_TYPING_TIMEOUT)
+            .emit(ENoteEvents.NOTE_TYPING, note, (err, res) => {
+                console.log('>>> res event payload >>>', res)
+                if (err) {
+                    console.log('>>> broadcast err >>>', err)
+                    LayoutUI.setUIOfGeneralAppStatus('error')
+                } else {
+                    LayoutUI.setUIOfGeneralAppStatus('success')
+                }
+            })
+        console.log('>>> broadcast note >>>', note)
     })

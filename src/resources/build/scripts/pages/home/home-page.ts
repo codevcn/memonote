@@ -1,9 +1,19 @@
-const pageMain_homePage = document.querySelector('#page-main') as HTMLElement
-const userActionsAndLogout = pageMain_homePage.querySelector(
-    '.user-actions-and-logout',
+const homePage_pageMain = document.querySelector('#page-main') as HTMLElement
+const notesSection = homePage_pageMain.querySelector('.notes') as HTMLElement
+const realtimeModeDisplay = document.querySelector(
+    '#page-header .realtime-mode-display',
 ) as HTMLElement
-const userActions = userActionsAndLogout.querySelector('.user-actions') as HTMLElement
-const notesSection = pageMain_homePage.querySelector('.notes') as HTMLElement
+const noteSettingsBoard = document.querySelector(
+    '#note-settings-modal .note-settings-board',
+) as HTMLElement
+const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
+    '.note-settings-navigation .nav-item.logout-btn',
+) as HTMLAnchorElement
+const setPasswordForm = document.getElementById('settings-form-set-password') as HTMLFormElement
+const removePasswordForm = document.getElementById(
+    'settings-form-remove-password',
+) as HTMLFormElement
+const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look') as HTMLElement
 
 type TNoteContentHistory = {
     history: string[]
@@ -69,15 +79,15 @@ const setBoardUIOfNoteEditor = (
 }
 
 const broadcastNoteContentTypingHanlder = debounce((noteContent: string): void => {
-    broadcastNoteContentTyping(noteContent)
+    broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteTitleTypingHanlder = debounce((target: HTMLInputElement): void => {
-    broadcastNoteTitleTyping(target.value)
+    broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteAuthorTypingHanlder = debounce((target: HTMLInputElement): void => {
-    broadcastNoteAuthorTyping(target.value)
+    broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> => {
@@ -191,153 +201,127 @@ const hideShowPassword_homePage = (target: HTMLElement, isShown: boolean): void 
 
 type TPasswordMessage = 'success' | 'warning' | 'valid'
 
-const setPasswordMessage = (
-    message: string,
-    messageTarget: HTMLElement,
-    type: TPasswordMessage,
-): void => {
+const setMessageOfSetPassword = (message: string, type: TPasswordMessage): void => {
     let content
+    const messageTarget = setPasswordForm.querySelector(
+        '.form-content .form-group .message',
+    ) as HTMLFormElement
     if (type === 'success') {
-        messageTarget.classList.remove('warning')
-        messageTarget.classList.remove('valid')
+        messageTarget.classList.remove('warning', 'valid')
         messageTarget.classList.add('success')
         content = `
             <i class="bi bi-check-circle"></i>
             <span>${message}</span>`
     } else if (type === 'warning') {
-        messageTarget.classList.add('warning')
-        messageTarget.classList.remove('success')
+        messageTarget.classList.add('warning', 'success')
         messageTarget.classList.remove('valid')
         content = `
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>${message}</span>`
     } else {
-        messageTarget.classList.remove('warning')
-        messageTarget.classList.remove('success')
-        messageTarget.classList.add('form-group-is-valid')
+        messageTarget.classList.remove('warning', 'success')
+        messageTarget.classList.add('valid')
         content = ''
     }
     messageTarget.innerHTML = content
 }
 
-const validatePassword = (formGroupTarget: HTMLElement, password: string): boolean => {
+const validatePassword = (password: string): boolean => {
     let is_valid = true
-    const messageTarget = formGroupTarget.querySelector('.message') as HTMLElement
-    if (notePasswordRegEx.test(password)) {
-        is_valid = true
-        setPasswordMessage('', messageTarget, 'valid')
-    } else {
+    if (!notePasswordRegEx.test(password)) {
         is_valid = false
-        setPasswordMessage('Please type your password format correctly!', messageTarget, 'warning')
+        setMessageOfSetPassword('Please type your password format correctly!', 'warning')
     }
     return is_valid
 }
 
-const setPasswordForNote = async (password: string): Promise<void> => {
+const setPasswordForNote = async (password: string, logoutAll: boolean): Promise<void> => {
     const noteUniqueName = getNoteUniqueNameFromURL()
     if (noteUniqueNameRegEx.test(noteUniqueName)) {
-        await setPasswordOfNoteAPI(password, noteUniqueName)
+        await setPasswordOfNoteAPI(password, logoutAll, noteUniqueName)
     }
-}
-
-const setUIOfRemovePasswordBtn = (isHidden: boolean): void => {
-    const removePasswordBtn = userActions.querySelector(
-        '.user-action.remove-note-password',
-    ) as HTMLButtonElement
-    removePasswordBtn.hidden = isHidden
 }
 
 type TSetPasswordType = 'add' | 'change'
 
-const setUIAfterUpdatePassword = (type: TSetPasswordType): void => {
-    const setPasswordBtn = userActions.querySelector(
-        '.user-action.set-note-password',
-    ) as HTMLButtonElement
+const setUIOfSetPasswordForm = (type: TSetPasswordType): void => {
+    let setPasswordLabel: string
+    let showRemovePasswordForm: boolean
 
     if (type === 'add') {
-        setPasswordBtn.innerHTML = `
-            <i class="bi bi-lock-fill"></i>
-            <span>Add Password</span>`
-        const addPasswordModal = document.getElementById(
-            'set-note-password-modal',
-        ) as HTMLDivElement
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-header .modal-title',
-        )!.innerHTML = 'Add Password For This Note'
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-body .form-group label',
-        )!.innerHTML = 'Add Password'
-        ;(userActions.querySelector('.remove-note-password') as HTMLElement).hidden = true
+        setPasswordLabel = 'Add Password'
+        showRemovePasswordForm = false
     } else {
-        setPasswordBtn.innerHTML = `
-            <i class="bi bi-arrow-repeat"></i>
-            <span>Change Password</span>`
-        const addPasswordModal = document.getElementById(
-            'set-note-password-modal',
-        ) as HTMLDivElement
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-header .modal-title',
-        )!.innerHTML = 'Change the password'
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-body .form-group label',
-        )!.innerHTML = 'Change password'
+        setPasswordLabel = 'Change password'
+        showRemovePasswordForm = true
+    }
+
+    setPasswordForm.querySelector('.form-content .form-group label')!.innerHTML = setPasswordLabel
+    ;(removePasswordForm.querySelector('.form-content-container') as HTMLElement).hidden =
+        !showRemovePasswordForm
+}
+
+const setUIOfRemovePasswordForm = (show: boolean) => {
+    ;(removePasswordForm.querySelector('.form-content-container') as HTMLElement).hidden = !show
+    ;(removePasswordForm.querySelector('.unset-password-notice') as HTMLElement).hidden = show
+}
+
+const setUIOfLogoutBtn = (show: boolean): void => {
+    settingsModal_logoutBtn.hidden = !show
+}
+
+const setUIOfNoteQuickLook = (itemsShown: string[] = [], itemsHidden: string[] = []) => {
+    if (itemsShown.length > 0) {
+        for (const itemShown of itemsShown) {
+            ;(noteQuickLook.querySelector(`.quick-look-item.${itemShown}`) as HTMLElement).hidden =
+                false
+        }
+    }
+    if (itemsHidden.length > 0) {
+        for (const itemHidden of itemsHidden) {
+            ;(noteQuickLook.querySelector(`.quick-look-item.${itemHidden}`) as HTMLElement).hidden =
+                true
+        }
     }
 }
 
-const setUIOfLogoutBtn = (isHidden: boolean): void => {
-    const logoutBtn = userActionsAndLogout.querySelector('.logout-btn') as HTMLButtonElement
-    logoutBtn.hidden = isHidden
-}
+const setPasswordForNoteHanlder = async (e: SubmitEvent): Promise<void> => {
+    e.preventDefault()
 
-const catchEnterKeyOfSetPassword = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter') {
-        const saveChangeBtn = e.target as HTMLInputElement
-        setPasswordForNoteHanlder(
-            saveChangeBtn
-                .closest('.modal-content')!
-                .querySelector('.modal-footer .modal-save-change-btn') as HTMLButtonElement,
-        )
-    }
-}
+    const form = e.target as HTMLFormElement
 
-const setPasswordForNoteHanlder = async (target: HTMLButtonElement): Promise<void> => {
-    const formGroup = target
-        .closest('.modal-content')
-        ?.querySelector('.modal-body .form-group') as HTMLElement
-    const input = formGroup.querySelector('.input-wrapper input') as HTMLInputElement
+    const formData = new FormData(form)
+    const password = formData.get('password') as string
+    const logoutAll = formData.get('logout-all') as TFormCheckValues
 
-    const password = input.value
-
-    if (validatePassword(formGroup, password)) {
-        target.classList.add('on-progress')
-        target.innerHTML = getHTMLLoading('border')
-        const message = formGroup.querySelector('.message') as HTMLElement
+    if (validatePassword(password)) {
+        const submitBtn = form.querySelector('.form-btn') as HTMLButtonElement
+        submitBtn.classList.add('on-progress')
+        const innerHTML_beforeUpdate = submitBtn.innerHTML
+        submitBtn.innerHTML = getHTMLLoading('border')
 
         let apiSuccess: boolean = false
         try {
-            await setPasswordForNote(password)
+            await setPasswordForNote(password, !!logoutAll)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {
                 const err = APIErrorHandler.handleError(error)
-                setPasswordMessage(err.message, message, 'warning')
+                setMessageOfSetPassword(err.message, 'warning')
             }
         }
 
         if (apiSuccess) {
-            setUIOfLogoutBtn(false)
-            setUIAfterUpdatePassword('change')
-            setUIOfRemovePasswordBtn(false)
-            setPasswordMessage('Save password successfully!', message, 'success')
-            setTimeout(() => {
-                setPasswordMessage('', message, 'valid')
-            }, 3000)
+            setUIOfLogoutBtn(true)
+            setUIOfSetPasswordForm('change')
+            setUIOfRemovePasswordForm(true)
+            setMessageOfSetPassword('Save password successfully!', 'success')
+            setStatusOfSettingsForm(form, 'saved')
+            setUIOfNoteQuickLook(['password-set'])
         }
 
-        target.classList.remove('on-progress')
-        target.innerHTML = `
-            <i class="bi bi-check-lg"></i>
-            <span>Save Change</span>`
+        submitBtn.classList.remove('on-progress')
+        submitBtn.innerHTML = innerHTML_beforeUpdate
     }
 }
 
@@ -347,8 +331,12 @@ const removePasswordOfNote = async (noteUniqueName: string): Promise<void> => {
     }
 }
 
-const removePasswordOfNoteHandler = async (target: HTMLElement): Promise<void> => {
-    target.innerHTML = getHTMLLoading('border')
+const removePasswordOfNoteHandler = async (e: SubmitEvent): Promise<void> => {
+    e.preventDefault()
+
+    const submitBtn = (e.target as HTMLFormElement).querySelector('.form-btn') as HTMLButtonElement
+    const innerHTML_beforeRemove = submitBtn.innerHTML
+    submitBtn.innerHTML = getHTMLLoading('border')
     let apiSuccess: boolean = false
     try {
         await removePasswordOfNote(getNoteUniqueNameFromURL())
@@ -360,12 +348,12 @@ const removePasswordOfNoteHandler = async (target: HTMLElement): Promise<void> =
         }
     }
     if (apiSuccess) {
-        setUIAfterUpdatePassword('add')
-        setUIOfLogoutBtn(true)
+        setUIOfSetPasswordForm('add')
+        setUIOfRemovePasswordForm(false)
+        setUIOfLogoutBtn(false)
+        setUIOfNoteQuickLook([], ['password-set'])
     }
-    target.innerHTML = `
-        <i class="bi bi-check-lg"></i>
-        <span>Save Change</span>`
+    submitBtn.innerHTML = innerHTML_beforeRemove
 }
 
 const logout = async (noteUniqueName: string): Promise<void> => {
@@ -375,6 +363,7 @@ const logout = async (noteUniqueName: string): Promise<void> => {
 }
 
 const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
+    const innerHTML_beforeLogout = target.innerHTML
     target.innerHTML = getHTMLLoading('border')
     target.classList.add('on-progress')
     let apiSuccess: boolean = false
@@ -389,42 +378,86 @@ const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
     }
     if (apiSuccess) {
         refreshPageAfterMs(500)
-        LayoutUI.setUIOfGenetalAppStatus('success')
+        LayoutUI.setUIOfGeneralAppStatus('success')
     }
     target.classList.remove('on-progress')
-    target.innerHTML = `
-        <span>Logout</span>
-        <i class="bi bi-box-arrow-right"></i>`
+    target.innerHTML = innerHTML_beforeLogout
 }
 
-const setStatusOfChangeModesSetting = (formTarget: HTMLFormElement, type: 'unsaved' | 'saved') => {
+const setStatusOfSettingsForm = (formTarget: HTMLFormElement, type: 'unsaved' | 'saved') => {
     const isSaved = type === 'saved'
-    const statusItemSaved = formTarget.querySelector(
-        '.form-title .status .status-item.saved',
-    ) as HTMLSpanElement
-    statusItemSaved.hidden = !isSaved
-    const statusItemUnsaved = formTarget.querySelector(
-        '.form-title .status .status-item.unsaved',
-    ) as HTMLSpanElement
-    statusItemUnsaved.hidden = isSaved
+    ;(formTarget.querySelector('.form-title .status .status-item.saved') as HTMLElement).hidden =
+        !isSaved
+    ;(formTarget.querySelector('.form-title .status .status-item.unsaved') as HTMLElement).hidden =
+        isSaved
 }
 
-type TFormCheckValues = null | 'on'
+const setRealtimeModeInDeviceHandler = (type: TRealtimeModeTypes) => {
+    setRealtimeModeInDevice(type)
+    if (type === 'sync') {
+        realtimeModeDisplay.classList.replace('inactive', 'active')
+    } else {
+        realtimeModeDisplay.classList.replace('active', 'inactive')
+    }
+}
 
-const saveChangeSettings = async (e: SubmitEvent): Promise<void> => {
+const saveChangesOfChangeModes = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
 
     const realtimeMode = formData.get('realtime-mode') as TFormCheckValues
-    if (realtimeMode === 'on') {
-        setRealtimeModeInDevice('sync')
-    } else if (!realtimeMode) {
-        setRealtimeModeInDevice('stop')
+    if (realtimeMode) {
+        if (realtimeMode === 'on') {
+            setRealtimeModeInDeviceHandler('sync')
+        }
+    } else {
+        setRealtimeModeInDeviceHandler('stop')
     }
 
-    setStatusOfChangeModesSetting(form, 'saved')
+    setStatusOfSettingsForm(form, 'saved')
+}
+
+type TNavigateFormTypes = 'change-modes' | 'password'
+
+const navigateSettings = async (target: HTMLElement, type: TNavigateFormTypes): Promise<void> => {
+    const navItems = noteSettingsBoard.querySelectorAll<HTMLElement>('.nav-item')
+    for (const navItem of navItems) {
+        navItem.classList.remove('active')
+    }
+    target.classList.add('active')
+    const forms = noteSettingsBoard.querySelectorAll<HTMLFormElement>('.forms')
+    for (const form of forms) {
+        if (form.classList.contains(type)) {
+            form.hidden = false
+        } else {
+            form.hidden = true
+        }
+    }
+}
+
+type TPasswordTabTypes = 'set-password' | 'remove-password'
+
+const switchTabPassword = async (
+    target: HTMLButtonElement,
+    type: TPasswordTabTypes,
+): Promise<void> => {
+    const tabs = noteSettingsBoard.querySelectorAll<HTMLButtonElement>(
+        '.forms.password .tabs .tab-btn',
+    )
+    for (const tab of tabs) {
+        tab.classList.remove('active')
+    }
+    target.classList.add('active')
+    const forms = target.closest('.forms')!.querySelectorAll<HTMLFormElement>('.note-settings-form')
+    for (const form of forms) {
+        if (form.classList.contains(type)) {
+            form.hidden = false
+        } else {
+            form.hidden = true
+        }
+    }
 }
 
 const initPage = (): void => {
@@ -433,15 +466,33 @@ const initPage = (): void => {
     if (realtimeMode && realtimeMode === 'sync') {
         const realtimeModeInput = document.getElementById('realtime-mode-input') as HTMLInputElement
         realtimeModeInput.checked = true
+        realtimeModeDisplay.classList.replace('inactive', 'active')
+    }
+    const changeModesForm = document.getElementById('settings-form-change-modes') as HTMLFormElement
+    const changeModesFormInputs = changeModesForm.querySelectorAll<HTMLInputElement>('input')
+    for (const input of changeModesFormInputs) {
+        input.addEventListener('change', function (e) {
+            setStatusOfSettingsForm(changeModesForm, 'unsaved')
+        })
     }
 
-    const changeModesForm = document.getElementById('settings-form-change-modes') as HTMLFormElement
-    const changeModesFormInputs = changeModesForm.querySelectorAll(
-        'input',
-    ) as NodeListOf<HTMLInputElement>
-    for (const input of changeModesFormInputs) {
-        input.addEventListener('change', function (e: Event) {
-            setStatusOfChangeModesSetting(changeModesForm, 'unsaved')
+    // setup "password" form
+    const passwordForm = document.getElementById('settings-form-set-password') as HTMLFormElement
+    const passwordFormInputs = passwordForm.querySelectorAll<HTMLInputElement>('input')
+    for (const input of passwordFormInputs) {
+        input.addEventListener('input', function (e) {
+            setStatusOfSettingsForm(passwordForm, 'unsaved')
+        })
+    }
+
+    // setup "quick look" section
+    const quickLookItems = noteQuickLook.querySelectorAll<HTMLElement>('.quick-look-item')
+    for (const quickLookItem of quickLookItems) {
+        quickLookItem.addEventListener('mouseenter', function (e) {
+            quickLookItem.style.width = `${quickLookItem.scrollWidth}px`
+        })
+        quickLookItem.addEventListener('mouseleave', function (e) {
+            quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
 }

@@ -24,6 +24,10 @@ var ECustomEvents
 ;(function (ECustomEvents) {
     ECustomEvents['GENERAL_APP_STATUS'] = 'GENERAL_APP_STATUS'
 })(ECustomEvents || (ECustomEvents = {}))
+var EBroadcastTimeout
+;(function (EBroadcastTimeout) {
+    EBroadcastTimeout[(EBroadcastTimeout['NOTE_TYPING_TIMEOUT'] = 10000)] = 'NOTE_TYPING_TIMEOUT'
+})(EBroadcastTimeout || (EBroadcastTimeout = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {
     EHttpStatuses[(EHttpStatuses['CONTINUE'] = 100)] = 'CONTINUE'

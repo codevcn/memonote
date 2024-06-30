@@ -1,11 +1,11 @@
-import { Body, Controller, Param, Post, Res, UseGuards } from '@nestjs/common'
+import { Body, Controller, Param, Post, Req, Res, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import type { Response } from 'express'
+import type { Response, Request } from 'express'
 import { APIRoutes } from '@/utils/routes'
 import type { IAuthAPIController } from './interfaces'
 import { APIAuthGuard } from '@/auth/auth.guard'
 import { NoteService } from '@/note/note.service'
-import { GetNoteOnHomePageParamsDTO, SignInPayloadDTO } from './auth.dto'
+import { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './auth.dto'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { EAuthMessages } from '@/utils/messages'
 
@@ -18,7 +18,7 @@ export class AuthAPIController implements IAuthAPIController {
 
     @Post('sign-in/:noteUniqueName')
     async signIn(
-        @Param() params: GetNoteOnHomePageParamsDTO,
+        @Param() params: NoteUniqueNameOnParamDTO,
         @Body() signInPayload: SignInPayloadDTO,
         @Res({ passthrough: true }) res: Response,
     ) {
@@ -31,8 +31,13 @@ export class AuthAPIController implements IAuthAPIController {
 
     @Post('logout/:noteUniqueName')
     @UseGuards(APIAuthGuard)
-    async logout(@Res({ passthrough: true }) res: Response) {
-        await this.authService.logout(res)
+    async logout(
+        @Req() req: Request,
+        @Res({ passthrough: true }) res: Response,
+        @Param() params: NoteUniqueNameOnParamDTO,
+    ) {
+        const { noteUniqueName } = params
+        await this.authService.logout(req, res, noteUniqueName)
         return { success: true }
     }
 }

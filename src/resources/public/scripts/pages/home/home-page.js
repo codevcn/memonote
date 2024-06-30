@@ -30,10 +30,16 @@ var __awaiter =
             step((generator = generator.apply(thisArg, _arguments || [])).next())
         })
     }
-const pageMain_homePage = document.querySelector('#page-main')
-const userActionsAndLogout = pageMain_homePage.querySelector('.user-actions-and-logout')
-const userActions = userActionsAndLogout.querySelector('.user-actions')
-const notesSection = pageMain_homePage.querySelector('.notes')
+const homePage_pageMain = document.querySelector('#page-main')
+const notesSection = homePage_pageMain.querySelector('.notes')
+const realtimeModeDisplay = document.querySelector('#page-header .realtime-mode-display')
+const noteSettingsBoard = document.querySelector('#note-settings-modal .note-settings-board')
+const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
+    '.note-settings-navigation .nav-item.logout-btn',
+)
+const setPasswordForm = document.getElementById('settings-form-set-password')
+const removePasswordForm = document.getElementById('settings-form-remove-password')
+const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look')
 const noteContentHistory = { history: [''], index: 0 }
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -82,13 +88,13 @@ const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
     }
 }
 const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
-    broadcastNoteContentTyping(noteContent)
+    broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteTitleTypingHanlder = debounce((target) => {
-    broadcastNoteTitleTyping(target.value)
+    broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteAuthorTypingHanlder = debounce((target) => {
-    broadcastNoteAuthorTyping(target.value)
+    broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const noteTyping = (noteEditorTarget) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -183,130 +189,107 @@ const hideShowPassword_homePage = (target, isShown) => {
         shownBtn.classList.remove('inactive')
     }
 }
-const setPasswordMessage = (message, messageTarget, type) => {
+const setMessageOfSetPassword = (message, type) => {
     let content
+    const messageTarget = setPasswordForm.querySelector('.form-content .form-group .message')
     if (type === 'success') {
-        messageTarget.classList.remove('warning')
-        messageTarget.classList.remove('valid')
+        messageTarget.classList.remove('warning', 'valid')
         messageTarget.classList.add('success')
         content = `
             <i class="bi bi-check-circle"></i>
             <span>${message}</span>`
     } else if (type === 'warning') {
-        messageTarget.classList.add('warning')
-        messageTarget.classList.remove('success')
+        messageTarget.classList.add('warning', 'success')
         messageTarget.classList.remove('valid')
         content = `
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>${message}</span>`
     } else {
-        messageTarget.classList.remove('warning')
-        messageTarget.classList.remove('success')
-        messageTarget.classList.add('form-group-is-valid')
+        messageTarget.classList.remove('warning', 'success')
+        messageTarget.classList.add('valid')
         content = ''
     }
     messageTarget.innerHTML = content
 }
-const validatePassword = (formGroupTarget, password) => {
+const validatePassword = (password) => {
     let is_valid = true
-    const messageTarget = formGroupTarget.querySelector('.message')
-    if (notePasswordRegEx.test(password)) {
-        is_valid = true
-        setPasswordMessage('', messageTarget, 'valid')
-    } else {
+    if (!notePasswordRegEx.test(password)) {
         is_valid = false
-        setPasswordMessage('Please type your password format correctly!', messageTarget, 'warning')
+        setMessageOfSetPassword('Please type your password format correctly!', 'warning')
     }
     return is_valid
 }
-const setPasswordForNote = (password) =>
+const setPasswordForNote = (password, logoutAll) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const noteUniqueName = getNoteUniqueNameFromURL()
         if (noteUniqueNameRegEx.test(noteUniqueName)) {
-            yield setPasswordOfNoteAPI(password, noteUniqueName)
+            yield setPasswordOfNoteAPI(password, logoutAll, noteUniqueName)
         }
     })
-const setUIOfRemovePasswordBtn = (isHidden) => {
-    const removePasswordBtn = userActions.querySelector('.user-action.remove-note-password')
-    removePasswordBtn.hidden = isHidden
-}
-const setUIAfterUpdatePassword = (type) => {
-    const setPasswordBtn = userActions.querySelector('.user-action.set-note-password')
+const setUIOfSetPasswordForm = (type) => {
+    let setPasswordLabel
+    let showRemovePasswordForm
     if (type === 'add') {
-        setPasswordBtn.innerHTML = `
-            <i class="bi bi-lock-fill"></i>
-            <span>Add Password</span>`
-        const addPasswordModal = document.getElementById('set-note-password-modal')
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-header .modal-title',
-        ).innerHTML = 'Add Password For This Note'
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-body .form-group label',
-        ).innerHTML = 'Add Password'
-        userActions.querySelector('.remove-note-password').hidden = true
+        setPasswordLabel = 'Add Password'
+        showRemovePasswordForm = false
     } else {
-        setPasswordBtn.innerHTML = `
-            <i class="bi bi-arrow-repeat"></i>
-            <span>Change Password</span>`
-        const addPasswordModal = document.getElementById('set-note-password-modal')
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-header .modal-title',
-        ).innerHTML = 'Change the password'
-        addPasswordModal.querySelector(
-            '.modal-dialog .modal-content .modal-body .form-group label',
-        ).innerHTML = 'Change password'
+        setPasswordLabel = 'Change password'
+        showRemovePasswordForm = true
+    }
+    setPasswordForm.querySelector('.form-content .form-group label').innerHTML = setPasswordLabel
+    removePasswordForm.querySelector('.form-content-container').hidden = !showRemovePasswordForm
+}
+const setUIOfRemovePasswordForm = (show) => {
+    removePasswordForm.querySelector('.form-content-container').hidden = !show
+    removePasswordForm.querySelector('.unset-password-notice').hidden = show
+}
+const setUIOfLogoutBtn = (show) => {
+    settingsModal_logoutBtn.hidden = !show
+}
+const setUIOfNoteQuickLook = (itemsShown = [], itemsHidden = []) => {
+    if (itemsShown.length > 0) {
+        for (const itemShown of itemsShown) {
+            noteQuickLook.querySelector(`.quick-look-item.${itemShown}`).hidden = false
+        }
+    }
+    if (itemsHidden.length > 0) {
+        for (const itemHidden of itemsHidden) {
+            noteQuickLook.querySelector(`.quick-look-item.${itemHidden}`).hidden = true
+        }
     }
 }
-const setUIOfLogoutBtn = (isHidden) => {
-    const logoutBtn = userActionsAndLogout.querySelector('.logout-btn')
-    logoutBtn.hidden = isHidden
-}
-const catchEnterKeyOfSetPassword = (e) => {
-    if (e.key === 'Enter') {
-        const saveChangeBtn = e.target
-        setPasswordForNoteHanlder(
-            saveChangeBtn
-                .closest('.modal-content')
-                .querySelector('.modal-footer .modal-save-change-btn'),
-        )
-    }
-}
-const setPasswordForNoteHanlder = (target) =>
+const setPasswordForNoteHanlder = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        var _a
-        const formGroup =
-            (_a = target.closest('.modal-content')) === null || _a === void 0
-                ? void 0
-                : _a.querySelector('.modal-body .form-group')
-        const input = formGroup.querySelector('.input-wrapper input')
-        const password = input.value
-        if (validatePassword(formGroup, password)) {
-            target.classList.add('on-progress')
-            target.innerHTML = getHTMLLoading('border')
-            const message = formGroup.querySelector('.message')
+        e.preventDefault()
+        const form = e.target
+        const formData = new FormData(form)
+        const password = formData.get('password')
+        const logoutAll = formData.get('logout-all')
+        if (validatePassword(password)) {
+            const submitBtn = form.querySelector('.form-btn')
+            submitBtn.classList.add('on-progress')
+            const innerHTML_beforeUpdate = submitBtn.innerHTML
+            submitBtn.innerHTML = getHTMLLoading('border')
             let apiSuccess = false
             try {
-                yield setPasswordForNote(password)
+                yield setPasswordForNote(password, !!logoutAll)
                 apiSuccess = true
             } catch (error) {
                 if (error instanceof Error) {
                     const err = APIErrorHandler.handleError(error)
-                    setPasswordMessage(err.message, message, 'warning')
+                    setMessageOfSetPassword(err.message, 'warning')
                 }
             }
             if (apiSuccess) {
-                setUIOfLogoutBtn(false)
-                setUIAfterUpdatePassword('change')
-                setUIOfRemovePasswordBtn(false)
-                setPasswordMessage('Save password successfully!', message, 'success')
-                setTimeout(() => {
-                    setPasswordMessage('', message, 'valid')
-                }, 3000)
+                setUIOfLogoutBtn(true)
+                setUIOfSetPasswordForm('change')
+                setUIOfRemovePasswordForm(true)
+                setMessageOfSetPassword('Save password successfully!', 'success')
+                setStatusOfSettingsForm(form, 'saved')
+                setUIOfNoteQuickLook(['password-set'])
             }
-            target.classList.remove('on-progress')
-            target.innerHTML = `
-            <i class="bi bi-check-lg"></i>
-            <span>Save Change</span>`
+            submitBtn.classList.remove('on-progress')
+            submitBtn.innerHTML = innerHTML_beforeUpdate
         }
     })
 const removePasswordOfNote = (noteUniqueName) =>
@@ -315,9 +298,12 @@ const removePasswordOfNote = (noteUniqueName) =>
             yield removePasswordOfNoteAPI(noteUniqueName)
         }
     })
-const removePasswordOfNoteHandler = (target) =>
+const removePasswordOfNoteHandler = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        target.innerHTML = getHTMLLoading('border')
+        e.preventDefault()
+        const submitBtn = e.target.querySelector('.form-btn')
+        const innerHTML_beforeRemove = submitBtn.innerHTML
+        submitBtn.innerHTML = getHTMLLoading('border')
         let apiSuccess = false
         try {
             yield removePasswordOfNote(getNoteUniqueNameFromURL())
@@ -329,12 +315,12 @@ const removePasswordOfNoteHandler = (target) =>
             }
         }
         if (apiSuccess) {
-            setUIAfterUpdatePassword('add')
-            setUIOfLogoutBtn(true)
+            setUIOfSetPasswordForm('add')
+            setUIOfRemovePasswordForm(false)
+            setUIOfLogoutBtn(false)
+            setUIOfNoteQuickLook([], ['password-set'])
         }
-        target.innerHTML = `
-        <i class="bi bi-check-lg"></i>
-        <span>Save Change</span>`
+        submitBtn.innerHTML = innerHTML_beforeRemove
     })
 const logout = (noteUniqueName) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -344,6 +330,7 @@ const logout = (noteUniqueName) =>
     })
 const logoutHandler = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
+        const innerHTML_beforeLogout = target.innerHTML
         target.innerHTML = getHTMLLoading('border')
         target.classList.add('on-progress')
         let apiSuccess = false
@@ -358,32 +345,70 @@ const logoutHandler = (target) =>
         }
         if (apiSuccess) {
             refreshPageAfterMs(500)
-            LayoutUI.setUIOfGenetalAppStatus('success')
+            LayoutUI.setUIOfGeneralAppStatus('success')
         }
         target.classList.remove('on-progress')
-        target.innerHTML = `
-        <span>Logout</span>
-        <i class="bi bi-box-arrow-right"></i>`
+        target.innerHTML = innerHTML_beforeLogout
     })
-const setStatusOfChangeModesSetting = (formTarget, type) => {
+const setStatusOfSettingsForm = (formTarget, type) => {
     const isSaved = type === 'saved'
-    const statusItemSaved = formTarget.querySelector('.form-title .status .status-item.saved')
-    statusItemSaved.hidden = !isSaved
-    const statusItemUnsaved = formTarget.querySelector('.form-title .status .status-item.unsaved')
-    statusItemUnsaved.hidden = isSaved
+    formTarget.querySelector('.form-title .status .status-item.saved').hidden = !isSaved
+    formTarget.querySelector('.form-title .status .status-item.unsaved').hidden = isSaved
 }
-const saveChangeSettings = (e) =>
+const setRealtimeModeInDeviceHandler = (type) => {
+    setRealtimeModeInDevice(type)
+    if (type === 'sync') {
+        realtimeModeDisplay.classList.replace('inactive', 'active')
+    } else {
+        realtimeModeDisplay.classList.replace('active', 'inactive')
+    }
+}
+const saveChangesOfChangeModes = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
         const form = e.target
         const formData = new FormData(form)
         const realtimeMode = formData.get('realtime-mode')
-        if (realtimeMode === 'on') {
-            setRealtimeModeInDevice('sync')
-        } else if (!realtimeMode) {
-            setRealtimeModeInDevice('stop')
+        if (realtimeMode) {
+            if (realtimeMode === 'on') {
+                setRealtimeModeInDeviceHandler('sync')
+            }
+        } else {
+            setRealtimeModeInDeviceHandler('stop')
         }
-        setStatusOfChangeModesSetting(form, 'saved')
+        setStatusOfSettingsForm(form, 'saved')
+    })
+const navigateSettings = (target, type) =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        const navItems = noteSettingsBoard.querySelectorAll('.nav-item')
+        for (const navItem of navItems) {
+            navItem.classList.remove('active')
+        }
+        target.classList.add('active')
+        const forms = noteSettingsBoard.querySelectorAll('.forms')
+        for (const form of forms) {
+            if (form.classList.contains(type)) {
+                form.hidden = false
+            } else {
+                form.hidden = true
+            }
+        }
+    })
+const switchTabPassword = (target, type) =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        const tabs = noteSettingsBoard.querySelectorAll('.forms.password .tabs .tab-btn')
+        for (const tab of tabs) {
+            tab.classList.remove('active')
+        }
+        target.classList.add('active')
+        const forms = target.closest('.forms').querySelectorAll('.note-settings-form')
+        for (const form of forms) {
+            if (form.classList.contains(type)) {
+                form.hidden = false
+            } else {
+                form.hidden = true
+            }
+        }
     })
 const initPage = () => {
     // setup "change modes" form
@@ -391,12 +416,31 @@ const initPage = () => {
     if (realtimeMode && realtimeMode === 'sync') {
         const realtimeModeInput = document.getElementById('realtime-mode-input')
         realtimeModeInput.checked = true
+        realtimeModeDisplay.classList.replace('inactive', 'active')
     }
     const changeModesForm = document.getElementById('settings-form-change-modes')
     const changeModesFormInputs = changeModesForm.querySelectorAll('input')
     for (const input of changeModesFormInputs) {
         input.addEventListener('change', function (e) {
-            setStatusOfChangeModesSetting(changeModesForm, 'unsaved')
+            setStatusOfSettingsForm(changeModesForm, 'unsaved')
+        })
+    }
+    // setup "password" form
+    const passwordForm = document.getElementById('settings-form-set-password')
+    const passwordFormInputs = passwordForm.querySelectorAll('input')
+    for (const input of passwordFormInputs) {
+        input.addEventListener('input', function (e) {
+            setStatusOfSettingsForm(passwordForm, 'unsaved')
+        })
+    }
+    // setup "quick look" section
+    const quickLookItems = noteQuickLook.querySelectorAll('.quick-look-item')
+    for (const quickLookItem of quickLookItems) {
+        quickLookItem.addEventListener('mouseenter', function (e) {
+            quickLookItem.style.width = `${quickLookItem.scrollWidth}px`
+        })
+        quickLookItem.addEventListener('mouseleave', function (e) {
+            quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
 }

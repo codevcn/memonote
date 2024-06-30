@@ -3,13 +3,15 @@ import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Note } from '@/database/note.model'
 import type { TNoteDocument } from '@/database/note.model'
-import { generateRandomString } from '@/utils/helpers'
+import { Helpers } from '@/utils/helpers'
 import { ENoteLengths } from './enums'
 import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
 import { JWTService } from '@/auth/jwt.service'
 import { EAuthEncryption } from '@/utils/enums'
 import type { TNoteForm } from './types'
+import { AddPasswordForNotePayloadDTO } from './note.dto'
+import { BaseSessions } from './gateway/sessions'
 
 @Injectable()
 export class NoteService {
@@ -47,7 +49,7 @@ export class NoteService {
     }
 
     generateNoteUniqueName(): string {
-        return generateRandomString(ENoteLengths.LENGTH_OF_RAMDOM_UNIQUE_NAME)
+        return Helpers.generateRandomString(ENoteLengths.LENGTH_OF_RAMDOM_UNIQUE_NAME)
     }
 
     async hashPassword(rawPassword: string): Promise<string> {
@@ -55,14 +57,20 @@ export class NoteService {
     }
 
     async setPasswordForNote(
-        rawPassword: string,
+        payload: AddPasswordForNotePayloadDTO,
         noteUniqueName: string,
         res: Response,
     ): Promise<void> {
-        const hashedPassword = await this.hashPassword(rawPassword)
+        const { password } = payload
+        const hashedPassword = await this.hashPassword(password)
         await this.noteModel.updateOne({ noteUniqueName }, { $set: { password: hashedPassword } })
         const jwt = await this.jwtService.createJWT({ noteUniqueName })
         this.jwtService.sendJWTToClient(res, { token: jwt })
+        BaseSessions.addUserSession(noteUniqueName, jwt)
+        const { logoutAll } = payload
+        if (logoutAll) {
+            BaseSessions.logoutUserSessions(noteUniqueName, jwt)
+        }
     }
 
     async removePasswordForNote(noteUniqueName: string): Promise<void> {

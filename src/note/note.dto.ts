@@ -1,6 +1,6 @@
 import { notePasswordRegEx, noteUniqueNameRegEx } from '@/note/regex'
 import { EValidationMessages } from '@/utils/messages'
-import { IsNotEmpty, Matches } from 'class-validator'
+import { IsBoolean, IsNotEmpty, Matches } from 'class-validator'
 
 export class AddPasswordForNoteParamsDTO {
     @IsNotEmpty()
@@ -12,4 +12,7 @@ export class AddPasswordForNotePayloadDTO {
     @IsNotEmpty()
     @Matches(notePasswordRegEx, { message: EValidationMessages.INVALID_PASSWORD })
     password: string
+
+    @IsBoolean()
+    logoutAll: boolean
 }

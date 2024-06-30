@@ -30,7 +30,10 @@ class APIErrorHandler {
                 error.message = data_of_response.message //update error message
 
                 if (error.message.length > EError.MAX_LENGTH_OF_API_ERROR_MESSAGE) {
-                    error.message = `${error.message.slice(0, EError.MAX_LENGTH_OF_API_ERROR_MESSAGE)}...`
+                    error.message = `${error.message.slice(
+                        0,
+                        EError.MAX_LENGTH_OF_API_ERROR_MESSAGE,
+                    )}...`
                 }
             }
         } else if (error.originalError.request) {

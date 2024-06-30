@@ -23,6 +23,10 @@ enum ECustomEvents {
     GENERAL_APP_STATUS = 'GENERAL_APP_STATUS',
 }
 
+enum EBroadcastTimeout {
+    NOTE_TYPING_TIMEOUT = 10000,
+}
+
 enum EHttpStatuses {
     CONTINUE = 100,
     SWITCHING_PROTOCOLS = 101,

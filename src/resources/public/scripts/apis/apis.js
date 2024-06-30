@@ -4,8 +4,8 @@ const axiosClient = axios.create({
     baseURL: ServerAPIURL,
 })
 // note
-const setPasswordOfNoteAPI = (password, noteUniqueName) =>
-    axiosClient.post('/note/set-password/' + noteUniqueName + '?myVar=234', { password })
+const setPasswordOfNoteAPI = (password, logoutAll, noteUniqueName) =>
+    axiosClient.post('/note/set-password/' + noteUniqueName + '?myVar=234', { password, logoutAll })
 const removePasswordOfNoteAPI = (noteUniqueName) =>
     axiosClient.delete('/note/remove-password/' + noteUniqueName)
 // auth

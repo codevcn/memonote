@@ -1,5 +1,5 @@
-const pageMain_sigInPage = document.querySelector('#page-main') as HTMLElement
-const typePasswordSection = pageMain_sigInPage.querySelector(
+const signInPage_pageMain = document.querySelector('#page-main') as HTMLElement
+const typePasswordSection = signInPage_pageMain.querySelector(
     '.type-password-section',
 ) as HTMLElement
 const formGroup = typePasswordSection.querySelector('.form-group') as HTMLElement
@@ -86,8 +86,8 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
         }
 
         if (apiSuccess) {
-            refreshPageAfterMs(500)
-            LayoutUI.setUIOfGenetalAppStatus('success')
+            refreshPageAfterMs(300)
+            LayoutUI.setUIOfGeneralAppStatus('success')
         }
         submitBtn.classList.remove('on-progress')
         submitBtn.innerHTML = `<span>Submit</span>`

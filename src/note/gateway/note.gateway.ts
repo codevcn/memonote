@@ -1,6 +1,5 @@
 import { ECommonStatuses } from '@/utils/enums'
 import {
-    WebSocketServer,
     WebSocketGateway,
     OnGatewayDisconnect,
     OnGatewayConnection,
@@ -17,15 +16,14 @@ import type { IInitialSocketEventEmits } from './interfaces'
 import { ESocketNamespaces } from './enums'
 import { EAuthMessages, ENoteBroadcastMessages } from '@/utils/messages'
 import type { TJWTPayload } from '@/auth/types'
-import * as cookie from 'cookie'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { EClientCookieNames } from '@/utils/enums'
 import { JWTService } from '@/auth/jwt.service'
 import { BroadcastNoteTypingDTO } from './dtos'
 import type { TBroadcastNoteTypingRes } from './types'
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from './filters'
-import { extractNoteUniqueNameFromURL } from '@/utils/helpers'
+import { Helpers } from '@/utils/helpers'
+import { BaseSessions } from './sessions'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.EDIT_NOTE })
 @UsePipes(new ValidationPipe())
@@ -33,8 +31,7 @@ import { extractNoteUniqueNameFromURL } from '@/utils/helpers'
 export class NoteGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>
 {
-    @WebSocketServer()
-    server: Server
+    private io: Server
 
     constructor(
         private noteService: NoteService,
@@ -48,7 +45,7 @@ export class NoteGateway
                 next(new BaseCustomException(EAuthMessages.FAIL_TO_AUTH))
                 return
             }
-            const noteUniqueName = extractNoteUniqueNameFromURL(referer)
+            const noteUniqueName = Helpers.extractNoteUniqueNameFromURL(referer)
             const note = await this.noteService.findNote(noteUniqueName)
             if (!note) {
                 next(new BaseCustomException(EAuthMessages.FAIL_TO_AUTH))
@@ -63,8 +60,11 @@ export class NoteGateway
                 next(new BaseCustomException(EAuthMessages.INVALID_CREDENTIALS))
                 return
             }
-            const parsed_cookie = cookie.parse(clientCookie) as TJWTPayload
-            const jwt = parsed_cookie[EClientCookieNames.JWT_TOKEN_AUTH]
+            const jwt = this.jwtService.extractJWTFromCookie(clientCookie)
+            if (!jwt) {
+                next(new BaseCustomException(EAuthMessages.INVALID_CREDENTIALS))
+                return
+            }
             let jwtPayload: TJWTPayload
             try {
                 jwtPayload = await this.jwtService.verifyToken(jwt)
@@ -76,8 +76,12 @@ export class NoteGateway
                 next(new BaseCustomException(EAuthMessages.FAIL_TO_AUTH))
                 return
             }
+            socket.join(noteUniqueName)
+            BaseSessions.addUserSession(noteUniqueName, jwt)
             next()
         })
+
+        this.io = serverInit
     }
 
     handleConnection(socket: Socket<IInitialSocketEventEmits>): void {
@@ -86,25 +90,44 @@ export class NoteGateway
         })
     }
 
-    handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
+    handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {
+        const { referer, cookie } = socket.handshake.headers
+        if (cookie) {
+            const jwt = this.jwtService.extractJWTFromCookie(cookie)
+            if (jwt && referer) {
+                const noteUniqueName = Helpers.extractNoteUniqueNameFromURL(referer)
+                BaseSessions.removeUserSession(noteUniqueName, jwt)
+            }
+        }
+    }
 
     @SubscribeMessage(ENoteEvents.NOTE_TYPING)
     async handleNoteFormChanged(
         @MessageBody() data: BroadcastNoteTypingDTO,
         @ConnectedSocket() clientSocket: Socket,
     ): Promise<TBroadcastNoteTypingRes> {
-        const { referer } = clientSocket.handshake.headers
-        if (referer) {
-            const noteUniqueName = extractNoteUniqueNameFromURL(referer)
-            try {
-                await this.noteService.updateNoteForm(noteUniqueName, data)
-            } catch (error) {
-                throw new WsException(error.message)
-            }
-        } else {
+        const { referer, cookie } = clientSocket.handshake.headers
+        if (!referer || !cookie) {
             throw new WsException(ENoteBroadcastMessages.INVALID_INPUT)
         }
-        clientSocket.broadcast.emit(ENoteEvents.NOTE_TYPING, data)
+        const noteUniqueName = Helpers.extractNoteUniqueNameFromURL(referer)
+        const noteHasPassword = BaseSessions.checkNote(noteUniqueName)
+        if (noteHasPassword) {
+            const jwt = this.jwtService.extractJWTFromCookie(cookie)
+            if (!jwt) {
+                throw new WsException(ENoteBroadcastMessages.INVALID_CREDENTIALS)
+            }
+            const userExists = BaseSessions.checkUserSessionIfExists(noteUniqueName, jwt)
+            if (!userExists) {
+                throw new WsException(ENoteBroadcastMessages.USER_LOGOUTED)
+            }
+        }
+        try {
+            await this.noteService.updateNoteForm(noteUniqueName, data)
+        } catch (error) {
+            throw new WsException(error.message)
+        }
+        clientSocket.broadcast.to(noteUniqueName).emit(ENoteEvents.NOTE_TYPING, data)
         return { data, success: true }
     }
 }

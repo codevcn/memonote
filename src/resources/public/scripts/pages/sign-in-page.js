@@ -30,8 +30,8 @@ var __awaiter =
             step((generator = generator.apply(thisArg, _arguments || [])).next())
         })
     }
-const pageMain_sigInPage = document.querySelector('#page-main')
-const typePasswordSection = pageMain_sigInPage.querySelector('.type-password-section')
+const signInPage_pageMain = document.querySelector('#page-main')
+const typePasswordSection = signInPage_pageMain.querySelector('.type-password-section')
 const formGroup = typePasswordSection.querySelector('.form-group')
 const inputMessage = typePasswordSection.querySelector('.input-message')
 const signInMessage = typePasswordSection.querySelector('.sign-in-message')
@@ -109,8 +109,8 @@ const signInHandler = (target) =>
                 }
             }
             if (apiSuccess) {
-                refreshPageAfterMs(500)
-                LayoutUI.setUIOfGenetalAppStatus('success')
+                refreshPageAfterMs(300)
+                LayoutUI.setUIOfGeneralAppStatus('success')
             }
             submitBtn.classList.remove('on-progress')
             submitBtn.innerHTML = `<span>Submit</span>`

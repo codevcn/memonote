@@ -1,42 +1,9 @@
 <main id="page-main">
-    <section class="user-actions-and-logout">
-        <section class="user-actions">
-            <% if (note.passwordSet) { %>
-            <button class="user-action set-note-password" type="button" data-bs-toggle="modal"
-                data-bs-target="#set-note-password-modal">
-                <i class="bi bi-arrow-repeat"></i>
-                <span>Change Password</span>
-            </button>
-            <button class="user-action remove-note-password" data-bs-toggle="modal"
-                data-bs-target="#remove-note-password-modal">
-                <i class="bi bi-trash3"></i>
-                <span>Remove Password</span>
-            </button>
-            <% } else { %>
-            <button class="user-action set-note-password" type="button" data-bs-toggle="modal"
-                data-bs-target="#set-note-password-modal">
-                <i class="bi bi-lock-fill"></i>
-                <span>Add Password</span>
-            </button>
-            <button class="user-action remove-note-password" data-bs-toggle="modal"
-                data-bs-target="#remove-note-password-modal" hidden>
-                <i class="bi bi-trash3"></i>
-                <span>Remove Password</span>
-            </button>
-            <% } %>
-        </section>
-
-        <% if (note.passwordSet) { %>
-        <button class="logout-btn" onclick="logoutHandler(this)">
-            <span>Logout</span>
-            <i class="bi bi-box-arrow-right"></i>
-        </button>
-        <% } else { %>
-        <button class="logout-btn" hidden onclick="logoutHandler(this)">
-            <span>Logout</span>
-            <i class="bi bi-box-arrow-right"></i>
-        </button>
-        <% } %>
+    <section class="note-quick-look">
+        <div class="quick-look-item password-set" <%= note.passwordSet ? '' : 'hidden' %>>
+            <i class="bi bi-lock-fill"></i>
+            <span class="text">Password has been set</span>
+        </div>
     </section>
 
     <section class="notes">
@@ -61,7 +28,7 @@
                     </div>
                     <div class="letters-count">
                         <span></span>
-                        <span class="count"><%= note.content.length %> / 10000</span>
+                        <span class="count"><%= note.content ? note.content.length : 0 %> / 10000</span>
                     </div>
                 </div>
                 <div class="useful-note-actions">
@@ -93,25 +60,38 @@
             </div>
         </div>
     </div>
+</main>
 
-    <!-- Modal - app settings -->
-    <div class="modal" id="note-settings-modal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title fs-5">Settings</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="note-settings-board">
-                        <section class="note-settings-navigation">
-                            <div class="nav-items">
-                                <a href="#" onclick="showForm('password-form')" class="nav-item active">Change Modes</a>
-                            </div>
-                            <a href="#" onclick="logoutHandler(this)" class="nav-item logout-btn">Logout</a>
-                        </section>
+<!-- Modal - app settings -->
+<div class="modal" id="note-settings-modal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5">Settings</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="note-settings-board">
+                    <section class="note-settings-navigation">
+                        <div class="nav-items">
+                            <span onclick="navigateSettings(this,'change-modes')" class="nav-item active">
+                                <i class="bi bi-gear-wide-connected"></i>
+                                <span>Change Modes</span>
+                            </span>
+                            <span onclick="navigateSettings(this,'password')" class="nav-item">
+                                <i class="bi bi-lock-fill"></i>
+                                <span>Password</span>
+                            </span>
+                        </div>
+                        <span onclick="logoutHandler(this)" class="nav-item logout-btn"
+                            <%= note.passwordSet ? '' : 'hidden' %>>
+                            <span>Logout</span>
+                            <i class="bi bi-box-arrow-right"></i>
+                        </span>
+                    </section>
+                    <div class="forms change-modes">
                         <form class="note-settings-form change-modes" id="settings-form-change-modes" action="#"
-                            onsubmit="saveChangeSettings(event)">
+                            onsubmit="saveChangesOfChangeModes(event)">
                             <h2 class="form-title">
                                 <span>Change Modes</span>
                                 <div class="status">
@@ -135,97 +115,112 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="form-save-change-btn">
+                            <button type="submit" class="form-btn">
                                 <i class="bi bi-check-lg"></i>
                                 <span>Save Changes</span>
                             </button>
                         </form>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+                    <div class="forms password" hidden>
+                        <div class="tabs">
+                            <button class="tab-btn set-password active"
+                                onclick="switchTabPassword(this,'set-password')">
+                                <i class="bi bi-pen-fill"></i>
+                                <span class="content">
+                                    Add Or Change Password
+                                </span>
+                            </button>
+                            <button class="tab-btn remove-password" onclick="switchTabPassword(this,'remove-password')">
+                                <i class="bi bi-pen-fill"></i>
+                                <span>Remove Password</span>
+                            </button>
+                        </div>
 
-    <!-- Modal - add password -->
-    <div class="modal" id="set-note-password-modal" tabindex="-2">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title fs-5">
-                        <% if (note.passwordSet) { %>
-                        Change Password For This Note
-                        <% } else { %>
-                        Add Password For This Note
-                        <% } %>
-                    </h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>
-                            <% if (note.passwordSet) { %>
-                            Change Password
-                            <% } else { %>
-                            Add Password
-                            <% } %>
-                        </label>
-                        <div class="input-wrapper">
-                            <input type="password" placeholder="Add password here..."
-                                onkeyup="catchEnterKeyOfSetPassword(event)" />
-                            <div class="input-actions">
-                                <span class="hidden" onclick="hideShowPassword_homePage(this,false)">
-                                    <i class="bi bi-eye-slash"></i>
+                        <form class="note-settings-form set-password" id="settings-form-set-password" action="#"
+                            onsubmit="setPasswordForNoteHanlder(event)">
+                            <h2 class="form-title">
+                                <span class="content">
+                                    Add Or Change Password For This Note
                                 </span>
-                                <span class="shown inactive" onclick="hideShowPassword_homePage(this,true)">
-                                    <i class="bi bi-eye"></i>
-                                </span>
+                                <div class="status">
+                                    <span class="status-item unsaved" hidden>(unsaved)</span>
+                                    <span class="status-item saved" hidden>(saved)</span>
+                                </div>
+                            </h2>
+                            <div class="form-content">
+                                <div class="form-group enter-password">
+                                    <label for="password-input">
+                                        <%= note.passwordSet ? 'Change Password' : 'Add Password' %>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input id="password-input" type="password" placeholder="Enter password here..."
+                                            name="password" />
+                                        <div class="input-actions">
+                                            <span class="hidden" onclick="hideShowPassword_homePage(this,false)">
+                                                <i class="bi bi-eye-slash"></i>
+                                            </span>
+                                            <span class="shown inactive" onclick="hideShowPassword_homePage(this,true)">
+                                                <i class="bi bi-eye"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="helper-text">
+                                        <div class="helper-text-item">At least four characters</div>
+                                    </div>
+                                    <div class="message"></div>
+                                </div>
+                                <div class="form-check form-switch form-group logout-all">
+                                    <input class="form-check-input" type="checkbox" id="logout-all-input"
+                                        name="logout-all">
+                                    <div class="info">
+                                        <label class="form-check-label" for="logout-all-input">
+                                            Logout all other users.
+                                        </label>
+                                        <div data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="When enabled, logout all other users also currently using this note after changing password successfully."
+                                            class="details-btn">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="helper-text">
-                            <div class="helper-text-item">At least four characters</div>
-                        </div>
-                        <div class="message"></div>
+                            <button type="submit" class="form-btn">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Submit</span>
+                            </button>
+                        </form>
+
+                        <form class="note-settings-form remove-password" id="settings-form-remove-password" action="#"
+                            onsubmit="removePasswordOfNoteHandler(event)" hidden>
+                            <div class="form-content-container" <%= note.passwordSet ? '' : 'hidden' %>>
+                                <h2 class="form-title">
+                                    <span>
+                                        Remove Password From This Note
+                                    </span>
+                                </h2>
+                                <div class="form-content">
+                                    <div class="form-group">
+                                        <p>Confirm to remove password from this note?</p>
+                                    </div>
+                                </div>
+                                <button type="submit" class="form-btn">
+                                    <i class="bi bi-check-lg"></i>
+                                    <span>Confirm</span>
+                                </button>
+                            </div>
+                            <div class="unset-password-notice" <%= note.passwordSet ? 'hidden' : '' %>>
+                                <i class="bi bi-emoji-frown-fill"></i>
+                                <span>You haven't set password for this note.</span>
+                            </div>
+                        </form>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button type="button" class="modal-save-change-btn" onclick="setPasswordForNoteHanlder(this)">
-                        <i class="bi bi-check-lg"></i>
-                        <span>Save Change</span>
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
+                    Close
+                </button>
             </div>
         </div>
     </div>
-
-    <!-- Modal - remove password -->
-    <div class="modal" id="remove-note-password-modal" tabindex="-3">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title fs-5">Remove Password From This Note</h2>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Confirm to remove password from this note?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
-                        Close
-                    </button>
-                    <button type="button" class="modal-save-change-btn" onclick="removePasswordOfNoteHandler(this)">
-                        <i class="bi bi-check-lg"></i>
-                        <span>Save Change</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+</div>

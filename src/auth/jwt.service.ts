@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common'
 import type { IJWTService } from './interfaces'
 import ms from 'ms'
 import type { Response, Request, CookieOptions } from 'express'
+import * as cookieParser from 'cookie'
 
 @Injectable()
 export class JWTService implements IJWTService {
@@ -19,8 +20,18 @@ export class JWTService implements IJWTService {
 
     constructor(private jwtService: JwtService) {}
 
-    extractJWTToken(req: Request): string | null {
+    extractJWTFromRequest(req: Request): string | null {
         return req.cookies[EClientCookieNames.JWT_TOKEN_AUTH] || null
+    }
+
+    /**
+     * extract jwt from cookies with structure such as: "my_cookie_name=value"
+     * @param cookie cookie with structure such as: "auth_cookie=eyJhbGciOiJIUzIR5cCI6IkpXVCJ9"
+     * @returns extracted jwt
+     */
+    extractJWTFromCookie(cookie: string): string | null {
+        const parsed_cookie = cookieParser.parse(cookie) as TJWTPayload
+        return parsed_cookie[EClientCookieNames.JWT_TOKEN_AUTH] || null
     }
 
     async createJWT(payload: TJWTPayload): Promise<string> {

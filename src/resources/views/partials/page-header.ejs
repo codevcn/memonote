@@ -1,14 +1,30 @@
-<header class="page-header">
+<header id="page-header">
     <div class="app-logo-container">
         <a class="app-logo-wrapper" href="/">
             <h2 class="app-title">MemoNote.</h2>
         </a>
-        <div id="general-app-status" hidden>
-            <i class="bi bi-check-circle-fill"></i>
+        <div id="general-app-status" class="inactive">
+            <i class="success-icon bi bi-check-circle-fill"></i>
+            <i class="error-icon bi bi-x-circle-fill"></i>
         </div>
     </div>
 
     <div class="right-side-menu">
-        <a href="/menu/about" class="menu-item">About</a>
+        <div class="menu-item realtime-mode-display inactive" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            title="In Realtime Mode">
+            <div class="display-icon">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+        </div>
+        <a href="/menu/about" class="menu-item">About Us</a>
+        <div class="menu-item notification" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications">
+            <div class="notification-icon-wrapper">
+                <i class="bi bi-bell-fill"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span class="count">0</span>
+                    <span class="visually-hidden">Unread Messages</span>
+                </span>
+            </div>
+        </div>
     </div>
 </header>

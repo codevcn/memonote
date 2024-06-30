@@ -33,3 +33,7 @@ const getRealtimeModeInDevice = (): TRealtimeModeTypes | null => {
 const setRealtimeModeInDevice = (type: TRealtimeModeTypes): void => {
     localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
 }
+
+function getCssVariable(variableName: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
+}

@@ -1,0 +1,8 @@
+- to do:
+    + dark / light mode
+    + inform note's number of changes while realtime mode is stopping
+    + notification
+    + note's description
+    + refactor UI
+    + scroll to top button
+

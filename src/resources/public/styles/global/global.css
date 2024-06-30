@@ -106,6 +106,7 @@ button {
 }
 
 i {
+    display: flex;
     color: #333;
     font-size: 1rem;
 }
@@ -130,39 +131,52 @@ h6 {
 }
 
 #general-app-status i {
-    font-size: 1.3rem;
-    color: #13a765;
+    font-size: 1.4rem;
+}
+#general-app-status i.success-icon {
+    color: #00dba0;
+}
+#general-app-status i.error-icon {
+    color: #ff2424;
+}
+#general-app-status.inactive {
+    display: none;
 }
 
-.page-header {
+#page-header {
     display: flex;
     column-gap: 30px;
     justify-content: space-between;
     padding: 0 50px;
     height: 60px;
     border-bottom: 1px #e6e6e6 solid;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background-color: #fff;
 }
-.page-header .app-logo-container {
+#page-header .app-logo-container {
     display: flex;
     column-gap: 20px;
     align-items: center;
 }
-.page-header .app-logo-container .app-logo-wrapper {
+#page-header .app-logo-container .app-logo-wrapper {
     display: flex;
     column-gap: 15px;
     align-items: center;
 }
-.page-header .app-logo-container .app-logo-wrapper .app-title {
+#page-header .app-logo-container .app-logo-wrapper .app-title {
     font-size: 1.2rem;
     font-weight: bold;
     color: #18181b;
 }
-.page-header .right-side-menu {
+#page-header .right-side-menu {
     display: flex;
-    column-gap: 20px;
+    column-gap: 10px;
     align-items: center;
 }
-.page-header .right-side-menu .menu-item {
+#page-header .right-side-menu .menu-item {
     display: flex;
     align-items: center;
     font-size: 1.1rem;
@@ -171,9 +185,10 @@ h6 {
     position: relative;
     color: #18181b;
     height: 100%;
+    cursor: pointer;
     box-sizing: border-box;
 }
-.page-header .right-side-menu .menu-item::after {
+#page-header .right-side-menu .menu-item::after {
     content: '';
     position: absolute;
     border-top: 3px #18181b solid;
@@ -184,67 +199,157 @@ h6 {
     transform: scaleX(0);
     transition: transform 0.15s;
 }
-.page-header .right-side-menu .menu-item:hover::after {
+#page-header .right-side-menu .menu-item:hover::after {
     transform: scaleX(1);
 }
+#page-header .right-side-menu .menu-item.realtime-mode-display {
+    display: none;
+    cursor: initial;
+}
+#page-header .right-side-menu .menu-item.realtime-mode-display .display-icon {
+    margin: auto;
+}
+#page-header .right-side-menu .menu-item.realtime-mode-display .display-icon i {
+    font-size: 1.5rem;
+}
+#page-header .right-side-menu .menu-item.realtime-mode-display::after {
+    content: none;
+}
+#page-header .right-side-menu .menu-item.realtime-mode-display.active {
+    display: flex;
+}
+#page-header .right-side-menu .menu-item.realtime-mode-display.active .display-icon {
+    animation: realtime-mode-display 2s infinite forwards linear;
+}
+#page-header .right-side-menu .menu-item.notification .notification-icon-wrapper {
+    position: relative;
+}
+#page-header .right-side-menu .menu-item.notification .notification-icon-wrapper .badge {
+    padding: 3px 6px;
+    background-color: #909090 !important;
+}
+#page-header .right-side-menu .menu-item.notification .notification-icon-wrapper i {
+    font-size: 1.2rem;
+}
 
-#app-notification {
+#app-toaster {
     display: flex;
     align-items: center;
     column-gap: 10px;
     position: fixed;
     bottom: 20px;
-    left: 20px;
     background-color: #333;
     color: #fff;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 0 5px #fff;
-    z-index: 1000;
-    visibility: hidden;
-    max-width: 250px;
-    transition:
-        visibility 0.25s,
-        opacity 0.25s;
-    opacity: 0;
+    box-shadow: none;
+    z-index: 1060;
     cursor: pointer;
     overflow: hidden;
+    left: 20px;
+    width: 250px;
+    max-height: 150px;
+    transform: translateX(calc(-100% - 20px - 5px));
 }
-#app-notification .text-content {
+#app-toaster .text-content {
     font-size: 0.95rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
-#app-notification .close-btn {
+#app-toaster .close-btn {
     position: absolute;
     top: 5px;
     right: 5px;
     cursor: pointer;
-    color: rgb(153, 153, 153);
+    color: #909090;
 }
-#app-notification .close-btn i {
-    display: flex;
+#app-toaster .close-btn i {
     color: inherit;
     font-size: 12px;
 }
-#app-notification .close-btn:hover {
+#app-toaster .close-btn:hover {
     color: #fff;
 }
-#app-notification .progress-container {
+#app-toaster .progress-container {
     width: 100%;
     height: 5px;
     position: absolute;
     left: 0;
     bottom: 0;
 }
-#app-notification .progress-container .progress-bar {
+#app-toaster .progress-container .progress-bar {
     width: 0;
     height: 100%;
     background-color: #fff;
 }
-#app-notification .progress-container .progress-bar.running {
-    animation-name: progressBarRunning;
+#app-toaster .progress-container .progress-bar.running-a {
+    animation-name: progress-bar-running-a;
     animation-timing-function: linear;
 }
-@keyframes progressBarRunning {
+#app-toaster .progress-container .progress-bar.running-b {
+    animation-name: progress-bar-running-b;
+    animation-timing-function: linear;
+}
+#app-toaster .icon-type i.success-icon {
+    color: #13a765;
+}
+#app-toaster .icon-type i.error-icon {
+    color: #ff2424;
+}
+#app-toaster .icon-type i.info-icon {
+    color: #fff;
+}
+#app-toaster.error .progress-container .progress-bar {
+    background-color: #ff2424;
+}
+#app-toaster.success .progress-container .progress-bar {
+    background-color: #13a765;
+}
+#app-toaster:hover {
+    transform: translateX(0);
+}
+#app-toaster.show-a {
+    animation-name: slide-app-toaster-a;
+    animation-timing-function: ease-out;
+}
+#app-toaster.show-b {
+    animation-name: slide-app-toaster-b;
+    animation-timing-function: ease-out;
+}
+#app-toaster.clicked {
+    transform: translateX(calc(-100% - 20px - 5px));
+    animation: none;
+}
+
+@keyframes slide-app-toaster-a {
+    0% {
+        transform: translateX(calc(-100% - 20px - 5px));
+    }
+    10% {
+        transform: translateX(0);
+    }
+    90% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-100% - 20px - 5px));
+    }
+}
+@keyframes slide-app-toaster-b {
+    0% {
+        transform: translateX(calc(-100% - 20px - 5px));
+    }
+    10% {
+        transform: translateX(0);
+    }
+    90% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-100% - 20px - 5px));
+    }
+}
+@keyframes progress-bar-running-a {
     from {
         width: 100%;
     }
@@ -252,35 +357,21 @@ h6 {
         width: 0;
     }
 }
-#app-notification .type-icon i {
-    display: flex;
+@keyframes progress-bar-running-b {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
 }
-#app-notification .type-icon i.success-icon {
-    color: #13a765;
-}
-#app-notification .type-icon i.error-icon {
-    color: #ff2424;
-}
-#app-notification .type-icon i.info-icon {
-    color: #fff;
-}
-#app-notification.error .progress-bar {
-    background-color: #ff2424;
-}
-#app-notification.success .progress-bar {
-    background-color: #13a765;
-}
-#app-notification.show,
-#app-notification:hover {
-    visibility: visible;
-    opacity: 1;
-}
-#app-notification:hover {
-    box-shadow: 0 0 5px white;
-}
-#app-notification.clicked {
-    opacity: 0;
-    visibility: hidden;
+@keyframes realtime-mode-display {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /*# sourceMappingURL=global.css.map */

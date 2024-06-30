@@ -5,6 +5,7 @@ import { JWTService } from './jwt.service'
 import { NoteService } from '@/note/note.service'
 import type { TJWTPayload, TSignInParams } from './types'
 import * as bcrypt from 'bcrypt'
+import { BaseSessions } from '@/note/gateway/sessions'
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     ) {}
 
     async checkAuth(req: Request): Promise<void> {
-        const token = this.jwtService.extractJWTToken(req)
+        const token = this.jwtService.extractJWTFromRequest(req)
         if (!token) {
             throw new UnauthorizedException(EAuthMessages.TOKEN_NOT_FOUND)
         }
@@ -49,7 +50,9 @@ export class AuthService {
         this.jwtService.sendJWTToClient(res, { token })
     }
 
-    async logout(res: Response): Promise<void> {
+    async logout(req: Request, res: Response, noteUniqueName: string): Promise<void> {
+        const jwt = this.jwtService.extractJWTFromRequest(req)!
+        BaseSessions.removeUserSession(noteUniqueName, jwt)
         this.jwtService.removeJWTAtClient(res)
     }
 }

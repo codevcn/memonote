@@ -77,98 +77,44 @@ bold - bold
     font-style: normal;
     font-weight: 300;
 }
+:root {
+    --mmn-quick-look-icon-initial-size: 30px;
+}
+
 #page-main {
-    padding: 10px 50px 30px;
+    padding: 10px 50px 100px;
+    z-index: 1;
 }
-#page-main .user-actions-and-logout {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-#page-main .user-actions-and-logout .user-actions {
+#page-main .note-quick-look .quick-look-item {
     display: flex;
     align-items: center;
-    column-gap: 10px;
-}
-#page-main .user-actions-and-logout .user-actions .user-action {
-    display: flex;
-    align-items: center;
+    height: 30px;
+    width: 30px;
+    overflow: hidden;
+    padding: 6px;
+    transition: width 0.2s;
     column-gap: 5px;
-    background-color: #18181b;
-    padding: 4px 9px;
+}
+#page-main .note-quick-look .quick-look-item i {
+    font-size: 1.1rem;
+}
+#page-main .note-quick-look .quick-look-item .text {
+    display: block;
+    width: max-content;
+    color: #fff;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+#page-main .note-quick-look .quick-look-item.password-set {
+    background-color: #ff2424;
     border-radius: 5px;
-    font-size: 0.9rem;
-    color: #fff;
 }
-#page-main .user-actions-and-logout .user-actions .user-action i {
-    display: flex;
-    font-size: 0.9rem;
-    color: inherit;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.set-note-password {
-    color: #fff;
-    background-color: #ff2424;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.set-note-password i {
-    color: #fff;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.set-note-password:hover {
-    outline: 2px #ff2424 solid;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.remove-note-password {
-    color: #ff2424;
-    background-color: #fff;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.remove-note-password.on-progress {
-    opacity: 0.6;
-    pointer-events: none;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.remove-note-password i {
-    color: #ff2424;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.remove-note-password:hover span {
-    text-decoration: underline;
-}
-#page-main .user-actions-and-logout .user-actions .user-action.remove-note-password .spinner {
-    height: 20px;
-    width: 20px;
-}
-#page-main .user-actions-and-logout .logout-btn {
-    display: flex;
-    align-items: center;
-    column-gap: 8px;
-    background-color: #fff;
-    padding: 2.5px 10px;
-    border: 1.5px #ff2424 solid;
-    border-radius: 15px;
-    font-size: 0.9rem;
-    color: #ff2424;
-    transition: background-color 0.2s;
-}
-#page-main .user-actions-and-logout .logout-btn .spinner {
-    height: 21.5px;
-    width: 21.5px;
-}
-#page-main .user-actions-and-logout .logout-btn i {
-    display: flex;
-    color: #ff2424;
-    font-size: 1.2rem;
-    transform: translate(2px, 0.5px);
-}
-#page-main .user-actions-and-logout .logout-btn.on-progress {
-    opacity: 0.6;
-    pointer-events: none;
-}
-#page-main .user-actions-and-logout .logout-btn:hover {
-    background-color: #ff2424;
-    color: #fff;
-}
-#page-main .user-actions-and-logout .logout-btn:hover i {
+#page-main .note-quick-look .quick-look-item.password-set i {
     color: #fff;
 }
 #page-main .notes {
-    margin-top: 20px;
-    padding: 0 50px;
+    padding: 0 80px;
+    margin-top: 15px;
 }
 #page-main .notes .note-container .note-annotation {
     position: absolute;
@@ -182,6 +128,9 @@ bold - bold
     transition:
         opacity 0.15s,
         transform 0.15s;
+    width: max-content;
+    max-width: 80px;
+    text-align: right;
 }
 #page-main .notes .note-container .note-title {
     position: relative;
@@ -308,7 +257,7 @@ bold - bold
     display: flex;
     column-gap: 5px;
     width: 100%;
-    margin-top: 5px;
+    margin-top: 15px;
 }
 #page-main .notes .note-container .note-editor-board .useful-note-actions .action {
     display: flex;
@@ -322,39 +271,8 @@ bold - bold
     border: 2px #18181b solid;
 }
 #page-main .notes .note-container .note-editor-board .useful-note-actions .action i {
-    display: flex;
     font-size: 0.9rem;
     color: inherit;
-}
-#page-main .notes .note-container .note-editor-board .useful-note-actions .action:hover {
-    background-color: transparent;
-    color: #18181b;
-}
-#page-main .notes .note-container .note-editor-board .useful-note-modes {
-    display: flex;
-    column-gap: 5px;
-    width: 100%;
-    margin-top: 15px;
-}
-#page-main .notes .note-container .note-editor-board .useful-note-modes .action {
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
-    background-color: #18181b;
-    padding: 4px 9px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    color: #fff;
-    border: 2px #18181b solid;
-}
-#page-main .notes .note-container .note-editor-board .useful-note-modes .action i {
-    display: flex;
-    font-size: 0.9rem;
-    color: inherit;
-}
-#page-main .notes .note-container .note-editor-board .useful-note-modes .action:hover {
-    background-color: transparent;
-    color: #18181b;
 }
 
 .modal .modal-dialog .modal-content .modal-header .btn-close:focus {
@@ -362,6 +280,33 @@ bold - bold
 }
 .modal .modal-dialog .modal-content .modal-header h2 {
     font-weight: bold;
+}
+.modal .modal-dialog .modal-content .modal-body .message {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    padding-left: 5px;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.modal .modal-dialog .modal-content .modal-body .message i {
+    color: inherit;
+    font-size: inherit;
+}
+.modal .modal-dialog .modal-content .modal-body .message.warning {
+    color: #ff2424;
+    background-color: #ffdddd;
+}
+.modal .modal-dialog .modal-content .modal-body .message.success {
+    color: #13a765;
+    background-color: #d0ffea;
+}
+.modal .modal-dialog .modal-content .modal-body .message.warning,
+.modal .modal-dialog .modal-content .modal-body .message.success {
+    padding: 5px 10px;
+    margin-top: 10px;
 }
 .modal .modal-dialog .modal-content .modal-footer {
     display: flex;
@@ -380,149 +325,21 @@ bold - bold
 .modal .modal-dialog .modal-content .modal-footer button:hover {
     text-decoration: underline;
 }
-.modal .modal-dialog .modal-content .modal-footer .modal-close-btn {
+.modal .modal-dialog .modal-content .modal-footer button.modal-close-btn {
     background-color: #ff2424;
     color: #fff;
 }
-.modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn {
+.modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn {
     background-color: #f3f3f3;
     color: #333;
 }
-.modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn.on-progress {
+.modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn.on-progress {
     opacity: 0.6;
     pointer-events: none;
 }
-.modal .modal-dialog .modal-content .modal-footer .modal-save-change-btn .spinner-border {
+.modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn .spinner-border {
     height: 1.5rem;
     width: 1.5rem;
-}
-
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group label {
-    font-size: 0.9rem;
-    padding-left: 5px;
-    font-weight: bold;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .input-wrapper {
-    position: relative;
-    margin: 3px 0;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .input-wrapper input {
-    width: 100%;
-    padding: 5px 10px;
-    box-sizing: border-box;
-    border: 1.5px #909090 solid;
-    font-family: Arial, Helvetica, sans-serif;
-    border-radius: 5px;
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .input-wrapper
-    input:hover {
-    outline: 1px gray solid;
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .input-wrapper
-    input:focus {
-    border-color: gray;
-    border-left-width: 5px;
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .input-wrapper
-    .input-actions {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: transform 0.15s;
-    cursor: pointer;
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .input-wrapper
-    .input-actions:hover {
-    transform: translateY(-50%) scale(1.1);
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .input-wrapper
-    .input-actions
-    i {
-    display: flex;
-    font-size: 1.2rem;
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .input-wrapper
-    .input-actions
-    .inactive {
-    display: none;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .helper-text {
-    font-style: italic;
-    padding-left: 10px;
-    margin-top: 2px;
-}
-#set-note-password-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .form-group
-    .helper-text
-    .helper-text-item {
-    color: #909090;
-    font-size: 0.9rem;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message {
-    display: flex;
-    column-gap: 5px;
-    align-items: center;
-    padding-left: 5px;
-    font-size: 0.9rem;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 5px;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message i {
-    display: flex;
-    color: inherit;
-    font-size: inherit;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.warning {
-    color: #ff2424;
-    background-color: #ffdddd;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.success {
-    color: #13a765;
-    background-color: #d0ffea;
-}
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.warning,
-#set-note-password-modal .modal-dialog .modal-content .modal-body .form-group .message.success {
-    padding: 5px 10px;
-    margin-top: 10px;
-}
-
-#remove-note-password-modal .modal-dialog .modal-content .modal-body {
-    font-size: 1.1rem;
 }
 
 #bubble-note-settings {
@@ -541,7 +358,6 @@ bold - bold
         transform 0.2s;
 }
 #bubble-note-settings .bubble-note-settings-btn i {
-    display: flex;
     font-size: 2rem;
     color: #fff;
     transition: color 0.2s;
@@ -585,7 +401,7 @@ bold - bold
     .nav-items {
     display: flex;
     flex-direction: column;
-    row-gap: 10px;
+    row-gap: 5px;
     background-color: #fff;
     border-radius: 8px 0 0 8px;
 }
@@ -596,12 +412,14 @@ bold - bold
     .note-settings-board
     .note-settings-navigation
     .nav-item {
-    display: block;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
     color: #333;
     text-decoration: none;
     padding: 5px 15px;
-    text-align: end;
     border-left: 3px #fff solid;
+    cursor: pointer;
 }
 #note-settings-modal
     .modal-dialog
@@ -629,8 +447,10 @@ bold - bold
     .nav-item.logout-btn {
     display: flex;
     justify-content: center;
+    align-items: center;
     font-weight: bold;
     color: #ff2424;
+    column-gap: 10px;
 }
 #note-settings-modal
     .modal-dialog
@@ -649,6 +469,18 @@ bold - bold
     .modal-body
     .note-settings-board
     .note-settings-navigation
+    .nav-item.logout-btn
+    i {
+    height: fit-content;
+    color: inherit;
+    font-size: 1rem;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
     .nav-item.logout-btn:hover,
 #note-settings-modal
     .modal-dialog
@@ -660,20 +492,86 @@ bold - bold
     background-color: #ffdddd;
     border-left: 3px #ff2424 solid;
 }
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form {
+#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board .forms {
     padding: 5px 20px 0;
     flex: 1;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board .forms .tabs {
+    display: flex;
+    margin-bottom: 15px;
 }
 #note-settings-modal
     .modal-dialog
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
+    .tabs
+    .tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 5px;
+    flex: 1;
+    padding: 5px;
+    border-bottom: 1px lightgray solid;
+    background-color: #e3e3e3;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn
+    i {
+    display: none;
+    font-size: 0.9rem;
+    transform: rotateY(180deg);
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn.active {
+    border: 1px lightgray solid;
+    border-bottom: 1px #fff solid;
+    background-color: #fff;
+    opacity: 1;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn.active
+    i {
+    display: flex;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn:hover {
+    opacity: 0.85;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
     .note-settings-form
     .form-title {
     display: flex;
@@ -690,6 +588,7 @@ bold - bold
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
     .note-settings-form
     .form-title
     .status
@@ -702,138 +601,91 @@ bold - bold
     .modal-content
     .modal-body
     .note-settings-board
-    .note-settings-form
-    .form-content {
-    display: none;
-    flex-direction: column;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
+    .forms
     .note-settings-form
     .form-content
-    .form-group {
+    .form-group
+    .message {
     display: flex;
-    align-items: center;
-    column-gap: 10px;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .form-check-input {
-    height: 1.2rem;
-    width: 2.5rem;
-    margin-top: 0;
-    border-color: lightgray;
-    cursor: pointer;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .form-check-input:focus,
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .form-check-input:hover {
-    box-shadow: 0 0 0 0.25rem lightgray;
-    border-color: lightgray;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .form-check-input:checked {
-    background-color: #18181b;
-    color: #18181b;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .info {
-    display: flex;
-    align-items: center;
     column-gap: 5px;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .info
-    .details-btn {
-    cursor: pointer;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .note-settings-form
-    .form-content
-    .form-group
-    .info
-    .details-btn
-    i {
-    display: flex;
+    align-items: center;
+    padding-left: 5px;
     font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
 }
 #note-settings-modal
     .modal-dialog
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
     .note-settings-form
     .form-content
     .form-group
-    .info
-    .details-btn:hover {
-    transform: scale(1.2);
+    .message
+    i {
+    color: inherit;
+    font-size: inherit;
 }
 #note-settings-modal
     .modal-dialog
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
     .note-settings-form
-    .form-content.active {
-    display: flex;
+    .form-content
+    .form-group
+    .message.warning {
+    color: #ff2424;
+    background-color: #ffdddd;
 }
 #note-settings-modal
     .modal-dialog
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
     .note-settings-form
-    .form-save-change-btn {
+    .form-content
+    .form-group
+    .message.success {
+    color: #13a765;
+    background-color: #d0ffea;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message.warning,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message.success {
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -841,7 +693,7 @@ bold - bold
     width: 100%;
     border-radius: 5px;
     padding: 3px 20px;
-    margin-top: 30px;
+    margin-top: 25px;
     background-color: #333;
     border: 2px #333 solid;
     color: #fff;
@@ -854,10 +706,22 @@ bold - bold
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
     .note-settings-form
-    .form-save-change-btn
+    .form-btn
+    .spinner {
+    height: 24px;
+    width: 24px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-btn
     i {
-    display: flex;
     color: inherit;
 }
 #note-settings-modal
@@ -865,10 +729,156 @@ bold - bold
     .modal-content
     .modal-body
     .note-settings-board
+    .forms
     .note-settings-form
-    .form-save-change-btn:hover {
+    .form-btn:hover {
     background-color: #fff;
     color: black;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .unset-password-notice {
+    display: flex;
+    column-gap: 5px;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    padding: 15px 0;
+}
+
+#settings-form-change-modes .form-content {
+    display: flex;
+    flex-direction: column;
+}
+#settings-form-change-modes .form-content .form-group {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+#settings-form-change-modes .form-content .form-group .form-check-input {
+    height: 1.2rem;
+    width: 2.5rem;
+    margin-top: 0;
+    border-color: lightgray;
+    cursor: pointer;
+}
+#settings-form-change-modes .form-content .form-group .form-check-input:focus,
+#settings-form-change-modes .form-content .form-group .form-check-input:hover {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+#settings-form-change-modes .form-content .form-group .form-check-input:checked {
+    background-color: #18181b;
+    color: #18181b;
+}
+#settings-form-change-modes .form-content .form-group .info {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#settings-form-change-modes .form-content .form-group .info .details-btn {
+    cursor: pointer;
+}
+#settings-form-change-modes .form-content .form-group .info .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-change-modes .form-content .form-group .info .details-btn:hover {
+    transform: scale(1.2);
+}
+
+#settings-form-set-password .form-content .form-group label {
+    font-size: 0.9rem;
+    padding-left: 5px;
+    font-weight: bold;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper {
+    position: relative;
+    margin: 3px 0;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper input {
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border: 1.5px #909090 solid;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5px;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper input:hover {
+    outline: 1px gray solid;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper input:focus {
+    border-color: gray;
+    border-left-width: 5px;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.15s;
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions:hover {
+    transform: translateY(-50%) scale(1.2);
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions i {
+    font-size: 1.2rem;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions .inactive {
+    display: none;
+}
+#settings-form-set-password .form-content .form-group .helper-text {
+    font-style: italic;
+    padding-left: 10px;
+    margin-top: 2px;
+}
+#settings-form-set-password .form-content .form-group .helper-text .helper-text-item {
+    color: #909090;
+    font-size: 0.9rem;
+}
+#settings-form-set-password .form-content .form-group.logout-all {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    margin-top: 15px;
+}
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input {
+    height: 1.2rem;
+    width: 2.5rem;
+    margin-top: 0;
+    border-color: lightgray;
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input:focus,
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input:hover {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input:checked {
+    background-color: #18181b;
+    color: #18181b;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info .details-btn {
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info .details-btn:hover {
+    transform: scale(1.2);
+}
+
+#settings-form-remove-password .form-content .form-group {
+    font-size: 1.1rem;
 }
 
 /*# sourceMappingURL=home-page.css.map */

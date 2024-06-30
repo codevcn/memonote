@@ -1,0 +1,5 @@
+To move this build-folder to destination-folder:
+    - delete all files and folders in destination-folder:
+        + run file delete.bat
+    - move all files and folders in this build-folder to destination-folder:
+        + run file move.bat

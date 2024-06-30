@@ -7,7 +7,7 @@ export class SignInPayloadDTO {
     password: string
 }
 
-export class GetNoteOnHomePageParamsDTO {
+export class NoteUniqueNameOnParamDTO {
     @IsNotEmpty()
     @Matches(noteUniqueNameRegEx, { message: EValidationMessages.INVALID_NOTE_UNIQUE_NAME })
     noteUniqueName: string

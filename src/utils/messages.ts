@@ -17,4 +17,6 @@ export enum EValidationMessages {
 
 export enum ENoteBroadcastMessages {
     INVALID_INPUT = 'Invalid input',
+    INVALID_CREDENTIALS = 'Invalid credentials',
+    USER_LOGOUTED = 'User Logouted',
 }

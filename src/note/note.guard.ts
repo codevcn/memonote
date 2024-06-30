@@ -13,10 +13,8 @@ export class SetPasswordGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>()
         const note = await this.noteService.findNote(request.params.noteUniqueName)
-        if (note) {
-            if (note.password) {
-                await this.authService.checkAuth(request)
-            }
+        if (note && note.password) {
+            await this.authService.checkAuth(request)
         }
         return true
     }

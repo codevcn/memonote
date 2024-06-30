@@ -1,7 +1,7 @@
-import type { CookieOptions, Response } from 'express'
+import type { CookieOptions, Response, Request } from 'express'
 import type { TSendJWTParamOptions, TJWTPayload, TJwtCookieOptions } from './types'
 import type { TSuccess } from '@/utils/types'
-import type { GetNoteOnHomePageParamsDTO, SignInPayloadDTO } from './auth.dto'
+import type { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './auth.dto'
 
 export interface IJWTService {
     jwtCookieOptions: TJwtCookieOptions
@@ -12,10 +12,10 @@ export interface IJWTService {
 }
 
 export interface IAuthAPIController {
-    logout(res: Response): Promise<TSuccess>
     signIn(
-        params: GetNoteOnHomePageParamsDTO,
+        params: NoteUniqueNameOnParamDTO,
         signInPayload: SignInPayloadDTO,
         res: Response,
     ): Promise<TSuccess>
+    logout(req: Request, res: Response, params: NoteUniqueNameOnParamDTO): Promise<TSuccess>
 }

@@ -43,6 +43,7 @@ export class HomeController implements IHomeController {
                         note: {
                             content: note.content,
                             title: note.title,
+                            author: note.author,
                             passwordSet: true,
                         },
                     })
@@ -53,12 +54,13 @@ export class HomeController implements IHomeController {
                 }
             } else {
                 res.status(HttpStatus.OK).render(ClientViewPages.home, {
+                    appInfo,
                     note: {
                         content: note.content,
                         title: note.title,
+                        author: note.author,
                         passwordSet: false,
                     },
-                    appInfo,
                 })
                 return
             }

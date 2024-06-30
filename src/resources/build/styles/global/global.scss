@@ -1,7 +1,12 @@
 @use 'text-fonts';
 @use 'colors';
+@use 'z-indexes';
 
 $mmn-height-of-page-header: 60px;
+$mmn-app-toaster-left-gap: 20px;
+$mmn-app-toaster-width: 250px;
+$mmn-app-toaster-initial-transform: translateX(calc(-100% - #{$mmn-app-toaster-left-gap} - 5px));
+$mmn-app-toaster-max-height: 150px;
 
 body {
     padding: 0;
@@ -32,6 +37,7 @@ button {
 }
 
 i {
+    display: flex;
     color: colors.$mmn-regular-black-cl;
     font-size: 1rem;
 }
@@ -57,18 +63,33 @@ h6 {
 
 #general-app-status {
     i {
-        font-size: 1.3rem;
-        color: colors.$mmn-general-status-cl;
+        font-size: 1.4rem;
+
+        &.success-icon {
+            color: colors.$mmn-general-status-success-cl;
+        }
+        &.error-icon {
+            color: colors.$mmn-general-status-error-cl;
+        }
+    }
+
+    &.inactive {
+        display: none;
     }
 }
 
-.page-header {
+#page-header {
     display: flex;
     column-gap: 30px;
     justify-content: space-between;
     padding: 0 50px;
     height: $mmn-height-of-page-header;
-    border-bottom: 1px colors.$mmn-regular-divider-border-cl solid;
+    border-bottom: 1px colors.$mmn-divider-border-cl solid;
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    background-color: colors.$mmn-regular-white-cl;
 
     .app-logo-container {
         display: flex;
@@ -90,7 +111,7 @@ h6 {
 
     .right-side-menu {
         display: flex;
-        column-gap: 20px;
+        column-gap: 10px;
         align-items: center;
 
         .menu-item {
@@ -102,6 +123,7 @@ h6 {
             position: relative;
             color: colors.$mmn-primary-cl;
             height: 100%;
+            cursor: pointer;
             box-sizing: border-box;
 
             &::after {
@@ -121,34 +143,73 @@ h6 {
                     transform: scaleX(1);
                 }
             }
+
+            &.realtime-mode-display {
+                display: none;
+                cursor: initial;
+
+                .display-icon {
+                    margin: auto;
+
+                    i {
+                        font-size: 1.5rem;
+                    }
+                }
+
+                &::after {
+                    content: none;
+                }
+
+                &.active {
+                    display: flex;
+
+                    .display-icon {
+                        animation: realtime-mode-display 2s infinite forwards linear;
+                    }
+                }
+            }
+
+            &.notification {
+                .notification-icon-wrapper {
+                    position: relative;
+
+                    .badge {
+                        padding: 3px 6px;
+                        background-color: colors.$mmn-regular-gray-cl !important;
+                    }
+
+                    i {
+                        font-size: 1.2rem;
+                    }
+                }
+            }
         }
     }
 }
 
-#app-notification {
+#app-toaster {
     display: flex;
     align-items: center;
     column-gap: 10px;
     position: fixed;
     bottom: 20px;
-    left: 20px;
     background-color: colors.$mmn-regular-black-cl;
     color: colors.$mmn-regular-white-cl;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 0 5px colors.$mmn-regular-white-cl;
-    z-index: 1000;
-    visibility: hidden;
-    max-width: 250px;
-    transition:
-        visibility 0.25s,
-        opacity 0.25s;
-    opacity: 0;
+    box-shadow: none;
+    z-index: z-indexes.$mmn-app-toaster-zidx;
     cursor: pointer;
     overflow: hidden;
+    left: $mmn-app-toaster-left-gap;
+    width: $mmn-app-toaster-width;
+    max-height: $mmn-app-toaster-max-height;
+    transform: $mmn-app-toaster-initial-transform;
 
     .text-content {
         font-size: 0.95rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     .close-btn {
@@ -156,10 +217,9 @@ h6 {
         top: 5px;
         right: 5px;
         cursor: pointer;
-        color: rgb(153, 153, 153);
+        color: colors.$mmn-regular-gray-cl;
 
         i {
-            display: flex;
             color: inherit;
             font-size: 12px;
         }
@@ -181,26 +241,19 @@ h6 {
             height: 100%;
             background-color: colors.$mmn-regular-white-cl;
 
-            &.running {
-                animation-name: progressBarRunning;
+            &.running-a {
+                animation-name: progress-bar-running-a;
                 animation-timing-function: linear;
             }
-
-            @keyframes progressBarRunning {
-                from {
-                    width: 100%;
-                }
-                to {
-                    width: 0;
-                }
+            &.running-b {
+                animation-name: progress-bar-running-b;
+                animation-timing-function: linear;
             }
         }
     }
 
-    .type-icon {
+    .icon-type {
         i {
-            display: flex;
-
             &.success-icon {
                 color: colors.$mmn-regular-green-cl;
             }
@@ -214,29 +267,94 @@ h6 {
     }
 
     &.error {
-        .progress-bar {
-            background-color: colors.$mmn-regular-red-cl;
+        .progress-container {
+            .progress-bar {
+                background-color: colors.$mmn-regular-red-cl;
+            }
         }
     }
 
     &.success {
-        .progress-bar {
-            background-color: colors.$mmn-regular-green-cl;
+        .progress-container {
+            .progress-bar {
+                background-color: colors.$mmn-regular-green-cl;
+            }
         }
     }
 
-    &.show,
     &:hover {
-        visibility: visible;
-        opacity: 1;
+        transform: translateX(0);
     }
 
-    &:hover {
-        box-shadow: 0 0 5px white;
+    &.show-a {
+        animation-name: slide-app-toaster-a;
+        animation-timing-function: ease-out;
+    }
+
+    &.show-b {
+        animation-name: slide-app-toaster-b;
+        animation-timing-function: ease-out;
     }
 
     &.clicked {
-        opacity: 0;
-        visibility: hidden;
+        transform: $mmn-app-toaster-initial-transform;
+        animation: none;
+    }
+}
+
+@keyframes slide-app-toaster-a {
+    0% {
+        transform: $mmn-app-toaster-initial-transform;
+    }
+    10% {
+        transform: translateX(0);
+    }
+    90% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: $mmn-app-toaster-initial-transform;
+    }
+}
+
+@keyframes slide-app-toaster-b {
+    0% {
+        transform: $mmn-app-toaster-initial-transform;
+    }
+    10% {
+        transform: translateX(0);
+    }
+    90% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: $mmn-app-toaster-initial-transform;
+    }
+}
+
+@keyframes progress-bar-running-a {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
+
+@keyframes progress-bar-running-b {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
+
+@keyframes realtime-mode-display {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
