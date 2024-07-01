@@ -4,17 +4,11 @@ import type { Response, Request } from 'express'
 import { APIRoutes } from '@/utils/routes'
 import type { IAuthAPIController } from './interfaces'
 import { APIAuthGuard } from '@/auth/auth.guard'
-import { NoteService } from '@/note/note.service'
 import { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './auth.dto'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { EAuthMessages } from '@/utils/messages'
 
 @Controller(APIRoutes.auth)
 export class AuthAPIController implements IAuthAPIController {
-    constructor(
-        private authService: AuthService,
-        private noteService: NoteService,
-    ) {}
+    constructor(private authService: AuthService) {}
 
     @Post('sign-in/:noteUniqueName')
     async signIn(
@@ -23,9 +17,7 @@ export class AuthAPIController implements IAuthAPIController {
         @Res({ passthrough: true }) res: Response,
     ) {
         const { noteUniqueName } = params
-        const note = await this.noteService.findNote(noteUniqueName)
-        if (!note) throw new BaseCustomException(EAuthMessages.NOTE_NOT_FOUND)
-        await this.authService.signIn(res, { note, password: signInPayload.password })
+        await this.authService.signIn(noteUniqueName, signInPayload, res)
         return { success: true }
     }
 

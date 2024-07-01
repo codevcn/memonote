@@ -9,6 +9,10 @@ enum ENoteEvents {
 type TClientConnectedEventPayload = {
     connectionStatus: string
 }
+type TBroadcastNoteTypingRes = {
+    data: TNoteForm
+    success: boolean
+}
 
 // vars
 const clientSocketReconnecting = { value: false }
@@ -41,6 +45,11 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, async (data: TNoteForm) => {
     const realtimeMode = getRealtimeModeInDevice()
     if (realtimeMode && realtimeMode === 'sync') {
         setForNoteFormChanged(data)
+    } else {
+        const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
+        if (noteChangesDisplayMode && noteChangesDisplayMode === 'on') {
+            LayoutUI.setNoteFormChangsDisplay('on', data)
+        }
     }
 })
 
@@ -48,14 +57,17 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, async (data: TNoteForm) => {
 const broadcastNoteTyping = async (note: TNoteForm): Promise<void> => {
     clientSocket
         .timeout(EBroadcastTimeout.NOTE_TYPING_TIMEOUT)
-        .emit(ENoteEvents.NOTE_TYPING, note, (err: any, res: any) => {
-            console.log('>>> res event payload >>>', res)
+        .emit(ENoteEvents.NOTE_TYPING, note, (err: any, res: TBroadcastNoteTypingRes) => {
             if (err) {
-                console.log('>>> broadcast err >>>', err)
                 LayoutUI.setUIOfGeneralAppStatus('error')
+                console.log('>>> broadcast err >>>', err)
             } else {
-                LayoutUI.setUIOfGeneralAppStatus('success')
+                if (res.success) {
+                    LayoutUI.setUIOfGeneralAppStatus('success')
+                } else {
+                    LayoutUI.setUIOfGeneralAppStatus('error')
+                }
+                console.log('>>> broadcast res >>>', res)
             }
         })
-    console.log('>>> broadcast note >>>', note)
 }

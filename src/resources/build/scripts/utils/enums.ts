@@ -1,5 +1,6 @@
 enum ELocalStorageKeys {
     REALTIME_MODE = 'realtime-mode',
+    NOTE_CHANGES_DISPLAY_MODE = 'note-changes-dislay-mode',
 }
 
 enum ENoteLengths {

@@ -16,10 +16,35 @@ const closeAppNotification = (target: HTMLElement) => {
 class LayoutUI {
     private static readonly NOTIFICATION_TIMEOUT: number = 3000
     private static readonly GENERAL_STATUS_TIMEOUT: number = 2000
-    static toasterTimer: ReturnType<typeof setTimeout> | null = null
     private static toasterAnimationFlag: boolean = true
+    static toasterTimer: ReturnType<typeof setTimeout> | null = null
 
-    public static setUIOfGeneralAppStatus(status: TCommonStatus): void {
+    static setNoteFormChangsDisplay(type: 'on' | 'off', noteForm: TNoteForm): void {
+        const noteChangesDisplayClass = 'note-changes-display'
+        if (noteForm.title) {
+            const noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
+            noteFormItem.classList.remove(noteChangesDisplayClass)
+            if (type === 'on') {
+                noteFormItem.classList.add(noteChangesDisplayClass)
+            }
+        }
+        if (noteForm.author) {
+            const noteFormItem = noteFormEle.querySelector('.note-author') as HTMLElement
+            noteFormItem.classList.remove(noteChangesDisplayClass)
+            if (type === 'on') {
+                noteFormItem.classList.add(noteChangesDisplayClass)
+            }
+        }
+        if (noteForm.content) {
+            const noteFormItem = noteFormEle.querySelector('.note-editor-board') as HTMLElement
+            noteFormItem.classList.remove(noteChangesDisplayClass)
+            if (type === 'on') {
+                noteFormItem.classList.add(noteChangesDisplayClass)
+            }
+        }
+    }
+
+    static setUIOfGeneralAppStatus(status: TCommonStatus): void {
         const icons = generalAppStatus.querySelectorAll<HTMLElement>('i')
         for (const icon of icons) {
             if (icon.classList.contains(`${status}-icon`)) {
@@ -34,7 +59,7 @@ class LayoutUI {
         }, this.GENERAL_STATUS_TIMEOUT)
     }
 
-    public static toast(
+    static toast(
         type: 'success' | 'error' | 'info',
         message: string,
         durationInMs: number = this.NOTIFICATION_TIMEOUT,

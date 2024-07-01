@@ -11,7 +11,7 @@ import { JWTService } from '@/auth/jwt.service'
 import { EAuthEncryption } from '@/utils/enums'
 import type { TNoteForm } from './types'
 import { AddPasswordForNotePayloadDTO } from './note.dto'
-import { BaseSessions } from './gateway/sessions'
+import { UserSessions } from './gateway/sessions'
 
 @Injectable()
 export class NoteService {
@@ -66,10 +66,10 @@ export class NoteService {
         await this.noteModel.updateOne({ noteUniqueName }, { $set: { password: hashedPassword } })
         const jwt = await this.jwtService.createJWT({ noteUniqueName })
         this.jwtService.sendJWTToClient(res, { token: jwt })
-        BaseSessions.addUserSession(noteUniqueName, jwt)
+        UserSessions.addUserSession(noteUniqueName, jwt)
         const { logoutAll } = payload
         if (logoutAll) {
-            BaseSessions.logoutUserSessions(noteUniqueName, jwt)
+            UserSessions.logoutUserSessions(noteUniqueName, jwt)
         }
     }
 

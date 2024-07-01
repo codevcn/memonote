@@ -39,7 +39,8 @@ const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
 )
 const setPasswordForm = document.getElementById('settings-form-set-password')
 const removePasswordForm = document.getElementById('settings-form-remove-password')
-const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look')
+const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
+const noteFormEle = notesSection.querySelector('.note-form')
 const noteContentHistory = { history: [''], index: 0 }
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -106,20 +107,18 @@ const noteTyping = (noteEditorTarget) =>
     })
 const selectNoteEditorFromInside = (target) => {
     return target
-        .closest('.note-container')
+        .closest('.note-form')
         .querySelector('.note-editor-board .note-editor-container .note-editor')
 }
 const setForNoteFormChanged = (noteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor')
-    const noteContainer = noteEditor.closest('.note-container')
+    const noteContainer = noteEditor.closest('.note-form')
     if (title || title === '') {
-        const noteTitle = noteContainer.querySelector('.note-title input')
-        noteTitle.value = title
+        noteContainer.querySelector('.note-title input').value = title
     }
     if (author || author === '') {
-        const noteAuthor = noteContainer.querySelector('.note-author input')
-        noteAuthor.value = author
+        noteContainer.querySelector('.note-author input').value = author
     }
     if (content || content === '') {
         setNoteEditor(noteEditor, content)
@@ -199,8 +198,8 @@ const setMessageOfSetPassword = (message, type) => {
             <i class="bi bi-check-circle"></i>
             <span>${message}</span>`
     } else if (type === 'warning') {
-        messageTarget.classList.add('warning', 'success')
-        messageTarget.classList.remove('valid')
+        messageTarget.classList.remove('valid', 'success')
+        messageTarget.classList.add('warning')
         content = `
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>${message}</span>`
@@ -269,7 +268,7 @@ const setPasswordForNoteHanlder = (e) =>
             const submitBtn = form.querySelector('.form-btn')
             submitBtn.classList.add('on-progress')
             const innerHTML_beforeUpdate = submitBtn.innerHTML
-            submitBtn.innerHTML = getHTMLLoading('border')
+            submitBtn.innerHTML = Materials.getHTMLLoading('border')
             let apiSuccess = false
             try {
                 yield setPasswordForNote(password, !!logoutAll)
@@ -303,7 +302,7 @@ const removePasswordOfNoteHandler = (e) =>
         e.preventDefault()
         const submitBtn = e.target.querySelector('.form-btn')
         const innerHTML_beforeRemove = submitBtn.innerHTML
-        submitBtn.innerHTML = getHTMLLoading('border')
+        submitBtn.innerHTML = Materials.getHTMLLoading('border')
         let apiSuccess = false
         try {
             yield removePasswordOfNote(getNoteUniqueNameFromURL())
@@ -331,7 +330,7 @@ const logout = (noteUniqueName) =>
 const logoutHandler = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const innerHTML_beforeLogout = target.innerHTML
-        target.innerHTML = getHTMLLoading('border')
+        target.innerHTML = Materials.getHTMLLoading('border')
         target.classList.add('on-progress')
         let apiSuccess = false
         try {
@@ -355,7 +354,7 @@ const setStatusOfSettingsForm = (formTarget, type) => {
     formTarget.querySelector('.form-title .status .status-item.saved').hidden = !isSaved
     formTarget.querySelector('.form-title .status .status-item.unsaved').hidden = isSaved
 }
-const setRealtimeModeInDeviceHandler = (type) => {
+const setRealtimeModeHandler = (type) => {
     setRealtimeModeInDevice(type)
     if (type === 'sync') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
@@ -369,12 +368,18 @@ const saveChangesOfChangeModes = (e) =>
         const form = e.target
         const formData = new FormData(form)
         const realtimeMode = formData.get('realtime-mode')
+        const noteChangesDisplayMode = formData.get('note-changes-display')
         if (realtimeMode) {
             if (realtimeMode === 'on') {
-                setRealtimeModeInDeviceHandler('sync')
+                setRealtimeModeHandler('sync')
             }
         } else {
-            setRealtimeModeInDeviceHandler('stop')
+            setRealtimeModeHandler('stop')
+        }
+        if (noteChangesDisplayMode) {
+            setNoteChangesDisplayModeInDevice('on')
+        } else {
+            setNoteChangesDisplayModeInDevice('off')
         }
         setStatusOfSettingsForm(form, 'saved')
     })
@@ -417,6 +422,11 @@ const initPage = () => {
         const realtimeModeInput = document.getElementById('realtime-mode-input')
         realtimeModeInput.checked = true
         realtimeModeDisplay.classList.replace('inactive', 'active')
+    }
+    const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
+    if (noteChangesDisplayMode && noteChangesDisplayMode === 'off') {
+        const realtimeModeInput = document.getElementById('note-changes-display-input')
+        realtimeModeInput.checked = false
     }
     const changeModesForm = document.getElementById('settings-form-change-modes')
     const changeModesFormInputs = changeModesForm.querySelectorAll('input')

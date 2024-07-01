@@ -71,6 +71,11 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, (data) =>
         const realtimeMode = getRealtimeModeInDevice()
         if (realtimeMode && realtimeMode === 'sync') {
             setForNoteFormChanged(data)
+        } else {
+            const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
+            if (noteChangesDisplayMode && noteChangesDisplayMode === 'on') {
+                LayoutUI.setNoteFormChangsDisplay('on', data)
+            }
         }
     }),
 )
@@ -80,13 +85,16 @@ const broadcastNoteTyping = (note) =>
         clientSocket
             .timeout(EBroadcastTimeout.NOTE_TYPING_TIMEOUT)
             .emit(ENoteEvents.NOTE_TYPING, note, (err, res) => {
-                console.log('>>> res event payload >>>', res)
                 if (err) {
-                    console.log('>>> broadcast err >>>', err)
                     LayoutUI.setUIOfGeneralAppStatus('error')
+                    console.log('>>> broadcast err >>>', err)
                 } else {
-                    LayoutUI.setUIOfGeneralAppStatus('success')
+                    if (res.success) {
+                        LayoutUI.setUIOfGeneralAppStatus('success')
+                    } else {
+                        LayoutUI.setUIOfGeneralAppStatus('error')
+                    }
+                    console.log('>>> broadcast res >>>', res)
                 }
             })
-        console.log('>>> broadcast note >>>', note)
     })

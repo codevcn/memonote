@@ -96,7 +96,7 @@ const signInHandler = (target) =>
                 (_a = target.closest('.type-password-section')) === null || _a === void 0
                     ? void 0
                     : _a.querySelector('.submit-btn')
-            submitBtn.innerHTML = getHTMLLoading('grow')
+            submitBtn.innerHTML = Materials.getHTMLLoading('grow')
             submitBtn.classList.add('on-progress')
             let apiSuccess = false
             try {

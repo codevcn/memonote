@@ -1,24 +1,26 @@
 <main id="page-main">
     <section class="note-quick-look">
-        <div class="quick-look-item password-set" <%= note.passwordSet ? '' : 'hidden' %>>
-            <i class="bi bi-lock-fill"></i>
-            <span class="text">Password has been set</span>
+        <div class="quick-look-items">
+            <div class="quick-look-item password-set" <%= note.passwordSet ? '' : 'hidden' %>>
+                <i class="bi bi-lock-fill"></i>
+                <span class="text">Password has been set</span>
+            </div>
         </div>
     </section>
 
     <section class="notes">
-        <section class="note-container note-form">
-            <div class="note-title">
+        <section class="note-form">
+            <div class="note-form-item note-title">
                 <input type="text" value="<%= note.title || '' %>" placeholder="Add a title..."
                     oninput="broadcastNoteTitleTypingHanlder(this)" />
                 <div class="note-annotation">Title</div>
             </div>
-            <div class="note-author">
+            <div class="note-form-item note-author">
                 <input type="text" value="<%= note.author || '' %>" placeholder="Add an author..."
                     oninput="broadcastNoteAuthorTypingHanlder(this)" />
                 <div class="note-annotation">Author</div>
             </div>
-            <div class="note-editor-board">
+            <div class="note-form-item note-editor-board">
                 <div class="note-editor-container">
                     <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
                         <textarea class="note-editor" id="note-editor" rows="5" placeholder="Write your note here..."
@@ -31,7 +33,7 @@
                         <span class="count"><%= note.content ? note.content.length : 0 %> / 10000</span>
                     </div>
                 </div>
-                <div class="useful-note-actions">
+                <!-- <div class="useful-note-actions">
                     <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">
                         <i class="bi bi-clipboard"></i>
                         <span>Clipboard Paste</span>
@@ -48,7 +50,7 @@
                         <i class="bi bi-x-lg"></i>
                         <span>Clear</span>
                     </button>
-                </div>
+                </div> -->
             </div>
         </section>
     </section>
@@ -109,6 +111,20 @@
                                         </label>
                                         <div data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             title="When enabled, your note in this device will be updated in real-time. Click for more details."
+                                            class="details-btn">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch form-group">
+                                    <input class="form-check-input" type="checkbox" id="note-changes-display-input"
+                                        name="note-changes-display" checked>
+                                    <div class="info">
+                                        <label class="form-check-label" for="note-changes-display-input">
+                                            Display note has been changed.
+                                        </label>
+                                        <div data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="When this mode and the realtime mode is both turned off, your note in this device won't receive any notifications about changes. Click for more details."
                                             class="details-btn">
                                             <i class="bi bi-info-circle-fill"></i>
                                         </div>

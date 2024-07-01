@@ -13,7 +13,10 @@ const setPasswordForm = document.getElementById('settings-form-set-password') as
 const removePasswordForm = document.getElementById(
     'settings-form-remove-password',
 ) as HTMLFormElement
-const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look') as HTMLElement
+const noteQuickLook = homePage_pageMain.querySelector(
+    '.note-quick-look .quick-look-items',
+) as HTMLElement
+const noteFormEle = notesSection.querySelector('.note-form') as HTMLElement
 
 type TNoteContentHistory = {
     history: string[]
@@ -100,7 +103,7 @@ const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> 
 
 const selectNoteEditorFromInside = (target: HTMLElement): HTMLTextAreaElement => {
     return target
-        .closest('.note-container')!
+        .closest('.note-form')!
         .querySelector(
             '.note-editor-board .note-editor-container .note-editor',
         ) as HTMLTextAreaElement
@@ -109,14 +112,12 @@ const selectNoteEditorFromInside = (target: HTMLElement): HTMLTextAreaElement =>
 const setForNoteFormChanged = (noteForm: TNoteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor') as HTMLTextAreaElement
-    const noteContainer = noteEditor.closest('.note-container') as HTMLElement
+    const noteContainer = noteEditor.closest('.note-form') as HTMLElement
     if (title || title === '') {
-        const noteTitle = noteContainer.querySelector('.note-title input') as HTMLInputElement
-        noteTitle.value = title
+        ;(noteContainer.querySelector('.note-title input') as HTMLInputElement).value = title
     }
     if (author || author === '') {
-        const noteAuthor = noteContainer.querySelector('.note-author input') as HTMLInputElement
-        noteAuthor.value = author
+        ;(noteContainer.querySelector('.note-author input') as HTMLInputElement).value = author
     }
     if (content || content === '') {
         setNoteEditor(noteEditor, content)
@@ -213,8 +214,8 @@ const setMessageOfSetPassword = (message: string, type: TPasswordMessage): void 
             <i class="bi bi-check-circle"></i>
             <span>${message}</span>`
     } else if (type === 'warning') {
-        messageTarget.classList.add('warning', 'success')
-        messageTarget.classList.remove('valid')
+        messageTarget.classList.remove('valid', 'success')
+        messageTarget.classList.add('warning')
         content = `
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>${message}</span>`
@@ -298,7 +299,7 @@ const setPasswordForNoteHanlder = async (e: SubmitEvent): Promise<void> => {
         const submitBtn = form.querySelector('.form-btn') as HTMLButtonElement
         submitBtn.classList.add('on-progress')
         const innerHTML_beforeUpdate = submitBtn.innerHTML
-        submitBtn.innerHTML = getHTMLLoading('border')
+        submitBtn.innerHTML = Materials.getHTMLLoading('border')
 
         let apiSuccess: boolean = false
         try {
@@ -336,7 +337,7 @@ const removePasswordOfNoteHandler = async (e: SubmitEvent): Promise<void> => {
 
     const submitBtn = (e.target as HTMLFormElement).querySelector('.form-btn') as HTMLButtonElement
     const innerHTML_beforeRemove = submitBtn.innerHTML
-    submitBtn.innerHTML = getHTMLLoading('border')
+    submitBtn.innerHTML = Materials.getHTMLLoading('border')
     let apiSuccess: boolean = false
     try {
         await removePasswordOfNote(getNoteUniqueNameFromURL())
@@ -364,7 +365,7 @@ const logout = async (noteUniqueName: string): Promise<void> => {
 
 const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
     const innerHTML_beforeLogout = target.innerHTML
-    target.innerHTML = getHTMLLoading('border')
+    target.innerHTML = Materials.getHTMLLoading('border')
     target.classList.add('on-progress')
     let apiSuccess: boolean = false
     try {
@@ -392,7 +393,7 @@ const setStatusOfSettingsForm = (formTarget: HTMLFormElement, type: 'unsaved' | 
         isSaved
 }
 
-const setRealtimeModeInDeviceHandler = (type: TRealtimeModeTypes) => {
+const setRealtimeModeHandler = (type: TRealtimeModeTypes) => {
     setRealtimeModeInDevice(type)
     if (type === 'sync') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
@@ -408,12 +409,19 @@ const saveChangesOfChangeModes = async (e: SubmitEvent): Promise<void> => {
     const formData = new FormData(form)
 
     const realtimeMode = formData.get('realtime-mode') as TFormCheckValues
+    const noteChangesDisplayMode = formData.get('note-changes-display') as TFormCheckValues
+
     if (realtimeMode) {
         if (realtimeMode === 'on') {
-            setRealtimeModeInDeviceHandler('sync')
+            setRealtimeModeHandler('sync')
         }
     } else {
-        setRealtimeModeInDeviceHandler('stop')
+        setRealtimeModeHandler('stop')
+    }
+    if (noteChangesDisplayMode) {
+        setNoteChangesDisplayModeInDevice('on')
+    } else {
+        setNoteChangesDisplayModeInDevice('off')
     }
 
     setStatusOfSettingsForm(form, 'saved')
@@ -467,6 +475,13 @@ const initPage = (): void => {
         const realtimeModeInput = document.getElementById('realtime-mode-input') as HTMLInputElement
         realtimeModeInput.checked = true
         realtimeModeDisplay.classList.replace('inactive', 'active')
+    }
+    const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
+    if (noteChangesDisplayMode && noteChangesDisplayMode === 'off') {
+        const realtimeModeInput = document.getElementById(
+            'note-changes-display-input',
+        ) as HTMLInputElement
+        realtimeModeInput.checked = false
     }
     const changeModesForm = document.getElementById('settings-form-change-modes') as HTMLFormElement
     const changeModesFormInputs = changeModesForm.querySelectorAll<HTMLInputElement>('input')

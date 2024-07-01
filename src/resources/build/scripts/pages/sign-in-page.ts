@@ -71,7 +71,7 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
         const submitBtn = target
             .closest('.type-password-section')
             ?.querySelector('.submit-btn') as HTMLButtonElement
-        submitBtn.innerHTML = getHTMLLoading('grow')
+        submitBtn.innerHTML = Materials.getHTMLLoading('grow')
         submitBtn.classList.add('on-progress')
 
         let apiSuccess: boolean = false

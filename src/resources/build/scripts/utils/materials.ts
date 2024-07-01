@@ -1,14 +1,16 @@
 type THTMLLoadingType = 'grow' | 'border'
 
-const getHTMLLoading = (type: THTMLLoadingType): string => {
-    if (type === 'grow') {
-        return `
+class Materials {
+    static getHTMLLoading(type: THTMLLoadingType): string {
+        if (type === 'grow') {
+            return `
         <div class="spinner-grow spinner" role="status">
             <span class="sr-only"></span>
         </div>`
-    }
-    return `
+        }
+        return `
         <div class="spinner-border spinner" role="status">
             <span class="sr-only"></span>
         </div>`
+    }
 }

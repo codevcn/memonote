@@ -2,6 +2,7 @@
 var ELocalStorageKeys
 ;(function (ELocalStorageKeys) {
     ELocalStorageKeys['REALTIME_MODE'] = 'realtime-mode'
+    ELocalStorageKeys['NOTE_CHANGES_DISPLAY_MODE'] = 'note-changes-dislay-mode'
 })(ELocalStorageKeys || (ELocalStorageKeys = {}))
 var ENoteLengths
 ;(function (ENoteLengths) {

@@ -31,4 +31,6 @@ type TNoteForm = {
 
 type TRealtimeModeTypes = 'sync' | 'stop'
 
+type TNoteChangesDisplayTypes = 'on' | 'off'
+
 type TFormCheckValues = null | 'on'

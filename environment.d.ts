@@ -10,6 +10,7 @@ declare global {
             CLIENT_HOST: string
             APPLICATION_DOMAIN_DEV: string
             APPLICATION_DOMAIN: string
+            JWT_AUTH_COOKIE: string
         }
     }
 }

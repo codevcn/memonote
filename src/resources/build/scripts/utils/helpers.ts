@@ -27,11 +27,21 @@ const refreshPageAfterMs = (timeToRefresh: number): void => {
 }
 
 const getRealtimeModeInDevice = (): TRealtimeModeTypes | null => {
-    return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE) as TRealtimeModeTypes
+    return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE) as TRealtimeModeTypes | null
 }
 
 const setRealtimeModeInDevice = (type: TRealtimeModeTypes): void => {
     localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
+}
+
+const getNoteChangesDisplayModeInDevice = (): TNoteChangesDisplayTypes | null => {
+    return localStorage.getItem(
+        ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE,
+    ) as TNoteChangesDisplayTypes | null
+}
+
+const setNoteChangesDisplayModeInDevice = (type: TNoteChangesDisplayTypes): void => {
+    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, type)
 }
 
 function getCssVariable(variableName: string): string {

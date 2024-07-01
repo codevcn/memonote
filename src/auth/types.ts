@@ -10,11 +10,6 @@ export type TSendJWTParamOptions = {
     cookieOtps?: CookieOptions
 }
 
-export type TSignInParams = {
-    note: TNoteDocument
-    password: string
-}
-
 export type TJwtCookieOptions = {
     maxAge: number
     domain: string

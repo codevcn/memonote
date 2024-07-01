@@ -213,7 +213,7 @@ h6 {
     font-size: 1.5rem;
 }
 #page-header .right-side-menu .menu-item.realtime-mode-display::after {
-    content: none;
+    display: none;
 }
 #page-header .right-side-menu .menu-item.realtime-mode-display.active {
     display: flex;

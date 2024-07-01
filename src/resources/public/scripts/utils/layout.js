@@ -12,6 +12,30 @@ const closeAppNotification = (target) => {
     target.classList.add('clicked')
 }
 class LayoutUI {
+    static setNoteFormChangsDisplay(type, noteForm) {
+        const noteChangesDisplayClass = 'note-changes-display'
+        if (noteForm.title) {
+            const noteFormItem = noteFormEle.querySelector('.note-title')
+            noteFormItem.classList.remove(noteChangesDisplayClass)
+            if (type === 'on') {
+                noteFormItem.classList.add(noteChangesDisplayClass)
+            }
+        }
+        if (noteForm.author) {
+            const noteFormItem = noteFormEle.querySelector('.note-author')
+            noteFormItem.classList.remove(noteChangesDisplayClass)
+            if (type === 'on') {
+                noteFormItem.classList.add(noteChangesDisplayClass)
+            }
+        }
+        if (noteForm.content) {
+            const noteFormItem = noteFormEle.querySelector('.note-editor-board')
+            noteFormItem.classList.remove(noteChangesDisplayClass)
+            if (type === 'on') {
+                noteFormItem.classList.add(noteChangesDisplayClass)
+            }
+        }
+    }
     static setUIOfGeneralAppStatus(status) {
         const icons = generalAppStatus.querySelectorAll('i')
         for (const icon of icons) {
@@ -63,5 +87,5 @@ class LayoutUI {
 }
 LayoutUI.NOTIFICATION_TIMEOUT = 3000
 LayoutUI.GENERAL_STATUS_TIMEOUT = 2000
-LayoutUI.toasterTimer = null
 LayoutUI.toasterAnimationFlag = true
+LayoutUI.toasterTimer = null

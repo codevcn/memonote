@@ -85,40 +85,86 @@ bold - bold
     padding: 10px 50px 100px;
     z-index: 1;
 }
-#page-main .note-quick-look .quick-look-item {
+#page-main .note-quick-look {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 50px;
+}
+#page-main .note-quick-look .quick-look-items {
+    display: flex;
+    column-gap: 10px;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item {
     display: flex;
     align-items: center;
     height: 30px;
     width: 30px;
     overflow: hidden;
     padding: 6px;
-    transition: width 0.2s;
+    transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);
     column-gap: 5px;
 }
-#page-main .note-quick-look .quick-look-item i {
+#page-main .note-quick-look .quick-look-items .quick-look-item i {
     font-size: 1.1rem;
 }
-#page-main .note-quick-look .quick-look-item .text {
+#page-main .note-quick-look .quick-look-items .quick-look-item .text {
     display: block;
     width: max-content;
     color: #fff;
     white-space: nowrap;
     font-size: 0.9rem;
 }
-#page-main .note-quick-look .quick-look-item.password-set {
+#page-main .note-quick-look .quick-look-items .quick-look-item.password-set {
     background-color: #ff2424;
-    border-radius: 5px;
+    border-radius: 1.6rem;
 }
-#page-main .note-quick-look .quick-look-item.password-set i {
+#page-main .note-quick-look .quick-look-items .quick-look-item.password-set i {
     color: #fff;
 }
 #page-main .notes {
     padding: 0 80px;
     margin-top: 15px;
 }
-#page-main .notes .note-container .note-annotation {
+#page-main .notes .note-form .note-form-item {
+    position: relative;
+}
+#page-main .notes .note-form .note-form-item::before,
+#page-main .notes .note-form .note-form-item::after {
+    content: '';
+    display: block;
+    height: 0;
+    width: 0;
     position: absolute;
-    right: 101%;
+    z-index: 2;
+}
+#page-main .notes .note-form .note-form-item::before {
+    border-right: 1px #909090 solid;
+    border-bottom: 1px #909090 solid;
+    top: 0;
+    right: 0;
+}
+#page-main .notes .note-form .note-form-item::after {
+    border-top: 1px #909090 solid;
+    border-left: 1px #909090 solid;
+    bottom: 0;
+    left: 0;
+}
+#page-main .notes .note-form .note-form-item.note-changes-display::before,
+#page-main .notes .note-form .note-form-item.note-changes-display::after {
+    animation-duration: 6s;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+    animation-fill-mode: backwards;
+}
+#page-main .notes .note-form .note-form-item.note-changes-display::before {
+    animation-name: note-form-changed-indicator-before;
+}
+#page-main .notes .note-form .note-form-item.note-changes-display::after {
+    animation-name: note-form-changed-indicator-after;
+}
+#page-main .notes .note-form .note-form-item .note-annotation {
+    position: absolute;
+    right: calc(100% + 10px);
     top: 50%;
     transform: translate(-10px, -50%);
     border-right: 3px #a5a5a5 solid;
@@ -132,61 +178,67 @@ bold - bold
     max-width: 80px;
     text-align: right;
 }
-#page-main .notes .note-container .note-title {
-    position: relative;
-}
-#page-main .notes .note-container .note-title input {
+#page-main .notes .note-form .note-form-item.note-title input {
     background-color: transparent;
     width: 100%;
     padding: 0 10px;
     box-sizing: border-box;
     font-size: 2rem;
     font-weight: bold;
+    position: relative;
+    z-index: 3;
 }
-#page-main .notes .note-container .note-title input::placeholder {
+#page-main .notes .note-form .note-form-item.note-title input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-container .note-title input:focus + .note-annotation {
+#page-main .notes .note-form .note-form-item.note-title input:focus + .note-annotation {
     transform: translateX(0) translateY(-50%);
     opacity: 1;
 }
-#page-main .notes .note-container .note-author {
+#page-main .notes .note-form .note-form-item.note-author {
     margin-top: 5px;
-    position: relative;
 }
-#page-main .notes .note-container .note-author input {
+#page-main .notes .note-form .note-form-item.note-author input {
     background-color: transparent;
     width: 100%;
-    padding: 0 10px;
+    padding: 5px 10px;
     box-sizing: border-box;
     font-size: 15px;
     font-weight: 500;
+    position: relative;
+    z-index: 3;
 }
-#page-main .notes .note-container .note-author input::placeholder {
+#page-main .notes .note-form .note-form-item.note-author input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-container .note-author input:focus + .note-annotation {
+#page-main .notes .note-form .note-form-item.note-author input:focus + .note-annotation {
     transform: translateX(0) translateY(-50%);
     opacity: 1;
 }
-#page-main .notes .note-container .note-editor-board {
-    margin-top: 5px;
-    position: relative;
+#page-main .notes .note-form .note-form-item.note-editor-board {
+    margin-top: 15px;
 }
-#page-main .notes .note-container .note-editor-board .note-editor-container {
+#page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container {
     height: 100%;
     width: 100%;
-}
-#page-main .notes .note-container .note-editor-board .note-editor-container .note-editor-wrapper {
-    display: grid;
-    max-height: auto;
-    overflow-y: auto;
-    margin-top: 20px;
+    position: relative;
+    z-index: 3;
+    padding: 5px 10px;
 }
 #page-main
     .notes
-    .note-container
-    .note-editor-board
+    .note-form
+    .note-form-item.note-editor-board
+    .note-editor-container
+    .note-editor-wrapper {
+    display: grid;
+    max-height: auto;
+    overflow-y: auto;
+}
+#page-main
+    .notes
+    .note-form
+    .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper
     .note-annotation {
@@ -195,38 +247,37 @@ bold - bold
 }
 #page-main
     .notes
-    .note-container
-    .note-editor-board
+    .note-form
+    .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper::after,
 #page-main
     .notes
-    .note-container
-    .note-editor-board
+    .note-form
+    .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper
     .note-editor {
     grid-area: 1/1/2/2;
-    padding: 0 10px;
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 17px;
 }
 #page-main
     .notes
-    .note-container
-    .note-editor-board
+    .note-form
+    .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper
     .note-editor {
-    background-color: white;
+    background-color: #fff;
     resize: none;
     overflow: hidden;
 }
 #page-main
     .notes
-    .note-container
-    .note-editor-board
+    .note-form
+    .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper
     .note-editor:focus
@@ -236,30 +287,36 @@ bold - bold
 }
 #page-main
     .notes
-    .note-container
-    .note-editor-board
+    .note-form
+    .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper::after {
     content: attr(data-replicated-value) ' ';
     white-space: pre-wrap;
     visibility: hidden;
 }
-#page-main .notes .note-container .note-editor-board .note-editor-container .letters-count {
+#page-main
+    .notes
+    .note-form
+    .note-form-item.note-editor-board
+    .note-editor-container
+    .letters-count {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
     color: #909090;
     line-height: 1;
     padding-right: 5px;
+    margin-bottom: 5px;
     margin-top: 5px;
 }
-#page-main .notes .note-container .note-editor-board .useful-note-actions {
+#page-main .notes .note-form .note-form-item.note-editor-board .useful-note-actions {
     display: flex;
     column-gap: 5px;
     width: 100%;
     margin-top: 15px;
 }
-#page-main .notes .note-container .note-editor-board .useful-note-actions .action {
+#page-main .notes .note-form .note-form-item.note-editor-board .useful-note-actions .action {
     display: flex;
     align-items: center;
     column-gap: 5px;
@@ -270,11 +327,99 @@ bold - bold
     color: #fff;
     border: 2px #18181b solid;
 }
-#page-main .notes .note-container .note-editor-board .useful-note-actions .action i {
+#page-main .notes .note-form .note-form-item.note-editor-board .useful-note-actions .action i {
     font-size: 0.9rem;
     color: inherit;
 }
 
+@keyframes note-form-changed-indicator-before {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    8% {
+        height: 100%;
+        width: 0;
+    }
+    25% {
+        height: 100%;
+        width: 100%;
+    }
+    50% {
+        height: 100%;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+    58% {
+        height: 0;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+    75% {
+        height: 0;
+        width: 0;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+    100% {
+        height: 0;
+        width: 0;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+}
+@keyframes note-form-changed-indicator-after {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    25% {
+        height: 0;
+        width: 0;
+    }
+    33% {
+        height: 100%;
+        width: 0;
+    }
+    50% {
+        height: 100%;
+        width: 100%;
+    }
+    75% {
+        height: 100%;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: unset;
+        left: unset;
+    }
+    83% {
+        height: 0;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: unset;
+        left: unset;
+    }
+    100% {
+        height: 0;
+        width: 0;
+        top: 0;
+        right: 0;
+        bottom: unset;
+        left: unset;
+    }
+}
 .modal .modal-dialog .modal-content .modal-header .btn-close:focus {
     box-shadow: 0 0 0px 0.25rem #ffdddd;
 }
@@ -759,6 +904,9 @@ bold - bold
     align-items: center;
     column-gap: 10px;
 }
+#settings-form-change-modes .form-content .form-group:not(:nth-of-type(1)) {
+    margin-top: 10px;
+}
 #settings-form-change-modes .form-content .form-group .form-check-input {
     height: 1.2rem;
     width: 2.5rem;
@@ -845,6 +993,9 @@ bold - bold
     align-items: center;
     column-gap: 10px;
     margin-top: 15px;
+}
+#settings-form-set-password .form-content .form-group.logout-all:not(:nth-of-type(1)) {
+    margin-top: 10px;
 }
 #settings-form-set-password .form-content .form-group.logout-all .form-check-input {
     height: 1.2rem;
