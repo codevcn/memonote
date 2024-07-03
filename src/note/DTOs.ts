@@ -1,5 +1,5 @@
 import { notePasswordRegEx, noteUniqueNameRegEx } from '@/note/regex'
-import { EValidationMessages } from '@/utils/messages'
+import { EValidationMessages } from '@/utils/validation/messages'
 import { IsBoolean, IsNotEmpty, Matches } from 'class-validator'
 
 export class AddPasswordForNoteParamsDTO {

@@ -1,0 +1,331 @@
+@use '../../global/colors';
+@use '../../global/text-fonts';
+@use '../../global/z-indexes';
+
+$mmn-note-content-font-size: 17px;
+$mmn-note-editor-max-height: auto;
+$mmn-note-annotaion-border-cl: #a5a5a5;
+$mmn-note-horizon-padding: 80px;
+$mmn-note-margin-top: 15px;
+$mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
+
+@mixin useful-note-action-btn-styling {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    background-color: colors.$mmn-primary-cl;
+    padding: 4px 9px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: colors.$mmn-regular-white-cl;
+    border: 2px colors.$mmn-primary-cl solid;
+
+    i {
+        font-size: 0.9rem;
+        color: inherit;
+    }
+}
+
+@mixin on-focus-display-note-annotation-styling {
+    &:focus {
+        & + .note-annotation {
+            transform: translateX(0) translateY(-50%);
+            opacity: 1;
+        }
+    }
+}
+
+#page-main {
+    .notes {
+        padding: 0 $mmn-note-horizon-padding;
+        margin-top: $mmn-note-margin-top;
+
+        .note-form {
+            .note-form-item {
+                position: relative;
+
+                &::before,
+                &::after {
+                    content: '';
+                    display: block;
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    z-index: calc(z-indexes.$mmn-base-custom-zidx + 1);
+                }
+
+                &::before {
+                    border-right: $mmn-notify-note-edited-line;
+                    border-bottom: $mmn-notify-note-edited-line;
+                    top: 0;
+                    right: 0;
+                }
+
+                &::after {
+                    border-top: $mmn-notify-note-edited-line;
+                    border-left: $mmn-notify-note-edited-line;
+                    bottom: 0;
+                    left: 0;
+                }
+
+                &.notify-note-edited {
+                    &.slither {
+                        &::before,
+                        &::after {
+                            animation-duration: 6s;
+                            animation-timing-function: ease-in;
+                            animation-iteration-count: infinite;
+                            animation-fill-mode: backwards;
+                        }
+                        &::before {
+                            animation-name: notify-slither-note-edited-before;
+                        }
+                        &::after {
+                            animation-name: notify-slither-note-edited-after;
+                        }
+                    }
+
+                    &.blink {
+                        outline: $mmn-notify-note-edited-line;
+                        animation-name: notify-blink-note-edited;
+                        animation-duration: 1s;
+                        animation-timing-function: ease-out;
+                        animation-iteration-count: infinite;
+                        animation-direction: reverse;
+                    }
+                }
+
+                .note-annotation {
+                    position: absolute;
+                    right: calc(100% + 10px);
+                    top: 50%;
+                    transform: translate(-10px, -50%);
+                    border-right: 3px $mmn-note-annotaion-border-cl solid;
+                    padding-right: 8px;
+                    font-size: 0.9rem;
+                    opacity: 0;
+                    transition:
+                        opacity 0.15s,
+                        transform 0.15s;
+                    width: max-content;
+                    max-width: $mmn-note-horizon-padding;
+                    text-align: right;
+                }
+
+                &.note-title {
+                    input {
+                        background-color: transparent;
+                        width: 100%;
+                        padding: 0 10px;
+                        box-sizing: border-box;
+                        font-size: 2rem;
+                        font-weight: bold;
+                        position: relative;
+                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
+                        line-height: 1rem;
+
+                        &::placeholder {
+                            color: colors.$mmn-regular-gray-cl;
+                        }
+
+                        @include on-focus-display-note-annotation-styling;
+                    }
+                }
+
+                &.note-author {
+                    margin-top: 5px;
+
+                    input {
+                        background-color: transparent;
+                        width: 100%;
+                        padding: 5px 10px;
+                        box-sizing: border-box;
+                        font-size: 15px;
+                        font-weight: 500;
+                        position: relative;
+                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
+                        line-height: 1rem;
+
+                        &::placeholder {
+                            color: colors.$mmn-regular-gray-cl;
+                        }
+
+                        @include on-focus-display-note-annotation-styling;
+                    }
+                }
+
+                &.note-editor-board {
+                    margin-top: 15px;
+
+                    .note-editor-container {
+                        height: 100%;
+                        width: 100%;
+                        position: relative;
+                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
+                        padding: 5px 10px;
+
+                        .note-editor-wrapper {
+                            display: grid;
+                            max-height: $mmn-note-editor-max-height;
+                            overflow-y: auto;
+
+                            .note-annotation {
+                                top: 10px;
+                                transform: translate(-10px, 0);
+                            }
+
+                            &::after,
+                            .note-editor {
+                                grid-area: 1 / 1 / 2 / 2;
+                                width: 100%;
+                                font-family: text-fonts.$mmn-arial-fontf;
+                                font-size: $mmn-note-content-font-size;
+                            }
+
+                            .note-editor {
+                                background-color: colors.$mmn-regular-white-cl;
+                                resize: none;
+                                overflow: hidden;
+                                padding: 0;
+
+                                &:focus {
+                                    & + .note-annotation {
+                                        opacity: 1;
+                                        transform: translate(0, 0);
+                                    }
+                                }
+                            }
+
+                            &::after {
+                                content: attr(data-replicated-value) ' ';
+                                white-space: pre-wrap;
+                                visibility: hidden;
+                            }
+                        }
+
+                        .letters-count {
+                            display: flex;
+                            justify-content: space-between;
+                            font-size: 0.85rem;
+                            color: colors.$mmn-regular-gray-cl;
+                            line-height: 1;
+                            padding-right: 5px;
+                            margin-bottom: 5px;
+                            margin-top: 5px;
+                        }
+                    }
+
+                    .useful-note-actions {
+                        display: flex;
+                        column-gap: 5px;
+                        width: 100%;
+                        margin-top: 15px;
+
+                        .action {
+                            @include useful-note-action-btn-styling;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes notify-blink-note-edited {
+    0% {
+        outline-color: transparent;
+    }
+    100% {
+        outline-color: colors.$mmn-regular-gray-cl;
+    }
+}
+
+@keyframes notify-slither-note-edited-before {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    8% {
+        height: 100%;
+        width: 0;
+    }
+    25% {
+        height: 100%;
+        width: 100%;
+    }
+    50% {
+        height: 100%;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+    58% {
+        height: 0;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+    75% {
+        height: 0;
+        width: 0;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+    100% {
+        height: 0;
+        width: 0;
+        bottom: 0;
+        left: 0;
+        top: unset;
+        right: unset;
+    }
+}
+
+@keyframes notify-slither-note-edited-after {
+    0% {
+        height: 0;
+        width: 0;
+    }
+    25% {
+        height: 0;
+        width: 0;
+    }
+    33% {
+        height: 100%;
+        width: 0;
+    }
+    50% {
+        height: 100%;
+        width: 100%;
+    }
+    75% {
+        height: 100%;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: unset;
+        left: unset;
+    }
+    83% {
+        height: 0;
+        width: 100%;
+        top: 0;
+        right: 0;
+        bottom: unset;
+        left: unset;
+    }
+    100% {
+        height: 0;
+        width: 0;
+        top: 0;
+        right: 0;
+        bottom: unset;
+        left: unset;
+    }
+}

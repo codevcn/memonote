@@ -12,3 +12,5 @@ const removePasswordOfNoteAPI = (noteUniqueName) =>
 const logoutAPI = (noteUniqueName) => axiosClient.post('/auth/logout/' + noteUniqueName)
 const signInAPI = (password, noteUniqueName) =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
+// notification
+const getNotifications = (noteUniqueName) => axiosClient.get('/noti/noties/' + noteUniqueName)

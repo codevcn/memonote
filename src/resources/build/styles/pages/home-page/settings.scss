@@ -1,36 +1,9 @@
-@use '../global/colors';
-@use '../global/text-fonts';
-@use '../global/z-indexes';
+@use '../../global/colors';
+@use '../../global/text-fonts';
+@use '../../global/components';
 
-$mmn-note-content-font-size: 17px;
-$mmn-note-editor-max-height: auto;
-$mmn-note-annotaion-border-cl: #a5a5a5;
-$mmn-note-horizon-padding: 80px;
-$mmn-note-margin-top: 15px;
-$mmn-page-padding-bottom: 100px;
-$mmn-quick-look-icon-initial-size: 30px;
-$mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
-
-:root {
-    --mmn-quick-look-icon-initial-size: #{$mmn-quick-look-icon-initial-size};
-}
-
-@mixin useful-note-action-btn-styling {
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
-    background-color: colors.$mmn-primary-cl;
-    padding: 4px 9px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    color: colors.$mmn-regular-white-cl;
-    border: 2px colors.$mmn-primary-cl solid;
-
-    i {
-        font-size: 0.9rem;
-        color: inherit;
-    }
-}
+$mmn-settings-navigation-container-width: 170px;
+$mmn-settings-nav-item-bgcl: #e9e9e9;
 
 @mixin modal-header-styling {
     .btn-close:focus {
@@ -82,11 +55,49 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
     }
 }
 
-@mixin on-focus-display-note-annotation-styling {
-    &:focus {
-        & + .note-annotation {
-            transform: translateX(0) translateY(-50%);
-            opacity: 1;
+@mixin form-check-styling {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+
+    &:not(:nth-of-type(1)) {
+        margin-top: 10px;
+    }
+
+    .form-check-input {
+        height: 1.2rem;
+        width: 2.5rem;
+        margin-top: 0;
+        border-color: colors.$mmn-regular-lightgray-cl;
+        cursor: pointer;
+
+        &:focus,
+        &:hover {
+            box-shadow: components.$mmn-box-shadow-on-input;
+            border-color: colors.$mmn-regular-lightgray-cl;
+        }
+
+        &:checked {
+            background-color: colors.$mmn-primary-cl;
+            color: colors.$mmn-primary-cl;
+        }
+    }
+
+    .info {
+        display: flex;
+        align-items: center;
+        column-gap: 5px;
+
+        .details-btn {
+            cursor: pointer;
+
+            i {
+                font-size: 0.9rem;
+            }
+
+            &:hover {
+                transform: scale(1.2);
+            }
         }
     }
 }
@@ -123,370 +134,25 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
     }
 }
 
-@mixin form-check-styling {
+@mixin form-group-label-styling {
     display: flex;
+    column-gap: 7px;
     align-items: center;
-    column-gap: 10px;
+    font-size: 0.9rem;
+    padding-left: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
 
-    &:not(:nth-of-type(1)) {
-        margin-top: 10px;
-    }
-
-    .form-check-input {
-        height: 1.2rem;
-        width: 2.5rem;
-        margin-top: 0;
-        border-color: colors.$mmn-regular-lightgray-cl;
+    .details-btn {
         cursor: pointer;
 
-        &:focus,
+        i {
+            font-size: 0.9rem;
+        }
+
         &:hover {
-            box-shadow: 0 0 0 0.25rem colors.$mmn-regular-lightgray-cl;
-            border-color: colors.$mmn-regular-lightgray-cl;
+            transform: scale(1.2);
         }
-
-        &:checked {
-            background-color: colors.$mmn-primary-cl;
-            color: colors.$mmn-primary-cl;
-        }
-    }
-
-    .info {
-        display: flex;
-        align-items: center;
-        column-gap: 5px;
-
-        .details-btn {
-            cursor: pointer;
-
-            i {
-                font-size: 0.9rem;
-            }
-
-            &:hover {
-                transform: scale(1.2);
-            }
-        }
-    }
-}
-
-#page-main {
-    padding: 10px 50px $mmn-page-padding-bottom;
-    z-index: z-indexes.$mmn-base-custom-zidx;
-
-    .note-quick-look {
-        display: flex;
-        justify-content: space-between;
-        column-gap: 50px;
-
-        .quick-look-items {
-            display: flex;
-            column-gap: 10px;
-
-            .quick-look-item {
-                display: flex;
-                align-items: center;
-                height: $mmn-quick-look-icon-initial-size;
-                width: $mmn-quick-look-icon-initial-size;
-                overflow: hidden;
-                padding: 6px;
-                transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);
-                column-gap: 5px;
-
-                i {
-                    font-size: 1.1rem;
-                }
-
-                .text {
-                    display: block;
-                    width: max-content;
-                    color: colors.$mmn-regular-white-cl;
-                    white-space: nowrap;
-                    font-size: 0.9rem;
-                }
-
-                &.password-set {
-                    background-color: colors.$mmn-regular-red-cl;
-                    border-radius: 1.6rem;
-
-                    i {
-                        color: colors.$mmn-regular-white-cl;
-                    }
-                }
-            }
-        }
-    }
-
-    .notes {
-        padding: 0 $mmn-note-horizon-padding;
-        margin-top: $mmn-note-margin-top;
-
-        .note-form {
-            .note-form-item {
-                position: relative;
-
-                &::before,
-                &::after {
-                    content: '';
-                    display: block;
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    z-index: calc(z-indexes.$mmn-base-custom-zidx + 1);
-                }
-
-                &::before {
-                    border-right: 1px colors.$mmn-regular-gray-cl solid;
-                    border-bottom: 1px colors.$mmn-regular-gray-cl solid;
-                    top: 0;
-                    right: 0;
-                }
-
-                &::after {
-                    border-top: 1px colors.$mmn-regular-gray-cl solid;
-                    border-left: 1px colors.$mmn-regular-gray-cl solid;
-                    bottom: 0;
-                    left: 0;
-                }
-
-                &.note-changes-display {
-                    &::before,
-                    &::after {
-                        animation-duration: 6s;
-                        animation-timing-function: ease-in;
-                        animation-iteration-count: infinite;
-                        animation-fill-mode: backwards;
-                    }
-
-                    &::before {
-                        animation-name: note-form-changed-indicator-before;
-                    }
-
-                    &::after {
-                        animation-name: note-form-changed-indicator-after;
-                    }
-                }
-
-                .note-annotation {
-                    position: absolute;
-                    right: calc(100% + 10px);
-                    top: 50%;
-                    transform: translate(-10px, -50%);
-                    border-right: 3px $mmn-note-annotaion-border-cl solid;
-                    padding-right: 8px;
-                    font-size: 0.9rem;
-                    opacity: 0;
-                    transition:
-                        opacity 0.15s,
-                        transform 0.15s;
-                    width: max-content;
-                    max-width: $mmn-note-horizon-padding;
-                    text-align: right;
-                }
-
-                &.note-title {
-                    input {
-                        background-color: transparent;
-                        width: 100%;
-                        padding: 0 10px;
-                        box-sizing: border-box;
-                        font-size: 2rem;
-                        font-weight: bold;
-                        position: relative;
-                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
-
-                        &::placeholder {
-                            color: colors.$mmn-regular-gray-cl;
-                        }
-
-                        @include on-focus-display-note-annotation-styling;
-                    }
-                }
-
-                &.note-author {
-                    margin-top: 5px;
-
-                    input {
-                        background-color: transparent;
-                        width: 100%;
-                        padding: 5px 10px;
-                        box-sizing: border-box;
-                        font-size: 15px;
-                        font-weight: 500;
-                        position: relative;
-                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
-
-                        &::placeholder {
-                            color: colors.$mmn-regular-gray-cl;
-                        }
-
-                        @include on-focus-display-note-annotation-styling;
-                    }
-                }
-
-                &.note-editor-board {
-                    margin-top: 15px;
-
-                    .note-editor-container {
-                        height: 100%;
-                        width: 100%;
-                        position: relative;
-                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
-                        padding: 5px 10px;
-
-                        .note-editor-wrapper {
-                            display: grid;
-                            max-height: $mmn-note-editor-max-height;
-                            overflow-y: auto;
-
-                            .note-annotation {
-                                top: 0;
-                                transform: translate(-10px, 0);
-                            }
-
-                            &::after,
-                            .note-editor {
-                                grid-area: 1 / 1 / 2 / 2;
-                                width: 100%;
-                                font-family: text-fonts.$mmn-arial-fontf;
-                                font-size: $mmn-note-content-font-size;
-                            }
-
-                            .note-editor {
-                                background-color: colors.$mmn-regular-white-cl;
-                                resize: none;
-                                overflow: hidden;
-
-                                &:focus {
-                                    & + .note-annotation {
-                                        opacity: 1;
-                                        transform: translate(0, 0);
-                                    }
-                                }
-                            }
-
-                            &::after {
-                                content: attr(data-replicated-value) ' ';
-                                white-space: pre-wrap;
-                                visibility: hidden;
-                            }
-                        }
-
-                        .letters-count {
-                            display: flex;
-                            justify-content: space-between;
-                            font-size: 0.85rem;
-                            color: colors.$mmn-regular-gray-cl;
-                            line-height: 1;
-                            padding-right: 5px;
-                            margin-bottom: 5px;
-                            margin-top: 5px;
-                        }
-                    }
-
-                    .useful-note-actions {
-                        display: flex;
-                        column-gap: 5px;
-                        width: 100%;
-                        margin-top: 15px;
-
-                        .action {
-                            @include useful-note-action-btn-styling;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@keyframes note-form-changed-indicator-before {
-    0% {
-        height: 0;
-        width: 0;
-    }
-    8% {
-        height: 100%;
-        width: 0;
-    }
-    25% {
-        height: 100%;
-        width: 100%;
-    }
-    50% {
-        height: 100%;
-        width: 100%;
-        bottom: 0;
-        left: 0;
-        top: unset;
-        right: unset;
-    }
-    58% {
-        height: 0;
-        width: 100%;
-        bottom: 0;
-        left: 0;
-        top: unset;
-        right: unset;
-    }
-    75% {
-        height: 0;
-        width: 0;
-        bottom: 0;
-        left: 0;
-        top: unset;
-        right: unset;
-    }
-    100% {
-        height: 0;
-        width: 0;
-        bottom: 0;
-        left: 0;
-        top: unset;
-        right: unset;
-    }
-}
-
-@keyframes note-form-changed-indicator-after {
-    0% {
-        height: 0;
-        width: 0;
-    }
-    25% {
-        height: 0;
-        width: 0;
-    }
-    33% {
-        height: 100%;
-        width: 0;
-    }
-    50% {
-        height: 100%;
-        width: 100%;
-    }
-    75% {
-        height: 100%;
-        width: 100%;
-        top: 0;
-        right: 0;
-        bottom: unset;
-        left: unset;
-    }
-    83% {
-        height: 0;
-        width: 100%;
-        top: 0;
-        right: 0;
-        bottom: unset;
-        left: unset;
-    }
-    100% {
-        height: 0;
-        width: 0;
-        top: 0;
-        right: 0;
-        bottom: unset;
-        left: unset;
     }
 }
 
@@ -495,12 +161,6 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
         .modal-content {
             .modal-header {
                 @include modal-header-styling;
-            }
-
-            .modal-body {
-                .message {
-                    @include form-group-message-styling;
-                }
             }
 
             .modal-footer {
@@ -562,6 +222,7 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
                         row-gap: 30px;
                         justify-content: space-between;
                         border-right: 1px colors.$mmn-regular-lightgray-cl solid;
+                        width: $mmn-settings-navigation-container-width;
 
                         .nav-items {
                             display: flex;
@@ -569,6 +230,7 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
                             row-gap: 5px;
                             background-color: colors.$mmn-regular-white-cl;
                             border-radius: 8px 0 0 8px;
+                            width: 100%;
                         }
 
                         .nav-item {
@@ -580,11 +242,12 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
                             padding: 5px 15px;
                             border-left: 3px colors.$mmn-regular-white-cl solid;
                             cursor: pointer;
+                            width: 100%;
 
                             &:hover,
                             &.active {
-                                background-color: colors.$mmn-regular-bg-cl;
-                                border-left: 3px #414141 solid;
+                                background-color: $mmn-settings-nav-item-bgcl;
+                                border-left: 3px darken($mmn-settings-nav-item-bgcl, 50%) solid;
                             }
 
                             &.logout-btn {
@@ -609,7 +272,8 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
                                 &:hover,
                                 &.active {
                                     background-color: colors.$mmn-regular-warning-bgcl;
-                                    border-left: 3px colors.$mmn-regular-red-cl solid;
+                                    border-left: 3px darken(colors.$mmn-regular-warning-bgcl, 50%)
+                                        solid;
                                 }
                             }
                         }
@@ -747,14 +411,11 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
     .form-content {
         .form-group {
             label {
-                font-size: 0.9rem;
-                padding-left: 5px;
-                font-weight: bold;
+                @include form-group-label-styling;
             }
 
             .input-wrapper {
                 position: relative;
-                margin: 3px 0;
 
                 input {
                     width: 100%;
@@ -819,6 +480,26 @@ $mmn-cubic-bezier-transition: cubic-bezier(0.65, 0, 0.076, 1);
     .form-content {
         .form-group {
             font-size: 1.1rem;
+        }
+    }
+}
+
+#settings-form-user-interface {
+    .form-content {
+        .form-group {
+            label {
+                @include form-group-label-styling;
+            }
+
+            .form-select {
+                cursor: pointer;
+
+                &:hover,
+                &:focus {
+                    box-shadow: components.$mmn-box-shadow-on-input;
+                    border-color: colors.$mmn-regular-lightgray-cl;
+                }
+            }
         }
     }
 }

@@ -25,11 +25,17 @@ const getRealtimeModeInDevice = () => {
 const setRealtimeModeInDevice = (type) => {
     localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
 }
-const getNoteChangesDisplayModeInDevice = () => {
+const getNotifyNoteEditedModeInDevice = () => {
     return localStorage.getItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE)
 }
-const setNoteChangesDisplayModeInDevice = (type) => {
+const setNotifyNoteEditedModeInDevice = (type) => {
     localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, type)
+}
+const getEditedNotifyStyleInDevice = () => {
+    return localStorage.getItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE)
+}
+const setEditedNotifyStyleInDevice = (type) => {
+    localStorage.setItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE, type)
 }
 function getCssVariable(variableName) {
     return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()

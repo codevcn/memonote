@@ -11,27 +11,27 @@ import {
 import { Server, Socket } from 'socket.io'
 import { NoteService } from '../note.service'
 import { EInitialSocketEvents, ENoteEvents } from './enums'
-import type { IInitialSocketEventEmits } from './interfaces'
+import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
 import { ESocketNamespaces } from './enums'
-import { ENoteBroadcastMessages } from '@/utils/messages'
+import { EAuthMessages } from '@/auth/messages'
+import { EValidationMessages } from '@/utils/validation/messages'
 import { JWTService } from '@/auth/jwt.service'
-import { BroadcastNoteTypingDTO } from './dtos'
-import type { TBroadcastNoteTypingRes } from './types'
+import { BroadcastNoteTypingDTO } from './DTOs'
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from './filters'
 import { Helpers } from '@/utils/helpers'
 import { UserSessions } from './sessions'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { EAuthMessages } from '@/utils/messages'
 import type { TJWTPayload } from '@/auth/types'
 import { ECommonStatuses } from '@/utils/enums'
 import { CustomWsException } from './ecxeptions'
+import { TValidateIncommingSocketReturn } from './types'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.EDIT_NOTE })
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsExceptionsFilter())
 export class NoteGateway
-    implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>
+    implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
 {
     private io: Server
 
@@ -59,12 +59,12 @@ export class NoteGateway
             }
             const clientCookie = socket.handshake.headers.cookie
             if (!clientCookie) {
-                next(new BaseCustomException(EAuthMessages.INVALID_CREDENTIALS))
+                next(new BaseCustomException(EValidationMessages.INVALID_CREDENTIALS))
                 return
             }
             const jwt = this.jwtService.extractJWTFromCookie(clientCookie)
             if (!jwt) {
-                next(new BaseCustomException(EAuthMessages.INVALID_CREDENTIALS))
+                next(new BaseCustomException(EValidationMessages.INVALID_CREDENTIALS))
                 return
             }
             let jwtPayload: TJWTPayload
@@ -92,43 +92,63 @@ export class NoteGateway
 
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
-    private returnNoteFormChangedData(
-        data: BroadcastNoteTypingDTO,
-        success: boolean,
-    ): TBroadcastNoteTypingRes {
-        return { data, success }
-    }
-
-    @SubscribeMessage(ENoteEvents.NOTE_TYPING)
-    async handleNoteFormChanged(
-        @MessageBody() data: BroadcastNoteTypingDTO,
-        @ConnectedSocket() clientSocket: Socket,
-    ): Promise<TBroadcastNoteTypingRes> {
-        const { referer, cookie } = clientSocket.handshake.headers
+    private async validateIncommingSocket(socket: Socket): Promise<TValidateIncommingSocketReturn> {
+        const { referer, cookie } = socket.handshake.headers
         if (!referer || !cookie) {
-            throw new WsException(ENoteBroadcastMessages.INVALID_INPUT)
+            throw new WsException(EValidationMessages.INVALID_INPUT)
         }
         const noteUniqueName = Helpers.extractNoteUniqueNameFromURL(referer)
         const noteHasPassword = UserSessions.checkNote(noteUniqueName)
         if (noteHasPassword) {
             const jwt = this.jwtService.extractJWTFromCookie(cookie)
             if (!jwt) {
-                throw new CustomWsException(
-                    ENoteBroadcastMessages.INVALID_CREDENTIALS,
-                    noteUniqueName,
-                )
+                throw new CustomWsException(EValidationMessages.INVALID_CREDENTIALS, noteUniqueName)
             }
             const userExists = UserSessions.checkUserSessionIfExists(noteUniqueName, jwt)
             if (!userExists) {
-                return this.returnNoteFormChangedData(data, false)
+                throw new CustomWsException(EValidationMessages.INVALID_CREDENTIALS, noteUniqueName)
             }
         }
+        return { noteUniqueName }
+    }
+
+    @SubscribeMessage(ENoteEvents.NOTE_TYPING)
+    async noteFormEdited(
+        @MessageBody() data: BroadcastNoteTypingDTO,
+        @ConnectedSocket() clientSocket: Socket,
+    ) {
+        let noteUniqueName: string
         try {
-            await this.noteService.updateNoteForm(noteUniqueName, data)
+            const result = await this.validateIncommingSocket(clientSocket)
+            noteUniqueName = result.noteUniqueName
         } catch (error) {
-            throw new CustomWsException(error.message, noteUniqueName)
+            return { data, success: false }
         }
+        await this.noteService.updateNoteForm(noteUniqueName, data)
         clientSocket.broadcast.to(noteUniqueName).emit(ENoteEvents.NOTE_TYPING, data)
-        return this.returnNoteFormChangedData(data, true)
+        return { data, success: true }
+    }
+
+    @SubscribeMessage(ENoteEvents.GET_NOTE_FORM)
+    async fetchNoteContent(@ConnectedSocket() clientSocket: Socket) {
+        let noteUniqueName: string
+        try {
+            const result = await this.validateIncommingSocket(clientSocket)
+            noteUniqueName = result.noteUniqueName
+        } catch (error) {
+            return { data: {}, success: false }
+        }
+        const note = await this.noteService.findNote(noteUniqueName)
+        if (!note) {
+            return { data: {}, success: false }
+        }
+        return {
+            data: {
+                title: note.title,
+                author: note.author,
+                content: note.content,
+            },
+            success: true,
+        }
     }
 }

@@ -4,6 +4,7 @@ enum ENamespacesOfSocket {
 enum ENoteEvents {
     CLIENT_CONNECTED = 'client_connected',
     NOTE_TYPING = 'note_typing',
+    GET_NOTE_FORM = 'get_note_form',
 }
 
 type TClientConnectedEventPayload = {
@@ -46,9 +47,9 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, async (data: TNoteForm) => {
     if (realtimeMode && realtimeMode === 'sync') {
         setForNoteFormChanged(data)
     } else {
-        const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
-        if (noteChangesDisplayMode && noteChangesDisplayMode === 'on') {
-            LayoutUI.setNoteFormChangsDisplay('on', data)
+        const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
+        if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
+            LayoutUI.notifyNoteEdited('on', data)
         }
     }
 })
@@ -56,8 +57,8 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, async (data: TNoteForm) => {
 // handlers
 const broadcastNoteTyping = async (note: TNoteForm): Promise<void> => {
     clientSocket
-        .timeout(EBroadcastTimeout.NOTE_TYPING_TIMEOUT)
-        .emit(ENoteEvents.NOTE_TYPING, note, (err: any, res: TBroadcastNoteTypingRes) => {
+        .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
+        .emit(ENoteEvents.NOTE_TYPING, note, (err: Error, res: TBroadcastNoteTypingRes) => {
             if (err) {
                 LayoutUI.setUIOfGeneralAppStatus('error')
                 console.log('>>> broadcast err >>>', err)
@@ -68,6 +69,17 @@ const broadcastNoteTyping = async (note: TNoteForm): Promise<void> => {
                     LayoutUI.setUIOfGeneralAppStatus('error')
                 }
                 console.log('>>> broadcast res >>>', res)
+            }
+        })
+}
+
+const fetchNoteContent = async () => {
+    clientSocket
+        .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
+        .emit(ENoteEvents.GET_NOTE_FORM, (err: Error, res: TBroadcastNoteTypingRes) => {
+            LayoutUI.notifyNoteEdited('off', { title: 'true', author: 'true', content: 'true' })
+            if (res.success) {
+                setForNoteFormChanged(res.data)
             }
         })
 }

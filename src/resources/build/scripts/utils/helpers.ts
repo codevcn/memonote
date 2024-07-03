@@ -34,14 +34,24 @@ const setRealtimeModeInDevice = (type: TRealtimeModeTypes): void => {
     localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
 }
 
-const getNoteChangesDisplayModeInDevice = (): TNoteChangesDisplayTypes | null => {
+const getNotifyNoteEditedModeInDevice = (): TNotifyNoteEditedTypes | null => {
     return localStorage.getItem(
         ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE,
-    ) as TNoteChangesDisplayTypes | null
+    ) as TNotifyNoteEditedTypes | null
 }
 
-const setNoteChangesDisplayModeInDevice = (type: TNoteChangesDisplayTypes): void => {
+const setNotifyNoteEditedModeInDevice = (type: TNotifyNoteEditedTypes): void => {
     localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, type)
+}
+
+const getEditedNotifyStyleInDevice = (): TEditedNotifyStyleTypes | null => {
+    return localStorage.getItem(
+        ELocalStorageKeys.EDITING_NOTIFY_STYLE,
+    ) as TEditedNotifyStyleTypes | null
+}
+
+const setEditedNotifyStyleInDevice = (type: TEditedNotifyStyleTypes): void => {
+    localStorage.setItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE, type)
 }
 
 function getCssVariable(variableName: string): string {

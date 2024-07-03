@@ -12,27 +12,31 @@ const closeAppNotification = (target) => {
     target.classList.add('clicked')
 }
 class LayoutUI {
-    static setNoteFormChangsDisplay(type, noteForm) {
-        const noteChangesDisplayClass = 'note-changes-display'
-        if (noteForm.title) {
-            const noteFormItem = noteFormEle.querySelector('.note-title')
-            noteFormItem.classList.remove(noteChangesDisplayClass)
+    static notifyNoteEdited(type, noteForm) {
+        let baseClasses = ['notify-note-edited', 'slither', 'blink']
+        let notifyNoteEditedClass = ['notify-note-edited']
+        notifyNoteEditedClass.push(getEditedNotifyStyleInDevice() || 'blink')
+        let noteFormItem
+        const { title, author, content } = noteForm
+        if (title || title === '') {
+            noteFormItem = noteFormEle.querySelector('.note-title')
+            noteFormItem.classList.remove(...baseClasses)
             if (type === 'on') {
-                noteFormItem.classList.add(noteChangesDisplayClass)
+                noteFormItem.classList.add(...notifyNoteEditedClass)
             }
         }
-        if (noteForm.author) {
-            const noteFormItem = noteFormEle.querySelector('.note-author')
-            noteFormItem.classList.remove(noteChangesDisplayClass)
+        if (author || author === '') {
+            noteFormItem = noteFormEle.querySelector('.note-author')
+            noteFormItem.classList.remove(...baseClasses)
             if (type === 'on') {
-                noteFormItem.classList.add(noteChangesDisplayClass)
+                noteFormItem.classList.add(...notifyNoteEditedClass)
             }
         }
-        if (noteForm.content) {
-            const noteFormItem = noteFormEle.querySelector('.note-editor-board')
-            noteFormItem.classList.remove(noteChangesDisplayClass)
+        if (content || content === '') {
+            noteFormItem = noteFormEle.querySelector('.note-editor-board')
+            noteFormItem.classList.remove(...baseClasses)
             if (type === 'on') {
-                noteFormItem.classList.add(noteChangesDisplayClass)
+                noteFormItem.classList.add(...notifyNoteEditedClass)
             }
         }
     }
@@ -86,6 +90,6 @@ class LayoutUI {
     }
 }
 LayoutUI.NOTIFICATION_TIMEOUT = 3000
-LayoutUI.GENERAL_STATUS_TIMEOUT = 2000
+LayoutUI.GENERAL_STATUS_TIMEOUT = 3000
 LayoutUI.toasterAnimationFlag = true
 LayoutUI.toasterTimer = null

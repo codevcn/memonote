@@ -1,6 +1,7 @@
 enum ELocalStorageKeys {
     REALTIME_MODE = 'realtime-mode',
-    NOTE_CHANGES_DISPLAY_MODE = 'note-changes-dislay-mode',
+    NOTE_CHANGES_DISPLAY_MODE = 'notify-note-edited-mode',
+    EDITING_NOTIFY_STYLE = 'edited-notify-style',
 }
 
 enum ENoteLengths {
@@ -8,7 +9,7 @@ enum ENoteLengths {
     MIN_LENGTH_NOTE_UNIQUE_NAME = 1,
     MAX_LENGTH_PASSWORD = 50,
     MIN_LENGTH_PASSWORD = 4,
-    MAX_LENGTH_NOTE_CONTENT = 10000,
+    MAX_LENGTH_NOTE_CONTENT = 50000,
     MAX_LENGTH_NOTE_HISTORY = 100,
 }
 
@@ -24,8 +25,8 @@ enum ECustomEvents {
     GENERAL_APP_STATUS = 'GENERAL_APP_STATUS',
 }
 
-enum EBroadcastTimeout {
-    NOTE_TYPING_TIMEOUT = 10000,
+enum EBroadcastTimeouts {
+    NOTE_TYPING_TIMEOUT = 7000,
 }
 
 enum EHttpStatuses {

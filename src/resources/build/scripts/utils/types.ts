@@ -1,3 +1,7 @@
+// models
+type TNotificationModel = {}
+
+// others
 type TResBodySuccess = {
     success: boolean
 }
@@ -31,6 +35,8 @@ type TNoteForm = {
 
 type TRealtimeModeTypes = 'sync' | 'stop'
 
-type TNoteChangesDisplayTypes = 'on' | 'off'
+type TNotifyNoteEditedTypes = 'on' | 'off'
+
+type TEditedNotifyStyleTypes = 'blink' | 'slither'
 
 type TFormCheckValues = null | 'on'

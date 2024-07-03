@@ -21,3 +21,7 @@ const logoutAPI = (noteUniqueName: string): Promise<TResBodySuccess> =>
 
 const signInAPI = (password: string, noteUniqueName: string): Promise<TResBodySuccess> =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
+
+// notification
+const getNotifications = (noteUniqueName: string): Promise<TNotificationModel> =>
+    axiosClient.get('/noti/noties/' + noteUniqueName)

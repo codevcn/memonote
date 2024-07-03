@@ -8,4 +8,5 @@ export enum EInitialSocketEvents {
 
 export enum ENoteEvents {
     NOTE_TYPING = 'note_typing',
+    GET_NOTE_FORM = 'get_note_form',
 }

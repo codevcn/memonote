@@ -8,4 +8,5 @@ export class APIRoutes {
 
     static note: string = `${this.apiRootPath}/note`
     static auth: string = `${this.apiRootPath}/auth`
+    static notification: string = `${this.apiRootPath}/noti`
 }

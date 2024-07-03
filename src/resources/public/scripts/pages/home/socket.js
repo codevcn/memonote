@@ -38,6 +38,7 @@ var ENoteEvents
 ;(function (ENoteEvents) {
     ENoteEvents['CLIENT_CONNECTED'] = 'client_connected'
     ENoteEvents['NOTE_TYPING'] = 'note_typing'
+    ENoteEvents['GET_NOTE_FORM'] = 'get_note_form'
 })(ENoteEvents || (ENoteEvents = {}))
 // vars
 const clientSocketReconnecting = { value: false }
@@ -72,9 +73,9 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, (data) =>
         if (realtimeMode && realtimeMode === 'sync') {
             setForNoteFormChanged(data)
         } else {
-            const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
-            if (noteChangesDisplayMode && noteChangesDisplayMode === 'on') {
-                LayoutUI.setNoteFormChangsDisplay('on', data)
+            const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
+            if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
+                LayoutUI.notifyNoteEdited('on', data)
             }
         }
     }),
@@ -83,7 +84,7 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, (data) =>
 const broadcastNoteTyping = (note) =>
     __awaiter(void 0, void 0, void 0, function* () {
         clientSocket
-            .timeout(EBroadcastTimeout.NOTE_TYPING_TIMEOUT)
+            .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
             .emit(ENoteEvents.NOTE_TYPING, note, (err, res) => {
                 if (err) {
                     LayoutUI.setUIOfGeneralAppStatus('error')
@@ -95,6 +96,17 @@ const broadcastNoteTyping = (note) =>
                         LayoutUI.setUIOfGeneralAppStatus('error')
                     }
                     console.log('>>> broadcast res >>>', res)
+                }
+            })
+    })
+const fetchNoteContent = () =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        clientSocket
+            .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
+            .emit(ENoteEvents.GET_NOTE_FORM, (err, res) => {
+                LayoutUI.notifyNoteEdited('off', { title: 'true', author: 'true', content: 'true' })
+                if (res.success) {
+                    setForNoteFormChanged(res.data)
                 }
             })
     })

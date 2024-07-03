@@ -1,11 +1,14 @@
-import { Server } from 'socket.io'
-import { BroadcastNoteTypingDTO } from './dtos'
+import { BroadcastNoteTypingDTO } from './DTOs'
 
 export type TClientConnectedEventPayload = {
     connectionStatus: string
 }
 
-export type TBroadcastNoteTypingRes = {
+export type TBroadcastNoteTypingReturn = {
     data: BroadcastNoteTypingDTO
     success: boolean
+}
+
+export type TValidateIncommingSocketReturn = {
+    noteUniqueName: string
 }

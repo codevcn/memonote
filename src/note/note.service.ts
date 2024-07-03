@@ -1,8 +1,7 @@
-import { Model } from 'mongoose'
+import type { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Note } from '@/database/note.model'
-import type { TNoteDocument } from '@/database/note.model'
 import { Helpers } from '@/utils/helpers'
 import { ENoteLengths } from './enums'
 import * as bcrypt from 'bcrypt'
@@ -10,7 +9,7 @@ import type { Response } from 'express'
 import { JWTService } from '@/auth/jwt.service'
 import { EAuthEncryption } from '@/utils/enums'
 import type { TNoteForm } from './types'
-import { AddPasswordForNotePayloadDTO } from './note.dto'
+import { AddPasswordForNotePayloadDTO } from './DTOs'
 import { UserSessions } from './gateway/sessions'
 
 @Injectable()
@@ -20,12 +19,12 @@ export class NoteService {
         private jwtService: JWTService,
     ) {}
 
-    async findNote(noteUniqueName: string): Promise<TNoteDocument | null> {
-        return await this.noteModel.findOne({ noteUniqueName }).lean()
+    async findNote(noteUniqueName: string) {
+        return await this.noteModel.findOne({ uniqueName: noteUniqueName }).lean()
     }
 
-    async createNewNote(noteUniqueName: string): Promise<TNoteDocument | null> {
-        return await this.noteModel.create({ noteUniqueName })
+    async createNewNote(noteUniqueName: string) {
+        return await this.noteModel.create({ uniqueName: noteUniqueName })
     }
 
     async updateNoteForm(noteUniqueName: string, noteForm: TNoteForm): Promise<void> {
@@ -41,7 +40,7 @@ export class NoteService {
             dataForUpdate.content = content
         }
         await this.noteModel.updateOne(
-            { noteUniqueName: noteUniqueName },
+            { uniqueName: noteUniqueName },
             {
                 $set: dataForUpdate,
             },
@@ -63,7 +62,10 @@ export class NoteService {
     ): Promise<void> {
         const { password } = payload
         const hashedPassword = await this.hashPassword(password)
-        await this.noteModel.updateOne({ noteUniqueName }, { $set: { password: hashedPassword } })
+        await this.noteModel.updateOne(
+            { uniqueName: noteUniqueName },
+            { $set: { password: hashedPassword } },
+        )
         const jwt = await this.jwtService.createJWT({ noteUniqueName })
         this.jwtService.sendJWTToClient(res, { token: jwt })
         UserSessions.addUserSession(noteUniqueName, jwt)
@@ -75,7 +77,7 @@ export class NoteService {
 
     async removePasswordForNote(noteUniqueName: string): Promise<void> {
         await this.noteModel.updateOne(
-            { noteUniqueName },
+            { uniqueName: noteUniqueName },
             {
                 $set: {
                     password: null,

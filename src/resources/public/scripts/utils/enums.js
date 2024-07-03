@@ -2,7 +2,8 @@
 var ELocalStorageKeys
 ;(function (ELocalStorageKeys) {
     ELocalStorageKeys['REALTIME_MODE'] = 'realtime-mode'
-    ELocalStorageKeys['NOTE_CHANGES_DISPLAY_MODE'] = 'note-changes-dislay-mode'
+    ELocalStorageKeys['NOTE_CHANGES_DISPLAY_MODE'] = 'notify-note-edited-mode'
+    ELocalStorageKeys['EDITING_NOTIFY_STYLE'] = 'edited-notify-style'
 })(ELocalStorageKeys || (ELocalStorageKeys = {}))
 var ENoteLengths
 ;(function (ENoteLengths) {
@@ -10,7 +11,7 @@ var ENoteLengths
     ENoteLengths[(ENoteLengths['MIN_LENGTH_NOTE_UNIQUE_NAME'] = 1)] = 'MIN_LENGTH_NOTE_UNIQUE_NAME'
     ENoteLengths[(ENoteLengths['MAX_LENGTH_PASSWORD'] = 50)] = 'MAX_LENGTH_PASSWORD'
     ENoteLengths[(ENoteLengths['MIN_LENGTH_PASSWORD'] = 4)] = 'MIN_LENGTH_PASSWORD'
-    ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_CONTENT'] = 10000)] = 'MAX_LENGTH_NOTE_CONTENT'
+    ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_CONTENT'] = 50000)] = 'MAX_LENGTH_NOTE_CONTENT'
     ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_HISTORY'] = 100)] = 'MAX_LENGTH_NOTE_HISTORY'
 })(ENoteLengths || (ENoteLengths = {}))
 var ENoteTyping
@@ -25,10 +26,10 @@ var ECustomEvents
 ;(function (ECustomEvents) {
     ECustomEvents['GENERAL_APP_STATUS'] = 'GENERAL_APP_STATUS'
 })(ECustomEvents || (ECustomEvents = {}))
-var EBroadcastTimeout
-;(function (EBroadcastTimeout) {
-    EBroadcastTimeout[(EBroadcastTimeout['NOTE_TYPING_TIMEOUT'] = 10000)] = 'NOTE_TYPING_TIMEOUT'
-})(EBroadcastTimeout || (EBroadcastTimeout = {}))
+var EBroadcastTimeouts
+;(function (EBroadcastTimeouts) {
+    EBroadcastTimeouts[(EBroadcastTimeouts['NOTE_TYPING_TIMEOUT'] = 7000)] = 'NOTE_TYPING_TIMEOUT'
+})(EBroadcastTimeouts || (EBroadcastTimeouts = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {
     EHttpStatuses[(EHttpStatuses['CONTINUE'] = 100)] = 'CONTINUE'

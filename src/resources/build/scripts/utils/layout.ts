@@ -15,31 +15,35 @@ const closeAppNotification = (target: HTMLElement) => {
 
 class LayoutUI {
     private static readonly NOTIFICATION_TIMEOUT: number = 3000
-    private static readonly GENERAL_STATUS_TIMEOUT: number = 2000
+    private static readonly GENERAL_STATUS_TIMEOUT: number = 3000
     private static toasterAnimationFlag: boolean = true
     static toasterTimer: ReturnType<typeof setTimeout> | null = null
 
-    static setNoteFormChangsDisplay(type: 'on' | 'off', noteForm: TNoteForm): void {
-        const noteChangesDisplayClass = 'note-changes-display'
-        if (noteForm.title) {
-            const noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
-            noteFormItem.classList.remove(noteChangesDisplayClass)
+    static notifyNoteEdited(type: 'on' | 'off', noteForm: TNoteForm): void {
+        let baseClasses = ['notify-note-edited', 'slither', 'blink']
+        let notifyNoteEditedClass: string[] = ['notify-note-edited']
+        notifyNoteEditedClass.push(getEditedNotifyStyleInDevice() || 'blink')
+        let noteFormItem: HTMLElement
+        const { title, author, content } = noteForm
+        if (title || title === '') {
+            noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
+            noteFormItem.classList.remove(...baseClasses)
             if (type === 'on') {
-                noteFormItem.classList.add(noteChangesDisplayClass)
+                noteFormItem.classList.add(...notifyNoteEditedClass)
             }
         }
-        if (noteForm.author) {
-            const noteFormItem = noteFormEle.querySelector('.note-author') as HTMLElement
-            noteFormItem.classList.remove(noteChangesDisplayClass)
+        if (author || author === '') {
+            noteFormItem = noteFormEle.querySelector('.note-author') as HTMLElement
+            noteFormItem.classList.remove(...baseClasses)
             if (type === 'on') {
-                noteFormItem.classList.add(noteChangesDisplayClass)
+                noteFormItem.classList.add(...notifyNoteEditedClass)
             }
         }
-        if (noteForm.content) {
-            const noteFormItem = noteFormEle.querySelector('.note-editor-board') as HTMLElement
-            noteFormItem.classList.remove(noteChangesDisplayClass)
+        if (content || content === '') {
+            noteFormItem = noteFormEle.querySelector('.note-editor-board') as HTMLElement
+            noteFormItem.classList.remove(...baseClasses)
             if (type === 'on') {
-                noteFormItem.classList.add(noteChangesDisplayClass)
+                noteFormItem.classList.add(...notifyNoteEditedClass)
             }
         }
     }

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'
-import { GetNoteOnHomePageParamsDTO } from './home.dto'
+import { GetNoteOnHomePageParamsDTO } from './DTOs'
 import { TApplicationInfo } from '@/utils/application/types'
 
 export interface IHomeController {

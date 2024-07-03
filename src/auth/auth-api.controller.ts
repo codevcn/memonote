@@ -4,7 +4,7 @@ import type { Response, Request } from 'express'
 import { APIRoutes } from '@/utils/routes'
 import type { IAuthAPIController } from './interfaces'
 import { APIAuthGuard } from '@/auth/auth.guard'
-import { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './auth.dto'
+import { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './DTOs'
 
 @Controller(APIRoutes.auth)
 export class AuthAPIController implements IAuthAPIController {

@@ -1,7 +1,17 @@
 import { ENoteLengths } from '@/note/enums'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import type { HydratedDocument } from 'mongoose'
 
-export type TNoteDocument = InstanceType<typeof Note>
+export type TNoteDocument = HydratedDocument<typeof Note>
+
+@Schema()
+class Status {
+    @Prop({ required: true })
+    active: boolean
+
+    @Prop({ required: true })
+    message: string
+}
 
 @Schema()
 export class Note {
@@ -11,24 +21,30 @@ export class Note {
         maxlength: ENoteLengths.MAX_LENGTH_NOTE_UNIQUE_NAME,
         unique: true,
     })
-    noteUniqueName: string
+    uniqueName: string
 
     @Prop({ maxlength: ENoteLengths.MAX_LENGTH_NOTE_TITLE })
-    title?: string
+    title: string
 
     @Prop({ maxlength: ENoteLengths.MAX_LENGTH_NOTE_AUTHOR })
-    author?: string
+    author: string
 
-    @Prop({ minlength: ENoteLengths.MIN_LENGTH_NOTE_CONTENT })
-    content?: string
+    @Prop({ maxlength: ENoteLengths.MAX_LENGTH_NOTE_CONTENT })
+    content: string
 
     @Prop({
         minlength: ENoteLengths.MIN_LENGTH_PASSWORD,
         maxlength: ENoteLengths.MAX_LENGTH_PASSWORD,
     })
-    password?: string
+    password: string
 
-    @Prop({ default: Date.now })
+    @Prop({ type: Status })
+    status: Status
+
+    @Prop({ default: Date.now, required: true })
+    updatedAt: Date
+
+    @Prop({ default: Date.now, required: true })
     createdAt: Date
 }
 

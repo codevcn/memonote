@@ -41,6 +41,7 @@ const setPasswordForm = document.getElementById('settings-form-set-password')
 const removePasswordForm = document.getElementById('settings-form-remove-password')
 const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
 const noteFormEle = notesSection.querySelector('.note-form')
+getNotifications(getNoteUniqueNameFromURL())
 const noteContentHistory = { history: [''], index: 0 }
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -89,12 +90,15 @@ const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
     }
 }
 const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
+    LayoutUI.notifyNoteEdited('off', { content: 'true' })
     broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteTitleTypingHanlder = debounce((target) => {
+    LayoutUI.notifyNoteEdited('off', { title: 'true' })
     broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteAuthorTypingHanlder = debounce((target) => {
+    LayoutUI.notifyNoteEdited('off', { author: 'true' })
     broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const noteTyping = (noteEditorTarget) =>
@@ -257,7 +261,7 @@ const setUIOfNoteQuickLook = (itemsShown = [], itemsHidden = []) => {
         }
     }
 }
-const setPasswordForNoteHanlder = (e) =>
+const saveSettingsSetPasswordForNote = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
         const form = e.target
@@ -297,7 +301,7 @@ const removePasswordOfNote = (noteUniqueName) =>
             yield removePasswordOfNoteAPI(noteUniqueName)
         }
     })
-const removePasswordOfNoteHandler = (e) =>
+const saveSettingsRemovePasswordOfNote = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
         const submitBtn = e.target.querySelector('.form-btn')
@@ -355,20 +359,24 @@ const setStatusOfSettingsForm = (formTarget, type) => {
     formTarget.querySelector('.form-title .status .status-item.unsaved').hidden = isSaved
 }
 const setRealtimeModeHandler = (type) => {
-    setRealtimeModeInDevice(type)
     if (type === 'sync') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
+        const currentRealtimeMode = getRealtimeModeInDevice()
+        if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
+            fetchNoteContent()
+        }
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')
     }
+    setRealtimeModeInDevice(type)
 }
-const saveChangesOfChangeModes = (e) =>
+const saveSettingsChangeModes = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
         const form = e.target
         const formData = new FormData(form)
         const realtimeMode = formData.get('realtime-mode')
-        const noteChangesDisplayMode = formData.get('note-changes-display')
+        const notifyNoteEditedMode = formData.get('notify-note-edited')
         if (realtimeMode) {
             if (realtimeMode === 'on') {
                 setRealtimeModeHandler('sync')
@@ -376,10 +384,10 @@ const saveChangesOfChangeModes = (e) =>
         } else {
             setRealtimeModeHandler('stop')
         }
-        if (noteChangesDisplayMode) {
-            setNoteChangesDisplayModeInDevice('on')
+        if (notifyNoteEditedMode) {
+            setNotifyNoteEditedModeInDevice('on')
         } else {
-            setNoteChangesDisplayModeInDevice('off')
+            setNotifyNoteEditedModeInDevice('off')
         }
         setStatusOfSettingsForm(form, 'saved')
     })
@@ -415,6 +423,17 @@ const switchTabPassword = (target, type) =>
             }
         }
     })
+const saveSettingsUserInterface = (e) =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        e.preventDefault()
+        const form = e.target
+        const formData = new FormData(form)
+        const editedNotifyStyle = formData.get('edited-notify-style')
+        if (editedNotifyStyle) {
+            setEditedNotifyStyleInDevice(editedNotifyStyle)
+        }
+        setStatusOfSettingsForm(form, 'saved')
+    })
 const initPage = () => {
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
@@ -423,13 +442,13 @@ const initPage = () => {
         realtimeModeInput.checked = true
         realtimeModeDisplay.classList.replace('inactive', 'active')
     }
-    const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
-    if (noteChangesDisplayMode && noteChangesDisplayMode === 'off') {
-        const realtimeModeInput = document.getElementById('note-changes-display-input')
+    const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
+    if (notifyNoteEditedMode && notifyNoteEditedMode === 'off') {
+        const realtimeModeInput = document.getElementById('notify-note-edited-input')
         realtimeModeInput.checked = false
     }
     const changeModesForm = document.getElementById('settings-form-change-modes')
-    const changeModesFormInputs = changeModesForm.querySelectorAll('input')
+    const changeModesFormInputs = changeModesForm.querySelectorAll('.form-field')
     for (const input of changeModesFormInputs) {
         input.addEventListener('change', function (e) {
             setStatusOfSettingsForm(changeModesForm, 'unsaved')
@@ -437,10 +456,28 @@ const initPage = () => {
     }
     // setup "password" form
     const passwordForm = document.getElementById('settings-form-set-password')
-    const passwordFormInputs = passwordForm.querySelectorAll('input')
+    const passwordFormInputs = passwordForm.querySelectorAll('.form-field')
     for (const input of passwordFormInputs) {
         input.addEventListener('input', function (e) {
             setStatusOfSettingsForm(passwordForm, 'unsaved')
+        })
+    }
+    // setup "user interface" form
+    const editedNotifyStyle = getEditedNotifyStyleInDevice()
+    const editedNotifyStyleSelect = document.getElementById('edited-notify-style-select')
+    if (editedNotifyStyle) {
+        const optionExists = Array.from(editedNotifyStyleSelect.options).some(
+            (option) => option.value === editedNotifyStyle,
+        )
+        if (optionExists) {
+            editedNotifyStyleSelect.value = editedNotifyStyle
+        }
+    }
+    const userInterfaceForm = document.getElementById('settings-form-user-interface')
+    const userInterfaceFormSelects = userInterfaceForm.querySelectorAll('.form-field')
+    for (const userInterfaceFormInput of userInterfaceFormSelects) {
+        userInterfaceFormInput.addEventListener('change', function (e) {
+            setStatusOfSettingsForm(userInterfaceForm, 'unsaved')
         })
     }
     // setup "quick look" section

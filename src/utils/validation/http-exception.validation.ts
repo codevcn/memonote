@@ -1,5 +1,5 @@
 import { IExceptionValidationService } from '@/utils/validation/interfaces'
-import { EValidationMessages } from '@/utils/messages'
+import { EValidationMessages } from './messages'
 import { HttpException, Injectable } from '@nestjs/common'
 import { UserException } from '../exception/custom.exception'
 

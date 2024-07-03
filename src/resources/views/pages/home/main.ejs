@@ -30,7 +30,7 @@
                     </div>
                     <div class="letters-count">
                         <span></span>
-                        <span class="count"><%= note.content ? note.content.length : 0 %> / 10000</span>
+                        <span class="count"><%= note.content ? note.content.length : 0 %> / 50000</span>
                     </div>
                 </div>
                 <!-- <div class="useful-note-actions">
@@ -84,6 +84,10 @@
                                 <i class="bi bi-lock-fill"></i>
                                 <span>Password</span>
                             </span>
+                            <span onclick="navigateSettings(this,'user-interface')" class="nav-item">
+                                <i class="bi bi-image-alt"></i>
+                                <span>User Interface</span>
+                            </span>
                         </div>
                         <span onclick="logoutHandler(this)" class="nav-item logout-btn"
                             <%= note.passwordSet ? '' : 'hidden' %>>
@@ -93,7 +97,7 @@
                     </section>
                     <div class="forms change-modes">
                         <form class="note-settings-form change-modes" id="settings-form-change-modes" action="#"
-                            onsubmit="saveChangesOfChangeModes(event)">
+                            onsubmit="saveSettingsChangeModes(event)">
                             <h2 class="form-title">
                                 <span>Change Modes</span>
                                 <div class="status">
@@ -103,31 +107,31 @@
                             </h2>
                             <div class="form-content active">
                                 <div class="form-check form-switch form-group">
-                                    <input class="form-check-input" type="checkbox" id="realtime-mode-input"
+                                    <input class="form-check-input form-field" type="checkbox" id="realtime-mode-input"
                                         name="realtime-mode">
                                     <div class="info">
                                         <label class="form-check-label" for="realtime-mode-input">
                                             Real-time mode in this device.
                                         </label>
-                                        <div data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             title="When enabled, your note in this device will be updated in real-time. Click for more details."
                                             class="details-btn">
                                             <i class="bi bi-info-circle-fill"></i>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="form-check form-switch form-group">
-                                    <input class="form-check-input" type="checkbox" id="note-changes-display-input"
-                                        name="note-changes-display" checked>
+                                    <input class="form-check-input form-field" type="checkbox"
+                                        id="notify-note-edited-input" name="notify-note-edited" checked>
                                     <div class="info">
-                                        <label class="form-check-label" for="note-changes-display-input">
-                                            Display note has been changed.
+                                        <label class="form-check-label" for="notify-note-edited-input">
+                                            Notify note has been edited.
                                         </label>
-                                        <div data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="When this mode and the realtime mode is both turned off, your note in this device won't receive any notifications about changes. Click for more details."
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="When this mode and the realtime mode is both turned off, your note in this device won't be notified to be edited. Click for more details."
                                             class="details-btn">
                                             <i class="bi bi-info-circle-fill"></i>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +157,7 @@
                         </div>
 
                         <form class="note-settings-form set-password" id="settings-form-set-password" action="#"
-                            onsubmit="setPasswordForNoteHanlder(event)">
+                            onsubmit="saveSettingsSetPasswordForNote(event)">
                             <h2 class="form-title">
                                 <span class="content">
                                     Add Or Change Password For This Note
@@ -170,7 +174,7 @@
                                     </label>
                                     <div class="input-wrapper">
                                         <input id="password-input" type="password" placeholder="Enter password here..."
-                                            name="password" />
+                                            name="password" class="form-field" />
                                         <div class="input-actions">
                                             <span class="hidden" onclick="hideShowPassword_homePage(this,false)">
                                                 <i class="bi bi-eye-slash"></i>
@@ -186,17 +190,17 @@
                                     <div class="message"></div>
                                 </div>
                                 <div class="form-check form-switch form-group logout-all">
-                                    <input class="form-check-input" type="checkbox" id="logout-all-input"
-                                        name="logout-all">
+                                    <input class="form-check-input form-field" type="checkbox" id="logout-all-input"
+                                        name="logout-all" />
                                     <div class="info">
                                         <label class="form-check-label" for="logout-all-input">
                                             Logout all other users.
                                         </label>
-                                        <div data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             title="When enabled, logout all other users also currently using this note after changing password successfully."
                                             class="details-btn">
                                             <i class="bi bi-info-circle-fill"></i>
-                                        </div>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -207,7 +211,7 @@
                         </form>
 
                         <form class="note-settings-form remove-password" id="settings-form-remove-password" action="#"
-                            onsubmit="removePasswordOfNoteHandler(event)" hidden>
+                            onsubmit="saveSettingsRemovePasswordOfNote(event)" hidden>
                             <div class="form-content-container" <%= note.passwordSet ? '' : 'hidden' %>>
                                 <h2 class="form-title">
                                     <span>
@@ -228,6 +232,41 @@
                                 <i class="bi bi-emoji-frown-fill"></i>
                                 <span>You haven't set password for this note.</span>
                             </div>
+                        </form>
+                    </div>
+                    <div class="forms user-interface" hidden>
+                        <form action="#" class="note-settings-form user-interface" id="settings-form-user-interface"
+                            onsubmit="saveSettingsUserInterface(event)">
+                            <h2 class="form-title">
+                                <span>
+                                    Change User Interface
+                                </span>
+                                <div class="status">
+                                    <span class="status-item unsaved" hidden>(unsaved)</span>
+                                    <span class="status-item saved" hidden>(saved)</span>
+                                </div>
+                            </h2>
+                            <div class="form-content">
+                                <div class="form-group">
+                                    <label for="edited-notify-style-select">
+                                        <span>Editing note notification styling</span>
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Change how your note will be notified to be edited"
+                                            class="details-btn">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </span>
+                                    </label>
+                                    <select class="form-select form-field" name="edited-notify-style"
+                                        id="edited-notify-style-select">
+                                        <option value="blink" selected>Blink</option>
+                                        <option value="slither">Slither</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="form-btn">
+                                <i class="bi bi-check-lg"></i>
+                                <span>Save Changes</span>
+                            </button>
                         </form>
                     </div>
                 </div>

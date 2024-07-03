@@ -1,7 +1,7 @@
 import type { CookieOptions, Response, Request } from 'express'
 import type { TSendJWTParamOptions, TJWTPayload, TJwtCookieOptions } from './types'
 import type { TSuccess } from '@/utils/types'
-import type { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './auth.dto'
+import type { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './DTOs'
 
 export interface IJWTService {
     jwtCookieOptions: TJwtCookieOptions

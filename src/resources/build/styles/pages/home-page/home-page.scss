@@ -1,0 +1,62 @@
+// import modules
+@use '../../global/colors';
+@use '../../global/z-indexes';
+@use '../../global/components';
+// import scss files
+@use './notes.scss';
+@use './settings.scss';
+
+$mmn-page-padding-bottom: 100px;
+$mmn-quick-look-icon-initial-size: 30px;
+
+:root {
+    --mmn-quick-look-icon-initial-size: #{$mmn-quick-look-icon-initial-size};
+}
+
+#page-main {
+    padding: 10px 50px $mmn-page-padding-bottom;
+    z-index: z-indexes.$mmn-base-custom-zidx;
+
+    .note-quick-look {
+        display: flex;
+        justify-content: space-between;
+        column-gap: 50px;
+
+        .quick-look-items {
+            display: flex;
+            column-gap: 10px;
+
+            .quick-look-item {
+                display: flex;
+                align-items: center;
+                height: $mmn-quick-look-icon-initial-size;
+                width: $mmn-quick-look-icon-initial-size;
+                overflow: hidden;
+                padding: 6px;
+                transition: width 0.25s components.$mmn-cubic-bezier;
+                column-gap: 5px;
+
+                i {
+                    font-size: 1.1rem;
+                }
+
+                .text {
+                    display: block;
+                    width: max-content;
+                    color: colors.$mmn-regular-white-cl;
+                    white-space: nowrap;
+                    font-size: 0.9rem;
+                }
+
+                &.password-set {
+                    background-color: colors.$mmn-regular-red-cl;
+                    border-radius: 1.6rem;
+
+                    i {
+                        color: colors.$mmn-regular-white-cl;
+                    }
+                }
+            }
+        }
+    }
+}

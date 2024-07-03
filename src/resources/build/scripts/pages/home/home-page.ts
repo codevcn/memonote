@@ -22,7 +22,7 @@ type TNoteContentHistory = {
     history: string[]
     index: number
 }
-
+getNotifications(getNoteUniqueNameFromURL())
 const noteContentHistory: TNoteContentHistory = { history: [''], index: 0 }
 
 const validateNoteContent = (noteContent: string): boolean => {
@@ -82,14 +82,17 @@ const setBoardUIOfNoteEditor = (
 }
 
 const broadcastNoteContentTypingHanlder = debounce((noteContent: string): void => {
+    LayoutUI.notifyNoteEdited('off', { content: 'true' })
     broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteTitleTypingHanlder = debounce((target: HTMLInputElement): void => {
+    LayoutUI.notifyNoteEdited('off', { title: 'true' })
     broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteAuthorTypingHanlder = debounce((target: HTMLInputElement): void => {
+    LayoutUI.notifyNoteEdited('off', { author: 'true' })
     broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
@@ -286,7 +289,7 @@ const setUIOfNoteQuickLook = (itemsShown: string[] = [], itemsHidden: string[] =
     }
 }
 
-const setPasswordForNoteHanlder = async (e: SubmitEvent): Promise<void> => {
+const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
     const form = e.target as HTMLFormElement
@@ -332,7 +335,7 @@ const removePasswordOfNote = async (noteUniqueName: string): Promise<void> => {
     }
 }
 
-const removePasswordOfNoteHandler = async (e: SubmitEvent): Promise<void> => {
+const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
     const submitBtn = (e.target as HTMLFormElement).querySelector('.form-btn') as HTMLButtonElement
@@ -393,23 +396,27 @@ const setStatusOfSettingsForm = (formTarget: HTMLFormElement, type: 'unsaved' | 
         isSaved
 }
 
-const setRealtimeModeHandler = (type: TRealtimeModeTypes) => {
-    setRealtimeModeInDevice(type)
+const setRealtimeModeHandler = (type: TRealtimeModeTypes): void => {
     if (type === 'sync') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
+        const currentRealtimeMode = getRealtimeModeInDevice()
+        if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
+            fetchNoteContent()
+        }
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')
     }
+    setRealtimeModeInDevice(type)
 }
 
-const saveChangesOfChangeModes = async (e: SubmitEvent): Promise<void> => {
+const saveSettingsChangeModes = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
 
     const realtimeMode = formData.get('realtime-mode') as TFormCheckValues
-    const noteChangesDisplayMode = formData.get('note-changes-display') as TFormCheckValues
+    const notifyNoteEditedMode = formData.get('notify-note-edited') as TFormCheckValues
 
     if (realtimeMode) {
         if (realtimeMode === 'on') {
@@ -418,10 +425,10 @@ const saveChangesOfChangeModes = async (e: SubmitEvent): Promise<void> => {
     } else {
         setRealtimeModeHandler('stop')
     }
-    if (noteChangesDisplayMode) {
-        setNoteChangesDisplayModeInDevice('on')
+    if (notifyNoteEditedMode) {
+        setNotifyNoteEditedModeInDevice('on')
     } else {
-        setNoteChangesDisplayModeInDevice('off')
+        setNotifyNoteEditedModeInDevice('off')
     }
 
     setStatusOfSettingsForm(form, 'saved')
@@ -468,6 +475,20 @@ const switchTabPassword = async (
     }
 }
 
+const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
+    e.preventDefault()
+
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+
+    const editedNotifyStyle = formData.get('edited-notify-style') as TEditedNotifyStyleTypes
+    if (editedNotifyStyle) {
+        setEditedNotifyStyleInDevice(editedNotifyStyle)
+    }
+
+    setStatusOfSettingsForm(form, 'saved')
+}
+
 const initPage = (): void => {
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
@@ -476,15 +497,15 @@ const initPage = (): void => {
         realtimeModeInput.checked = true
         realtimeModeDisplay.classList.replace('inactive', 'active')
     }
-    const noteChangesDisplayMode = getNoteChangesDisplayModeInDevice()
-    if (noteChangesDisplayMode && noteChangesDisplayMode === 'off') {
+    const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
+    if (notifyNoteEditedMode && notifyNoteEditedMode === 'off') {
         const realtimeModeInput = document.getElementById(
-            'note-changes-display-input',
+            'notify-note-edited-input',
         ) as HTMLInputElement
         realtimeModeInput.checked = false
     }
     const changeModesForm = document.getElementById('settings-form-change-modes') as HTMLFormElement
-    const changeModesFormInputs = changeModesForm.querySelectorAll<HTMLInputElement>('input')
+    const changeModesFormInputs = changeModesForm.querySelectorAll<HTMLInputElement>('.form-field')
     for (const input of changeModesFormInputs) {
         input.addEventListener('change', function (e) {
             setStatusOfSettingsForm(changeModesForm, 'unsaved')
@@ -493,10 +514,34 @@ const initPage = (): void => {
 
     // setup "password" form
     const passwordForm = document.getElementById('settings-form-set-password') as HTMLFormElement
-    const passwordFormInputs = passwordForm.querySelectorAll<HTMLInputElement>('input')
+    const passwordFormInputs = passwordForm.querySelectorAll<HTMLInputElement>('.form-field')
     for (const input of passwordFormInputs) {
         input.addEventListener('input', function (e) {
             setStatusOfSettingsForm(passwordForm, 'unsaved')
+        })
+    }
+
+    // setup "user interface" form
+    const editedNotifyStyle = getEditedNotifyStyleInDevice()
+    const editedNotifyStyleSelect = document.getElementById(
+        'edited-notify-style-select',
+    ) as HTMLSelectElement
+    if (editedNotifyStyle) {
+        const optionExists = Array.from(editedNotifyStyleSelect.options).some(
+            (option) => option.value === editedNotifyStyle,
+        )
+        if (optionExists) {
+            editedNotifyStyleSelect.value = editedNotifyStyle
+        }
+    }
+    const userInterfaceForm = document.getElementById(
+        'settings-form-user-interface',
+    ) as HTMLFormElement
+    const userInterfaceFormSelects =
+        userInterfaceForm.querySelectorAll<HTMLSelectElement>('.form-field')
+    for (const userInterfaceFormInput of userInterfaceFormSelects) {
+        userInterfaceFormInput.addEventListener('change', function (e) {
+            setStatusOfSettingsForm(userInterfaceForm, 'unsaved')
         })
     }
 

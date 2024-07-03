@@ -1,126 +1,3 @@
-/* @rules
-normal - regular
-bold - bold
-500 - medium
-300 - light
-100 - thin
-*/
-/* =================================================== */
-/* ==================== Poppins ====================== */
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal;
-}
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: bold;
-}
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 500;
-}
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 300;
-}
-/* =================================================== */
-/* ==================== Work Sans ==================== */
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal;
-}
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
-    font-style: normal;
-    font-weight: bold;
-}
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Medium.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 500;
-}
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 300;
-}
-/* =================================================== */
-/* ==================== Roboto ==================== */
-@font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal;
-}
-@font-face {
-    font-family: 'Roboto bold';
-    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: bold;
-}
-@font-face {
-    font-family: 'Roboto light';
-    src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 300;
-}
-:root {
-    --mmn-quick-look-icon-initial-size: 30px;
-}
-
-#page-main {
-    padding: 10px 50px 100px;
-    z-index: 1;
-}
-#page-main .note-quick-look {
-    display: flex;
-    justify-content: space-between;
-    column-gap: 50px;
-}
-#page-main .note-quick-look .quick-look-items {
-    display: flex;
-    column-gap: 10px;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item {
-    display: flex;
-    align-items: center;
-    height: 30px;
-    width: 30px;
-    overflow: hidden;
-    padding: 6px;
-    transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);
-    column-gap: 5px;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item i {
-    font-size: 1.1rem;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item .text {
-    display: block;
-    width: max-content;
-    color: #fff;
-    white-space: nowrap;
-    font-size: 0.9rem;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item.password-set {
-    background-color: #ff2424;
-    border-radius: 1.6rem;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item.password-set i {
-    color: #fff;
-}
 #page-main .notes {
     padding: 0 80px;
     margin-top: 15px;
@@ -149,18 +26,26 @@ bold - bold
     bottom: 0;
     left: 0;
 }
-#page-main .notes .note-form .note-form-item.note-changes-display::before,
-#page-main .notes .note-form .note-form-item.note-changes-display::after {
+#page-main .notes .note-form .note-form-item.notify-note-edited.slither::before,
+#page-main .notes .note-form .note-form-item.notify-note-edited.slither::after {
     animation-duration: 6s;
     animation-timing-function: ease-in;
     animation-iteration-count: infinite;
     animation-fill-mode: backwards;
 }
-#page-main .notes .note-form .note-form-item.note-changes-display::before {
-    animation-name: note-form-changed-indicator-before;
+#page-main .notes .note-form .note-form-item.notify-note-edited.slither::before {
+    animation-name: notify-slither-note-edited-before;
 }
-#page-main .notes .note-form .note-form-item.note-changes-display::after {
-    animation-name: note-form-changed-indicator-after;
+#page-main .notes .note-form .note-form-item.notify-note-edited.slither::after {
+    animation-name: notify-slither-note-edited-after;
+}
+#page-main .notes .note-form .note-form-item.notify-note-edited.blink {
+    outline: 1px #909090 solid;
+    animation-name: notify-blink-note-edited;
+    animation-duration: 1s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-direction: reverse;
 }
 #page-main .notes .note-form .note-form-item .note-annotation {
     position: absolute;
@@ -187,6 +72,7 @@ bold - bold
     font-weight: bold;
     position: relative;
     z-index: 3;
+    line-height: 1rem;
 }
 #page-main .notes .note-form .note-form-item.note-title input::placeholder {
     color: #909090;
@@ -207,6 +93,7 @@ bold - bold
     font-weight: 500;
     position: relative;
     z-index: 3;
+    line-height: 1rem;
 }
 #page-main .notes .note-form .note-form-item.note-author input::placeholder {
     color: #909090;
@@ -242,7 +129,7 @@ bold - bold
     .note-editor-container
     .note-editor-wrapper
     .note-annotation {
-    top: 0;
+    top: 10px;
     transform: translate(-10px, 0);
 }
 #page-main
@@ -273,6 +160,7 @@ bold - bold
     background-color: #fff;
     resize: none;
     overflow: hidden;
+    padding: 0;
 }
 #page-main
     .notes
@@ -332,7 +220,15 @@ bold - bold
     color: inherit;
 }
 
-@keyframes note-form-changed-indicator-before {
+@keyframes notify-blink-note-edited {
+    0% {
+        outline-color: transparent;
+    }
+    100% {
+        outline-color: #909090;
+    }
+}
+@keyframes notify-slither-note-edited-before {
     0% {
         height: 0;
         width: 0;
@@ -378,7 +274,7 @@ bold - bold
         right: unset;
     }
 }
-@keyframes note-form-changed-indicator-after {
+@keyframes notify-slither-note-edited-after {
     0% {
         height: 0;
         width: 0;
@@ -425,33 +321,6 @@ bold - bold
 }
 .modal .modal-dialog .modal-content .modal-header h2 {
     font-weight: bold;
-}
-.modal .modal-dialog .modal-content .modal-body .message {
-    display: flex;
-    column-gap: 5px;
-    align-items: center;
-    padding-left: 5px;
-    font-size: 0.9rem;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 5px;
-}
-.modal .modal-dialog .modal-content .modal-body .message i {
-    color: inherit;
-    font-size: inherit;
-}
-.modal .modal-dialog .modal-content .modal-body .message.warning {
-    color: #ff2424;
-    background-color: #ffdddd;
-}
-.modal .modal-dialog .modal-content .modal-body .message.success {
-    color: #13a765;
-    background-color: #d0ffea;
-}
-.modal .modal-dialog .modal-content .modal-body .message.warning,
-.modal .modal-dialog .modal-content .modal-body .message.success {
-    padding: 5px 10px;
-    margin-top: 10px;
 }
 .modal .modal-dialog .modal-content .modal-footer {
     display: flex;
@@ -536,6 +405,7 @@ bold - bold
     row-gap: 30px;
     justify-content: space-between;
     border-right: 1px lightgray solid;
+    width: 170px;
 }
 #note-settings-modal
     .modal-dialog
@@ -549,6 +419,7 @@ bold - bold
     row-gap: 5px;
     background-color: #fff;
     border-radius: 8px 0 0 8px;
+    width: 100%;
 }
 #note-settings-modal
     .modal-dialog
@@ -565,6 +436,7 @@ bold - bold
     padding: 5px 15px;
     border-left: 3px #fff solid;
     cursor: pointer;
+    width: 100%;
 }
 #note-settings-modal
     .modal-dialog
@@ -580,8 +452,8 @@ bold - bold
     .note-settings-board
     .note-settings-navigation
     .nav-item.active {
-    background-color: #f3f3f3;
-    border-left: 3px #414141 solid;
+    background-color: #e9e9e9;
+    border-left: 3px #6a6a6a solid;
 }
 #note-settings-modal
     .modal-dialog
@@ -635,7 +507,7 @@ bold - bold
     .note-settings-navigation
     .nav-item.logout-btn.active {
     background-color: #ffdddd;
-    border-left: 3px #ff2424 solid;
+    border-left: 3px #dd0000 solid;
 }
 #note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board .forms {
     padding: 5px 20px 0;
@@ -939,13 +811,25 @@ bold - bold
 }
 
 #settings-form-set-password .form-content .form-group label {
+    display: flex;
+    column-gap: 7px;
+    align-items: center;
     font-size: 0.9rem;
     padding-left: 5px;
     font-weight: bold;
+    margin-bottom: 5px;
+}
+#settings-form-set-password .form-content .form-group label .details-btn {
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group label .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-set-password .form-content .form-group label .details-btn:hover {
+    transform: scale(1.2);
 }
 #settings-form-set-password .form-content .form-group .input-wrapper {
     position: relative;
-    margin: 3px 0;
 }
 #settings-form-set-password .form-content .form-group .input-wrapper input {
     width: 100%;
@@ -1030,6 +914,78 @@ bold - bold
 
 #settings-form-remove-password .form-content .form-group {
     font-size: 1.1rem;
+}
+
+#settings-form-user-interface .form-content .form-group label {
+    display: flex;
+    column-gap: 7px;
+    align-items: center;
+    font-size: 0.9rem;
+    padding-left: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+#settings-form-user-interface .form-content .form-group label .details-btn {
+    cursor: pointer;
+}
+#settings-form-user-interface .form-content .form-group label .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-user-interface .form-content .form-group label .details-btn:hover {
+    transform: scale(1.2);
+}
+#settings-form-user-interface .form-content .form-group .form-select {
+    cursor: pointer;
+}
+#settings-form-user-interface .form-content .form-group .form-select:hover,
+#settings-form-user-interface .form-content .form-group .form-select:focus {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+
+:root {
+    --mmn-quick-look-icon-initial-size: 30px;
+}
+
+#page-main {
+    padding: 10px 50px 100px;
+    z-index: 1;
+}
+#page-main .note-quick-look {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 50px;
+}
+#page-main .note-quick-look .quick-look-items {
+    display: flex;
+    column-gap: 10px;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    overflow: hidden;
+    padding: 6px;
+    transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);
+    column-gap: 5px;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item i {
+    font-size: 1.1rem;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item .text {
+    display: block;
+    width: max-content;
+    color: #fff;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item.password-set {
+    background-color: #ff2424;
+    border-radius: 1.6rem;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item.password-set i {
+    color: #fff;
 }
 
 /*# sourceMappingURL=home-page.css.map */

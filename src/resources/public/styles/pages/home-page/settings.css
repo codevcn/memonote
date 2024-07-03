@@ -1,0 +1,628 @@
+.modal .modal-dialog .modal-content .modal-header .btn-close:focus {
+    box-shadow: 0 0 0px 0.25rem #ffdddd;
+}
+.modal .modal-dialog .modal-content .modal-header h2 {
+    font-weight: bold;
+}
+.modal .modal-dialog .modal-content .modal-footer {
+    display: flex;
+    overflow: hidden;
+    padding: 0;
+}
+.modal .modal-dialog .modal-content .modal-footer button {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+    flex: 1;
+    justify-content: center;
+}
+.modal .modal-dialog .modal-content .modal-footer button:hover {
+    text-decoration: underline;
+}
+.modal .modal-dialog .modal-content .modal-footer button.modal-close-btn {
+    background-color: #ff2424;
+    color: #fff;
+}
+.modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn {
+    background-color: #f3f3f3;
+    color: #333;
+}
+.modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn.on-progress {
+    opacity: 0.6;
+    pointer-events: none;
+}
+.modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn .spinner-border {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+#bubble-note-settings {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+}
+#bubble-note-settings .bubble-note-settings-btn {
+    background-color: #18181b;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+    border: 2px #18181b solid;
+    transition:
+        background-color 0.2s,
+        transform 0.2s;
+}
+#bubble-note-settings .bubble-note-settings-btn i {
+    font-size: 2rem;
+    color: #fff;
+    transition: color 0.2s;
+}
+#bubble-note-settings .bubble-note-settings-btn:hover {
+    background-color: #fff;
+    transform: rotate(180deg);
+}
+#bubble-note-settings .bubble-note-settings-btn:hover i {
+    color: #18181b;
+}
+
+#note-settings-modal .modal-dialog .modal-content .modal-header {
+    padding: 10px 20px;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body {
+    padding: 10px 0;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board {
+    display: flex;
+    border-radius: 8px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    justify-content: space-between;
+    border-right: 1px lightgray solid;
+    width: 170px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-items {
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    background-color: #fff;
+    border-radius: 8px 0 0 8px;
+    width: 100%;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    color: #333;
+    text-decoration: none;
+    padding: 5px 15px;
+    border-left: 3px #fff solid;
+    cursor: pointer;
+    width: 100%;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item:hover,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.active {
+    background-color: #e9e9e9;
+    border-left: 3px #6a6a6a solid;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #ff2424;
+    column-gap: 10px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn
+    .spinner {
+    height: 24px;
+    width: 24px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn
+    i {
+    height: fit-content;
+    color: inherit;
+    font-size: 1rem;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn:hover,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .note-settings-navigation
+    .nav-item.logout-btn.active {
+    background-color: #ffdddd;
+    border-left: 3px #dd0000 solid;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board .forms {
+    padding: 5px 20px 0;
+    flex: 1;
+}
+#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board .forms .tabs {
+    display: flex;
+    margin-bottom: 15px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 5px;
+    flex: 1;
+    padding: 5px;
+    border-bottom: 1px lightgray solid;
+    background-color: #e3e3e3;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn
+    i {
+    display: none;
+    font-size: 0.9rem;
+    transform: rotateY(180deg);
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn.active {
+    border: 1px lightgray solid;
+    border-bottom: 1px #fff solid;
+    background-color: #fff;
+    opacity: 1;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn.active
+    i {
+    display: flex;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .tabs
+    .tab-btn:hover {
+    opacity: 0.85;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-title {
+    display: flex;
+    align-items: end;
+    column-gap: 5px;
+    margin-top: 0;
+    color: #333;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-title
+    .status
+    .status-item {
+    font-size: 1rem;
+    color: gray;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    padding-left: 5px;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message
+    i {
+    color: inherit;
+    font-size: inherit;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message.warning {
+    color: #ff2424;
+    background-color: #ffdddd;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message.success {
+    color: #13a765;
+    background-color: #d0ffea;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message.warning,
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-content
+    .form-group
+    .message.success {
+    padding: 5px 10px;
+    margin-top: 10px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 5px;
+    width: 100%;
+    border-radius: 5px;
+    padding: 3px 20px;
+    margin-top: 25px;
+    background-color: #333;
+    border: 2px #333 solid;
+    color: #fff;
+    transition:
+        background-color 0.2s,
+        color 0.2s;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-btn
+    .spinner {
+    height: 24px;
+    width: 24px;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-btn
+    i {
+    color: inherit;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-btn:hover {
+    background-color: #fff;
+    color: black;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .unset-password-notice {
+    display: flex;
+    column-gap: 5px;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    padding: 15px 0;
+}
+
+#settings-form-change-modes .form-content {
+    display: flex;
+    flex-direction: column;
+}
+#settings-form-change-modes .form-content .form-group {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+}
+#settings-form-change-modes .form-content .form-group:not(:nth-of-type(1)) {
+    margin-top: 10px;
+}
+#settings-form-change-modes .form-content .form-group .form-check-input {
+    height: 1.2rem;
+    width: 2.5rem;
+    margin-top: 0;
+    border-color: lightgray;
+    cursor: pointer;
+}
+#settings-form-change-modes .form-content .form-group .form-check-input:focus,
+#settings-form-change-modes .form-content .form-group .form-check-input:hover {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+#settings-form-change-modes .form-content .form-group .form-check-input:checked {
+    background-color: #18181b;
+    color: #18181b;
+}
+#settings-form-change-modes .form-content .form-group .info {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#settings-form-change-modes .form-content .form-group .info .details-btn {
+    cursor: pointer;
+}
+#settings-form-change-modes .form-content .form-group .info .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-change-modes .form-content .form-group .info .details-btn:hover {
+    transform: scale(1.2);
+}
+
+#settings-form-set-password .form-content .form-group label {
+    display: flex;
+    column-gap: 7px;
+    align-items: center;
+    font-size: 0.9rem;
+    padding-left: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+#settings-form-set-password .form-content .form-group label .details-btn {
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group label .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-set-password .form-content .form-group label .details-btn:hover {
+    transform: scale(1.2);
+}
+#settings-form-set-password .form-content .form-group .input-wrapper {
+    position: relative;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper input {
+    width: 100%;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border: 1.5px #909090 solid;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 5px;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper input:hover {
+    outline: 1px gray solid;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper input:focus {
+    border-color: gray;
+    border-left-width: 5px;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.15s;
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions:hover {
+    transform: translateY(-50%) scale(1.2);
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions i {
+    font-size: 1.2rem;
+}
+#settings-form-set-password .form-content .form-group .input-wrapper .input-actions .inactive {
+    display: none;
+}
+#settings-form-set-password .form-content .form-group .helper-text {
+    font-style: italic;
+    padding-left: 10px;
+    margin-top: 2px;
+}
+#settings-form-set-password .form-content .form-group .helper-text .helper-text-item {
+    color: #909090;
+    font-size: 0.9rem;
+}
+#settings-form-set-password .form-content .form-group.logout-all {
+    display: flex;
+    align-items: center;
+    column-gap: 10px;
+    margin-top: 15px;
+}
+#settings-form-set-password .form-content .form-group.logout-all:not(:nth-of-type(1)) {
+    margin-top: 10px;
+}
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input {
+    height: 1.2rem;
+    width: 2.5rem;
+    margin-top: 0;
+    border-color: lightgray;
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input:focus,
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input:hover {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+#settings-form-set-password .form-content .form-group.logout-all .form-check-input:checked {
+    background-color: #18181b;
+    color: #18181b;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info .details-btn {
+    cursor: pointer;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-set-password .form-content .form-group.logout-all .info .details-btn:hover {
+    transform: scale(1.2);
+}
+
+#settings-form-remove-password .form-content .form-group {
+    font-size: 1.1rem;
+}
+
+#settings-form-user-interface .form-content .form-group label {
+    display: flex;
+    column-gap: 7px;
+    align-items: center;
+    font-size: 0.9rem;
+    padding-left: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+#settings-form-user-interface .form-content .form-group label .details-btn {
+    cursor: pointer;
+}
+#settings-form-user-interface .form-content .form-group label .details-btn i {
+    font-size: 0.9rem;
+}
+#settings-form-user-interface .form-content .form-group label .details-btn:hover {
+    transform: scale(1.2);
+}
+#settings-form-user-interface .form-content .form-group .form-select {
+    cursor: pointer;
+}
+#settings-form-user-interface .form-content .form-group .form-select:hover,
+#settings-form-user-interface .form-content .form-group .form-select:focus {
+    box-shadow: 0 0 0 0.25rem lightgray;
+    border-color: lightgray;
+}
+
+/*# sourceMappingURL=settings.css.map */

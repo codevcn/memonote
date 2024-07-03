@@ -8,7 +8,7 @@ export class APIAuthGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<Request>()
-        await this.authService.checkAuth(request)
+        await this.authService.checkAuthentication(request)
         return true
     }
 }

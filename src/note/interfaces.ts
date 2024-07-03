@@ -1,5 +1,5 @@
 import type { TSuccess } from '@/utils/types'
-import { AddPasswordForNoteParamsDTO, AddPasswordForNotePayloadDTO } from './note.dto'
+import { AddPasswordForNoteParamsDTO, AddPasswordForNotePayloadDTO } from './DTOs'
 import type { Response } from 'express'
 
 export interface INoteAPIController {
