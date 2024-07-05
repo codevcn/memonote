@@ -2,10 +2,10 @@ import { ENoteLengths } from '@/note/enums'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { HydratedDocument } from 'mongoose'
 
-export type TNoteDocument = HydratedDocument<typeof Note>
+export type TNoteDocument = HydratedDocument<Note>
 
-@Schema()
-class Status {
+@Schema({ _id: false })
+export class Status {
     @Prop({ required: true })
     active: boolean
 
@@ -42,10 +42,10 @@ export class Note {
     status: Status
 
     @Prop({ default: Date.now, required: true })
-    updatedAt: Date
+    updatedAt?: Date
 
     @Prop({ default: Date.now, required: true })
-    createdAt: Date
+    createdAt?: Date
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note)

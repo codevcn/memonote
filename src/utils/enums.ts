@@ -3,10 +3,15 @@ export enum ENodeEnvironments {
     PRODUCTION = 'production',
 }
 
-export enum EAuthEncryption {
-    HASH_PASSWORD_NUMBER_OF_ROUNDS = 10,
-}
-
 export enum ECommonStatuses {
     SUCCESS = 'success',
+}
+
+export enum ESocketNamespaces {
+    EDIT_NOTE = 'edit-note',
+    NOTIFICATION = 'notification',
+}
+
+export enum EInitialSocketEvents {
+    CLIENT_CONNECTED = 'client_connected',
 }

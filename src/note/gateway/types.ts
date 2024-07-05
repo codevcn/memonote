@@ -1,4 +1,4 @@
-import { BroadcastNoteTypingDTO } from './DTOs'
+import type { BroadcastNoteTypingDTO } from './DTOs'
 
 export type TClientConnectedEventPayload = {
     connectionStatus: string

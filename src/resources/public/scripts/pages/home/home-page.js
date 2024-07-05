@@ -41,7 +41,6 @@ const setPasswordForm = document.getElementById('settings-form-set-password')
 const removePasswordForm = document.getElementById('settings-form-remove-password')
 const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
 const noteFormEle = notesSection.querySelector('.note-form')
-getNotifications(getNoteUniqueNameFromURL())
 const noteContentHistory = { history: [''], index: 0 }
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -434,6 +433,7 @@ const saveSettingsUserInterface = (e) =>
         }
         setStatusOfSettingsForm(form, 'saved')
     })
+const notify = () => {}
 const initPage = () => {
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()

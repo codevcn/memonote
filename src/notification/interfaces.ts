@@ -1,6 +1,6 @@
-import { Notification } from '@/database/notification.model'
-import { GetNotificationsDTO } from './DTOs'
+import type { Notif } from '@/notification/notification.model'
+import type { GetNotificationsDTO } from './DTOs'
 
 export interface INotificationController {
-    getNotifications: (params: GetNotificationsDTO) => Promise<Notification>
+    getNotifications: (params: GetNotificationsDTO) => Promise<Notif[]>
 }

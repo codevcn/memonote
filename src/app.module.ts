@@ -1,21 +1,26 @@
 import { Module } from '@nestjs/common'
 import { HomeModule } from './home/home.module'
-import { connectToDB } from './configs/connect-to-db'
+import { connectToDB, DBModelsModule } from './configs/init-db'
 import { iniEnv } from './configs/init-env'
 import { configJWT } from './configs/config-jwt'
 import { NoteModule } from './note/note.module'
 import { AuthModule } from './auth/auth.module'
 import { NotificationModule } from './notification/notification.module'
+import { initEventEmitter } from './configs/event-emitter'
+import { HealthcheckModule } from './healthcheck/healthcheck.module'
 
 @Module({
     imports: [
         iniEnv(),
         connectToDB(),
         configJWT(),
+        DBModelsModule,
         HomeModule,
         NoteModule,
         AuthModule,
         NotificationModule,
+        initEventEmitter(),
+        HealthcheckModule,
     ],
 })
 export class AppModule {}

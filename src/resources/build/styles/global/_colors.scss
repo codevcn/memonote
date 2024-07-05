@@ -1,4 +1,4 @@
-// colors
+// base colors
 $mmn-primary-cl: #18181b;
 $mmn-regular-black-cl: #333;
 $mmn-regular-white-cl: #fff;
@@ -7,12 +7,12 @@ $mmn-regular-warning-bgcl: #ffdddd;
 $mmn-regular-success-bgcl: #d0ffea;
 $mmn-regular-green-cl: #13a765;
 $mmn-regular-gray-cl: #909090;
-$mmn-regular-bg-cl: #f3f3f3;
 $mmn-regular-lightgray-cl: lightgray;
 
 // components
 $mmn-divider-border-cl: #e6e6e6;
 $mmn-switch-tab-inactive-bgcl: #e3e3e3;
-$mmn-regular-background-cl: $mmn-regular-white-cl;
+$mmn-regular-bgcl: $mmn-regular-white-cl;
 $mmn-general-status-success-cl: #00dba0;
 $mmn-general-status-error-cl: $mmn-regular-red-cl;
+$mmn-unread-bgcl: #fef4d9;

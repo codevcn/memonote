@@ -1,6 +1,5 @@
 import { Get, Controller, Redirect, Param, Res, Req, HttpStatus, Render } from '@nestjs/common'
 import type { IHomeController } from './interfaces'
-import { ServerEndpoint } from '@/utils/decorators/server.decorator'
 import { NoteService } from '@/note/note.service'
 import { ClientViewPages } from '@/utils/application/view-pages'
 import { AuthService } from '@/auth/auth.service'
@@ -9,6 +8,8 @@ import { GetNoteOnHomePageParamsDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ApplicationService } from '@/utils/application/application.service'
 import { ViewRoutes } from '@/utils/routes'
+import type { THomePageServerData } from './types'
+import { createServerData } from '@/utils/helpers'
 
 @Controller(ViewRoutes.home)
 export class HomeController implements IHomeController {
@@ -20,13 +21,13 @@ export class HomeController implements IHomeController {
 
     @Get()
     @Redirect()
-    async homePage(@ServerEndpoint() serverEndpoint: string) {
+    async randomHomePage() {
         const newUniqueName = this.noteService.generateNoteUniqueName()
-        return { url: `${serverEndpoint}/${newUniqueName}` }
+        return { url: `/${newUniqueName}` }
     }
 
     @Get(':noteUniqueName')
-    async getNoteOnHomePage(
+    async homePage(
         @Param() params: GetNoteOnHomePageParamsDTO,
         @Req() req: Request,
         @Res() res: Response,
@@ -38,46 +39,63 @@ export class HomeController implements IHomeController {
             if (note.password) {
                 try {
                     await this.authService.checkAuthentication(req)
-                    res.status(HttpStatus.OK).render(ClientViewPages.home, {
+                    return res.status(HttpStatus.OK).render(
+                        ClientViewPages.home,
+                        createServerData<THomePageServerData>({
+                            appInfo,
+                            note: {
+                                content: note.content,
+                                title: note.title,
+                                author: note.author,
+                                passwordSet: true,
+                                noteId: note._id.toString(),
+                            },
+                        }),
+                    )
+                } catch (error) {
+                    return res.redirect(`/sign-in/${noteUniqueName}`)
+                }
+            } else {
+                return res.status(HttpStatus.OK).render(
+                    ClientViewPages.home,
+                    createServerData<THomePageServerData>({
                         appInfo,
                         note: {
                             content: note.content,
                             title: note.title,
                             author: note.author,
-                            passwordSet: true,
+                            passwordSet: false,
+                            noteId: note._id.toString(),
                         },
-                    })
-                    return
-                } catch (error) {
-                    res.status(HttpStatus.OK).render(ClientViewPages.signIn, { appInfo })
-                    return
-                }
-            } else {
-                res.status(HttpStatus.OK).render(ClientViewPages.home, {
-                    appInfo,
-                    note: {
-                        content: note.content,
-                        title: note.title,
-                        author: note.author,
-                        passwordSet: false,
-                    },
-                })
-                return
+                    }),
+                )
             }
         }
         try {
-            await this.noteService.createNewNote(noteUniqueName)
+            const createdNote = await this.noteService.createNewNote(noteUniqueName)
+            return res.status(HttpStatus.OK).render(
+                ClientViewPages.home,
+                createServerData<THomePageServerData>({
+                    note: {
+                        content: null,
+                        title: null,
+                        author: null,
+                        passwordSet: false,
+                        noteId: createdNote._id.toString(),
+                    },
+                    appInfo,
+                }),
+            )
         } catch (error) {
             throw new BaseCustomException("Can't create new note", error.code)
         }
-        res.status(HttpStatus.OK).render(ClientViewPages.home, {
-            note: {
-                content: null,
-                title: null,
-                passwordSet: false,
-            },
-            appInfo,
-        })
+    }
+
+    @Get('sign-in/:noteUniqueName')
+    @Render(ClientViewPages.signIn)
+    async signInPage() {
+        const appInfo = await this.applicationService.getApplicationInfo()
+        return { appInfo }
     }
 
     @Get('menu/about')

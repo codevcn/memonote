@@ -22,7 +22,7 @@ type TNoteContentHistory = {
     history: string[]
     index: number
 }
-getNotifications(getNoteUniqueNameFromURL())
+
 const noteContentHistory: TNoteContentHistory = { history: [''], index: 0 }
 
 const validateNoteContent = (noteContent: string): boolean => {
@@ -488,6 +488,8 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
 
     setStatusOfSettingsForm(form, 'saved')
 }
+
+const notify = (): void => {}
 
 const initPage = (): void => {
     // setup "change modes" form

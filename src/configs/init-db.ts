@@ -1,3 +1,6 @@
+import { Note, NoteSchema } from '@/note/note.model'
+import { Notification, NotificationSchema } from '@/notification/notification.model'
+import { DynamicModule, Global, Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
 export const connectToDB = () => {
@@ -21,3 +24,15 @@ export const connectToDB = () => {
         },
     })
 }
+
+export const registerModels: DynamicModule[] = [
+    MongooseModule.forFeature([{ name: Note.name, schema: NoteSchema }]),
+    MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]),
+]
+
+@Global()
+@Module({
+    imports: registerModels,
+    exports: registerModels,
+})
+export class DBModelsModule {}

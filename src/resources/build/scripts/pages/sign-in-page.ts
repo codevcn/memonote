@@ -69,14 +69,17 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
 
     if (validateInputValue(password)) {
         const submitBtn = target
-            .closest('.type-password-section')
-            ?.querySelector('.submit-btn') as HTMLButtonElement
+            .closest('.type-password-section')!
+            .querySelector('.submit-btn') as HTMLButtonElement
+        const htmlBefore = submitBtn.innerHTML
         submitBtn.innerHTML = Materials.getHTMLLoading('grow')
         submitBtn.classList.add('on-progress')
 
+        const noteUniqueName = getNoteUniqueNameFromURL()
+
         let apiSuccess: boolean = false
         try {
-            await signIn(password, getNoteUniqueNameFromURL())
+            await signIn(password, noteUniqueName)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {
@@ -86,11 +89,11 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
         }
 
         if (apiSuccess) {
-            refreshPageAfterMs(300)
+            redirectAfterMs(300, `/${noteUniqueName}`)
             LayoutUI.setUIOfGeneralAppStatus('success')
         }
         submitBtn.classList.remove('on-progress')
-        submitBtn.innerHTML = `<span>Submit</span>`
+        submitBtn.innerHTML = htmlBefore
     }
 }
 

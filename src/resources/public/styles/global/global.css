@@ -221,15 +221,57 @@ h6 {
 #page-header .right-side-menu .menu-item.realtime-mode-display.active .display-icon {
     animation: realtime-mode-display 2s infinite forwards linear;
 }
-#page-header .right-side-menu .menu-item.notification .notification-icon-wrapper {
+#page-header .right-side-menu .menu-item.notification {
     position: relative;
 }
-#page-header .right-side-menu .menu-item.notification .notification-icon-wrapper .badge {
+#page-header .right-side-menu .menu-item.notification .notification-btn {
+    position: relative;
+    padding: 0;
+    background-color: transparent;
+}
+#page-header .right-side-menu .menu-item.notification .notification-btn .badge {
     padding: 3px 6px;
     background-color: #909090 !important;
 }
-#page-header .right-side-menu .menu-item.notification .notification-icon-wrapper i {
+#page-header .right-side-menu .menu-item.notification .notification-btn i {
     font-size: 1.2rem;
+}
+#page-header .right-side-menu .menu-item.notification .notifs {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 5px);
+    box-shadow: 0 0 5px 0px lightgray;
+    padding: 0 20px;
+    background-color: white;
+    border-radius: 5px;
+}
+#page-header .right-side-menu .menu-item.notification .notifs .notif {
+    padding: 5px;
+}
+#page-header .right-side-menu .menu-item.notification .notifs .notif .title {
+    font-size: 1rem;
+    width: max-content;
+    max-width: 250px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#page-header .right-side-menu .menu-item.notification .notifs .notif .time-ago {
+    font-size: 0.9rem;
+    color: gray;
+}
+#page-header .right-side-menu .menu-item.notification .notifs .notif .notif-type {
+    background-color: #e2e2e2;
+    padding: 0 5px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+#page-header .right-side-menu .menu-item.notification .notifs .notif .read-btn {
+    border-radius: 5px;
+    font-size: 1rem;
+    padding: 2px 12px;
+    background-color: white;
+    box-shadow: 0px 0px 0px 1px lightgray;
 }
 
 #app-toaster {

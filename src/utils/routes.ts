@@ -1,12 +1,13 @@
 export class ViewRoutes {
-    static home: string = '/'
-    static auth: string = '/auth'
+    static readonly home: string = '/'
+    static readonly auth: string = '/auth'
 }
 
 export class APIRoutes {
-    private static apiRootPath: string = 'v1/api'
+    private static readonly apiRootPath: string = 'v1/api'
 
-    static note: string = `${this.apiRootPath}/note`
-    static auth: string = `${this.apiRootPath}/auth`
-    static notification: string = `${this.apiRootPath}/noti`
+    static readonly note: string = `${this.apiRootPath}/note`
+    static readonly auth: string = `${this.apiRootPath}/auth`
+    static readonly notification: string = `${this.apiRootPath}/notification`
+    static readonly healthcheck: string = `${this.apiRootPath}/healthcheck`
 }

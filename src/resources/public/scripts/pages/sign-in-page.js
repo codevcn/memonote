@@ -88,19 +88,17 @@ const validateInputValue = (inputValue) => {
 }
 const signInHandler = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        var _a
         const password = formGroup.querySelector('.input-wrapper input').value
         setSignInMessage(null)
         if (validateInputValue(password)) {
-            const submitBtn =
-                (_a = target.closest('.type-password-section')) === null || _a === void 0
-                    ? void 0
-                    : _a.querySelector('.submit-btn')
+            const submitBtn = target.closest('.type-password-section').querySelector('.submit-btn')
+            const htmlBefore = submitBtn.innerHTML
             submitBtn.innerHTML = Materials.getHTMLLoading('grow')
             submitBtn.classList.add('on-progress')
+            const noteUniqueName = getNoteUniqueNameFromURL()
             let apiSuccess = false
             try {
-                yield signIn(password, getNoteUniqueNameFromURL())
+                yield signIn(password, noteUniqueName)
                 apiSuccess = true
             } catch (error) {
                 if (error instanceof Error) {
@@ -109,11 +107,11 @@ const signInHandler = (target) =>
                 }
             }
             if (apiSuccess) {
-                refreshPageAfterMs(300)
+                redirectAfterMs(300, `/${noteUniqueName}`)
                 LayoutUI.setUIOfGeneralAppStatus('success')
             }
             submitBtn.classList.remove('on-progress')
-            submitBtn.innerHTML = `<span>Submit</span>`
+            submitBtn.innerHTML = htmlBefore
         }
     })
 const catchEnterKeyOfSignInInput = (e) => {

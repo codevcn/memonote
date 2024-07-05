@@ -17,3 +17,7 @@ export type TCustomExceptionPayload = {
     status: number
     isUserException: boolean
 }
+
+export type TRedirectController = {
+    url: string
+}

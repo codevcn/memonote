@@ -1,4 +1,5 @@
 declare function dayjs(...args: any): any
-declare var axios: any
+declare const axios: any
 declare function io(...args: any): any
-declare var bootstrap: any
+declare const bootstrap: any
+declare const serverData: { [key: string | number]: any }

@@ -12,12 +12,18 @@ function debounce(func, wait) {
     }
 }
 const getNoteUniqueNameFromURL = () => {
-    return window.location.pathname.slice(1)
+    const pathname = window.location.pathname
+    return pathname.substring(pathname.lastIndexOf('/') + 1)
 }
 const refreshPageAfterMs = (timeToRefresh) => {
     setTimeout(() => {
         window.location.reload()
     }, timeToRefresh)
+}
+const redirectAfterMs = (timeToRedirect, href) => {
+    setTimeout(() => {
+        window.location.href = href
+    }, timeToRedirect)
 }
 const getRealtimeModeInDevice = () => {
     return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE)

@@ -1,48 +1,66 @@
 enum ENamespacesOfSocket {
     EDIT_NOTE = 'edit-note',
+    NOTIFICATION = 'notification',
 }
-enum ENoteEvents {
+type TSocketReconnecting = {
+    flag: boolean
+}
+enum TInitSocketEvents {
     CLIENT_CONNECTED = 'client_connected',
-    NOTE_TYPING = 'note_typing',
-    GET_NOTE_FORM = 'get_note_form',
+    CONNECT_ERROR = 'connect_error',
 }
 
-type TClientConnectedEventPayload = {
+// === edit note section ===
+
+// init types, enums, ...
+enum ENoteEvents {
+    NOTE_FORM_EDITED = 'note_form_edited',
+    FETCH_NOTE_FORM = 'fetch_note_form',
+}
+
+type TClientConnectedEventPld = {
     connectionStatus: string
 }
 type TBroadcastNoteTypingRes = {
     data: TNoteForm
     success: boolean
 }
+type TClientSocketConfig = {
+    autoConnect: boolean
+    withCredentials: boolean
+}
 
-// vars
-const clientSocketReconnecting = { value: false }
-
-// sockets
-const clientSocket = io(`/${ENamespacesOfSocket.EDIT_NOTE}`, {
+const clientSocketConfig: TClientSocketConfig = {
     autoConnect: true,
     withCredentials: true,
-})
+}
 
-clientSocket.on(ENoteEvents.CLIENT_CONNECTED, async (data: TClientConnectedEventPayload) => {
-    if (clientSocketReconnecting.value) {
+// init socket
+const editNoteSocket = io(`/${ENamespacesOfSocket.EDIT_NOTE}`, clientSocketConfig)
+
+// init vars
+const editNoteSocketReconnecting: TSocketReconnecting = { flag: false }
+
+// listeners
+editNoteSocket.on(TInitSocketEvents.CLIENT_CONNECTED, async (data: TClientConnectedEventPld) => {
+    if (editNoteSocketReconnecting.flag) {
         LayoutUI.toast('success', 'Connected to server.', 2000)
-        clientSocketReconnecting.value = false
+        editNoteSocketReconnecting.flag = false
     }
     console.log('>>> Socket connected to server.')
 })
 
-clientSocket.on('connect_error', async (err: { [key: string]: any; message: any }) => {
-    if (clientSocket.active) {
+editNoteSocket.on(TInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
+    if (editNoteSocket.active) {
         LayoutUI.toast('info', 'Trying to connect with the server.', 2000)
-        clientSocketReconnecting.value = true
+        editNoteSocketReconnecting.flag = true
     } else {
         LayoutUI.toast('error', "Can't connect with the server.")
         console.error(`>>> connect_error due to ${err.message}`)
     }
 })
 
-clientSocket.on(ENoteEvents.NOTE_TYPING, async (data: TNoteForm) => {
+editNoteSocket.on(ENoteEvents.NOTE_FORM_EDITED, async (data: TNoteForm) => {
     const realtimeMode = getRealtimeModeInDevice()
     if (realtimeMode && realtimeMode === 'sync') {
         setForNoteFormChanged(data)
@@ -54,11 +72,11 @@ clientSocket.on(ENoteEvents.NOTE_TYPING, async (data: TNoteForm) => {
     }
 })
 
-// handlers
+// emitters
 const broadcastNoteTyping = async (note: TNoteForm): Promise<void> => {
-    clientSocket
+    editNoteSocket
         .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
-        .emit(ENoteEvents.NOTE_TYPING, note, (err: Error, res: TBroadcastNoteTypingRes) => {
+        .emit(ENoteEvents.NOTE_FORM_EDITED, note, (err: Error, res: TBroadcastNoteTypingRes) => {
             if (err) {
                 LayoutUI.setUIOfGeneralAppStatus('error')
                 console.log('>>> broadcast err >>>', err)
@@ -74,12 +92,63 @@ const broadcastNoteTyping = async (note: TNoteForm): Promise<void> => {
 }
 
 const fetchNoteContent = async () => {
-    clientSocket
+    editNoteSocket
         .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
-        .emit(ENoteEvents.GET_NOTE_FORM, (err: Error, res: TBroadcastNoteTypingRes) => {
+        .emit(ENoteEvents.FETCH_NOTE_FORM, (err: Error, res: TBroadcastNoteTypingRes) => {
             LayoutUI.notifyNoteEdited('off', { title: 'true', author: 'true', content: 'true' })
             if (res.success) {
                 setForNoteFormChanged(res.data)
             }
         })
 }
+
+// === notification section ===
+
+// init types, enums, ...
+enum ENotificationEvents {
+    NOTIFY = 'notify',
+}
+enum ENotificationTypes {
+    SET_PASSWORD = 'password.set',
+    REMOVE_PASSWORD = 'password.remove',
+}
+
+type TNewNotify = {
+    title: string
+    message: string
+    type: ENotificationTypes
+    createdAt: Date
+}
+
+// init socket
+const notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSocketConfig)
+
+// init vars
+const notificationSocketReconnecting: TSocketReconnecting = { flag: false }
+
+// listeners
+notificationSocket.on(
+    TInitSocketEvents.CLIENT_CONNECTED,
+    async (data: TClientConnectedEventPld) => {
+        if (notificationSocketReconnecting.flag) {
+            LayoutUI.toast('success', 'Connected to server.', 2000)
+            notificationSocketReconnecting.flag = false
+        }
+        console.log('>>> Socket connected to server.')
+    },
+)
+
+notificationSocket.on(TInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
+    if (editNoteSocket.active) {
+        LayoutUI.toast('info', 'Trying to connect with the server.', 2000)
+        notificationSocketReconnecting.flag = true
+    } else {
+        LayoutUI.toast('error', "Can't connect with the server.")
+        console.error(`>>> connect_error due to ${err.message}`)
+    }
+})
+
+// listeners
+notificationSocket.on(ENotificationEvents.NOTIFY, async (data: TNewNotify) => {
+    console.log('>>> TNewNotify >>>', data)
+})

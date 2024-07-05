@@ -21,10 +21,6 @@ enum EError {
     MAX_LENGTH_OF_API_ERROR_MESSAGE = 100,
 }
 
-enum ECustomEvents {
-    GENERAL_APP_STATUS = 'GENERAL_APP_STATUS',
-}
-
 enum EBroadcastTimeouts {
     NOTE_TYPING_TIMEOUT = 7000,
 }

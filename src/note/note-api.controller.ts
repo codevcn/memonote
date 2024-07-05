@@ -19,7 +19,7 @@ export class NoteAPIController implements INoteAPIController {
         @Res({ passthrough: true }) res: Response<TSuccess>,
     ) {
         const { noteUniqueName } = params
-        await this.noteService.setPasswordForNote(payload, noteUniqueName, res)
+        await this.noteService.setPasswordForNoteHandler(payload, noteUniqueName, res)
         return { success: true }
     }
 

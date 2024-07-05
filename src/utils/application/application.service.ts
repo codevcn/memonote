@@ -5,11 +5,7 @@ import { TApplication, TApplicationInfo } from './types'
 
 @Injectable()
 export class ApplicationService {
-    private applicationFileName: string
-
-    constructor() {
-        this.applicationFileName = 'application.yml'
-    }
+    private applicationFileName: string = 'application.yml'
 
     async getApplicationInfo(): Promise<TApplicationInfo> {
         const file = await readFile(`application/${this.applicationFileName}`, 'utf8')

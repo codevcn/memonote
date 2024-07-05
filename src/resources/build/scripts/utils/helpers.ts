@@ -17,13 +17,20 @@ function debounce<T extends TUnknownFunction>(
 }
 
 const getNoteUniqueNameFromURL = (): string => {
-    return window.location.pathname.slice(1)
+    const pathname = window.location.pathname
+    return pathname.substring(pathname.lastIndexOf('/') + 1)
 }
 
 const refreshPageAfterMs = (timeToRefresh: number): void => {
     setTimeout(() => {
         window.location.reload()
     }, timeToRefresh)
+}
+
+const redirectAfterMs = (timeToRedirect: number, href: string): void => {
+    setTimeout(() => {
+        window.location.href = href
+    }, timeToRedirect)
 }
 
 const getRealtimeModeInDevice = (): TRealtimeModeTypes | null => {

@@ -8,10 +8,10 @@ import { GetNotificationsDTO } from './DTOs'
 export class NotificationController implements INotificationController {
     constructor(private notificationSerice: NotificationService) {}
 
-    @Get('noties/:noteUniqueName')
+    @Get('/:noteId')
     async getNotifications(@Param() params: GetNotificationsDTO) {
-        const { noteUniqueName } = params
-        const notification = await this.notificationSerice.findByNoteUniqueName(noteUniqueName)
+        const { noteId } = params
+        const notification = await this.notificationSerice.findByNoteId(noteId)
         return notification
     }
 }

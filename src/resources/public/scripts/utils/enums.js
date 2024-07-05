@@ -22,10 +22,6 @@ var EError
 ;(function (EError) {
     EError[(EError['MAX_LENGTH_OF_API_ERROR_MESSAGE'] = 100)] = 'MAX_LENGTH_OF_API_ERROR_MESSAGE'
 })(EError || (EError = {}))
-var ECustomEvents
-;(function (ECustomEvents) {
-    ECustomEvents['GENERAL_APP_STATUS'] = 'GENERAL_APP_STATUS'
-})(ECustomEvents || (ECustomEvents = {}))
 var EBroadcastTimeouts
 ;(function (EBroadcastTimeouts) {
     EBroadcastTimeouts[(EBroadcastTimeouts['NOTE_TYPING_TIMEOUT'] = 7000)] = 'NOTE_TYPING_TIMEOUT'

@@ -1,4 +1,3 @@
-import type { TNoteDocument } from '@/database/note.model'
 import type { CookieOptions } from 'express'
 
 export type TJWTPayload = {
@@ -17,4 +16,8 @@ export type TJwtCookieOptions = {
     httpOnly: boolean
     secure: boolean
     sameSite: boolean
+}
+
+export type TAuthSocketConnectionReturn = {
+    noteUniqueName: string
 }

@@ -8,3 +8,7 @@ export enum ENoteLengths {
     MAX_LENGTH_NOTE_TITLE = 300,
     MAX_LENGTH_NOTE_AUTHOR = 100,
 }
+
+export enum EAuthEncryption {
+    HASH_PASSWORD_NUMBER_OF_ROUNDS = 10,
+}
