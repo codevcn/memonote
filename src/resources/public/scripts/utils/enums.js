@@ -1,4 +1,9 @@
 'use strict'
+var ENotificationTypes
+;(function (ENotificationTypes) {
+    ENotificationTypes['SET_PASSWORD'] = 'password.set'
+    ENotificationTypes['REMOVE_PASSWORD'] = 'password.remove'
+})(ENotificationTypes || (ENotificationTypes = {}))
 var ELocalStorageKeys
 ;(function (ELocalStorageKeys) {
     ELocalStorageKeys['REALTIME_MODE'] = 'realtime-mode'

@@ -31,7 +31,7 @@ const handleOnFocusTypePasswordInput = (target: HTMLInputElement): void => {
 }
 
 const signIn = async (password: string, noteUniqueName: string): Promise<void> => {
-    if (noteUniqueNameRegEx.test(noteUniqueName)) {
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
         await signInAPI(password, noteUniqueName)
     }
 }
@@ -52,11 +52,15 @@ const setInputMessage = (message: string | null): void => {
         : ''
 }
 
+const typingPassword = () => {
+    setInputMessage(null)
+}
+
 const validateInputValue = (inputValue: string): boolean => {
     let valid = true
     if (!inputValue) {
         valid = false
-        setInputMessage('Please type your password!')
+        setInputMessage('Please enter your password!')
     } else {
         setInputMessage(null)
     }
@@ -72,7 +76,7 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
             .closest('.type-password-section')!
             .querySelector('.submit-btn') as HTMLButtonElement
         const htmlBefore = submitBtn.innerHTML
-        submitBtn.innerHTML = Materials.getHTMLLoading('grow')
+        submitBtn.innerHTML = Materials.createHTMLLoading('grow')
         submitBtn.classList.add('on-progress')
 
         const noteUniqueName = getNoteUniqueNameFromURL()
@@ -90,7 +94,7 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
 
         if (apiSuccess) {
             redirectAfterMs(300, `/${noteUniqueName}`)
-            LayoutUI.setUIOfGeneralAppStatus('success')
+            LayoutController.setUIOfGeneralAppStatus('success')
         }
         submitBtn.classList.remove('on-progress')
         submitBtn.innerHTML = htmlBefore

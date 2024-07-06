@@ -1,7 +1,8 @@
 // the z-indexes below are not from Bootstrap and don't relate to Bootstrap
 
-// this z-index is for components written by programmers
-$mmn-base-custom-zidx: 1;
+// base components
+$mmn-base-zidx: 1;
 
 // overrides
 $mmn-app-toaster-zidx: 1060;
+$mmn-base-notif-board-zidx: 100;

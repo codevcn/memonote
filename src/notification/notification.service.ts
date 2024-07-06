@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Types, type Model } from 'mongoose'
-import { Notif, Notification } from '@/notification/notification.model'
+import { Types } from 'mongoose'
+import { Notif, Notification, type TNotificationModel } from '@/notification/notification.model'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ENotificationMessages } from './messages'
 import { EventEmitter2 } from '@nestjs/event-emitter'
@@ -14,7 +14,7 @@ import { type TNoteDocument } from '@/note/note.model'
 @Injectable()
 export class NotificationService {
     constructor(
-        @InjectModel(Notification.name) private notificationModel: Model<Notification>,
+        @InjectModel(Notification.name) private notificationModel: TNotificationModel,
         private eventEmitter: EventEmitter2,
     ) {}
 

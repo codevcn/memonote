@@ -1,18 +1,15 @@
-import { TApplicationInfo } from '@/utils/application/types'
+import type { TApplicationInfo } from '@/utils/application/types'
 
 export type TRedirectHomePage = {
     url: string
 }
 
-export type TPageData = {
-    note: {
-        noteContent: undefined | string
-        passwordSet: undefined | boolean
-    }
+export type TCommonPageData = {
+    appInfo: TApplicationInfo
+    verified: boolean
 }
 
-export type THomePageServerData = {
-    appInfo: TApplicationInfo
+export type THomePagePageData = TCommonPageData & {
     note: {
         content: string | null
         title: string | null

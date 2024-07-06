@@ -15,7 +15,7 @@ $mmn-quick-look-icon-initial-size: 30px;
 
 #page-main {
     padding: 10px 50px $mmn-page-padding-bottom;
-    z-index: z-indexes.$mmn-base-custom-zidx;
+    z-index: z-indexes.$mmn-base-zidx;
 
     .note-quick-look {
         display: flex;

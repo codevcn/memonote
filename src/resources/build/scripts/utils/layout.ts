@@ -4,16 +4,9 @@ const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 })
 
 const generalAppStatus = document.getElementById('general-app-status') as HTMLElement
+const notificationsBoard = document.getElementById('notifs-board') // maybe null
 
-const closeAppNotification = (target: HTMLElement) => {
-    const toasterTimer = LayoutUI.toasterTimer
-    if (toasterTimer) {
-        clearTimeout(toasterTimer)
-    }
-    target.classList.add('clicked')
-}
-
-class LayoutUI {
+class LayoutController {
     private static readonly NOTIFICATION_TIMEOUT: number = 3000
     private static readonly GENERAL_STATUS_TIMEOUT: number = 3000
     private static toasterAnimationFlag: boolean = true
@@ -101,8 +94,73 @@ class LayoutUI {
             this.toasterAnimationFlag = true
         }
 
-        LayoutUI.toasterTimer = setTimeout(() => {
+        this.toasterTimer = setTimeout(() => {
             progressBar.classList.remove('running-a', 'running-b')
         }, durationInMs)
     }
+
+    static closeAppToaster(target: HTMLElement): void {
+        const toasterTimer = LayoutController.toasterTimer
+        if (toasterTimer) {
+            clearTimeout(toasterTimer)
+        }
+        target.classList.add('clicked')
+    }
+
+    static switchTab(target: HTMLElement, standing: string): void {
+        const navigationSection = target.closest('.navigation-section') as HTMLElement
+
+        const tabs = navigationSection.querySelectorAll<HTMLLabelElement>('.tabs .tab-btn')
+        for (const tab of tabs) {
+            tab.classList.remove('active')
+        }
+        target.classList.add('active')
+
+        const destinations = navigationSection.querySelectorAll<HTMLElement>('.destination')
+        for (const destination of destinations) {
+            destination.classList.remove('active')
+            if (destination.classList.contains(standing)) {
+                destination.classList.add('active')
+            }
+        }
+    }
 }
+
+class NotificationsController {
+    static addNotifs(notifPayloads: TNotif[], clearAllBeforeAdd: boolean = false): void {
+        if (notificationsBoard) {
+            const notifsContainer = notificationsBoard.querySelector(
+                '.notifs-content .notifs',
+            ) as HTMLElement
+            if (clearAllBeforeAdd) {
+                notifsContainer.innerHTML = ''
+            }
+            for (const notifPayload of notifPayloads) {
+                notifsContainer.appendChild(Materials.createElementNotif(notifPayload))
+            }
+        }
+    }
+
+    static showNotificationsBoard(show: boolean): void {
+        if (notificationsBoard) {
+            notificationsBoard.classList.remove('active')
+            if (show) {
+                notificationsBoard.classList.add('active')
+            }
+        }
+    }
+}
+
+const initLayout = (): void => {
+    // setup "notification" section
+    const notification = document.querySelector<HTMLElement>('#nav-bar .notification')
+    if (notification) {
+        const tabs = notification.querySelectorAll<HTMLElement>('#notifs-board .tabs .tab-btn')
+        for (const tab of tabs) {
+            tab.addEventListener('click', function (e) {
+                LayoutController.switchTab(tab, tab.getAttribute('data-mmn-tab-value') as string)
+            })
+        }
+    }
+}
+initLayout()

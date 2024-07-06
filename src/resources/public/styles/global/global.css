@@ -143,7 +143,7 @@ h6 {
     display: none;
 }
 
-#page-header {
+#nav-bar {
     display: flex;
     column-gap: 30px;
     justify-content: space-between;
@@ -153,30 +153,30 @@ h6 {
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 110;
     background-color: #fff;
 }
-#page-header .app-logo-container {
+#nav-bar .app-logo-container {
     display: flex;
     column-gap: 20px;
     align-items: center;
 }
-#page-header .app-logo-container .app-logo-wrapper {
+#nav-bar .app-logo-container .app-logo-wrapper {
     display: flex;
     column-gap: 15px;
     align-items: center;
 }
-#page-header .app-logo-container .app-logo-wrapper .app-title {
+#nav-bar .app-logo-container .app-logo-wrapper .app-title {
     font-size: 1.2rem;
     font-weight: bold;
     color: #18181b;
 }
-#page-header .right-side-menu {
+#nav-bar .right-side-menu {
     display: flex;
     column-gap: 10px;
     align-items: center;
 }
-#page-header .right-side-menu .menu-item {
+#nav-bar .right-side-menu .menu-item {
     display: flex;
     align-items: center;
     font-size: 1.1rem;
@@ -188,7 +188,7 @@ h6 {
     cursor: pointer;
     box-sizing: border-box;
 }
-#page-header .right-side-menu .menu-item::after {
+#nav-bar .right-side-menu .menu-item::after {
     content: '';
     position: absolute;
     border-top: 3px #18181b solid;
@@ -199,79 +199,238 @@ h6 {
     transform: scaleX(0);
     transition: transform 0.15s;
 }
-#page-header .right-side-menu .menu-item:hover::after {
+#nav-bar .right-side-menu .menu-item:hover::after {
     transform: scaleX(1);
 }
-#page-header .right-side-menu .menu-item.realtime-mode-display {
+#nav-bar .right-side-menu .menu-item.realtime-mode-display {
     display: none;
     cursor: initial;
 }
-#page-header .right-side-menu .menu-item.realtime-mode-display .display-icon {
+#nav-bar .right-side-menu .menu-item.realtime-mode-display .display-icon {
     margin: auto;
 }
-#page-header .right-side-menu .menu-item.realtime-mode-display .display-icon i {
+#nav-bar .right-side-menu .menu-item.realtime-mode-display .display-icon i {
     font-size: 1.5rem;
 }
-#page-header .right-side-menu .menu-item.realtime-mode-display::after {
+#nav-bar .right-side-menu .menu-item.realtime-mode-display::after {
     display: none;
 }
-#page-header .right-side-menu .menu-item.realtime-mode-display.active {
+#nav-bar .right-side-menu .menu-item.realtime-mode-display.active {
     display: flex;
 }
-#page-header .right-side-menu .menu-item.realtime-mode-display.active .display-icon {
+#nav-bar .right-side-menu .menu-item.realtime-mode-display.active .display-icon {
     animation: realtime-mode-display 2s infinite forwards linear;
 }
-#page-header .right-side-menu .menu-item.notification {
-    position: relative;
-}
-#page-header .right-side-menu .menu-item.notification .notification-btn {
+#nav-bar .right-side-menu .menu-item.notification {
     position: relative;
     padding: 0;
-    background-color: transparent;
 }
-#page-header .right-side-menu .menu-item.notification .notification-btn .badge {
+#nav-bar .right-side-menu .menu-item.notification .notification-btn {
+    display: flex;
+    padding: 0;
+    background-color: #fff;
+    height: 100%;
+    padding: 0 10px;
+}
+#nav-bar .right-side-menu .menu-item.notification .notification-btn .icon-wrapper {
+    margin: auto;
+    position: relative;
+}
+#nav-bar .right-side-menu .menu-item.notification .notification-btn .icon-wrapper .badge {
     padding: 3px 6px;
     background-color: #909090 !important;
 }
-#page-header .right-side-menu .menu-item.notification .notification-btn i {
+#nav-bar .right-side-menu .menu-item.notification .notification-btn .icon-wrapper i {
     font-size: 1.2rem;
 }
-#page-header .right-side-menu .menu-item.notification .notifs {
+
+#notifs-board {
+    display: none;
     position: absolute;
     right: 0;
     top: calc(100% + 5px);
-    box-shadow: 0 0 5px 0px lightgray;
-    padding: 0 20px;
-    background-color: white;
+    box-shadow: 0 0 10px 0px lightgray;
+    background-color: #fff;
+    width: 350px;
+    height: calc(100vh - 60px - 5px - 30px);
+    min-width: 300px;
+    cursor: auto;
+    z-index: 100;
+}
+#notifs-board.active {
+    display: block;
+}
+#notifs-board .notifs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 101;
+    background-color: rgba(0, 0, 0, 0.278);
+}
+#notifs-board .notifs-content {
+    height: 100%;
+    position: relative;
+    z-index: 102;
+    background-color: #fff;
     border-radius: 5px;
 }
-#page-header .right-side-menu .menu-item.notification .notifs .notif {
-    padding: 5px;
+#notifs-board .notifs-content .close-btn {
+    position: absolute;
+    right: calc(100% + 10px);
+    top: 0;
+    border-radius: 50%;
+    transition: transform 0.2s;
+    cursor: pointer;
 }
-#page-header .right-side-menu .menu-item.notification .notifs .notif .title {
-    font-size: 1rem;
-    width: max-content;
-    max-width: 250px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+#notifs-board .notifs-content .close-btn i {
+    font-size: 1.7rem;
+    color: #fff;
 }
-#page-header .right-side-menu .menu-item.notification .notifs .notif .time-ago {
+#notifs-board .notifs-content .close-btn:hover {
+    transform: scale(1.1);
+}
+#notifs-board .notifs-content .title-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding: 15px;
+    column-gap: 20px;
+}
+#notifs-board .notifs-content .title-box .title {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+#notifs-board .notifs-content .title-box .mark-all-read-btn {
+    background-color: transparent;
+    padding: 0;
+    text-decoration: underline;
     font-size: 0.9rem;
-    color: gray;
 }
-#page-header .right-side-menu .menu-item.notification .notifs .notif .notif-type {
-    background-color: #e2e2e2;
+#notifs-board .notifs-content .title-box .mark-all-read-btn:hover {
+    text-decoration: none;
+}
+#notifs-board .notifs-content .tabs {
+    display: flex;
+    border-bottom: 2px rgba(211, 211, 211, 0.4) solid;
+    padding: 0 35px;
+}
+#notifs-board .notifs-content .tabs .tab-btn {
+    display: flex;
+    align-items: center;
+    column-gap: 8px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    background-color: transparent;
+    position: relative;
+    opacity: 0.6;
+}
+#notifs-board .notifs-content .tabs .tab-btn .count {
+    padding: 0px 5px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    background-color: lightgray;
+    color: #333;
+    font-weight: normal;
+}
+#notifs-board .notifs-content .tabs .tab-btn::after {
+    content: '';
+    display: none;
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    background-color: #333;
+}
+#notifs-board .notifs-content .tabs .tab-btn:hover {
+    background-color: rgba(211, 211, 211, 0.49);
+    opacity: 1;
+}
+#notifs-board .notifs-content .tabs .tab-btn.active {
+    font-weight: bold;
+    opacity: 1;
+}
+#notifs-board .notifs-content .tabs .tab-btn.active .count {
+    background-color: #333;
+    color: #fff;
+}
+#notifs-board .notifs-content .tabs .tab-btn.active::after {
+    display: block;
+}
+#notifs-board .notifs-content .notifs {
+    display: none;
+    height: calc(100vh - 60px - 5px - 30px - 90px);
+    overflow-y: auto;
+}
+#notifs-board .notifs-content .notifs::-webkit-scrollbar {
+    background-color: transparent;
+}
+#notifs-board .notifs-content .notifs::-webkit-scrollbar-thumb {
+    background-color: rgba(153, 153, 153, 0.333);
+}
+#notifs-board .notifs-content .notifs::-webkit-scrollbar {
+    width: 7px;
+    border-radius: 5px;
+}
+#notifs-board .notifs-content .notifs::-webkit-scrollbar-thumb {
+    height: 20px;
+    border-radius: 10px;
+}
+#notifs-board .notifs-content .notifs:hover::-webkit-scrollbar-thumb {
+    background-color: #999999;
+}
+#notifs-board .notifs-content .notifs.active {
+    display: block;
+}
+#notifs-board .notifs-content .notifs .error-message {
+    color: #ff2424;
+    font-size: 1rem;
+    width: 100%;
+    padding: 30px 50px;
+    font-weight: bold;
+    text-align: center;
+}
+#notifs-board .notifs-content .notifs .notif {
+    width: 100%;
+    padding: 0 35px;
+    background-color: #fff;
+    cursor: pointer;
+}
+#notifs-board .notifs-content .notifs .notif:not(:nth-of-type(1)) .notif-content {
+    border-top: 1px lightgray solid;
+}
+#notifs-board .notifs-content .notifs .notif.unread {
+    background-color: rgba(255, 214, 101, 0.2);
+}
+#notifs-board .notifs-content .notifs .notif .notif-content {
+    padding: 10px 0 15px;
+}
+#notifs-board .notifs-content .notifs .notif .notif-content .title {
+    font-size: 0.9rem;
+    width: 100%;
+    font-weight: 500;
+}
+#notifs-board .notifs-content .notifs .notif .notif-content .time-ago {
+    font-size: 0.85rem;
+    color: #909090;
+}
+#notifs-board .notifs-content .notifs .notif .notif-content .notif-type {
+    background-color: #333;
+    color: #fff;
     padding: 0 5px;
     border-radius: 5px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
-#page-header .right-side-menu .menu-item.notification .notifs .notif .read-btn {
-    border-radius: 5px;
-    font-size: 1rem;
-    padding: 2px 12px;
-    background-color: white;
-    box-shadow: 0px 0px 0px 1px lightgray;
+#notifs-board .notifs-content .notifs:hover .notif {
+    opacity: 0.5;
+}
+#notifs-board .notifs-content .notifs .notif:hover {
+    opacity: 1;
+}
+#notifs-board .notifs-content .notifs .notif:hover .title {
+    font-weight: bold;
 }
 
 #app-toaster {

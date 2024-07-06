@@ -1,7 +1,9 @@
-// models
-type TNotificationModel = {}
-
 // others
+type TAxiosRes<T> = {
+    [key: string]: any
+    data: T
+}
+
 type TResBodySuccess = {
     success: boolean
 }
@@ -35,8 +37,16 @@ type TNoteForm = {
 
 type TRealtimeModeTypes = 'sync' | 'stop'
 
-type TNotifyNoteEditedTypes = 'on' | 'off'
+type TNotifyNoteEditedModeTypes = 'on' | 'off'
 
 type TEditedNotifyStyleTypes = 'blink' | 'slither'
 
 type TFormCheckValues = null | 'on'
+
+type TNotif = {
+    title: string
+    message: string
+    read: boolean
+    type: ENotificationTypes
+    createdAt: string
+}

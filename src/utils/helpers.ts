@@ -9,6 +9,10 @@ export function logToConsoleWithLocation(...val: any): void {
     // )
 }
 
-export function createServerData<T extends { [key: string | number]: any }>(serverData: T): T {
+type TObject = {
+    [key: string | number]: any
+}
+
+export function createServerData<T extends TObject>(serverData: T): T {
     return serverData
 }

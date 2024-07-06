@@ -1,8 +1,9 @@
 import { ENoteLengths } from '@/note/enums'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import type { HydratedDocument } from 'mongoose'
+import type { HydratedDocument, Model } from 'mongoose'
 
 export type TNoteDocument = HydratedDocument<Note>
+export type TNoteModel = Model<Note>
 
 @Schema({ _id: false })
 export class Status {

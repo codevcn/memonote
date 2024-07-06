@@ -32,7 +32,7 @@ var __awaiter =
     }
 const homePage_pageMain = document.querySelector('#page-main')
 const notesSection = homePage_pageMain.querySelector('.notes')
-const realtimeModeDisplay = document.querySelector('#page-header .realtime-mode-display')
+const realtimeModeDisplay = document.querySelector('#nav-bar .realtime-mode-display')
 const noteSettingsBoard = document.querySelector('#note-settings-modal .note-settings-board')
 const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
     '.note-settings-navigation .nav-item.logout-btn',
@@ -89,15 +89,15 @@ const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
     }
 }
 const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
-    LayoutUI.notifyNoteEdited('off', { content: 'true' })
+    LayoutController.notifyNoteEdited('off', { content: 'true' })
     broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteTitleTypingHanlder = debounce((target) => {
-    LayoutUI.notifyNoteEdited('off', { title: 'true' })
+    LayoutController.notifyNoteEdited('off', { title: 'true' })
     broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteAuthorTypingHanlder = debounce((target) => {
-    LayoutUI.notifyNoteEdited('off', { author: 'true' })
+    LayoutController.notifyNoteEdited('off', { author: 'true' })
     broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const noteTyping = (noteEditorTarget) =>
@@ -215,7 +215,7 @@ const setMessageOfSetPassword = (message, type) => {
 }
 const validatePassword = (password) => {
     let is_valid = true
-    if (!notePasswordRegEx.test(password)) {
+    if (!NOTE_PASSWORD_REGEX.test(password)) {
         is_valid = false
         setMessageOfSetPassword('Please type your password format correctly!', 'warning')
     }
@@ -224,7 +224,7 @@ const validatePassword = (password) => {
 const setPasswordForNote = (password, logoutAll) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const noteUniqueName = getNoteUniqueNameFromURL()
-        if (noteUniqueNameRegEx.test(noteUniqueName)) {
+        if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
             yield setPasswordOfNoteAPI(password, logoutAll, noteUniqueName)
         }
     })
@@ -271,7 +271,7 @@ const saveSettingsSetPasswordForNote = (e) =>
             const submitBtn = form.querySelector('.form-btn')
             submitBtn.classList.add('on-progress')
             const innerHTML_beforeUpdate = submitBtn.innerHTML
-            submitBtn.innerHTML = Materials.getHTMLLoading('border')
+            submitBtn.innerHTML = Materials.createHTMLLoading('border')
             let apiSuccess = false
             try {
                 yield setPasswordForNote(password, !!logoutAll)
@@ -296,7 +296,7 @@ const saveSettingsSetPasswordForNote = (e) =>
     })
 const removePasswordOfNote = (noteUniqueName) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        if (noteUniqueNameRegEx.test(noteUniqueName)) {
+        if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
             yield removePasswordOfNoteAPI(noteUniqueName)
         }
     })
@@ -305,7 +305,7 @@ const saveSettingsRemovePasswordOfNote = (e) =>
         e.preventDefault()
         const submitBtn = e.target.querySelector('.form-btn')
         const innerHTML_beforeRemove = submitBtn.innerHTML
-        submitBtn.innerHTML = Materials.getHTMLLoading('border')
+        submitBtn.innerHTML = Materials.createHTMLLoading('border')
         let apiSuccess = false
         try {
             yield removePasswordOfNote(getNoteUniqueNameFromURL())
@@ -313,7 +313,7 @@ const saveSettingsRemovePasswordOfNote = (e) =>
         } catch (error) {
             if (error instanceof Error) {
                 const err = APIErrorHandler.handleError(error)
-                LayoutUI.toast('error', err.message)
+                LayoutController.toast('error', err.message)
             }
         }
         if (apiSuccess) {
@@ -326,14 +326,14 @@ const saveSettingsRemovePasswordOfNote = (e) =>
     })
 const logout = (noteUniqueName) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        if (noteUniqueNameRegEx.test(noteUniqueName)) {
+        if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
             yield logoutAPI(noteUniqueName)
         }
     })
 const logoutHandler = (target) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const innerHTML_beforeLogout = target.innerHTML
-        target.innerHTML = Materials.getHTMLLoading('border')
+        target.innerHTML = Materials.createHTMLLoading('border')
         target.classList.add('on-progress')
         let apiSuccess = false
         try {
@@ -342,12 +342,12 @@ const logoutHandler = (target) =>
         } catch (error) {
             if (error instanceof Error) {
                 const err = APIErrorHandler.handleError(error)
-                LayoutUI.toast('error', err.message)
+                LayoutController.toast('error', err.message)
             }
         }
         if (apiSuccess) {
             refreshPageAfterMs(500)
-            LayoutUI.setUIOfGeneralAppStatus('success')
+            LayoutController.setUIOfGeneralAppStatus('success')
         }
         target.classList.remove('on-progress')
         target.innerHTML = innerHTML_beforeLogout
@@ -390,38 +390,36 @@ const saveSettingsChangeModes = (e) =>
         }
         setStatusOfSettingsForm(form, 'saved')
     })
-const navigateSettings = (target, type) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const navItems = noteSettingsBoard.querySelectorAll('.nav-item')
-        for (const navItem of navItems) {
-            navItem.classList.remove('active')
+const navigateSettings = (target, type) => {
+    const navItems = noteSettingsBoard.querySelectorAll('.nav-item')
+    for (const navItem of navItems) {
+        navItem.classList.remove('active')
+    }
+    target.classList.add('active')
+    const forms = noteSettingsBoard.querySelectorAll('.forms')
+    for (const form of forms) {
+        if (form.classList.contains(type)) {
+            form.hidden = false
+        } else {
+            form.hidden = true
         }
-        target.classList.add('active')
-        const forms = noteSettingsBoard.querySelectorAll('.forms')
-        for (const form of forms) {
-            if (form.classList.contains(type)) {
-                form.hidden = false
-            } else {
-                form.hidden = true
-            }
+    }
+}
+const switchTabPassword = (target, type) => {
+    const tabs = noteSettingsBoard.querySelectorAll('.forms.password .tabs .tab-btn')
+    for (const tab of tabs) {
+        tab.classList.remove('active')
+    }
+    target.classList.add('active')
+    const forms = target.closest('.forms').querySelectorAll('.note-settings-form')
+    for (const form of forms) {
+        if (form.classList.contains(type)) {
+            form.hidden = false
+        } else {
+            form.hidden = true
         }
-    })
-const switchTabPassword = (target, type) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const tabs = noteSettingsBoard.querySelectorAll('.forms.password .tabs .tab-btn')
-        for (const tab of tabs) {
-            tab.classList.remove('active')
-        }
-        target.classList.add('active')
-        const forms = target.closest('.forms').querySelectorAll('.note-settings-form')
-        for (const form of forms) {
-            if (form.classList.contains(type)) {
-                form.hidden = false
-            } else {
-                form.hidden = true
-            }
-        }
-    })
+    }
+}
 const saveSettingsUserInterface = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
@@ -433,7 +431,40 @@ const saveSettingsUserInterface = (e) =>
         }
         setStatusOfSettingsForm(form, 'saved')
     })
-const notify = () => {}
+const setMessageOfFetchNotifications = (message) => {
+    if (notificationsBoard) {
+        notificationsBoard.querySelector('.notifs-content .notifs').innerHTML = message
+            ? `<div class="error-message">${message}</div>`
+            : ''
+    }
+}
+const fetchNotificationsHandler = () =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        if (notificationsBoard) {
+            let apiSuccess = false
+            let apiResult = []
+            const notifs_all = notificationsBoard.querySelector('.notifs-content .notifs.all')
+            notifs_all.innerHTML = Materials.createHTMLLoading('border')
+            const notifs_unread = notificationsBoard.querySelector('.notifs-content .notifs.unread')
+            notifs_unread.innerHTML = Materials.createHTMLLoading('border')
+            try {
+                const { data } = yield getNotificationsAPI(serverData.noteId)
+                apiResult = data
+                apiSuccess = true
+            } catch (error) {
+                setMessageOfFetchNotifications(
+                    "Can't get notifications, internal server error 500.",
+                )
+                LayoutController.toast(
+                    'error',
+                    "Can't get notifications, internal server error 500.",
+                )
+            }
+            if (apiSuccess && apiResult && apiResult.length > 0) {
+                NotificationsController.addNotifs(apiResult, true)
+            }
+        }
+    })
 const initPage = () => {
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
@@ -490,5 +521,6 @@ const initPage = () => {
             quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
+    fetchNotificationsHandler()
 }
 initPage()

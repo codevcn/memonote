@@ -4,14 +4,8 @@ const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 const generalAppStatus = document.getElementById('general-app-status')
-const closeAppNotification = (target) => {
-    const toasterTimer = LayoutUI.toasterTimer
-    if (toasterTimer) {
-        clearTimeout(toasterTimer)
-    }
-    target.classList.add('clicked')
-}
-class LayoutUI {
+const notificationsBoard = document.getElementById('notifs-board') // maybe null
+class LayoutController {
     static notifyNoteEdited(type, noteForm) {
         let baseClasses = ['notify-note-edited', 'slither', 'blink']
         let notifyNoteEditedClass = ['notify-note-edited']
@@ -84,12 +78,68 @@ class LayoutUI {
             progressBar.classList.add('running-b')
             this.toasterAnimationFlag = true
         }
-        LayoutUI.toasterTimer = setTimeout(() => {
+        this.toasterTimer = setTimeout(() => {
             progressBar.classList.remove('running-a', 'running-b')
         }, durationInMs)
     }
+    static closeAppToaster(target) {
+        const toasterTimer = LayoutController.toasterTimer
+        if (toasterTimer) {
+            clearTimeout(toasterTimer)
+        }
+        target.classList.add('clicked')
+    }
+    static switchTab(target, standing) {
+        const navigationSection = target.closest('.navigation-section')
+        const tabs = navigationSection.querySelectorAll('.tabs .tab-btn')
+        for (const tab of tabs) {
+            tab.classList.remove('active')
+        }
+        target.classList.add('active')
+        const destinations = navigationSection.querySelectorAll('.destination')
+        for (const destination of destinations) {
+            destination.classList.remove('active')
+            if (destination.classList.contains(standing)) {
+                destination.classList.add('active')
+            }
+        }
+    }
 }
-LayoutUI.NOTIFICATION_TIMEOUT = 3000
-LayoutUI.GENERAL_STATUS_TIMEOUT = 3000
-LayoutUI.toasterAnimationFlag = true
-LayoutUI.toasterTimer = null
+LayoutController.NOTIFICATION_TIMEOUT = 3000
+LayoutController.GENERAL_STATUS_TIMEOUT = 3000
+LayoutController.toasterAnimationFlag = true
+LayoutController.toasterTimer = null
+class NotificationsController {
+    static addNotifs(notifPayloads, clearAllBeforeAdd = false) {
+        if (notificationsBoard) {
+            const notifsContainer = notificationsBoard.querySelector('.notifs-content .notifs')
+            if (clearAllBeforeAdd) {
+                notifsContainer.innerHTML = ''
+            }
+            for (const notifPayload of notifPayloads) {
+                notifsContainer.appendChild(Materials.createElementNotif(notifPayload))
+            }
+        }
+    }
+    static showNotificationsBoard(show) {
+        if (notificationsBoard) {
+            notificationsBoard.classList.remove('active')
+            if (show) {
+                notificationsBoard.classList.add('active')
+            }
+        }
+    }
+}
+const initLayout = () => {
+    // setup "notification" section
+    const notification = document.querySelector('#nav-bar .notification')
+    if (notification) {
+        const tabs = notification.querySelectorAll('#notifs-board .tabs .tab-btn')
+        for (const tab of tabs) {
+            tab.addEventListener('click', function (e) {
+                LayoutController.switchTab(tab, tab.getAttribute('data-mmn-tab-value'))
+            })
+        }
+    }
+}
+initLayout()

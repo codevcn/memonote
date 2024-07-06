@@ -1,8 +1,6 @@
 const homePage_pageMain = document.querySelector('#page-main') as HTMLElement
 const notesSection = homePage_pageMain.querySelector('.notes') as HTMLElement
-const realtimeModeDisplay = document.querySelector(
-    '#page-header .realtime-mode-display',
-) as HTMLElement
+const realtimeModeDisplay = document.querySelector('#nav-bar .realtime-mode-display') as HTMLElement
 const noteSettingsBoard = document.querySelector(
     '#note-settings-modal .note-settings-board',
 ) as HTMLElement
@@ -82,17 +80,17 @@ const setBoardUIOfNoteEditor = (
 }
 
 const broadcastNoteContentTypingHanlder = debounce((noteContent: string): void => {
-    LayoutUI.notifyNoteEdited('off', { content: 'true' })
+    LayoutController.notifyNoteEdited('off', { content: 'true' })
     broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteTitleTypingHanlder = debounce((target: HTMLInputElement): void => {
-    LayoutUI.notifyNoteEdited('off', { title: 'true' })
+    LayoutController.notifyNoteEdited('off', { title: 'true' })
     broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteAuthorTypingHanlder = debounce((target: HTMLInputElement): void => {
-    LayoutUI.notifyNoteEdited('off', { author: 'true' })
+    LayoutController.notifyNoteEdited('off', { author: 'true' })
     broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
@@ -232,7 +230,7 @@ const setMessageOfSetPassword = (message: string, type: TPasswordMessage): void 
 
 const validatePassword = (password: string): boolean => {
     let is_valid = true
-    if (!notePasswordRegEx.test(password)) {
+    if (!NOTE_PASSWORD_REGEX.test(password)) {
         is_valid = false
         setMessageOfSetPassword('Please type your password format correctly!', 'warning')
     }
@@ -241,7 +239,7 @@ const validatePassword = (password: string): boolean => {
 
 const setPasswordForNote = async (password: string, logoutAll: boolean): Promise<void> => {
     const noteUniqueName = getNoteUniqueNameFromURL()
-    if (noteUniqueNameRegEx.test(noteUniqueName)) {
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
         await setPasswordOfNoteAPI(password, logoutAll, noteUniqueName)
     }
 }
@@ -302,7 +300,7 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
         const submitBtn = form.querySelector('.form-btn') as HTMLButtonElement
         submitBtn.classList.add('on-progress')
         const innerHTML_beforeUpdate = submitBtn.innerHTML
-        submitBtn.innerHTML = Materials.getHTMLLoading('border')
+        submitBtn.innerHTML = Materials.createHTMLLoading('border')
 
         let apiSuccess: boolean = false
         try {
@@ -330,7 +328,7 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
 }
 
 const removePasswordOfNote = async (noteUniqueName: string): Promise<void> => {
-    if (noteUniqueNameRegEx.test(noteUniqueName)) {
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
         await removePasswordOfNoteAPI(noteUniqueName)
     }
 }
@@ -340,7 +338,7 @@ const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> =
 
     const submitBtn = (e.target as HTMLFormElement).querySelector('.form-btn') as HTMLButtonElement
     const innerHTML_beforeRemove = submitBtn.innerHTML
-    submitBtn.innerHTML = Materials.getHTMLLoading('border')
+    submitBtn.innerHTML = Materials.createHTMLLoading('border')
     let apiSuccess: boolean = false
     try {
         await removePasswordOfNote(getNoteUniqueNameFromURL())
@@ -348,7 +346,7 @@ const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> =
     } catch (error) {
         if (error instanceof Error) {
             const err = APIErrorHandler.handleError(error)
-            LayoutUI.toast('error', err.message)
+            LayoutController.toast('error', err.message)
         }
     }
     if (apiSuccess) {
@@ -361,14 +359,14 @@ const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> =
 }
 
 const logout = async (noteUniqueName: string): Promise<void> => {
-    if (noteUniqueNameRegEx.test(noteUniqueName)) {
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
         await logoutAPI(noteUniqueName)
     }
 }
 
 const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
     const innerHTML_beforeLogout = target.innerHTML
-    target.innerHTML = Materials.getHTMLLoading('border')
+    target.innerHTML = Materials.createHTMLLoading('border')
     target.classList.add('on-progress')
     let apiSuccess: boolean = false
     try {
@@ -377,12 +375,12 @@ const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
     } catch (error) {
         if (error instanceof Error) {
             const err = APIErrorHandler.handleError(error)
-            LayoutUI.toast('error', err.message)
+            LayoutController.toast('error', err.message)
         }
     }
     if (apiSuccess) {
         refreshPageAfterMs(500)
-        LayoutUI.setUIOfGeneralAppStatus('success')
+        LayoutController.setUIOfGeneralAppStatus('success')
     }
     target.classList.remove('on-progress')
     target.innerHTML = innerHTML_beforeLogout
@@ -436,7 +434,7 @@ const saveSettingsChangeModes = async (e: SubmitEvent): Promise<void> => {
 
 type TNavigateFormTypes = 'change-modes' | 'password'
 
-const navigateSettings = async (target: HTMLElement, type: TNavigateFormTypes): Promise<void> => {
+const navigateSettings = (target: HTMLElement, type: TNavigateFormTypes): void => {
     const navItems = noteSettingsBoard.querySelectorAll<HTMLElement>('.nav-item')
     for (const navItem of navItems) {
         navItem.classList.remove('active')
@@ -454,10 +452,7 @@ const navigateSettings = async (target: HTMLElement, type: TNavigateFormTypes): 
 
 type TPasswordTabTypes = 'set-password' | 'remove-password'
 
-const switchTabPassword = async (
-    target: HTMLButtonElement,
-    type: TPasswordTabTypes,
-): Promise<void> => {
+const switchTabPassword = (target: HTMLButtonElement, type: TPasswordTabTypes): void => {
     const tabs = noteSettingsBoard.querySelectorAll<HTMLButtonElement>(
         '.forms.password .tabs .tab-btn',
     )
@@ -489,7 +484,38 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     setStatusOfSettingsForm(form, 'saved')
 }
 
-const notify = (): void => {}
+const setMessageOfFetchNotifications = (message: string | null): void => {
+    if (notificationsBoard) {
+        ;(notificationsBoard.querySelector('.notifs-content .notifs') as HTMLElement).innerHTML =
+            message ? `<div class="error-message">${message}</div>` : ''
+    }
+}
+
+const fetchNotificationsHandler = async (): Promise<void> => {
+    if (notificationsBoard) {
+        let apiSuccess: boolean = false
+        let apiResult: TNotif[] = []
+        const notifs_all = notificationsBoard.querySelector(
+            '.notifs-content .notifs.all',
+        ) as HTMLElement
+        notifs_all.innerHTML = Materials.createHTMLLoading('border')
+        const notifs_unread = notificationsBoard.querySelector(
+            '.notifs-content .notifs.unread',
+        ) as HTMLElement
+        notifs_unread.innerHTML = Materials.createHTMLLoading('border')
+        try {
+            const { data } = await getNotificationsAPI(serverData.noteId)
+            apiResult = data
+            apiSuccess = true
+        } catch (error) {
+            setMessageOfFetchNotifications("Can't get notifications, internal server error 500.")
+            LayoutController.toast('error', "Can't get notifications, internal server error 500.")
+        }
+        if (apiSuccess && apiResult && apiResult.length > 0) {
+            NotificationsController.addNotifs(apiResult, true)
+        }
+    }
+}
 
 const initPage = (): void => {
     // setup "change modes" form
@@ -557,5 +583,7 @@ const initPage = (): void => {
             quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
+
+    fetchNotificationsHandler()
 }
 initPage()

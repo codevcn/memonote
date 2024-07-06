@@ -51,7 +51,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                     height: 0;
                     width: 0;
                     position: absolute;
-                    z-index: calc(z-indexes.$mmn-base-custom-zidx + 1);
+                    z-index: calc(z-indexes.$mmn-base-zidx + 1);
                 }
 
                 &::before {
@@ -121,7 +121,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                         font-size: 2rem;
                         font-weight: bold;
                         position: relative;
-                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
+                        z-index: calc(z-indexes.$mmn-base-zidx + 2);
                         line-height: 1rem;
 
                         &::placeholder {
@@ -143,7 +143,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                         font-size: 15px;
                         font-weight: 500;
                         position: relative;
-                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
+                        z-index: calc(z-indexes.$mmn-base-zidx + 2);
                         line-height: 1rem;
 
                         &::placeholder {
@@ -161,7 +161,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                         height: 100%;
                         width: 100%;
                         position: relative;
-                        z-index: calc(z-indexes.$mmn-base-custom-zidx + 2);
+                        z-index: calc(z-indexes.$mmn-base-zidx + 2);
                         padding: 5px 10px;
 
                         .note-editor-wrapper {

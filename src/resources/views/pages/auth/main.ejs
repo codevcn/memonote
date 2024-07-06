@@ -3,7 +3,8 @@
         <div class="form-group">
             <div class="input-wrapper">
                 <input type="password" name="password" onfocus="handleOnFocusTypePasswordInput(this)"
-                    onblur="handleOnBlurTypePasswordInput(this)" onkeyup="catchEnterKeyOfSignInInput(event)" />
+                    onblur="handleOnBlurTypePasswordInput(this)" onkeyup="catchEnterKeyOfSignInInput(event)"
+                    oninput="typingPassword()" />
                 <div class="input-animation"></div>
                 <div class="input-placeholder">
                     Type password...

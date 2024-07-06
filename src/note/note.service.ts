@@ -1,7 +1,6 @@
-import type { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Note, TNoteDocument } from './note.model'
+import { Note, TNoteDocument, TNoteModel } from './note.model'
 import { ENoteLengths } from './enums'
 import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
@@ -10,7 +9,6 @@ import { EAuthEncryption } from './enums'
 import type { TNoteForm } from './types'
 import { AddPasswordForNotePayloadDTO } from './DTOs'
 import { UserSessions } from './gateway/sessions'
-import { Notif } from '@/notification/notification.model'
 import { ENotificationTypes } from '@/notification/enums'
 import path from 'path'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
@@ -20,7 +18,7 @@ import { NotificationService } from '@/notification/notification.service'
 @Injectable()
 export class NoteService {
     constructor(
-        @InjectModel(Note.name) private noteModel: Model<Note>,
+        @InjectModel(Note.name) private noteModel: TNoteModel,
         private jwtService: JWTService,
         private notificationService: NotificationService,
     ) {}

@@ -8,7 +8,7 @@ import { GetNoteOnHomePageParamsDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ApplicationService } from '@/utils/application/application.service'
 import { ViewRoutes } from '@/utils/routes'
-import type { THomePageServerData } from './types'
+import type { TCommonPageData, THomePagePageData } from './types'
 import { createServerData } from '@/utils/helpers'
 
 @Controller(ViewRoutes.home)
@@ -41,7 +41,8 @@ export class HomeController implements IHomeController {
                     await this.authService.checkAuthentication(req)
                     return res.status(HttpStatus.OK).render(
                         ClientViewPages.home,
-                        createServerData<THomePageServerData>({
+                        createServerData<THomePagePageData>({
+                            verified: true,
                             appInfo,
                             note: {
                                 content: note.content,
@@ -53,12 +54,19 @@ export class HomeController implements IHomeController {
                         }),
                     )
                 } catch (error) {
-                    return res.redirect(`/sign-in/${noteUniqueName}`)
+                    return res.status(HttpStatus.OK).render(
+                        ClientViewPages.signIn,
+                        createServerData<TCommonPageData>({
+                            verified: false,
+                            appInfo,
+                        }),
+                    )
                 }
             } else {
                 return res.status(HttpStatus.OK).render(
                     ClientViewPages.home,
-                    createServerData<THomePageServerData>({
+                    createServerData<THomePagePageData>({
+                        verified: true,
                         appInfo,
                         note: {
                             content: note.content,
@@ -75,7 +83,9 @@ export class HomeController implements IHomeController {
             const createdNote = await this.noteService.createNewNote(noteUniqueName)
             return res.status(HttpStatus.OK).render(
                 ClientViewPages.home,
-                createServerData<THomePageServerData>({
+                createServerData<THomePagePageData>({
+                    verified: true,
+                    appInfo,
                     note: {
                         content: null,
                         title: null,
@@ -83,7 +93,6 @@ export class HomeController implements IHomeController {
                         passwordSet: false,
                         noteId: createdNote._id.toString(),
                     },
-                    appInfo,
                 }),
             )
         } catch (error) {
@@ -91,17 +100,10 @@ export class HomeController implements IHomeController {
         }
     }
 
-    @Get('sign-in/:noteUniqueName')
-    @Render(ClientViewPages.signIn)
-    async signInPage() {
-        const appInfo = await this.applicationService.getApplicationInfo()
-        return { appInfo }
-    }
-
     @Get('menu/about')
     @Render(ClientViewPages.about)
     async aboutPage() {
         const appInfo = await this.applicationService.getApplicationInfo()
-        return { appInfo }
+        return { appInfo, verified: true }
     }
 }

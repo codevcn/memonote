@@ -1,7 +1,7 @@
-const noteUniqueNameRegEx = new RegExp(
+const NOTE_UNIQUE_NAME_REGEX = new RegExp(
     `^[0-9A-Za-z-_]{${ENoteLengths.MIN_LENGTH_NOTE_UNIQUE_NAME},${ENoteLengths.MAX_LENGTH_NOTE_UNIQUE_NAME}}$`,
 )
 
-const notePasswordRegEx = new RegExp(
+const NOTE_PASSWORD_REGEX = new RegExp(
     `^.{${ENoteLengths.MIN_LENGTH_PASSWORD},${ENoteLengths.MAX_LENGTH_PASSWORD}}$`,
 )

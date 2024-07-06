@@ -2,6 +2,16 @@
 @use 'colors';
 @use 'z-indexes';
 
+$mmn-height-of-nav-bar: 60px;
+$mmn-app-toaster-left-gap: 20px;
+$mmn-app-toaster-width: 250px;
+$mmn-app-toaster-initial-transform: translateX(calc(-100% - $mmn-app-toaster-left-gap - 5px));
+$mmn-app-toaster-max-height: 150px;
+$mmn-notifs-board-width: 350px;
+$mmn-notif-board-min-height: 300px;
+$mmn-scrollbar-on-hover-cl: #999999;
+$mmn-scrollbar-on-blur-cl: rgba(153, 153, 153, 0.333);
+
 /* @rules
 normal - regular
 bold - bold
@@ -93,11 +103,31 @@ bold - bold
     font-weight: 300;
 }
 
-$mmn-height-of-page-header: 60px;
-$mmn-app-toaster-left-gap: 20px;
-$mmn-app-toaster-width: 250px;
-$mmn-app-toaster-initial-transform: translateX(calc(-100% - #{$mmn-app-toaster-left-gap} - 5px));
-$mmn-app-toaster-max-height: 150px;
+@mixin scrollbar-styling {
+    &::-webkit-scrollbar {
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $mmn-scrollbar-on-blur-cl;
+    }
+
+    &::-webkit-scrollbar {
+        width: 7px;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        height: 20px;
+        border-radius: 10px;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background-color: $mmn-scrollbar-on-hover-cl;
+        }
+    }
+}
 
 body {
     padding: 0;
@@ -169,17 +199,17 @@ h6 {
     }
 }
 
-#page-header {
+#nav-bar {
     display: flex;
     column-gap: 30px;
     justify-content: space-between;
     padding: 0 50px;
-    height: $mmn-height-of-page-header;
+    height: $mmn-height-of-nav-bar;
     border-bottom: 1px colors.$mmn-divider-border-cl solid;
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: z-indexes.$mmn-base-notif-board-zidx + 10;
     background-color: colors.$mmn-regular-white-cl;
 
     .app-logo-container {
@@ -262,62 +292,242 @@ h6 {
 
             &.notification {
                 position: relative;
+                padding: 0;
 
                 .notification-btn {
-                    position: relative;
+                    display: flex;
                     padding: 0;
-                    background-color: transparent;
+                    background-color: colors.$mmn-regular-white-cl;
+                    height: 100%;
+                    padding: 0 10px;
 
-                    .badge {
-                        padding: 3px 6px;
-                        background-color: colors.$mmn-regular-gray-cl !important;
+                    .icon-wrapper {
+                        margin: auto;
+                        position: relative;
+
+                        .badge {
+                            padding: 3px 6px;
+                            background-color: colors.$mmn-regular-gray-cl !important;
+                        }
+
+                        i {
+                            font-size: 1.2rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+#notifs-board {
+    $spacing-top: 5px;
+    $notifs-board-height: calc(100vh - $mmn-height-of-nav-bar - $spacing-top - 30px);
+
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + $spacing-top);
+    box-shadow: 0 0 10px 0px colors.$mmn-regular-lightgray-cl;
+    background-color: colors.$mmn-regular-white-cl;
+    width: $mmn-notifs-board-width;
+    height: calc(100vh - $mmn-height-of-nav-bar - $spacing-top - 30px);
+    min-width: $mmn-notif-board-min-height;
+    cursor: auto;
+    z-index: z-indexes.$mmn-base-notif-board-zidx;
+
+    &.active {
+        display: block;
+    }
+
+    .notifs-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: calc(z-indexes.$mmn-base-notif-board-zidx + 1);
+        background-color: colors.$mmn-modal-bgcl;
+    }
+
+    .notifs-content {
+        height: 100%;
+        position: relative;
+        z-index: calc(z-indexes.$mmn-base-notif-board-zidx + 2);
+        background-color: colors.$mmn-regular-white-cl;
+        border-radius: 5px;
+
+        .close-btn {
+            position: absolute;
+            right: calc(100% + 10px);
+            top: 0;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            cursor: pointer;
+
+            i {
+                font-size: 1.7rem;
+                color: colors.$mmn-regular-white-cl;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+
+        .title-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            padding: 15px;
+            column-gap: 20px;
+
+            .title {
+                font-size: 1.1rem;
+                font-weight: bold;
+            }
+
+            .mark-all-read-btn {
+                background-color: transparent;
+                padding: 0;
+                text-decoration: underline;
+                font-size: 0.9rem;
+
+                &:hover {
+                    text-decoration: none;
+                }
+            }
+        }
+
+        .tabs {
+            $outline-width: 2px;
+
+            display: flex;
+            border-bottom: $outline-width rgba(211, 211, 211, 0.4) solid;
+            padding: 0 35px;
+
+            .tab-btn {
+                display: flex;
+                align-items: center;
+                column-gap: 8px;
+                padding: 5px 15px;
+                font-size: 0.9rem;
+                background-color: transparent;
+                position: relative;
+                opacity: 0.6;
+
+                .count {
+                    padding: 0px 5px;
+                    font-size: 0.9rem;
+                    border-radius: 5px;
+                    background-color: colors.$mmn-regular-lightgray-cl;
+                    color: colors.$mmn-regular-black-cl;
+                    font-weight: normal;
+                }
+
+                &::after {
+                    content: '';
+                    display: none;
+                    height: $outline-width;
+                    width: 100%;
+                    position: absolute;
+                    left: 0;
+                    top: 100%;
+                    background-color: colors.$mmn-regular-black-cl;
+                }
+
+                &:hover {
+                    background-color: colors.$mmn-hover-light-bgcl;
+                    opacity: 1;
+                }
+
+                &.active {
+                    font-weight: bold;
+                    opacity: 1;
+
+                    .count {
+                        background-color: colors.$mmn-regular-black-cl;
+                        color: colors.$mmn-regular-white-cl;
                     }
 
-                    i {
-                        font-size: 1.2rem;
+                    &::after {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .notifs {
+            display: none;
+            height: calc($notifs-board-height - 90px);
+            overflow-y: auto;
+            @include scrollbar-styling;
+
+            &.active {
+                display: block;
+            }
+
+            .error-message {
+                color: colors.$mmn-regular-red-cl;
+                font-size: 1rem;
+                width: 100%;
+                padding: 30px 50px;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .notif {
+                width: 100%;
+                padding: 0 35px;
+                background-color: colors.$mmn-regular-bgcl;
+                cursor: pointer;
+
+                &:not(:nth-of-type(1)) {
+                    .notif-content {
+                        border-top: 1px colors.$mmn-regular-lightgray-cl solid;
                     }
                 }
 
-                .notifs {
-                    position: absolute;
-                    right: 0;
-                    top: calc(100% + 5px);
-                    box-shadow: 0 0 5px 0px lightgray;
-                    padding: 0 20px;
-                    background-color: white;
-                    border-radius: 5px;
+                &.unread {
+                    background-color: colors.$mmn-unread-notif-bgcl;
+                }
 
-                    .notif {
-                        padding: 5px;
+                .notif-content {
+                    padding: 10px 0 15px;
 
-                        .title {
-                            font-size: 1rem;
-                            width: max-content;
-                            max-width: 250px;
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                        }
+                    .title {
+                        font-size: 0.9rem;
+                        width: 100%;
+                        font-weight: 500;
+                    }
 
-                        .time-ago {
-                            font-size: 0.9rem;
-                            color: gray;
-                        }
+                    .time-ago {
+                        font-size: 0.85rem;
+                        color: colors.$mmn-regular-gray-cl;
+                    }
 
-                        .notif-type {
-                            background-color: #e2e2e2;
-                            padding: 0 5px;
-                            border-radius: 5px;
-                            font-size: 0.9rem;
-                        }
+                    .notif-type {
+                        background-color: colors.$mmn-regular-black-cl;
+                        color: colors.$mmn-regular-white-cl;
+                        padding: 0 5px;
+                        border-radius: 5px;
+                        font-size: 0.85rem;
+                    }
+                }
+            }
 
-                        .read-btn {
-                            border-radius: 5px;
-                            font-size: 1rem;
-                            padding: 2px 12px;
-                            background-color: white;
-                            box-shadow: 0px 0px 0px 1px lightgray;
-                        }
+            &:hover {
+                .notif {
+                    opacity: 0.5;
+                }
+            }
+
+            .notif {
+                &:hover {
+                    opacity: 1;
+
+                    .title {
+                        font-weight: bold;
                     }
                 }
             }

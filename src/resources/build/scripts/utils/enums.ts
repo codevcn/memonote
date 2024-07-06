@@ -1,3 +1,8 @@
+enum ENotificationTypes {
+    SET_PASSWORD = 'password.set',
+    REMOVE_PASSWORD = 'password.remove',
+}
+
 enum ELocalStorageKeys {
     REALTIME_MODE = 'realtime-mode',
     NOTE_CHANGES_DISPLAY_MODE = 'notify-note-edited-mode',

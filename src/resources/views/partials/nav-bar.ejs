@@ -1,0 +1,76 @@
+<section id="nav-bar">
+    <section class="app-logo-container">
+        <a class="app-logo-wrapper" href="/">
+            <h2 class="app-title">MemoNote.</h2>
+        </a>
+        <div id="general-app-status" class="inactive">
+            <i class="success-icon bi bi-check-circle-fill"></i>
+            <i class="error-icon bi bi-x-circle-fill"></i>
+        </div>
+    </section>
+
+    <section class="right-side-menu">
+        <div class="menu-item realtime-mode-display inactive" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            title="In Realtime Mode">
+            <div class="display-icon">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+        </div>
+
+        <a href="/menu/about" class="menu-item">About Us</a>
+
+        <% if (verified) { %>
+        <div class="menu-item notification">
+            <div class="notification-btn" onclick="NotificationsController.showNotificationsBoard(true)"
+                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications">
+                <div class="icon-wrapper">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span class="count">0</span>
+                        <span class="visually-hidden">Unread Messages</span>
+                    </span>
+                </div>
+            </div>
+
+            <section id="notifs-board" class="navigation-section">
+                <div class="notifs-modal" onclick="NotificationsController.showNotificationsBoard(false)"></div>
+
+                <div class="notifs-content">
+                    <div class="close-btn" onclick="NotificationsController.showNotificationsBoard(false)"
+                        data-bs-toggle="tooltip" data-bs-placement="left" title="Close notifications">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
+
+                    <div class="title-box">
+                        <h2 class="title">Notifications</h2>
+                        <button class="mark-all-read-btn">Mark all as read</button>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab-btn all active" data-mmn-tab-value="all">
+                            <span class="label">All</span>
+                            <span class="count">3</span>
+                        </button>
+                        <button class="tab-btn unread" data-mmn-tab-value="unread">
+                            <span class="label">Unread</span>
+                            <span class="count">2</span>
+                        </button>
+                    </div>
+
+                    <div class="notifs all destination active">
+                        <div class="error-message">
+                            Can't get notifications, internal server error 500.
+                        </div>
+                    </div>
+
+                    <div class="notifs unread destination">
+                        <div class="error-message">
+                            Can't get notifications, internal server error 500.
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <% } %>
+    </section>
+</section>
