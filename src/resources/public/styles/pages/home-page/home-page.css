@@ -963,8 +963,8 @@
 #page-main .note-quick-look .quick-look-items .quick-look-item {
     display: flex;
     align-items: center;
-    height: 30px;
-    width: 30px;
+    height: var(--mmn-quick-look-icon-initial-size);
+    width: var(--mmn-quick-look-icon-initial-size);
     overflow: hidden;
     padding: 6px;
     transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);

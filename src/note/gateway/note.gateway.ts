@@ -17,6 +17,7 @@ import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from './filters'
 import { ECommonStatuses } from '@/utils/enums'
 import { AuthService } from '@/auth/auth.service'
+import type { TAuthSocketConnectionReturn } from '@/auth/types'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.EDIT_NOTE })
 @UsePipes(new ValidationPipe())
@@ -33,8 +34,13 @@ export class NoteGateway
 
     afterInit(server: Server): void {
         server.use(async (socket, next) => {
-            const { noteUniqueName } = await this.authService.authSocketConnection(socket)
-            socket.join(noteUniqueName)
+            let result: TAuthSocketConnectionReturn
+            try {
+                result = await this.authService.authSocketConnection(socket)
+            } catch (error) {
+                return next(error)
+            }
+            socket.join(result.noteUniqueName)
             next()
         })
         this.io = server

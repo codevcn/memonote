@@ -104,7 +104,6 @@ export class NoteService {
         }
 
         await this.notificationService.createNotifHandler(note, {
-            title: 'Password set',
             message: 'Password has been changed by user',
             read: false,
             type: ENotificationTypes.SET_PASSWORD,

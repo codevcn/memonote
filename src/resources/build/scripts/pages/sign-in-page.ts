@@ -2,7 +2,6 @@ const signInPage_pageMain = document.querySelector('#page-main') as HTMLElement
 const typePasswordSection = signInPage_pageMain.querySelector(
     '.type-password-section',
 ) as HTMLElement
-const formGroup = typePasswordSection.querySelector('.form-group') as HTMLElement
 const inputMessage = typePasswordSection.querySelector('.input-message') as HTMLElement
 const signInMessage = typePasswordSection.querySelector('.sign-in-message') as HTMLElement
 
@@ -67,12 +66,17 @@ const validateInputValue = (inputValue: string): boolean => {
     return valid
 }
 
-const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Promise<void> => {
-    const password = (formGroup.querySelector('.input-wrapper input') as HTMLInputElement).value
+const signInHandler = async (e: SubmitEvent): Promise<void> => {
+    e.preventDefault()
+
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+    const password = formData.get('password') as string
+
     setSignInMessage(null)
 
     if (validateInputValue(password)) {
-        const submitBtn = target
+        const submitBtn = form
             .closest('.type-password-section')!
             .querySelector('.submit-btn') as HTMLButtonElement
         const htmlBefore = submitBtn.innerHTML
@@ -98,11 +102,5 @@ const signInHandler = async (target: HTMLButtonElement | HTMLInputElement): Prom
         }
         submitBtn.classList.remove('on-progress')
         submitBtn.innerHTML = htmlBefore
-    }
-}
-
-const catchEnterKeyOfSignInInput = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter') {
-        signInHandler(e.target as HTMLInputElement)
     }
 }

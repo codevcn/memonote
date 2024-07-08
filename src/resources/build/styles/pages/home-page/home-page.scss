@@ -7,10 +7,9 @@
 @use './settings.scss';
 
 $mmn-page-padding-bottom: 100px;
-$mmn-quick-look-icon-initial-size: 30px;
 
 :root {
-    --mmn-quick-look-icon-initial-size: #{$mmn-quick-look-icon-initial-size};
+    --mmn-quick-look-icon-initial-size: 30px;
 }
 
 #page-main {
@@ -29,8 +28,8 @@ $mmn-quick-look-icon-initial-size: 30px;
             .quick-look-item {
                 display: flex;
                 align-items: center;
-                height: $mmn-quick-look-icon-initial-size;
-                width: $mmn-quick-look-icon-initial-size;
+                height: var(--mmn-quick-look-icon-initial-size);
+                width: var(--mmn-quick-look-icon-initial-size);
                 overflow: hidden;
                 padding: 6px;
                 transition: width 0.25s components.$mmn-cubic-bezier;

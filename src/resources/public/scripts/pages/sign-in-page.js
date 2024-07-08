@@ -32,7 +32,6 @@ var __awaiter =
     }
 const signInPage_pageMain = document.querySelector('#page-main')
 const typePasswordSection = signInPage_pageMain.querySelector('.type-password-section')
-const formGroup = typePasswordSection.querySelector('.form-group')
 const inputMessage = typePasswordSection.querySelector('.input-message')
 const signInMessage = typePasswordSection.querySelector('.sign-in-message')
 const hideShowPassword_signInPage = (target, isShown) => {
@@ -89,12 +88,15 @@ const validateInputValue = (inputValue) => {
     }
     return valid
 }
-const signInHandler = (target) =>
+const signInHandler = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        const password = formGroup.querySelector('.input-wrapper input').value
+        e.preventDefault()
+        const form = e.target
+        const formData = new FormData(form)
+        const password = formData.get('password')
         setSignInMessage(null)
         if (validateInputValue(password)) {
-            const submitBtn = target.closest('.type-password-section').querySelector('.submit-btn')
+            const submitBtn = form.closest('.type-password-section').querySelector('.submit-btn')
             const htmlBefore = submitBtn.innerHTML
             submitBtn.innerHTML = Materials.createHTMLLoading('grow')
             submitBtn.classList.add('on-progress')
@@ -117,8 +119,3 @@ const signInHandler = (target) =>
             submitBtn.innerHTML = htmlBefore
         }
     })
-const catchEnterKeyOfSignInInput = (e) => {
-    if (e.key === 'Enter') {
-        signInHandler(e.target)
-    }
-}

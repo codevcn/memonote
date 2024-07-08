@@ -1,10 +1,9 @@
 <main id="page-main">
-    <section class="type-password-section">
+    <form action="#" method="post" onsubmit="signInHandler(event)" class="type-password-section">
         <div class="form-group">
             <div class="input-wrapper">
                 <input type="password" name="password" onfocus="handleOnFocusTypePasswordInput(this)"
-                    onblur="handleOnBlurTypePasswordInput(this)" onkeyup="catchEnterKeyOfSignInInput(event)"
-                    oninput="typingPassword()" />
+                    onblur="handleOnBlurTypePasswordInput(this)" oninput="typingPassword()" />
                 <div class="input-animation"></div>
                 <div class="input-placeholder">
                     Type password...
@@ -20,9 +19,9 @@
             </div>
         </div>
         <div class="input-message"></div>
-        <button class="submit-btn" onclick="signInHandler(this)">
+        <button class="submit-btn" type="submit">
             <span>Submit</span>
         </button>
         <div class="sign-in-message"></div>
-    </section>
+    </form>
 </main>

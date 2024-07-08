@@ -7,9 +7,12 @@ export type TNotificationDocument = HydratedDocument<Notification>
 export type TNotificationModel = Model<Notification>
 
 @Schema()
-export class Notif {
+export class Notification {
+    @Prop({ type: Types.ObjectId, ref: Note.name, required: true })
+    note: Note | Types.ObjectId
+
     @Prop({ required: true })
-    title: string
+    message: string
 
     @Prop({
         required: true,
@@ -17,23 +20,8 @@ export class Notif {
     })
     type: ENotificationTypes
 
-    @Prop({ required: true })
-    message: string
-
     @Prop({ required: true, default: false })
     read: boolean
-
-    @Prop({ required: true, default: Date.now })
-    createdAt?: Date
-}
-
-@Schema()
-export class Notification {
-    @Prop({ type: Types.ObjectId, ref: Note.name, required: true })
-    note: Note | Types.ObjectId
-
-    @Prop({ type: [Notif], required: true })
-    notifications: Notif[]
 
     @Prop({ default: Date.now, required: true })
     createdAt?: Date

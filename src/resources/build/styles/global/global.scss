@@ -12,6 +12,10 @@ $mmn-notif-board-min-height: 300px;
 $mmn-scrollbar-on-hover-cl: #999999;
 $mmn-scrollbar-on-blur-cl: rgba(153, 153, 153, 0.333);
 
+:root {
+    --mmn-ring-notification-duration: 0.5s;
+}
+
 /* @rules
 normal - regular
 bold - bold
@@ -125,6 +129,58 @@ bold - bold
     &:hover {
         &::-webkit-scrollbar-thumb {
             background-color: $mmn-scrollbar-on-hover-cl;
+        }
+    }
+}
+
+@mixin ring-notification-keyframes($type) {
+    @keyframes ring-notification-#{$type} {
+        0% {
+            transform: rotate(0deg) scale(1);
+        }
+
+        25% {
+            transform: rotate(15deg);
+        }
+
+        50% {
+            transform: rotate(-15deg) scale(1.3);
+        }
+
+        75% {
+            transform: rotate(15deg);
+        }
+
+        100% {
+            transform: rotate(0deg) scale(1);
+        }
+    }
+}
+
+@mixin progress-bar-running-keyframes($type) {
+    @keyframes progress-bar-running-#{$type} {
+        from {
+            width: 100%;
+        }
+        to {
+            width: 0;
+        }
+    }
+}
+
+@mixin slide-app-toaster-keyframes($type) {
+    @keyframes slide-app-toaster-#{$type} {
+        0% {
+            transform: $mmn-app-toaster-initial-transform;
+        }
+        10% {
+            transform: translateX(0);
+        }
+        90% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: $mmn-app-toaster-initial-transform;
         }
     }
 }
@@ -300,6 +356,10 @@ h6 {
                     background-color: colors.$mmn-regular-white-cl;
                     height: 100%;
                     padding: 0 10px;
+                    transition: transform 0.5s;
+                    animation-timing-function: linear;
+                    animation-duration: var(--mmn-ring-notification-duration);
+                    animation-iteration-count: 1;
 
                     .icon-wrapper {
                         margin: auto;
@@ -308,11 +368,23 @@ h6 {
                         .badge {
                             padding: 3px 6px;
                             background-color: colors.$mmn-regular-gray-cl !important;
+
+                            &.active {
+                                background-color: colors.$mmn-regular-red-cl !important;
+                            }
                         }
 
                         i {
                             font-size: 1.2rem;
                         }
+                    }
+
+                    &.on-ring-a {
+                        animation-name: ring-notification-a;
+                    }
+
+                    &.on-ring-b {
+                        animation-name: ring-notification-b;
                     }
                 }
             }
@@ -458,22 +530,41 @@ h6 {
         }
 
         .notifs {
-            display: none;
+            $unload-content-spacing-top: 30px;
+
+            display: flex;
+            flex-direction: column;
             height: calc($notifs-board-height - 90px);
             overflow-y: auto;
             @include scrollbar-styling;
 
-            &.active {
-                display: block;
+            .spinner {
+                margin: 0 auto;
+                margin-top: $unload-content-spacing-top;
+            }
+
+            .empty-message,
+            .error-message {
+                font-size: 1rem;
+                width: 100%;
+                padding: 0 50px;
+                font-weight: bold;
+                text-align: center;
+                margin-top: $unload-content-spacing-top;
+
+                i {
+                    color: inherit;
+                }
+            }
+
+            .empty-message {
+                display: flex;
+                flex-direction: column;
+                row-gap: 5px;
             }
 
             .error-message {
                 color: colors.$mmn-regular-red-cl;
-                font-size: 1rem;
-                width: 100%;
-                padding: 30px 50px;
-                font-weight: bold;
-                text-align: center;
             }
 
             .notif {
@@ -553,6 +644,7 @@ h6 {
     width: $mmn-app-toaster-width;
     max-height: $mmn-app-toaster-max-height;
     transform: $mmn-app-toaster-initial-transform;
+    animation-timing-function: ease-out;
 
     .text-content {
         font-size: 0.95rem;
@@ -588,14 +680,13 @@ h6 {
             width: 0;
             height: 100%;
             background-color: colors.$mmn-regular-white-cl;
+            animation-timing-function: linear;
 
             &.running-a {
                 animation-name: progress-bar-running-a;
-                animation-timing-function: linear;
             }
             &.running-b {
                 animation-name: progress-bar-running-b;
-                animation-timing-function: linear;
             }
         }
     }
@@ -636,12 +727,10 @@ h6 {
 
     &.show-a {
         animation-name: slide-app-toaster-a;
-        animation-timing-function: ease-out;
     }
 
     &.show-b {
         animation-name: slide-app-toaster-b;
-        animation-timing-function: ease-out;
     }
 
     &.clicked {
@@ -650,53 +739,14 @@ h6 {
     }
 }
 
-@keyframes slide-app-toaster-a {
-    0% {
-        transform: $mmn-app-toaster-initial-transform;
-    }
-    10% {
-        transform: translateX(0);
-    }
-    90% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: $mmn-app-toaster-initial-transform;
-    }
-}
+@include slide-app-toaster-keyframes('a');
+@include slide-app-toaster-keyframes('b');
 
-@keyframes slide-app-toaster-b {
-    0% {
-        transform: $mmn-app-toaster-initial-transform;
-    }
-    10% {
-        transform: translateX(0);
-    }
-    90% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: $mmn-app-toaster-initial-transform;
-    }
-}
+@include progress-bar-running-keyframes('a');
+@include progress-bar-running-keyframes('b');
 
-@keyframes progress-bar-running-a {
-    from {
-        width: 100%;
-    }
-    to {
-        width: 0;
-    }
-}
-
-@keyframes progress-bar-running-b {
-    from {
-        width: 100%;
-    }
-    to {
-        width: 0;
-    }
-}
+@include ring-notification-keyframes('a');
+@include ring-notification-keyframes('b');
 
 @keyframes realtime-mode-display {
     from {

@@ -11,7 +11,7 @@ export class NotificationController implements INotificationController {
     @Get('/:noteId')
     async getNotifications(@Param() params: GetNotificationsDTO) {
         const { noteId } = params
-        const notification = await this.notificationSerice.findByNoteId(noteId)
-        return notification
+        const notifications = await this.notificationSerice.findByNoteId(noteId)
+        return notifications
     }
 }

@@ -14,6 +14,7 @@ import { BaseCustomEvent } from '@/note/gateway/events'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EEventEmitterEvents, ENotificationEvents } from './enums'
 import type { TNewNotif } from '../types'
+import type { TAuthSocketConnectionReturn } from '@/auth/types'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.NOTIFICATION })
 @UsePipes(new ValidationPipe())
@@ -27,9 +28,13 @@ export class NotificationGateway
 
     afterInit(server: Server): void {
         server.use(async (socket, next) => {
-            socket.on('connect_err', (err) => {})
-            const { noteUniqueName } = await this.authService.authSocketConnection(socket)
-            socket.join(noteUniqueName)
+            let result: TAuthSocketConnectionReturn
+            try {
+                result = await this.authService.authSocketConnection(socket)
+            } catch (error) {
+                return next(error)
+            }
+            socket.join(result.noteUniqueName)
             next()
         })
         this.io = server

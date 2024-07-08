@@ -4,7 +4,18 @@ const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 const generalAppStatus = document.getElementById('general-app-status')
-const notificationsBoard = document.getElementById('notifs-board') // maybe null
+const notificationBtn = document.querySelector(
+    '#nav-bar .right-side-menu .menu-item.notification .notification-btn',
+)
+const notificationsBoard = document.getElementById('notifs-board') // can be null
+const notifsList =
+    notificationsBoard === null || notificationsBoard === void 0
+        ? void 0
+        : notificationsBoard.querySelector('.notifs-content .notifs')
+const notifsTabs =
+    notificationsBoard === null || notificationsBoard === void 0
+        ? void 0
+        : notificationsBoard.querySelector('.notifs-content .tabs')
 class LayoutController {
     static notifyNoteEdited(type, noteForm) {
         let baseClasses = ['notify-note-edited', 'slither', 'blink']
@@ -110,36 +121,113 @@ LayoutController.GENERAL_STATUS_TIMEOUT = 3000
 LayoutController.toasterAnimationFlag = true
 LayoutController.toasterTimer = null
 class NotificationsController {
-    static addNotifs(notifPayloads, clearAllBeforeAdd = false) {
-        if (notificationsBoard) {
-            const notifsContainer = notificationsBoard.querySelector('.notifs-content .notifs')
-            if (clearAllBeforeAdd) {
-                notifsContainer.innerHTML = ''
+    static setNotifsData(notifsData) {
+        this.notifsData = notifsData
+        this.setCounter('all', notifsData.length)
+        this.setCounter(
+            'unread',
+            notifsData.reduce((pre, notif) => (!notif.read ? pre + 1 : pre), 0),
+        )
+    }
+    static addNotifData(notif) {
+        if (!notificationBtn) return
+        this.notifsData.push(notif)
+        this.setCounter(
+            'unread',
+            this.notifsData.reduce((pre, notif) => (!notif.read ? pre + 1 : pre), 0) * 1,
+        )
+        // ring notification
+        if (this.ringNotifTimer) {
+            clearTimeout(this.ringNotifTimer)
+        }
+        notificationBtn.classList.remove('on-ring-a', 'on-ring-b')
+        if (this.ringNotifFlag) {
+            notificationBtn.classList.add('on-ring-a')
+            this.ringNotifFlag = false
+        } else {
+            notificationBtn.classList.add('on-ring-b')
+            this.ringNotifFlag = true
+        }
+        const ringDuration =
+            parseFloat(getCssVariable('--mmn-ring-notification-duration').split('s')[0]) * 1000
+        this.ringNotifTimer = setTimeout(() => {
+            notificationBtn.classList.remove('on-ring-a', 'on-ring-b')
+        }, ringDuration)
+    }
+    static getNotifsData() {
+        return this.notifsData
+    }
+    static setCounter(category, count) {
+        if (!notifsTabs || !notificationBtn) return
+        const countInString = `${count}`
+        notifsTabs.querySelector(`.tab-btn[data-mmn-tab-value='${category}'] .count`).textContent =
+            countInString
+        if (category === 'unread') {
+            const badge = notificationBtn.querySelector('.icon-wrapper .badge')
+            if (count > 0) {
+                badge.classList.add('active')
+            } else {
+                badge.classList.remove('active')
             }
-            for (const notifPayload of notifPayloads) {
-                notifsContainer.appendChild(Materials.createElementNotif(notifPayload))
+            badge.textContent = countInString
+        }
+    }
+    static addNotif(notif) {
+        if (!notifsList) return
+        if (this.notifsData.length === 0) {
+            notifsList.innerHTML = ''
+        }
+        this.addNotifData(notif)
+        notifsList.prepend(Materials.createElementNotif(notif))
+    }
+    static setNotifs(category, notifsPayload) {
+        if (notificationsBoard && notifsList && notifsPayload && notifsPayload.length > 0) {
+            notifsList.innerHTML = ''
+            this.setNotifsData(notifsPayload)
+            let notifs = notifsPayload
+            switch (category) {
+                case 'unread':
+                    notifs = notifs.filter(({ read }) => !read)
+                    break
+            }
+            for (const notif of notifs) {
+                notifsList.appendChild(Materials.createElementNotif(notif))
             }
         }
     }
+    static setNotifsMessage(error) {
+        if (!notifsList) return
+        notifsList.innerHTML = `<div class="error-message">${error.message}</div>`
+    }
     static showNotificationsBoard(show) {
-        if (notificationsBoard) {
-            notificationsBoard.classList.remove('active')
-            if (show) {
-                notificationsBoard.classList.add('active')
-            }
+        if (!notificationsBoard) return
+        notificationsBoard.classList.remove('active')
+        if (show) {
+            notificationsBoard.classList.add('active')
         }
     }
 }
+NotificationsController.notifsData = []
+NotificationsController.ringNotifFlag = true
+NotificationsController.ringNotifTimer = null
 const initLayout = () => {
-    // setup "notification" section
-    const notification = document.querySelector('#nav-bar .notification')
-    if (notification) {
-        const tabs = notification.querySelectorAll('#notifs-board .tabs .tab-btn')
-        for (const tab of tabs) {
-            tab.addEventListener('click', function (e) {
-                LayoutController.switchTab(tab, tab.getAttribute('data-mmn-tab-value'))
-            })
-        }
+    if (!notificationsBoard) return
+    // setup "notifications" section
+    const tabs = notificationsBoard.querySelectorAll('.notifs-content .tabs .tab-btn')
+    for (const tab of tabs) {
+        tab.addEventListener('click', function (e) {
+            if (tab.classList.contains('active')) return
+            const navigationSection = tab.closest('.navigation-section')
+            const tabs = navigationSection.querySelectorAll('.tabs .tab-btn')
+            for (const tab of tabs) {
+                tab.classList.remove('active')
+            }
+            tab.classList.add('active')
+            NotificationsController.setNotifs(
+                tab.getAttribute('data-mmn-tab-value'),
+                NotificationsController.getNotifsData(),
+            )
+        })
     }
 }
 initLayout()

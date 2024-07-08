@@ -1,5 +1,5 @@
 // others
-type TAxiosRes<T> = {
+type TAxiosHTTPRes<T> = {
     [key: string]: any
     data: T
 }
@@ -50,3 +50,5 @@ type TNotif = {
     type: ENotificationTypes
     createdAt: string
 }
+
+type TNotifCategories = 'all' | 'unread'

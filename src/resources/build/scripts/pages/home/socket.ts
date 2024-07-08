@@ -142,6 +142,6 @@ notificationSocket.on(TInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
 })
 
 // listeners
-notificationSocket.on(ENotificationEvents.NOTIFY, async (data: TNotif) => {
-    console.log('>>> TNotify >>>', data)
+notificationSocket.on(ENotificationEvents.NOTIFY, async (notif: TNotif) => {
+    NotificationsController.addNotif(notif)
 })

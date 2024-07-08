@@ -484,36 +484,28 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     setStatusOfSettingsForm(form, 'saved')
 }
 
-const setMessageOfFetchNotifications = (message: string | null): void => {
-    if (notificationsBoard) {
-        ;(notificationsBoard.querySelector('.notifs-content .notifs') as HTMLElement).innerHTML =
-            message ? `<div class="error-message">${message}</div>` : ''
-    }
-}
-
 const fetchNotificationsHandler = async (): Promise<void> => {
-    if (notificationsBoard) {
-        let apiSuccess: boolean = false
-        let apiResult: TNotif[] = []
-        const notifs_all = notificationsBoard.querySelector(
-            '.notifs-content .notifs.all',
-        ) as HTMLElement
-        notifs_all.innerHTML = Materials.createHTMLLoading('border')
-        const notifs_unread = notificationsBoard.querySelector(
-            '.notifs-content .notifs.unread',
-        ) as HTMLElement
-        notifs_unread.innerHTML = Materials.createHTMLLoading('border')
-        try {
-            const { data } = await getNotificationsAPI(serverData.noteId)
-            apiResult = data
-            apiSuccess = true
-        } catch (error) {
-            setMessageOfFetchNotifications("Can't get notifications, internal server error 500.")
-            LayoutController.toast('error', "Can't get notifications, internal server error 500.")
-        }
-        if (apiSuccess && apiResult && apiResult.length > 0) {
-            NotificationsController.addNotifs(apiResult, true)
-        }
+    if (!notificationsBoard || !notifsList) return
+
+    const htmlBefore = notifsList.innerHTML
+    notifsList.innerHTML = Materials.createHTMLLoading('border')
+
+    let apiSuccess: boolean = false
+    let apiResult: TNotif[] = []
+    try {
+        const { data } = await getNotificationsAPI(serverData.noteId)
+        apiResult = data
+        apiSuccess = true
+    } catch (error) {
+        NotificationsController.setNotifsMessage(
+            new BaseCustomError("Can't get notifications, internal server error 500."),
+        )
+        LayoutController.toast('error', "Can't get notifications, internal server error 500.")
+    }
+    if (apiSuccess && apiResult && apiResult.length > 0) {
+        NotificationsController.setNotifs('all', apiResult)
+    } else {
+        notifsList.innerHTML = htmlBefore
     }
 }
 

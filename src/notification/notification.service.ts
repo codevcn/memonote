@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
-import { Notif, Notification, type TNotificationModel } from '@/notification/notification.model'
+import { Notification, type TNotificationModel } from '@/notification/notification.model'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { ENotificationMessages } from './messages'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { BaseCustomEvent } from '@/note/gateway/events'
 import { EEventEmitterEvents } from './gateway/enums'
@@ -18,32 +17,27 @@ export class NotificationService {
         private eventEmitter: EventEmitter2,
     ) {}
 
-    async findByNoteId(noteId: string): Promise<Notif[]> {
+    async findByNoteId(noteId: string): Promise<Notification[]> {
         if (!Types.ObjectId.isValid(noteId)) {
             throw new BaseCustomException(EDBMessages.INVALID_OBJECT_ID)
         }
-        const notification = await this.notificationModel
-            .findOne({ note: new Types.ObjectId(noteId) })
-            .populate('note')
+        const notifications = await this.notificationModel
+            .find({ note: new Types.ObjectId(noteId) })
+            .sort({ createdAt: 'desc', read: 'desc' })
             .lean()
-        if (!notification) {
-            throw new BaseCustomException(ENotificationMessages.NOTIFICATION_NOT_FOUND)
+        if (notifications && notifications.length > 0) {
+            return notifications
         }
-        return notification.notifications
+        return []
     }
 
     async createNotif(noteId: string, notif: TNewNotif): Promise<void> {
-        const objectId = new Types.ObjectId(noteId)
-        const notification = await this.notificationModel.findOne({ note: objectId })
-        if (notification) {
-            notification.notifications.push(notif)
-            await notification.save()
-        } else {
-            const newNotification = new this.notificationModel()
-            newNotification.note = objectId
-            newNotification.notifications = [notif]
-            await newNotification.save()
-        }
+        const newNotification = new this.notificationModel()
+        newNotification.note = new Types.ObjectId(noteId)
+        newNotification.message = notif.message
+        newNotification.type = notif.type
+        newNotification.read = notif.read
+        await newNotification.save()
     }
 
     async createNotifHandler(note: TNoteDocument, notif: TNewNotif): Promise<void> {

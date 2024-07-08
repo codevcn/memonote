@@ -25,9 +25,8 @@
                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications">
                 <div class="icon-wrapper">
                     <i class="bi bi-bell-fill"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        <span class="count">0</span>
-                        <span class="visually-hidden">Unread Messages</span>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
+                        0
                     </span>
                 </div>
             </div>
@@ -47,25 +46,20 @@
                     </div>
 
                     <div class="tabs">
-                        <button class="tab-btn all active" data-mmn-tab-value="all">
+                        <button class="tab-btn active" data-mmn-tab-value="all">
                             <span class="label">All</span>
-                            <span class="count">3</span>
+                            <span class="count">0</span>
                         </button>
-                        <button class="tab-btn unread" data-mmn-tab-value="unread">
+                        <button class="tab-btn" data-mmn-tab-value="unread">
                             <span class="label">Unread</span>
-                            <span class="count">2</span>
+                            <span class="count">0</span>
                         </button>
                     </div>
 
-                    <div class="notifs all destination active">
-                        <div class="error-message">
-                            Can't get notifications, internal server error 500.
-                        </div>
-                    </div>
-
-                    <div class="notifs unread destination">
-                        <div class="error-message">
-                            Can't get notifications, internal server error 500.
+                    <div class="notifs destination">
+                        <div class="empty-message">
+                            <span>You have no notification.</span>
+                            <span>¯\_(ツ)_/¯</span>
                         </div>
                     </div>
                 </div>

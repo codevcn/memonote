@@ -12,16 +12,19 @@ const setPasswordOfNoteAPI = (
 ): Promise<TResBodySuccess> =>
     axiosClient.post('/note/set-password/' + noteUniqueName + '?myVar=234', { password, logoutAll })
 
-const removePasswordOfNoteAPI = (noteUniqueName: string): Promise<TAxiosRes<TResBodySuccess>> =>
+const removePasswordOfNoteAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
     axiosClient.delete('/note/remove-password/' + noteUniqueName)
 
 // auth
-const logoutAPI = (noteUniqueName: string): Promise<TAxiosRes<TResBodySuccess>> =>
+const logoutAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
     axiosClient.post('/auth/logout/' + noteUniqueName)
 
-const signInAPI = (password: string, noteUniqueName: string): Promise<TAxiosRes<TResBodySuccess>> =>
+const signInAPI = (
+    password: string,
+    noteUniqueName: string,
+): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
 
 // notification
-const getNotificationsAPI = (noteId: string): Promise<TAxiosRes<TNotif[]>> =>
+const getNotificationsAPI = (noteId: string): Promise<TAxiosHTTPRes<TNotif[]>> =>
     axiosClient.get('/notification/' + noteId)
