@@ -107,7 +107,7 @@ bold - bold
     font-weight: 300;
 }
 
-@mixin scrollbar-styling {
+@mixin regular-scrollbar-styling {
     &::-webkit-scrollbar {
         background-color: transparent;
     }
@@ -459,14 +459,15 @@ h6 {
                 font-weight: bold;
             }
 
-            .mark-all-read-btn {
+            .details-btn {
+                display: block;
+                transition: transform 0.2s;
                 background-color: transparent;
                 padding: 0;
-                text-decoration: underline;
-                font-size: 0.9rem;
+                cursor: pointer;
 
                 &:hover {
-                    text-decoration: none;
+                    transform: scale(1.2);
                 }
             }
         }
@@ -529,100 +530,127 @@ h6 {
             }
         }
 
-        .notifs {
-            $unload-content-spacing-top: 30px;
-
-            display: flex;
-            flex-direction: column;
+        .notifs-scroller {
             height: calc($notifs-board-height - 90px);
-            overflow-y: auto;
-            @include scrollbar-styling;
+            @include regular-scrollbar-styling;
+            overflow-y: scroll;
 
-            .spinner {
-                margin: 0 auto;
-                margin-top: $unload-content-spacing-top;
-            }
+            .notifs {
+                $unload-content-spacing-top: 30px;
 
-            .empty-message,
-            .error-message {
-                font-size: 1rem;
-                width: 100%;
-                padding: 0 50px;
-                font-weight: bold;
-                text-align: center;
-                margin-top: $unload-content-spacing-top;
-
-                i {
-                    color: inherit;
-                }
-            }
-
-            .empty-message {
                 display: flex;
                 flex-direction: column;
-                row-gap: 5px;
-            }
 
-            .error-message {
-                color: colors.$mmn-regular-red-cl;
-            }
+                .spinner {
+                    margin: 0 auto;
+                    margin-top: $unload-content-spacing-top;
+                }
 
-            .notif {
-                width: 100%;
-                padding: 0 35px;
-                background-color: colors.$mmn-regular-bgcl;
-                cursor: pointer;
+                .empty-message,
+                .error-message {
+                    font-size: 1rem;
+                    width: 100%;
+                    padding: 0 50px;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-top: $unload-content-spacing-top;
 
-                &:not(:nth-of-type(1)) {
-                    .notif-content {
-                        border-top: 1px colors.$mmn-regular-lightgray-cl solid;
+                    i {
+                        color: inherit;
                     }
                 }
 
-                &.unread {
-                    background-color: colors.$mmn-unread-notif-bgcl;
+                .empty-message {
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 5px;
                 }
 
-                .notif-content {
-                    padding: 10px 0 15px;
-
-                    .title {
-                        font-size: 0.9rem;
-                        width: 100%;
-                        font-weight: 500;
-                    }
-
-                    .time-ago {
-                        font-size: 0.85rem;
-                        color: colors.$mmn-regular-gray-cl;
-                    }
-
-                    .notif-type {
-                        background-color: colors.$mmn-regular-black-cl;
-                        color: colors.$mmn-regular-white-cl;
-                        padding: 0 5px;
-                        border-radius: 5px;
-                        font-size: 0.85rem;
-                    }
+                .error-message {
+                    color: colors.$mmn-regular-red-cl;
                 }
-            }
 
-            &:hover {
                 .notif {
-                    opacity: 0.5;
+                    width: 100%;
+                    padding: 0 35px;
+                    background-color: colors.$mmn-regular-bgcl;
+                    cursor: pointer;
+
+                    &:not(:nth-of-type(1)) {
+                        .notif-content {
+                            border-top: 1px colors.$mmn-regular-lightgray-cl solid;
+                        }
+                    }
+
+                    &.is-new {
+                        background-color: colors.$mmn-is-new-notif-bgcl;
+                    }
+
+                    .notif-content {
+                        padding: 10px 0 15px;
+
+                        .title {
+                            font-size: 0.9rem;
+                            width: 100%;
+                            font-weight: 500;
+                        }
+
+                        .time-ago {
+                            font-size: 0.85rem;
+                            color: colors.$mmn-regular-gray-cl;
+                        }
+
+                        .notif-type {
+                            background-color: colors.$mmn-regular-black-cl;
+                            color: colors.$mmn-regular-white-cl;
+                            padding: 0 5px;
+                            border-radius: 5px;
+                            font-size: 0.85rem;
+                        }
+                    }
                 }
-            }
 
-            .notif {
                 &:hover {
-                    opacity: 1;
+                    .notif {
+                        opacity: 0.5;
+                    }
+                }
 
-                    .title {
-                        font-weight: bold;
+                .notif {
+                    &:hover {
+                        opacity: 1;
+
+                        .title {
+                            font-weight: bold;
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+#notification-scrolling-sentinel {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 3px;
+
+    .spinner {
+        height: 20px;
+        width: 20px;
+    }
+
+    i {
+        color: inherit;
+    }
+
+    &.error {
+        color: colors.$mmn-regular-red-cl;
+    }
+    &.info {
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: colors.$mmn-regular-gray-cl;
     }
 }
 

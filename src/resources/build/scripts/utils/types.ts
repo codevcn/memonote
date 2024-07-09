@@ -46,9 +46,12 @@ type TFormCheckValues = null | 'on'
 type TNotif = {
     title: string
     message: string
-    read: boolean
     type: ENotificationTypes
     createdAt: string
 }
 
-type TNotifCategories = 'all' | 'unread'
+type TNotifData = TNotif & {
+    isNew: boolean
+}
+
+type TNotifCategories = 'all' | 'is-new'

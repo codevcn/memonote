@@ -19,6 +19,8 @@
 
         <a href="/menu/about" class="menu-item">About Us</a>
 
+        <a href="/menu/faq" class="menu-item">FAQ</a>
+
         <% if (verified) { %>
         <div class="menu-item notification">
             <div class="notification-btn" onclick="NotificationsController.showNotificationsBoard(true)"
@@ -42,7 +44,10 @@
 
                     <div class="title-box">
                         <h2 class="title">Notifications</h2>
-                        <button class="mark-all-read-btn">Mark all as read</button>
+                        <span class="details-btn" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="This section shows up your activities such as changing password, removing pasword, and more... Click for more details.">
+                            <i class="bi bi-question-circle-fill"></i>
+                        </span>
                     </div>
 
                     <div class="tabs">
@@ -50,16 +55,23 @@
                             <span class="label">All</span>
                             <span class="count">0</span>
                         </button>
-                        <button class="tab-btn" data-mmn-tab-value="unread">
-                            <span class="label">Unread</span>
+                        <button class="tab-btn" data-mmn-tab-value="is-new">
+                            <span class="label">New</span>
                             <span class="count">0</span>
                         </button>
                     </div>
 
-                    <div class="notifs destination">
-                        <div class="empty-message">
-                            <span>You have no notification.</span>
-                            <span>¯\_(ツ)_/¯</span>
+                    <div class="notifs-scroller">
+                        <div class="notifs destination">
+                            <div class="empty-message">
+                                <span>This note has no notification.</span>
+                                <span>¯\_(ツ)_/¯</span>
+                            </div>
+                        </div>
+                        <div id="notification-scrolling-sentinel">
+                            <div class="spinner-border spinner" role="status">
+                                <span class="sr-only"></span>
+                            </div>
                         </div>
                     </div>
                 </div>

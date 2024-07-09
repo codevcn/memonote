@@ -4,13 +4,13 @@ const axiosClient = axios.create({
     baseURL: ServerAPIURL,
 })
 // note
-const setPasswordOfNoteAPI = (password, logoutAll, noteUniqueName) =>
-    axiosClient.post('/note/set-password/' + noteUniqueName + '?myVar=234', { password, logoutAll })
-const removePasswordOfNoteAPI = (noteUniqueName) =>
+const setPasswordForNoteAPI = (password, logoutAll, noteUniqueName) =>
+    axiosClient.post('/note/set-password/' + noteUniqueName, { password, logoutAll })
+const removePasswordForNoteAPI = (noteUniqueName) =>
     axiosClient.delete('/note/remove-password/' + noteUniqueName)
 // auth
 const logoutAPI = (noteUniqueName) => axiosClient.post('/auth/logout/' + noteUniqueName)
 const signInAPI = (password, noteUniqueName) =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
 // notification
-const getNotificationsAPI = (noteId) => axiosClient.get('/notification/' + noteId)
+const getNotificationsAPI = (noteId, page) => axiosClient.get(`/notification?n=${noteId}&p=${page}`)

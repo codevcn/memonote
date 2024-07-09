@@ -225,7 +225,7 @@ const setPasswordForNote = (password, logoutAll) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const noteUniqueName = getNoteUniqueNameFromURL()
         if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-            yield setPasswordOfNoteAPI(password, logoutAll, noteUniqueName)
+            yield setPasswordForNoteAPI(password, logoutAll, noteUniqueName)
         }
     })
 const setUIOfSetPasswordForm = (type) => {
@@ -297,7 +297,7 @@ const saveSettingsSetPasswordForNote = (e) =>
 const removePasswordOfNote = (noteUniqueName) =>
     __awaiter(void 0, void 0, void 0, function* () {
         if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-            yield removePasswordOfNoteAPI(noteUniqueName)
+            yield removePasswordForNoteAPI(noteUniqueName)
         }
     })
 const saveSettingsRemovePasswordOfNote = (e) =>
@@ -439,17 +439,20 @@ const fetchNotificationsHandler = () =>
         let apiSuccess = false
         let apiResult = []
         try {
-            const { data } = yield getNotificationsAPI(serverData.noteId)
+            const { data } = yield getNotificationsAPI(pageData.noteId, 1)
             apiResult = data
             apiSuccess = true
         } catch (error) {
             NotificationsController.setNotifsMessage(
                 new BaseCustomError("Can't get notifications, internal server error 500."),
             )
-            LayoutController.toast('error', "Can't get notifications, internal server error 500.")
         }
         if (apiSuccess && apiResult && apiResult.length > 0) {
-            NotificationsController.setNotifs('all', apiResult)
+            NotificationsController.setNotifs(
+                'all',
+                apiResult.map((notif) => Object.assign(Object.assign({}, notif), { isNew: false })),
+            )
+            NotificationsController.setupInfiniteScrolling() // setup "infinite scrolling" for notification
         } else {
             notifsList.innerHTML = htmlBefore
         }

@@ -1,4 +1,35 @@
 'use strict'
+var __awaiter =
+    (this && this.__awaiter) ||
+    function (thisArg, _arguments, P, generator) {
+        function adopt(value) {
+            return value instanceof P
+                ? value
+                : new P(function (resolve) {
+                      resolve(value)
+                  })
+        }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) {
+                try {
+                    step(generator.next(value))
+                } catch (e) {
+                    reject(e)
+                }
+            }
+            function rejected(value) {
+                try {
+                    step(generator['throw'](value))
+                } catch (e) {
+                    reject(e)
+                }
+            }
+            function step(result) {
+                result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected)
+            }
+            step((generator = generator.apply(thisArg, _arguments || [])).next())
+        })
+    }
 const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -123,20 +154,12 @@ LayoutController.toasterTimer = null
 class NotificationsController {
     static setNotifsData(notifsData) {
         this.notifsData = notifsData
-        this.setCounter('all', notifsData.length)
-        this.setCounter(
-            'unread',
-            notifsData.reduce((pre, notif) => (!notif.read ? pre + 1 : pre), 0),
-        )
     }
-    static addNotifData(notif) {
-        if (!notificationBtn) return
-        this.notifsData.push(notif)
-        this.setCounter(
-            'unread',
-            this.notifsData.reduce((pre, notif) => (!notif.read ? pre + 1 : pre), 0) * 1,
-        )
-        // ring notification
+    static addNotifsData(notifs) {
+        this.notifsData.unshift(...notifs)
+    }
+    static ringNotification() {
+        if (!notifsList || !notificationBtn) return
         if (this.ringNotifTimer) {
             clearTimeout(this.ringNotifTimer)
         }
@@ -162,7 +185,7 @@ class NotificationsController {
         const countInString = `${count}`
         notifsTabs.querySelector(`.tab-btn[data-mmn-tab-value='${category}'] .count`).textContent =
             countInString
-        if (category === 'unread') {
+        if (category === 'is-new') {
             const badge = notificationBtn.querySelector('.icon-wrapper .badge')
             if (count > 0) {
                 badge.classList.add('active')
@@ -172,27 +195,38 @@ class NotificationsController {
             badge.textContent = countInString
         }
     }
-    static addNotif(notif) {
-        if (!notifsList) return
+    static addNotifs(notifs) {
+        if (!notifsList || !notificationBtn) return
         if (this.notifsData.length === 0) {
             notifsList.innerHTML = ''
         }
-        this.addNotifData(notif)
-        notifsList.prepend(Materials.createElementNotif(notif))
+        this.addNotifsData(notifs)
+        for (const notif of notifs) {
+            notifsList.prepend(Materials.createElementNotif(notif))
+        }
+        this.setCounter('all', this.notifsData.length)
+        this.setCounter(
+            'is-new',
+            this.notifsData.reduce(
+                (preValue, notifData) => (notifData.isNew ? preValue + 1 : preValue),
+                0,
+            ),
+        )
+        this.ringNotification()
     }
     static setNotifs(category, notifsPayload) {
-        if (notificationsBoard && notifsList && notifsPayload && notifsPayload.length > 0) {
-            notifsList.innerHTML = ''
-            this.setNotifsData(notifsPayload)
-            let notifs = notifsPayload
-            switch (category) {
-                case 'unread':
-                    notifs = notifs.filter(({ read }) => !read)
-                    break
-            }
-            for (const notif of notifs) {
-                notifsList.appendChild(Materials.createElementNotif(notif))
-            }
+        if (!notificationsBoard || !notifsList) return
+        notifsList.innerHTML = ''
+        this.setNotifsData(notifsPayload)
+        this.setCounter('all', notifsPayload.length)
+        let notifs = notifsPayload
+        switch (category) {
+            case 'is-new':
+                notifs = notifs.filter(({ isNew }) => isNew)
+                break
+        }
+        for (const notif of notifs) {
+            notifsList.appendChild(Materials.createElementNotif(notif))
         }
     }
     static setNotifsMessage(error) {
@@ -206,13 +240,88 @@ class NotificationsController {
             notificationsBoard.classList.add('active')
         }
     }
+    static setScrollingSentinel(data) {
+        const notifScrollingSentinel = document.getElementById('notification-scrolling-sentinel')
+        if (data.error) {
+            notifScrollingSentinel.classList.add('error')
+            notifScrollingSentinel.innerHTML = `
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>${data.message}</span>`
+        } else if (data.message) {
+            notifScrollingSentinel.classList.add('info')
+            notifScrollingSentinel.innerHTML = `<span>${data}</span>`
+        } else if (data.show) {
+            notifScrollingSentinel.classList.remove('active')
+            if (data.show === 'on') {
+                notifScrollingSentinel.classList.add('active')
+            }
+        }
+    }
+    static loadMoreNotifs() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!notifsList) return
+            let apiResult = []
+            let apiSuccess = false
+            this.setScrollingSentinel({ show: 'on' })
+            try {
+                const { data } = yield getNotificationsAPI(pageData.noteId, this.page + 1)
+                apiResult = data
+                apiSuccess = true
+            } catch (error) {
+                LayoutController.toast('error', 'Cannot load more notifications')
+                this.setScrollingSentinel({ error: error })
+            }
+            if (apiSuccess) {
+                if (apiResult && apiResult.length > 0) {
+                    const notifs = apiResult.map((notif) =>
+                        Object.assign(Object.assign({}, notif), { isNew: false }),
+                    )
+                    this.addNotifsData(notifs)
+                    for (const notif of notifs) {
+                        notifsList.appendChild(Materials.createElementNotif(notif))
+                    }
+                    this.setCounter('all', this.notifsData.length)
+                    this.page++
+                    this.setScrollingSentinel({ show: 'off' })
+                } else {
+                    this.setScrollingSentinel({ message: 'No more notifications.' })
+                    throw new BaseCustomError('Stop infinite scrolling')
+                }
+            }
+        })
+    }
+    static setupInfiniteScrolling() {
+        if (!notificationsBoard) return
+        const notifScrollingSentinel = document.getElementById('notification-scrolling-sentinel')
+        const observer = new IntersectionObserver(
+            (entries) =>
+                __awaiter(this, void 0, void 0, function* () {
+                    if (entries[0].isIntersecting) {
+                        observer.unobserve(notifScrollingSentinel) // pause to avoid calling API too many times
+                        try {
+                            yield this.loadMoreNotifs()
+                        } catch (error) {
+                            return
+                        }
+                        observer.observe(notifScrollingSentinel) // keep observing
+                    }
+                }),
+            {
+                root: notificationsBoard.querySelector('.notifs-scroller'),
+                rootMargin: '0px',
+                threshold: 1.0,
+            },
+        )
+        observer.observe(notifScrollingSentinel) // start observing
+    }
 }
 NotificationsController.notifsData = []
 NotificationsController.ringNotifFlag = true
 NotificationsController.ringNotifTimer = null
+NotificationsController.page = 1
 const initLayout = () => {
     if (!notificationsBoard) return
-    // setup "notifications" section
+    // setup "swicth notification category" section
     const tabs = notificationsBoard.querySelectorAll('.notifs-content .tabs .tab-btn')
     for (const tab of tabs) {
         tab.addEventListener('click', function (e) {

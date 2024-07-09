@@ -72,11 +72,23 @@ export class NoteService {
         return await bcrypt.hash(rawPassword, EAuthEncryption.HASH_PASSWORD_NUMBER_OF_ROUNDS)
     }
 
+    async verifyPassword(hashedPassword: string, rawPassword: string): Promise<boolean> {
+        return await bcrypt.compare(rawPassword, hashedPassword)
+    }
+
     async setPasswordForNote(
         payload: AddPasswordForNotePayloadDTO,
         noteUniqueName: string,
     ): Promise<void> {
         const { password } = payload
+        const note = await this.findNote(noteUniqueName)
+        if (!note) throw new BaseCustomException(ENoteMessages.NOTE_NOT_FOUND)
+        if (note.password) {
+            const isOverlap = await this.verifyPassword(note.password, password)
+            if (isOverlap) {
+                throw new BaseCustomException(ENoteMessages.OVERLAP_PASSWORD)
+            }
+        }
         const hashedPassword = await this.hashPassword(password)
         await this.noteModel.updateOne(
             { uniqueName: noteUniqueName },
@@ -105,7 +117,6 @@ export class NoteService {
 
         await this.notificationService.createNotifHandler(note, {
             message: 'Password has been changed by user',
-            read: false,
             type: ENotificationTypes.SET_PASSWORD,
             createdAt: new Date(),
         })

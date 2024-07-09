@@ -143,5 +143,5 @@ notificationSocket.on(TInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
 
 // listeners
 notificationSocket.on(ENotificationEvents.NOTIFY, async (notif: TNotif) => {
-    NotificationsController.addNotif(notif)
+    NotificationsController.addNotifs([{ ...notif, isNew: true }])
 })

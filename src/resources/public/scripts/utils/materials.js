@@ -12,14 +12,14 @@ class Materials {
                 <span class="sr-only"></span>
             </div>`
     }
-    static createElementNotif(notifPayload) {
+    static createElementNotif(notifData) {
         const notif = document.createElement('div')
         notif.classList.add('notif')
-        if (!notifPayload.read) {
-            notif.classList.add('unread')
+        if (notifData.isNew) {
+            notif.classList.add('is-new')
         }
         let notifType = 'Remind'
-        switch (notifPayload.type) {
+        switch (notifData.type) {
             case ENotificationTypes.SET_PASSWORD:
                 notifType = 'Set password'
                 break
@@ -29,10 +29,10 @@ class Materials {
         }
         notif.innerHTML = `
             <div class="notif-content">
-                <p class="title">${notifPayload.message}</p>
+                <p class="title">${notifData.message}</p>
                 <div class="d-flex column-gap-2 mt-1">
                     <span class="notif-type">${notifType}</span>
-                    <span class="time-ago">${calculateTimeDifference(notifPayload.createdAt)} ago</span>
+                    <span class="time-ago">${calculateTimeDifference(notifData.createdAt)} ago</span>
                 </div>
             </div>`
         return notif

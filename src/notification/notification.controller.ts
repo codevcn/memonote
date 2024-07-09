@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import type { INotificationController } from './interfaces'
 import { NotificationService } from './notification.service'
 import { APIRoutes } from '@/utils/routes'
@@ -8,10 +8,10 @@ import { GetNotificationsDTO } from './DTOs'
 export class NotificationController implements INotificationController {
     constructor(private notificationSerice: NotificationService) {}
 
-    @Get('/:noteId')
-    async getNotifications(@Param() params: GetNotificationsDTO) {
-        const { noteId } = params
-        const notifications = await this.notificationSerice.findByNoteId(noteId)
+    @Get()
+    async getNotifications(@Query() query: GetNotificationsDTO) {
+        const { n, p } = query
+        const notifications = await this.notificationSerice.findByNoteId(n, p)
         return notifications
     }
 }

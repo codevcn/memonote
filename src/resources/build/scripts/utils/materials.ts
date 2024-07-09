@@ -14,14 +14,14 @@ class Materials {
             </div>`
     }
 
-    static createElementNotif(notifPayload: TNotif): HTMLElement {
+    static createElementNotif(notifData: TNotifData): HTMLElement {
         const notif = document.createElement('div')
         notif.classList.add('notif')
-        if (!notifPayload.read) {
-            notif.classList.add('unread')
+        if (notifData.isNew) {
+            notif.classList.add('is-new')
         }
         let notifType: string = 'Remind'
-        switch (notifPayload.type) {
+        switch (notifData.type) {
             case ENotificationTypes.SET_PASSWORD:
                 notifType = 'Set password'
                 break
@@ -31,11 +31,11 @@ class Materials {
         }
         notif.innerHTML = `
             <div class="notif-content">
-                <p class="title">${notifPayload.message}</p>
+                <p class="title">${notifData.message}</p>
                 <div class="d-flex column-gap-2 mt-1">
                     <span class="notif-type">${notifType}</span>
                     <span class="time-ago">${calculateTimeDifference(
-                        notifPayload.createdAt,
+                        notifData.createdAt,
                     )} ago</span>
                 </div>
             </div>`

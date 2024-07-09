@@ -240,7 +240,7 @@ const validatePassword = (password: string): boolean => {
 const setPasswordForNote = async (password: string, logoutAll: boolean): Promise<void> => {
     const noteUniqueName = getNoteUniqueNameFromURL()
     if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await setPasswordOfNoteAPI(password, logoutAll, noteUniqueName)
+        await setPasswordForNoteAPI(password, logoutAll, noteUniqueName)
     }
 }
 
@@ -329,7 +329,7 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
 
 const removePasswordOfNote = async (noteUniqueName: string): Promise<void> => {
     if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await removePasswordOfNoteAPI(noteUniqueName)
+        await removePasswordForNoteAPI(noteUniqueName)
     }
 }
 
@@ -493,17 +493,20 @@ const fetchNotificationsHandler = async (): Promise<void> => {
     let apiSuccess: boolean = false
     let apiResult: TNotif[] = []
     try {
-        const { data } = await getNotificationsAPI(serverData.noteId)
+        const { data } = await getNotificationsAPI(pageData.noteId, 1)
         apiResult = data
         apiSuccess = true
     } catch (error) {
         NotificationsController.setNotifsMessage(
             new BaseCustomError("Can't get notifications, internal server error 500."),
         )
-        LayoutController.toast('error', "Can't get notifications, internal server error 500.")
     }
     if (apiSuccess && apiResult && apiResult.length > 0) {
-        NotificationsController.setNotifs('all', apiResult)
+        NotificationsController.setNotifs(
+            'all',
+            apiResult.map((notif) => ({ ...notif, isNew: false })),
+        )
+        NotificationsController.setupInfiniteScrolling() // setup "infinite scrolling" for notification
     } else {
         notifsList.innerHTML = htmlBefore
     }

@@ -9,6 +9,7 @@ import { EEventEmitterEvents } from './gateway/enums'
 import type { TNewNotif } from './types'
 import { EDBMessages } from '@/utils/messages'
 import { type TNoteDocument } from '@/note/note.model'
+import { EPagination } from './enums'
 
 @Injectable()
 export class NotificationService {
@@ -17,13 +18,15 @@ export class NotificationService {
         private eventEmitter: EventEmitter2,
     ) {}
 
-    async findByNoteId(noteId: string): Promise<Notification[]> {
+    async findByNoteId(noteId: string, page: number): Promise<Notification[]> {
         if (!Types.ObjectId.isValid(noteId)) {
             throw new BaseCustomException(EDBMessages.INVALID_OBJECT_ID)
         }
         const notifications = await this.notificationModel
             .find({ note: new Types.ObjectId(noteId) })
-            .sort({ createdAt: 'desc', read: 'desc' })
+            .sort({ createdAt: 'desc' })
+            .skip((page - 1) * EPagination.MAX_NOTIFS_PER_PAGE)
+            .limit(EPagination.MAX_NOTIFS_PER_PAGE)
             .lean()
         if (notifications && notifications.length > 0) {
             return notifications
@@ -36,7 +39,6 @@ export class NotificationService {
         newNotification.note = new Types.ObjectId(noteId)
         newNotification.message = notif.message
         newNotification.type = notif.type
-        newNotification.read = notif.read
         await newNotification.save()
     }
 

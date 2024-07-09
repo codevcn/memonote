@@ -20,9 +20,6 @@ export class Notification {
     })
     type: ENotificationTypes
 
-    @Prop({ required: true, default: false })
-    read: boolean
-
     @Prop({ default: Date.now, required: true })
     createdAt?: Date
 }

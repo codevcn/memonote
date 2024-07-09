@@ -4,7 +4,6 @@ import { EAuthMessages } from './messages'
 import { JWTService } from './jwt.service'
 import { NoteService } from '@/note/note.service'
 import type { TAuthSocketConnectionReturn, TJWTPayload } from './types'
-import * as bcrypt from 'bcrypt'
 import { UserSessions } from '@/note/gateway/sessions'
 import { SignInPayloadDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
@@ -51,10 +50,6 @@ export class AuthService {
         }
     }
 
-    async verifyPassword(hashedPassword: string, rawPassword: string): Promise<boolean> {
-        return await bcrypt.compare(rawPassword, hashedPassword)
-    }
-
     async signIn(
         noteUniqueName: string,
         signInPayload: SignInPayloadDTO,
@@ -68,7 +63,7 @@ export class AuthService {
         if (!note.password) {
             throw new BadRequestException(EAuthMessages.FAIL_TO_VERIFY_PASSWORD)
         }
-        const isMatch = await this.verifyPassword(note.password, password)
+        const isMatch = await this.noteService.verifyPassword(note.password, password)
         if (!isMatch) {
             throw new UnauthorizedException(EAuthMessages.FAIL_TO_VERIFY_PASSWORD)
         }
