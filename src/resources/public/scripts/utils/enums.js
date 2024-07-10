@@ -1,4 +1,8 @@
 'use strict'
+var ENotifPagination
+;(function (ENotifPagination) {
+    ENotifPagination[(ENotifPagination['MAX_NOTIFS_PER_PAGE'] = 7)] = 'MAX_NOTIFS_PER_PAGE'
+})(ENotifPagination || (ENotifPagination = {}))
 var ENotificationTypes
 ;(function (ENotificationTypes) {
     ENotificationTypes['SET_PASSWORD'] = 'password.set'

@@ -379,7 +379,7 @@ h6 {
 }
 #notifs-board .notifs-content .notifs-scroller {
     height: calc(100vh - 60px - 5px - 30px - 90px);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 #notifs-board .notifs-content .notifs-scroller::-webkit-scrollbar {
     background-color: transparent;
@@ -467,26 +467,46 @@ h6 {
 #notifs-board .notifs-content .notifs-scroller .notifs .notif:hover .title {
     font-weight: bold;
 }
-
-#notification-scrolling-sentinel {
-    display: flex;
+#notifs-board .notifs-content .notifs-scroller .load-more-btn {
+    display: none;
     justify-content: center;
-    margin: 10px 0 3px;
+    font-size: 0.9rem;
+    margin: 10px 0 5px;
+    transition: transform 0.2s;
+    color: #e68500;
+    cursor: pointer;
 }
-#notification-scrolling-sentinel .spinner {
+#notifs-board .notifs-content .notifs-scroller .load-more-btn .spinner {
     height: 20px;
     width: 20px;
 }
-#notification-scrolling-sentinel i {
-    color: inherit;
+#notifs-board .notifs-content .notifs-scroller .load-more-btn:hover {
+    text-decoration: underline;
 }
-#notification-scrolling-sentinel.error {
+#notifs-board .notifs-content .notifs-scroller .load-more-btn:active {
+    transform: scale(0.9);
+}
+#notifs-board .notifs-content .notifs-scroller .load-more-btn.error {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
     color: #ff2424;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: auto;
+    pointer-events: none;
 }
-#notification-scrolling-sentinel.info {
+#notifs-board .notifs-content .notifs-scroller .load-more-btn.info {
     font-size: 0.8rem;
     font-weight: bold;
     color: #909090;
+    text-decoration: none;
+    cursor: auto;
+    pointer-events: none;
+}
+#notifs-board .notifs-content .notifs-scroller .load-more-btn.active {
+    display: flex;
 }
 
 #app-toaster {

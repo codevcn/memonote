@@ -157,8 +157,6 @@ notificationSocket.on(TInitSocketEvents.CONNECT_ERROR, (err) =>
 // listeners
 notificationSocket.on(ENotificationEvents.NOTIFY, (notif) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        NotificationsController.addNotifs([
-            Object.assign(Object.assign({}, notif), { isNew: true }),
-        ])
+        NotificationsController.addNotif(Object.assign(Object.assign({}, notif), { isNew: true }))
     }),
 )

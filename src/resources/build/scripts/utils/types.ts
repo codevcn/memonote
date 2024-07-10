@@ -49,9 +49,3 @@ type TNotif = {
     type: ENotificationTypes
     createdAt: string
 }
-
-type TNotifData = TNotif & {
-    isNew: boolean
-}
-
-type TNotifCategories = 'all' | 'is-new'

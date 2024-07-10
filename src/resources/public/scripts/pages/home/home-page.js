@@ -431,32 +431,6 @@ const saveSettingsUserInterface = (e) =>
         }
         setStatusOfSettingsForm(form, 'saved')
     })
-const fetchNotificationsHandler = () =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (!notificationsBoard || !notifsList) return
-        const htmlBefore = notifsList.innerHTML
-        notifsList.innerHTML = Materials.createHTMLLoading('border')
-        let apiSuccess = false
-        let apiResult = []
-        try {
-            const { data } = yield getNotificationsAPI(pageData.noteId, 1)
-            apiResult = data
-            apiSuccess = true
-        } catch (error) {
-            NotificationsController.setNotifsMessage(
-                new BaseCustomError("Can't get notifications, internal server error 500."),
-            )
-        }
-        if (apiSuccess && apiResult && apiResult.length > 0) {
-            NotificationsController.setNotifs(
-                'all',
-                apiResult.map((notif) => Object.assign(Object.assign({}, notif), { isNew: false })),
-            )
-            NotificationsController.setupInfiniteScrolling() // setup "infinite scrolling" for notification
-        } else {
-            notifsList.innerHTML = htmlBefore
-        }
-    })
 const initPage = () => {
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
@@ -513,6 +487,5 @@ const initPage = () => {
             quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
-    fetchNotificationsHandler()
 }
 initPage()

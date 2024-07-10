@@ -11,7 +11,6 @@ export class NotificationController implements INotificationController {
     @Get()
     async getNotifications(@Query() query: GetNotificationsDTO) {
         const { n, p } = query
-        const notifications = await this.notificationSerice.findByNoteId(n, p)
-        return notifications
+        return await this.notificationSerice.findByNoteId(n, p)
     }
 }

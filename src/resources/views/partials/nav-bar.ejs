@@ -62,17 +62,15 @@
                     </div>
 
                     <div class="notifs-scroller">
-                        <div class="notifs destination">
+                        <div class="notifs">
                             <div class="empty-message">
                                 <span>This note has no notification.</span>
                                 <span>¯\_(ツ)_/¯</span>
                             </div>
                         </div>
-                        <div id="notification-scrolling-sentinel">
-                            <div class="spinner-border spinner" role="status">
-                                <span class="sr-only"></span>
-                            </div>
-                        </div>
+                        <span class="load-more-btn" onclick="NotificationsController.loadMoreNotifs()">
+                            More Notifications
+                        </span>
                     </div>
                 </div>
             </section>

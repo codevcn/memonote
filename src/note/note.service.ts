@@ -106,6 +106,7 @@ export class NoteService {
             throw new BaseCustomException(ENoteMessages.NOTE_NOT_FOUND)
         }
         await this.setPasswordForNote(payload, noteUniqueName)
+        const setPasswordDate = new Date()
         const jwt = await this.jwtService.createJWT({ noteUniqueName })
         this.jwtService.sendJWTToClient(res, { token: jwt })
 
@@ -115,15 +116,19 @@ export class NoteService {
             UserSessions.logoutUserSessions(noteUniqueName, jwt)
         }
 
-        await this.notificationService.createNotifHandler(note, {
+        await this.notificationService.createNotifHandler(note.id, note.uniqueName, {
             message: 'Password has been changed by user',
             type: ENotificationTypes.SET_PASSWORD,
-            createdAt: new Date(),
+            createdAt: setPasswordDate,
         })
     }
 
     async removePasswordForNote(noteUniqueName: string): Promise<void> {
-        await this.noteModel.updateOne(
+        const note = await this.noteModel.findOne({ uniqueName: noteUniqueName })
+        if (!note) {
+            throw new BaseCustomException(ENoteMessages.NOTE_NOT_FOUND)
+        }
+        await this.noteModel.findOneAndUpdate(
             { uniqueName: noteUniqueName },
             {
                 $set: {
@@ -131,5 +136,11 @@ export class NoteService {
                 },
             },
         )
+        const removePasswordDate = new Date()
+        await this.notificationService.createNotifHandler(note.id, note.uniqueName, {
+            message: 'Password has been removed by user',
+            type: ENotificationTypes.REMOVE_PASSWORD,
+            createdAt: removePasswordDate,
+        })
     }
 }

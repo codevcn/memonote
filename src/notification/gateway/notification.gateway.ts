@@ -13,8 +13,8 @@ import { AuthService } from '@/auth/auth.service'
 import { BaseCustomEvent } from '@/note/gateway/events'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EEventEmitterEvents, ENotificationEvents } from './enums'
-import type { TNewNotif } from '../types'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
+import type { TNotificationDocument } from '../notification.model'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.NOTIFICATION })
 @UsePipes(new ValidationPipe())
@@ -49,7 +49,7 @@ export class NotificationGateway
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
     @OnEvent(EEventEmitterEvents.TRIGGER_NOTIFY)
-    notify(event: BaseCustomEvent<TNewNotif>) {
+    notify(event: BaseCustomEvent<TNotificationDocument>) {
         const { payload, noteUniqueName } = event
         this.io.to(noteUniqueName).emit(ENotificationEvents.NOTIFY, payload)
     }

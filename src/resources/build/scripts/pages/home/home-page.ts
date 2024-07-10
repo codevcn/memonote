@@ -484,34 +484,6 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     setStatusOfSettingsForm(form, 'saved')
 }
 
-const fetchNotificationsHandler = async (): Promise<void> => {
-    if (!notificationsBoard || !notifsList) return
-
-    const htmlBefore = notifsList.innerHTML
-    notifsList.innerHTML = Materials.createHTMLLoading('border')
-
-    let apiSuccess: boolean = false
-    let apiResult: TNotif[] = []
-    try {
-        const { data } = await getNotificationsAPI(pageData.noteId, 1)
-        apiResult = data
-        apiSuccess = true
-    } catch (error) {
-        NotificationsController.setNotifsMessage(
-            new BaseCustomError("Can't get notifications, internal server error 500."),
-        )
-    }
-    if (apiSuccess && apiResult && apiResult.length > 0) {
-        NotificationsController.setNotifs(
-            'all',
-            apiResult.map((notif) => ({ ...notif, isNew: false })),
-        )
-        NotificationsController.setupInfiniteScrolling() // setup "infinite scrolling" for notification
-    } else {
-        notifsList.innerHTML = htmlBefore
-    }
-}
-
 const initPage = (): void => {
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
@@ -578,7 +550,5 @@ const initPage = (): void => {
             quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
-
-    fetchNotificationsHandler()
 }
 initPage()

@@ -1,4 +1,4 @@
-declare function dayjs(...args: any): any
+declare const dayjs: any
 declare const axios: any
 declare function io(...args: any): any
 declare const bootstrap: any

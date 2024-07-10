@@ -4,6 +4,11 @@ const axiosClient = axios.create({
     baseURL: ServerAPIURL,
 })
 
+type TGetNotifications = {
+    notifs: TNotif[]
+    totalNumber: number
+}
+
 // note
 const setPasswordForNoteAPI = (
     password: string,
@@ -28,5 +33,8 @@ const signInAPI = (
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
 
 // notification
-const getNotificationsAPI = (noteId: string, page: number): Promise<TAxiosHTTPRes<TNotif[]>> =>
+const getNotificationsAPI = (
+    noteId: string,
+    page: number,
+): Promise<TAxiosHTTPRes<TGetNotifications>> =>
     axiosClient.get(`/notification?n=${noteId}&p=${page}`)
