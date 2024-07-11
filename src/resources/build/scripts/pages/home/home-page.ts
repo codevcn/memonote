@@ -308,7 +308,7 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {
-                const err = APIErrorHandler.handleError(error)
+                const err = HTTPErrorHandler.handleError(error)
                 setMessageOfSetPassword(err.message, 'warning')
             }
         }
@@ -345,7 +345,7 @@ const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> =
         apiSuccess = true
     } catch (error) {
         if (error instanceof Error) {
-            const err = APIErrorHandler.handleError(error)
+            const err = HTTPErrorHandler.handleError(error)
             LayoutController.toast('error', err.message)
         }
     }
@@ -374,7 +374,7 @@ const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
         apiSuccess = true
     } catch (error) {
         if (error instanceof Error) {
-            const err = APIErrorHandler.handleError(error)
+            const err = HTTPErrorHandler.handleError(error)
             LayoutController.toast('error', err.message)
         }
     }
@@ -434,41 +434,7 @@ const saveSettingsChangeModes = async (e: SubmitEvent): Promise<void> => {
 
 type TNavigateFormTypes = 'change-modes' | 'password'
 
-const navigateSettings = (target: HTMLElement, type: TNavigateFormTypes): void => {
-    const navItems = noteSettingsBoard.querySelectorAll<HTMLElement>('.nav-item')
-    for (const navItem of navItems) {
-        navItem.classList.remove('active')
-    }
-    target.classList.add('active')
-    const forms = noteSettingsBoard.querySelectorAll<HTMLFormElement>('.forms')
-    for (const form of forms) {
-        if (form.classList.contains(type)) {
-            form.hidden = false
-        } else {
-            form.hidden = true
-        }
-    }
-}
-
 type TPasswordTabTypes = 'set-password' | 'remove-password'
-
-const switchTabPassword = (target: HTMLButtonElement, type: TPasswordTabTypes): void => {
-    const tabs = noteSettingsBoard.querySelectorAll<HTMLButtonElement>(
-        '.forms.password .tabs .tab-btn',
-    )
-    for (const tab of tabs) {
-        tab.classList.remove('active')
-    }
-    target.classList.add('active')
-    const forms = target.closest('.forms')!.querySelectorAll<HTMLFormElement>('.note-settings-form')
-    for (const form of forms) {
-        if (form.classList.contains(type)) {
-            form.hidden = false
-        } else {
-            form.hidden = true
-        }
-    }
-}
 
 const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
@@ -485,6 +451,12 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
 }
 
 const initPage = (): void => {
+    // setup switch tab settings
+    const navItems = noteSettingsBoard.querySelectorAll<HTMLElement>('.nav-item')
+    for (const navItem of navItems) {
+        navItem.classList.remove('active') // >>> continue here
+    }
+
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
     if (realtimeMode && realtimeMode === 'sync') {
@@ -513,6 +485,17 @@ const initPage = (): void => {
     for (const input of passwordFormInputs) {
         input.addEventListener('input', function (e) {
             setStatusOfSettingsForm(passwordForm, 'unsaved')
+        })
+    }
+    const passwordFormTabs = noteSettingsBoard.querySelectorAll<HTMLButtonElement>(
+        '.forms.password .nav-tabs-list .nav-tab',
+    )
+    for (const passwordFormTab of passwordFormTabs) {
+        passwordFormTab.addEventListener('click', function (e) {
+            LayoutController.tabNavigator(
+                passwordFormTab,
+                passwordFormTab.getAttribute('data-mmn-tab-value') as string,
+            )
         })
     }
 

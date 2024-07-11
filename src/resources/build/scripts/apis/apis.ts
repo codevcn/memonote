@@ -6,7 +6,7 @@ const axiosClient = axios.create({
 
 type TGetNotifications = {
     notifs: TNotif[]
-    totalNumber: number
+    isEnd: boolean
 }
 
 // note
@@ -35,6 +35,6 @@ const signInAPI = (
 // notification
 const getNotificationsAPI = (
     noteId: string,
-    page: number,
+    lastNotif?: TNotif,
 ): Promise<TAxiosHTTPRes<TGetNotifications>> =>
-    axiosClient.get(`/notification?n=${noteId}&p=${page}`)
+    axiosClient.post(`/notification?n=${noteId}`, { lastNotif: lastNotif || {} })

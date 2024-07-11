@@ -329,12 +329,12 @@ h6 {
 #notifs-board .notifs-content .title-box .details-btn:hover {
     transform: scale(1.2);
 }
-#notifs-board .notifs-content .tabs {
+#notifs-board .notifs-content .nav-tabs-list {
     display: flex;
     border-bottom: 2px rgba(211, 211, 211, 0.4) solid;
     padding: 0 35px;
 }
-#notifs-board .notifs-content .tabs .tab-btn {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab {
     display: flex;
     align-items: center;
     column-gap: 8px;
@@ -344,7 +344,7 @@ h6 {
     position: relative;
     opacity: 0.6;
 }
-#notifs-board .notifs-content .tabs .tab-btn .count {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab .count {
     padding: 0px 5px;
     font-size: 0.9rem;
     border-radius: 5px;
@@ -352,7 +352,7 @@ h6 {
     color: #333;
     font-weight: normal;
 }
-#notifs-board .notifs-content .tabs .tab-btn::after {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab::after {
     content: '';
     display: none;
     height: 2px;
@@ -362,22 +362,25 @@ h6 {
     top: 100%;
     background-color: #333;
 }
-#notifs-board .notifs-content .tabs .tab-btn:hover {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab:hover {
     background-color: rgba(211, 211, 211, 0.49);
     opacity: 1;
 }
-#notifs-board .notifs-content .tabs .tab-btn.active {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab.active {
     font-weight: bold;
     opacity: 1;
 }
-#notifs-board .notifs-content .tabs .tab-btn.active .count {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab.active .count {
     background-color: #333;
     color: #fff;
 }
-#notifs-board .notifs-content .tabs .tab-btn.active::after {
+#notifs-board .notifs-content .nav-tabs-list .nav-tab.active::after {
     display: block;
 }
 #notifs-board .notifs-content .notifs-scroller {
+    display: none;
+    flex-direction: column;
+    align-items: center;
     height: calc(100vh - 60px - 5px - 30px - 90px);
     overflow-y: auto;
 }
@@ -398,9 +401,13 @@ h6 {
 #notifs-board .notifs-content .notifs-scroller:hover::-webkit-scrollbar-thumb {
     background-color: #999999;
 }
+#notifs-board .notifs-content .notifs-scroller.active {
+    display: flex;
+}
 #notifs-board .notifs-content .notifs-scroller .notifs {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 #notifs-board .notifs-content .notifs-scroller .notifs .spinner {
     margin: 0 auto;
@@ -486,24 +493,19 @@ h6 {
 #notifs-board .notifs-content .notifs-scroller .load-more-btn:active {
     transform: scale(0.9);
 }
-#notifs-board .notifs-content .notifs-scroller .load-more-btn.error {
-    display: flex;
-    align-items: center;
-    column-gap: 5px;
-    color: #ff2424;
+#notifs-board .notifs-content .notifs-scroller .load-more-btn.error,
+#notifs-board .notifs-content .notifs-scroller .load-more-btn.info {
     font-size: 0.8rem;
     font-weight: bold;
     text-decoration: none;
     cursor: auto;
     pointer-events: none;
 }
+#notifs-board .notifs-content .notifs-scroller .load-more-btn.error {
+    color: #ff2424;
+}
 #notifs-board .notifs-content .notifs-scroller .load-more-btn.info {
-    font-size: 0.8rem;
-    font-weight: bold;
     color: #909090;
-    text-decoration: none;
-    cursor: auto;
-    pointer-events: none;
 }
 #notifs-board .notifs-content .notifs-scroller .load-more-btn.active {
     display: flex;

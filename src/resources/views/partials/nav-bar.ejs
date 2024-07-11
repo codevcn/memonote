@@ -33,10 +33,10 @@
                 </div>
             </div>
 
-            <section id="notifs-board" class="navigation-section">
+            <section id="notifs-board">
                 <div class="notifs-modal" onclick="NotificationsController.showNotificationsBoard(false)"></div>
 
-                <div class="notifs-content">
+                <div class="notifs-content tab-navigator">
                     <div class="close-btn" onclick="NotificationsController.showNotificationsBoard(false)"
                         data-bs-toggle="tooltip" data-bs-placement="left" title="Close notifications">
                         <i class="bi bi-x-circle-fill"></i>
@@ -50,18 +50,18 @@
                         </span>
                     </div>
 
-                    <div class="tabs">
-                        <button class="tab-btn active" data-mmn-tab-value="all">
+                    <div class="nav-tabs-list">
+                        <button class="nav-tab active" data-mmn-tab-value="all">
                             <span class="label">All</span>
                             <span class="count">0</span>
                         </button>
-                        <button class="tab-btn" data-mmn-tab-value="is-new">
+                        <button class="nav-tab" data-mmn-tab-value="is-new">
                             <span class="label">New</span>
                             <span class="count">0</span>
                         </button>
                     </div>
 
-                    <div class="notifs-scroller">
+                    <div class="notifs-scroller all nav-destination active">
                         <div class="notifs">
                             <div class="empty-message">
                                 <span>This note has no notification.</span>
@@ -69,8 +69,17 @@
                             </div>
                         </div>
                         <span class="load-more-btn" onclick="NotificationsController.loadMoreNotifs()">
-                            More Notifications
+                            <span>More Notifications</span>
                         </span>
+                    </div>
+
+                    <div class="notifs-scroller is-new nav-destination">
+                        <div class="notifs">
+                            <div class="empty-message">
+                                <span>There's no new notification now.</span>
+                                <span>¯\_(ツ)_/¯</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

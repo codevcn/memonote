@@ -73,10 +73,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="note-settings-board">
-                    <section class="note-settings-navigation">
+                <div class="note-settings-board tab-navigator">
+                    <section class="note-settings-navigation nav-tabs-list">
                         <div class="nav-items">
-                            <span onclick="navigateSettings(this,'change-modes')" class="nav-item active">
+                            <span onclick="navigateSettings(this,'change-modes')" class="nav-item nav-tab active"> <!-- >>> continue here -->
                                 <i class="bi bi-gear-wide-connected"></i>
                                 <span>Change Modes</span>
                             </span>
@@ -95,6 +95,7 @@
                             <i class="bi bi-box-arrow-right"></i>
                         </span>
                     </section>
+
                     <div class="forms change-modes">
                         <form class="note-settings-form change-modes" id="settings-form-change-modes" action="#"
                             onsubmit="saveSettingsChangeModes(event)">
@@ -141,21 +142,20 @@
                             </button>
                         </form>
                     </div>
-                    <div class="forms password" hidden>
-                        <div class="tabs">
-                            <button class="tab-btn set-password active"
-                                onclick="switchTabPassword(this,'set-password')">
+                    <div class="forms password tab-navigator" hidden>
+                        <div class="nav-tabs-list">
+                            <button class="nav-tab set-password active" data-mmn-tab-value="set-password">
                                 <i class="bi bi-pen-fill"></i>
                                 <span class="content">Add Or Change Password</span>
                             </button>
-                            <button class="tab-btn remove-password" onclick="switchTabPassword(this,'remove-password')">
+                            <button class="nav-tab remove-password" data-mmn-tab-value="remove-password">
                                 <i class="bi bi-pen-fill"></i>
                                 <span class="content">Remove Password</span>
                             </button>
                         </div>
 
-                        <form class="note-settings-form set-password" id="settings-form-set-password" action="#"
-                            onsubmit="saveSettingsSetPasswordForNote(event)">
+                        <form class="note-settings-form set-password nav-destination active"
+                            id="settings-form-set-password" action="#" onsubmit="saveSettingsSetPasswordForNote(event)">
                             <h2 class="form-title">
                                 <span class="content">
                                     Add Or Change Password For This Note
@@ -208,8 +208,9 @@
                             </button>
                         </form>
 
-                        <form class="note-settings-form remove-password" id="settings-form-remove-password" action="#"
-                            onsubmit="saveSettingsRemovePasswordOfNote(event)" hidden>
+                        <form class="note-settings-form remove-password nav-destination"
+                            id="settings-form-remove-password" action="#"
+                            onsubmit="saveSettingsRemovePasswordOfNote(event)">
                             <div class="form-content-container" <%= note.passwordSet ? '' : 'hidden' %>>
                                 <h2 class="form-title">
                                     <span>

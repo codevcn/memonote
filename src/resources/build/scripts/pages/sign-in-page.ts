@@ -91,7 +91,7 @@ const signInHandler = async (e: SubmitEvent): Promise<void> => {
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {
-                const err = APIErrorHandler.handleError(error)
+                const err = HTTPErrorHandler.handleError(error)
                 setSignInMessage(err.message)
             }
         }

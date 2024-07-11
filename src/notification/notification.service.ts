@@ -13,6 +13,7 @@ import { EEventEmitterEvents } from './gateway/enums'
 import type { TGetNotifsReturn, TNewNotif } from './types'
 import { EDBMessages } from '@/utils/messages'
 import { EPagination } from './enums'
+import type { LastNotificationDTO } from './DTOs'
 
 @Injectable()
 export class NotificationService {
@@ -21,19 +22,26 @@ export class NotificationService {
         private eventEmitter: EventEmitter2,
     ) {}
 
-    async findByNoteId(noteId: string, page: number): Promise<TGetNotifsReturn> {
+    async findByNoteId(noteId: string, lastNotif: LastNotificationDTO): Promise<TGetNotifsReturn> {
         if (!Types.ObjectId.isValid(noteId)) {
             throw new BaseCustomException(EDBMessages.INVALID_OBJECT_ID)
         }
-        const numberOfNotifsToSkip = (page - 1) * EPagination.MAX_NOTIFS_PER_PAGE
+        const { createdAt } = lastNotif
+        const numberOfAdditionalNotifs = 1
+        const numberOfSkipped = EPagination.MAX_NOTIFS_PER_PAGE + numberOfAdditionalNotifs
         const notifications = await this.notificationModel
-            .find({ note: new Types.ObjectId(noteId) })
+            .find({
+                $and: [
+                    { note: new Types.ObjectId(noteId) },
+                    createdAt ? { createdAt: { $lt: new Date(createdAt) } } : {},
+                ],
+            })
             .sort({ createdAt: 'desc' })
-            .skip(numberOfNotifsToSkip)
-            .limit(EPagination.MAX_NOTIFS_PER_PAGE)
+            .limit(numberOfSkipped)
             .lean()
-        const total = await this.notificationModel.countDocuments()
-        return { notifs: notifications, total }
+        const isEnd = numberOfSkipped > notifications.length
+        const notifs = notifications.slice(0, EPagination.MAX_NOTIFS_PER_PAGE)
+        return { notifs, isEnd }
     }
 
     async createNotif(noteId: string, notif: TNewNotif): Promise<TNotificationDocument> {

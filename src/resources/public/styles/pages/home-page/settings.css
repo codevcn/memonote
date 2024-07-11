@@ -195,7 +195,13 @@
     padding: 5px 20px 0;
     flex: 1;
 }
-#note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board .forms .tabs {
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .nav-tabs-list {
     display: flex;
     margin-bottom: 15px;
 }
@@ -205,8 +211,8 @@
     .modal-body
     .note-settings-board
     .forms
-    .tabs
-    .tab-btn {
+    .nav-tabs-list
+    .nav-tab {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -224,8 +230,8 @@
     .modal-body
     .note-settings-board
     .forms
-    .tabs
-    .tab-btn
+    .nav-tabs-list
+    .nav-tab
     i {
     display: none;
     font-size: 0.9rem;
@@ -237,8 +243,8 @@
     .modal-body
     .note-settings-board
     .forms
-    .tabs
-    .tab-btn.active {
+    .nav-tabs-list
+    .nav-tab.active {
     border: 1px lightgray solid;
     border-bottom: 1px #fff solid;
     background-color: #fff;
@@ -250,8 +256,8 @@
     .modal-body
     .note-settings-board
     .forms
-    .tabs
-    .tab-btn.active
+    .nav-tabs-list
+    .nav-tab.active
     i {
     display: flex;
 }
@@ -261,9 +267,27 @@
     .modal-body
     .note-settings-board
     .forms
-    .tabs
-    .tab-btn:hover {
+    .nav-tabs-list
+    .nav-tab:hover {
     opacity: 0.85;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form.nav-destination {
+    display: none;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form.nav-destination.active {
+    display: block;
 }
 #note-settings-modal
     .modal-dialog

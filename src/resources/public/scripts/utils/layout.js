@@ -30,8 +30,8 @@ var __awaiter =
             step((generator = generator.apply(thisArg, _arguments || [])).next())
         })
     }
-var _a, _b, _c
-var _d
+var _a, _b, _c, _d
+var _e
 const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
@@ -121,14 +121,20 @@ class LayoutController {
         }
         target.classList.add('clicked')
     }
-    static switchTab(target, standing) {
-        const navigationSection = target.closest('.navigation-section')
-        const tabs = navigationSection.querySelectorAll('.tabs .tab-btn')
+    /**
+     * Switch tab handler - click on a tab then switch a form or a section
+     * @param target tab button used to switch form or section
+     * @param standing class of form or section element
+     */
+    static tabNavigator(target, standing) {
+        if (target.classList.contains('active')) return
+        const navigationSection = target.closest('.tab-navigator')
+        const tabs = navigationSection.querySelectorAll('.nav-tabs-list .nav-tab')
         for (const tab of tabs) {
             tab.classList.remove('active')
         }
         target.classList.add('active')
-        const destinations = navigationSection.querySelectorAll('.destination')
+        const destinations = navigationSection.querySelectorAll('.nav-destination')
         for (const destination of destinations) {
             destination.classList.remove('active')
             if (destination.classList.contains(standing)) {
@@ -148,9 +154,11 @@ class NotificationsController {
     }
     static addNotifsData(notifs) {
         this.notifsData.push(...notifs)
+        this.newNotifsData.push(...notifs)
     }
     static unshiftNotifData(notif) {
         this.notifsData.unshift(notif)
+        this.newNotifsData.unshift(notif)
     }
     static ringNotification() {
         const notificationBtn = this.notificationBtn
@@ -164,15 +172,12 @@ class NotificationsController {
             this.ringNotifFlag = true
         }
     }
-    static getNotifsData() {
-        return this.notifsData
-    }
     static setCounter(category, count) {
         const notifsTabs = this.notifsTabs
         const notificationBtn = this.notificationBtn
         if (!notifsTabs || !notificationBtn) return
         const countInString = `${count}`
-        notifsTabs.querySelector(`.tab-btn[data-mmn-tab-value='${category}'] .count`).textContent =
+        notifsTabs.querySelector(`.nav-tab[data-mmn-tab-value='${category}'] .count`).textContent =
             countInString
         if (category === 'is-new') {
             const badge = notificationBtn.querySelector('.icon-wrapper .badge')
@@ -184,14 +189,20 @@ class NotificationsController {
             badge.textContent = countInString
         }
     }
-    static addNotif(notif) {
-        const notifsList = this.notifsList
-        if (!notifsList) return
+    static addNewNotif(notif) {
+        const notifsList_all = this.notifsList_all
+        const notifsList_isNew = this.notifsList_isNew
+        if (!notifsList_all || !notifsList_isNew) return
         if (this.notifsData.length === 0) {
-            notifsList.innerHTML = ''
+            notifsList_all.innerHTML = ''
+        }
+        if (this.newNotifsData.length === 0) {
+            notifsList_isNew.innerHTML = ''
         }
         this.unshiftNotifData(notif)
-        notifsList.prepend(Materials.createElementNotif(notif))
+        const newNotif = Materials.createElementNotif(notif)
+        notifsList_all.prepend(newNotif)
+        notifsList_isNew.prepend(newNotif.cloneNode(true))
         this.setCounter('all', this.notifsData.length)
         this.setCounter(
             'is-new',
@@ -203,29 +214,18 @@ class NotificationsController {
         this.ringNotification()
     }
     static renderNotifs(category, notifsPayload) {
-        const notifsList = this.notifsList
-        console.log('>>> notifs Payload >>>', notifsPayload)
+        const notifsList = this.notifsList_all
         if (notifsList && notifsPayload && notifsPayload.length > 0) {
             notifsList.innerHTML = ''
-            this.setLoadMoreBtn('hide')
-            if (category === 'all') {
-                this.setLoadMoreBtn('show')
-            }
             this.setNotifsData(notifsPayload)
             this.setCounter('all', notifsPayload.length)
-            let notifs = notifsPayload
-            switch (category) {
-                case 'is-new':
-                    notifs = notifs.filter(({ isNew }) => isNew)
-                    break
-            }
-            for (const notif of notifs) {
+            for (const notif of notifsPayload) {
                 notifsList.appendChild(Materials.createElementNotif(notif))
             }
         }
     }
     static setNotifsMessage(message) {
-        const notifsList = this.notifsList
+        const notifsList = this.notifsList_all
         if (!notifsList) return
         notifsList.innerHTML = `<div class="error-message">${message}</div>`
     }
@@ -267,15 +267,17 @@ class NotificationsController {
     static loadMoreNotifs() {
         var _a
         return __awaiter(this, void 0, void 0, function* () {
-            const notifsList = this.notifsList
+            const notifsList = this.notifsList_all
             if (!notifsList) return
             let apiResult = null
             const htmlBefore =
                 ((_a = this.loadMoreBtn) === null || _a === void 0 ? void 0 : _a.innerHTML) || ''
             this.setLoadMoreBtn('innerHtml', Materials.createHTMLLoading('border'))
-            const page = this.page + 1
             try {
-                const { data } = yield getNotificationsAPI(pageData.noteId, page)
+                const { data } = yield getNotificationsAPI(
+                    pageData.noteId,
+                    this.notifsData[this.notifsData.length - 1],
+                )
                 apiResult = data
             } catch (error) {
                 if (error instanceof Error) {
@@ -285,16 +287,15 @@ class NotificationsController {
             }
             this.setLoadMoreBtn('innerHtml', htmlBefore)
             if (apiResult && apiResult.notifs.length > 0) {
-                const notifs = apiResult.notifs.map((notif) =>
-                    Object.assign(Object.assign({}, notif), { isNew: false }),
-                )
+                const notifs = apiResult.notifs
+                    .map((notif) => Object.assign(Object.assign({}, notif), { isNew: false }))
+                    .filter(({ createdAt }) => dayjs(createdAt).isBefore(this.startingTimestamp))
                 this.addNotifsData(notifs)
                 for (const notif of notifs) {
                     notifsList.appendChild(Materials.createElementNotif(notif))
                 }
                 this.setCounter('all', this.notifsData.length)
-                this.page++
-                if (apiResult.totalNumber <= page * ENotifPagination.MAX_NOTIFS_PER_PAGE) {
+                if (apiResult.isEnd) {
                     this.setLoadMoreBtn('hide')
                 }
             } else {
@@ -304,18 +305,21 @@ class NotificationsController {
     }
     static fetchNotifications() {
         return __awaiter(this, void 0, void 0, function* () {
-            const notifsList = this.notifsList
+            const notifsList = this.notifsList_all
             if (!notifsList) return
             const htmlBefore = notifsList.innerHTML
             notifsList.innerHTML = Materials.createHTMLLoading('border')
             let apiSuccess = false
             let apiResult = null
             try {
-                const { data } = yield getNotificationsAPI(pageData.noteId, 1)
+                const { data } = yield getNotificationsAPI(pageData.noteId)
                 apiResult = data
                 apiSuccess = true
             } catch (error) {
-                this.setNotifsMessage("Can't get notifications, internal server error 500.")
+                if (error instanceof Error) {
+                    const err = HTTPErrorHandler.handleError(error)
+                    this.setNotifsMessage(err.message)
+                }
             }
             if (apiSuccess) {
                 if (apiResult && apiResult.notifs.length > 0) {
@@ -335,39 +339,39 @@ class NotificationsController {
     static initCategorySwitcher() {
         const notificationsBoard = this.notificationsBoard
         if (!notificationsBoard) return
-        const tabs = notificationsBoard.querySelectorAll('.notifs-content .tabs .tab-btn')
+        const tabs = notificationsBoard.querySelectorAll('.notifs-content .nav-tabs-list .nav-tab')
         for (const tab of tabs) {
             tab.addEventListener('click', function (e) {
-                if (tab.classList.contains('active')) return
-                for (const tab of tabs) {
-                    tab.classList.remove('active')
-                }
-                tab.classList.add('active')
-                _d.renderNotifs(tab.getAttribute('data-mmn-tab-value'), _d.getNotifsData())
+                LayoutController.tabNavigator(tab, tab.getAttribute('data-mmn-tab-value'))
             })
         }
     }
 }
-_d = NotificationsController
+_e = NotificationsController
 NotificationsController.notifsData = []
+NotificationsController.newNotifsData = []
 NotificationsController.ringNotifFlag = true
-NotificationsController.page = 1
+NotificationsController.startingTimestamp = new Date()
 NotificationsController.notificationBtn = document.querySelector(
     '#nav-bar .right-side-menu .menu-item.notification .notification-btn',
 )
 NotificationsController.notificationsBoard = document.getElementById('notifs-board') // could be null
-NotificationsController.notifsList =
-    (_a = _d.notificationsBoard) === null || _a === void 0
+NotificationsController.notifsList_all =
+    (_a = _e.notificationsBoard) === null || _a === void 0
         ? void 0
-        : _a.querySelector('.notifs-content .notifs')
+        : _a.querySelector('.notifs-scroller.all .notifs')
+NotificationsController.notifsList_isNew =
+    (_b = _e.notificationsBoard) === null || _b === void 0
+        ? void 0
+        : _b.querySelector('.notifs-scroller.is-new .notifs')
 NotificationsController.notifsTabs =
-    (_b = _d.notificationsBoard) === null || _b === void 0
+    (_c = _e.notificationsBoard) === null || _c === void 0
         ? void 0
-        : _b.querySelector('.notifs-content .tabs')
+        : _c.querySelector('.nav-tabs-list')
 NotificationsController.loadMoreBtn =
-    (_c = _d.notificationsBoard) === null || _c === void 0
+    (_d = _e.notificationsBoard) === null || _d === void 0
         ? void 0
-        : _c.querySelector('.load-more-btn')
+        : _d.querySelector('.load-more-btn')
 const initLayout = () => {
     NotificationsController.initCategorySwitcher()
     NotificationsController.fetchNotifications()

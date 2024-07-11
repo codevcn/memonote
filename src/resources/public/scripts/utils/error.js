@@ -5,7 +5,7 @@ class BaseCustomError extends Error {
         this.name = 'Base Custom Error'
     }
 }
-class APIErrorHandler {
+class HTTPErrorHandler {
     static handleError(originalError, defaultMessage = 'Data requirement failed...') {
         const error = {
             httpStatus: EHttpStatuses.INTERNAL_SERVER_ERROR,

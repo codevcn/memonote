@@ -1,14 +1,19 @@
-import { IsInt, IsNotEmpty, Min } from 'class-validator'
-import { ENotificationMessages } from './messages'
 import { Type } from 'class-transformer'
+import { IsISO8601, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
 
-export class GetNotificationsDTO {
+export class GetNotifsParamsDTO {
     @IsNotEmpty()
     n: string // noteId
+}
 
-    @IsNotEmpty()
-    @IsInt()
-    @Type(() => Number)
-    @Min(1, { message: ENotificationMessages.INVALID_PAGE_NUMBER })
-    p: number // page
+export class LastNotificationDTO {
+    @IsOptional()
+    @IsISO8601()
+    @Type(() => LastNotificationDTO)
+    createdAt?: Date
+}
+
+export class GetNotifsBodyDTO {
+    @ValidateNested()
+    lastNotif: LastNotificationDTO
 }

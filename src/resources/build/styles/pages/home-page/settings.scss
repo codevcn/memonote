@@ -283,11 +283,11 @@ $mmn-settings-nav-item-bgcl: #e9e9e9;
                         padding: 5px 20px 0;
                         flex: 1;
 
-                        .tabs {
+                        .nav-tabs-list {
                             display: flex;
                             margin-bottom: 15px;
 
-                            .tab-btn {
+                            .nav-tab {
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
@@ -323,6 +323,14 @@ $mmn-settings-nav-item-bgcl: #e9e9e9;
                         }
 
                         .note-settings-form {
+                            &.nav-destination {
+                                display: none;
+
+                                &.active {
+                                    display: block;
+                                }
+                            }
+
                             .form-title {
                                 display: flex;
                                 align-items: end;

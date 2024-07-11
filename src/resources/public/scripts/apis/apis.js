@@ -13,4 +13,5 @@ const logoutAPI = (noteUniqueName) => axiosClient.post('/auth/logout/' + noteUni
 const signInAPI = (password, noteUniqueName) =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
 // notification
-const getNotificationsAPI = (noteId, page) => axiosClient.get(`/notification?n=${noteId}&p=${page}`)
+const getNotificationsAPI = (noteId, lastNotif) =>
+    axiosClient.post(`/notification?n=${noteId}`, { lastNotif: lastNotif || {} })

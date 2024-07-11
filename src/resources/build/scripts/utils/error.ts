@@ -6,7 +6,7 @@ class BaseCustomError extends Error {
     }
 }
 
-class APIErrorHandler {
+class HTTPErrorHandler {
     static handleError(
         originalError: TOriginalAPIError,
         defaultMessage: string = 'Data requirement failed...',

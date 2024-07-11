@@ -44,6 +44,7 @@ type TEditedNotifyStyleTypes = 'blink' | 'slither'
 type TFormCheckValues = null | 'on'
 
 type TNotif = {
+    _id: string
     title: string
     message: string
     type: ENotificationTypes

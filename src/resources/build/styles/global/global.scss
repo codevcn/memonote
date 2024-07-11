@@ -473,14 +473,14 @@ h6 {
             }
         }
 
-        .tabs {
+        .nav-tabs-list {
             $outline-width: 2px;
 
             display: flex;
             border-bottom: $outline-width rgba(211, 211, 211, 0.4) solid;
             padding: 0 35px;
 
-            .tab-btn {
+            .nav-tab {
                 display: flex;
                 align-items: center;
                 column-gap: 8px;
@@ -532,15 +532,23 @@ h6 {
         }
 
         .notifs-scroller {
+            display: none;
+            flex-direction: column;
+            align-items: center;
             height: calc($notifs-board-height - 90px);
             @include regular-scrollbar-styling;
             overflow-y: auto;
+
+            &.active {
+                display: flex;
+            }
 
             .notifs {
                 $unload-content-spacing-top: 30px;
 
                 display: flex;
                 flex-direction: column;
+                width: 100%;
 
                 .spinner {
                     margin: 0 auto;
@@ -649,24 +657,20 @@ h6 {
                     transform: scale(0.9);
                 }
 
-                &.error {
-                    display: flex;
-                    align-items: center;
-                    column-gap: 5px;
-                    color: colors.$mmn-regular-red-cl;
+                &.error,
+                &.info {
                     font-size: 0.8rem;
                     font-weight: bold;
                     text-decoration: none;
                     cursor: auto;
                     pointer-events: none;
                 }
+
+                &.error {
+                    color: colors.$mmn-regular-red-cl;
+                }
                 &.info {
-                    font-size: 0.8rem;
-                    font-weight: bold;
                     color: colors.$mmn-regular-gray-cl;
-                    text-decoration: none;
-                    cursor: auto;
-                    pointer-events: none;
                 }
 
                 &.active {

@@ -9,5 +9,5 @@ export type TNewNotif = {
 
 export type TGetNotifsReturn = {
     notifs: Notification[]
-    total: number
+    isEnd: boolean
 }
