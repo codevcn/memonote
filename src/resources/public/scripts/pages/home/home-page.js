@@ -35,13 +35,15 @@ const notesSection = homePage_pageMain.querySelector('.notes')
 const realtimeModeDisplay = document.querySelector('#nav-bar .realtime-mode-display')
 const noteSettingsBoard = document.querySelector('#note-settings-modal .note-settings-board')
 const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
-    '.note-settings-navigation .nav-item.logout-btn',
+    '.note-settings-navigation .logout-btn',
 )
 const setPasswordForm = document.getElementById('settings-form-set-password')
 const removePasswordForm = document.getElementById('settings-form-remove-password')
 const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
 const noteFormEle = notesSection.querySelector('.note-form')
+const scrollToTopBtn = document.querySelector('#scroll-to-top')
 const noteContentHistory = { history: [''], index: 0 }
+const SCROLL_Y_BEGIN = 200
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
         return false
@@ -401,11 +403,21 @@ const saveSettingsUserInterface = (e) =>
         }
         setStatusOfSettingsForm(form, 'saved')
     })
+const scrollToTop = () => {
+    if (window.scrollY > SCROLL_Y_BEGIN) {
+        window.scrollTo({ top: 100, behavior: 'instant' })
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+}
 const initPage = () => {
-    // setup switch tab settings
-    const navItems = noteSettingsBoard.querySelectorAll('.nav-item')
-    for (const navItem of navItems) {
-        navItem.classList.remove('active') // >>> continue here
+    // setup "navigate" settings
+    const navTabs = noteSettingsBoard.querySelectorAll(
+        '.note-settings-navigation .nav-tabs-list .nav-tab',
+    )
+    for (const navTab of navTabs) {
+        navTab.addEventListener('click', function (e) {
+            LayoutController.tabNavigator(navTab)
+        })
     }
     // setup "change modes" form
     const realtimeMode = getRealtimeModeInDevice()
@@ -439,10 +451,7 @@ const initPage = () => {
     )
     for (const passwordFormTab of passwordFormTabs) {
         passwordFormTab.addEventListener('click', function (e) {
-            LayoutController.tabNavigator(
-                passwordFormTab,
-                passwordFormTab.getAttribute('data-mmn-tab-value'),
-            )
+            LayoutController.tabNavigator(passwordFormTab)
         })
     }
     // setup "user interface" form
@@ -473,5 +482,13 @@ const initPage = () => {
             quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
+    // setup "scroll to top"
+    window.addEventListener('scroll', function (e) {
+        if (window.scrollY > SCROLL_Y_BEGIN) {
+            scrollToTopBtn.classList.add('active')
+        } else {
+            scrollToTopBtn.classList.remove('active')
+        }
+    })
 }
 initPage()

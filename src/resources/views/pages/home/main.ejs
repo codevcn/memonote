@@ -55,12 +55,18 @@
         </section>
     </section>
 
+    <div id="scroll-to-top">
+        <div class="scroll-to-top-btn" onclick="scrollToTop()" title="Scroll to top">
+            <i class="bi bi-chevron-double-up"></i>
+        </div>
+    </div>
+
     <div id="bubble-note-settings">
-        <div data-bs-toggle="tooltip" data-bs-placement="left" title="Settings">
+        <span data-bs-toggle="tooltip" data-bs-placement="left" title="Settings">
             <div class="bubble-note-settings-btn" data-bs-toggle="modal" data-bs-target="#note-settings-modal">
                 <i class="bi bi-gear-fill"></i>
             </div>
-        </div>
+        </span>
     </div>
 </main>
 
@@ -74,29 +80,28 @@
             </div>
             <div class="modal-body">
                 <div class="note-settings-board tab-navigator">
-                    <section class="note-settings-navigation nav-tabs-list">
-                        <div class="nav-items">
-                            <span onclick="navigateSettings(this,'change-modes')" class="nav-item nav-tab active"> <!-- >>> continue here -->
+                    <section class="note-settings-navigation">
+                        <div class="nav-tabs-list" data-mmn-destination-class="forms">
+                            <span data-mmn-tab-value="change-modes" class="nav-tab active">
                                 <i class="bi bi-gear-wide-connected"></i>
                                 <span>Change Modes</span>
                             </span>
-                            <span onclick="navigateSettings(this,'password')" class="nav-item">
+                            <span data-mmn-tab-value="password" class="nav-tab">
                                 <i class="bi bi-lock-fill"></i>
                                 <span>Password</span>
                             </span>
-                            <span onclick="navigateSettings(this,'user-interface')" class="nav-item">
+                            <span data-mmn-tab-value="user-interface" class="nav-tab">
                                 <i class="bi bi-image-alt"></i>
                                 <span>User Interface</span>
                             </span>
                         </div>
-                        <span onclick="logoutHandler(this)" class="nav-item logout-btn"
-                            <%= note.passwordSet ? '' : 'hidden' %>>
+                        <span onclick="logoutHandler(this)" class="logout-btn" <%= note.passwordSet ? '' : 'hidden' %>>
                             <span>Logout</span>
                             <i class="bi bi-box-arrow-right"></i>
                         </span>
                     </section>
 
-                    <div class="forms change-modes">
+                    <div class="forms change-modes nav-destination active">
                         <form class="note-settings-form change-modes" id="settings-form-change-modes" action="#"
                             onsubmit="saveSettingsChangeModes(event)">
                             <h2 class="form-title">
@@ -142,7 +147,8 @@
                             </button>
                         </form>
                     </div>
-                    <div class="forms password tab-navigator" hidden>
+
+                    <div class="forms password tab-navigator nav-destination">
                         <div class="nav-tabs-list">
                             <button class="nav-tab set-password active" data-mmn-tab-value="set-password">
                                 <i class="bi bi-pen-fill"></i>
@@ -233,7 +239,8 @@
                             </div>
                         </form>
                     </div>
-                    <div class="forms user-interface" hidden>
+
+                    <div class="forms user-interface nav-destination">
                         <form action="#" class="note-settings-form user-interface" id="settings-form-user-interface"
                             onsubmit="saveSettingsUserInterface(event)">
                             <h2 class="form-title">

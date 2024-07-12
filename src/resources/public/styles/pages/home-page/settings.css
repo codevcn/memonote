@@ -95,7 +95,7 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-items {
+    .nav-tabs-list {
     display: flex;
     flex-direction: column;
     row-gap: 5px;
@@ -109,7 +109,8 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item {
+    .nav-tabs-list
+    .nav-tab {
     display: flex;
     align-items: center;
     column-gap: 5px;
@@ -126,14 +127,16 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item:hover,
+    .nav-tabs-list
+    .nav-tab:hover,
 #note-settings-modal
     .modal-dialog
     .modal-content
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item.active {
+    .nav-tabs-list
+    .nav-tab.active {
     background-color: #e9e9e9;
     border-left: 3px #6a6a6a solid;
 }
@@ -143,7 +146,7 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item.logout-btn {
+    .logout-btn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -157,7 +160,7 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item.logout-btn
+    .logout-btn
     .spinner {
     height: 24px;
     width: 24px;
@@ -168,7 +171,7 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item.logout-btn
+    .logout-btn
     i {
     height: fit-content;
     color: inherit;
@@ -180,14 +183,14 @@
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item.logout-btn:hover,
+    .logout-btn:hover,
 #note-settings-modal
     .modal-dialog
     .modal-content
     .modal-body
     .note-settings-board
     .note-settings-navigation
-    .nav-item.logout-btn.active {
+    .logout-btn.active {
     background-color: #ffdddd;
     border-left: 3px #dd0000 solid;
 }
@@ -270,24 +273,6 @@
     .nav-tabs-list
     .nav-tab:hover {
     opacity: 0.85;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .forms
-    .note-settings-form.nav-destination {
-    display: none;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .forms
-    .note-settings-form.nav-destination.active {
-    display: block;
 }
 #note-settings-modal
     .modal-dialog

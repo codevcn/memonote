@@ -1,0 +1,8 @@
+body {
+    background-color: #fff;
+    color: #000;
+}
+.navbar,
+.card {
+    background-color: #f8f9fa;
+}

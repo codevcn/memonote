@@ -59,3 +59,45 @@ $mmn-page-padding-bottom: 100px;
         }
     }
 }
+
+#scroll-to-top {
+    position: fixed;
+    bottom: 70px;
+    right: 25px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.2s,
+        bottom 0.2s;
+
+    &.active {
+        bottom: 80px;
+        cursor: pointer;
+        pointer-events: auto;
+        opacity: 1;
+    }
+
+    .scroll-to-top-btn {
+        background-color: colors.$mmn-primary-cl;
+        border-radius: 50%;
+        padding: 4px;
+        cursor: pointer;
+        border: 2px colors.$mmn-primary-cl solid;
+        transition: background-color 0.2s;
+
+        i {
+            font-size: 2rem;
+            color: colors.$mmn-regular-white-cl;
+            transition: color 0.2s;
+            transform: translateY(-1px);
+        }
+
+        &:hover {
+            background-color: colors.$mmn-regular-white-cl;
+
+            i {
+                color: colors.$mmn-primary-cl;
+            }
+        }
+    }
+}

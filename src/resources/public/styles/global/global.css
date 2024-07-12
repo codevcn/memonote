@@ -130,6 +130,13 @@ h6 {
     margin: 0;
 }
 
+.tab-navigator .nav-destination {
+    display: none;
+}
+.tab-navigator .nav-destination.active {
+    display: initial;
+}
+
 #page-main {
     box-sizing: border-box;
 }

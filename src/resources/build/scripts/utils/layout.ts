@@ -107,26 +107,40 @@ class LayoutController {
     }
 
     /**
-     * Switch tab handler - click on a tab then switch a form or a section
-     * @param target tab button used to switch form or section
-     * @param standing class of form or section element
+     * Switch tab handler - click on a tab then switch to a form or a section
+     * @param target tab button used to switch between forms or sections
+     * @param tabDataAttrName full name of "data-" attribute for tab clicked on
      */
-    static tabNavigator(target: HTMLElement, standing: string): void {
+    static tabNavigator(
+        target: HTMLElement,
+        tabDataAttrName?: string,
+        desDataAttrName?: string,
+    ): void {
         if (target.classList.contains('active')) return
 
         const navigationSection = target.closest('.tab-navigator') as HTMLElement
+        const navTabsList = target.closest('.nav-tabs-list') as HTMLElement
 
-        const tabs = navigationSection.querySelectorAll<HTMLLabelElement>('.nav-tabs-list .nav-tab')
+        const tabs = navTabsList.querySelectorAll<HTMLLabelElement>('.nav-tab')
         for (const tab of tabs) {
             tab.classList.remove('active')
         }
         target.classList.add('active')
 
-        const destinations = navigationSection.querySelectorAll<HTMLElement>('.nav-destination')
-        for (const destination of destinations) {
-            destination.classList.remove('active')
-            if (destination.classList.contains(standing)) {
-                destination.classList.add('active')
+        const classesSwitchTo = target
+            .getAttribute(tabDataAttrName || 'data-mmn-tab-value')!
+            .split(' ')
+        const desClass = navTabsList.getAttribute(desDataAttrName || 'data-mmn-destination-class')
+
+        const destinations = navigationSection.querySelectorAll<HTMLElement>(
+            `.nav-destination${
+                desClass && desClass.length > 0 ? `.${desClass.split(' ').join('.')}` : ''
+            }`,
+        )
+        for (const des of destinations) {
+            des.classList.remove('active')
+            if (classesSwitchTo.every((className) => des.classList.contains(className))) {
+                des.classList.add('active')
             }
         }
     }
@@ -373,10 +387,7 @@ class NotificationsController {
         )
         for (const tab of tabs) {
             tab.addEventListener('click', function (e) {
-                LayoutController.tabNavigator(
-                    tab,
-                    tab.getAttribute('data-mmn-tab-value') as TNotifCategory,
-                )
+                LayoutController.tabNavigator(tab)
             })
         }
     }

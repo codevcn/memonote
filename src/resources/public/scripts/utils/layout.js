@@ -122,23 +122,30 @@ class LayoutController {
         target.classList.add('clicked')
     }
     /**
-     * Switch tab handler - click on a tab then switch a form or a section
-     * @param target tab button used to switch form or section
-     * @param standing class of form or section element
+     * Switch tab handler - click on a tab then switch to a form or a section
+     * @param target tab button used to switch between forms or sections
+     * @param tabDataAttrName full name of "data-" attribute for tab clicked on
      */
-    static tabNavigator(target, standing) {
+    static tabNavigator(target, tabDataAttrName, desDataAttrName) {
         if (target.classList.contains('active')) return
         const navigationSection = target.closest('.tab-navigator')
-        const tabs = navigationSection.querySelectorAll('.nav-tabs-list .nav-tab')
+        const navTabsList = target.closest('.nav-tabs-list')
+        const tabs = navTabsList.querySelectorAll('.nav-tab')
         for (const tab of tabs) {
             tab.classList.remove('active')
         }
         target.classList.add('active')
-        const destinations = navigationSection.querySelectorAll('.nav-destination')
-        for (const destination of destinations) {
-            destination.classList.remove('active')
-            if (destination.classList.contains(standing)) {
-                destination.classList.add('active')
+        const classesSwitchTo = target
+            .getAttribute(tabDataAttrName || 'data-mmn-tab-value')
+            .split(' ')
+        const desClass = navTabsList.getAttribute(desDataAttrName || 'data-mmn-destination-class')
+        const destinations = navigationSection.querySelectorAll(
+            `.nav-destination${desClass && desClass.length > 0 ? `.${desClass.split(' ').join('.')}` : ''}`,
+        )
+        for (const des of destinations) {
+            des.classList.remove('active')
+            if (classesSwitchTo.every((className) => des.classList.contains(className))) {
+                des.classList.add('active')
             }
         }
     }
@@ -342,7 +349,7 @@ class NotificationsController {
         const tabs = notificationsBoard.querySelectorAll('.notifs-content .nav-tabs-list .nav-tab')
         for (const tab of tabs) {
             tab.addEventListener('click', function (e) {
-                LayoutController.tabNavigator(tab, tab.getAttribute('data-mmn-tab-value'))
+                LayoutController.tabNavigator(tab)
             })
         }
     }
