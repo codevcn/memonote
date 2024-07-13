@@ -34,8 +34,8 @@ const setRealtimeModeInDevice = (type) => {
 const getNotifyNoteEditedModeInDevice = () => {
     return localStorage.getItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE)
 }
-const setNotifyNoteEditedModeInDevice = (type) => {
-    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, type)
+const setNotifyNoteEditedModeInDevice = (status) => {
+    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, status)
 }
 const getEditedNotifyStyleInDevice = () => {
     return localStorage.getItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE)
@@ -77,4 +77,30 @@ function calculateTimeDifference(inputTime) {
         timeUnit = 's'
     }
     return timeCount + timeUnit
+}
+const getNightModeInDevice = () => {
+    return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE)
+}
+const setNightModeInDevice = (status) => {
+    localStorage.setItem(ELocalStorageKeys.NIGHT_MODE, status)
+}
+const convertToCssFontFamily = (font) => {
+    switch (font) {
+        case 'work-sans':
+            return "'Work Sans', Arial, sans-serif"
+        case 'poppins':
+            return "'Poppins', Arial, sans-serif"
+        case 'arial':
+            return 'Arial, Helvetica, sans-serif'
+        case 'times-new-roman':
+            return "'Times New Roman', Times, serif"
+        case 'roboto':
+            return "'Roboto', Times, serif"
+    }
+}
+const getNoteFormTextFontInDevice = () => {
+    return localStorage.getItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT)
+}
+const setNoteFormTextFontInDevice = (font) => {
+    localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
 }

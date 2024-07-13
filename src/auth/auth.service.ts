@@ -116,14 +116,17 @@ export class AuthService {
         return { noteUniqueName }
     }
 
-    async validateIncommingSocket(socket: Socket): Promise<TValidateIncommingSocketReturn> {
+    async validateIncommingMessage(socket: Socket): Promise<TValidateIncommingSocketReturn> {
         const { referer, cookie } = socket.handshake.headers
-        if (!referer || !cookie) {
+        if (!referer) {
             throw new WsException(EValidationMessages.INVALID_INPUT)
         }
         const noteUniqueName = this.noteService.extractNoteUniqueNameFromURL(referer)
         const noteHasPassword = UserSessions.checkNote(noteUniqueName)
         if (noteHasPassword) {
+            if (!cookie) {
+                throw new WsException(EValidationMessages.INVALID_INPUT)
+            }
             const jwt = this.jwtService.extractJWTFromCookie(cookie)
             if (!jwt) {
                 throw new CustomWsException(EValidationMessages.INVALID_CREDENTIALS, noteUniqueName)

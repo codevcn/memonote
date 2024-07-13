@@ -41,14 +41,12 @@ const setRealtimeModeInDevice = (type: TRealtimeModeTypes): void => {
     localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
 }
 
-const getNotifyNoteEditedModeInDevice = (): TNotifyNoteEditedModeTypes | null => {
-    return localStorage.getItem(
-        ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE,
-    ) as TNotifyNoteEditedModeTypes | null
+const getNotifyNoteEditedModeInDevice = (): TModeStatus | null => {
+    return localStorage.getItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE) as TModeStatus | null
 }
 
-const setNotifyNoteEditedModeInDevice = (type: TNotifyNoteEditedModeTypes): void => {
-    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, type)
+const setNotifyNoteEditedModeInDevice = (status: TModeStatus): void => {
+    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, status)
 }
 
 const getEditedNotifyStyleInDevice = (): TEditedNotifyStyleTypes | null => {
@@ -98,4 +96,35 @@ function calculateTimeDifference(inputTime: string): string {
     }
 
     return timeCount + timeUnit
+}
+
+const getNightModeInDevice = (): TModeStatus | null => {
+    return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE) as TModeStatus | null
+}
+
+const setNightModeInDevice = (status: TModeStatus): void => {
+    localStorage.setItem(ELocalStorageKeys.NIGHT_MODE, status)
+}
+
+const convertToCssFontFamily = (font: TNoteFormTextFonts) => {
+    switch (font) {
+        case 'work-sans':
+            return "'Work Sans', Arial, sans-serif"
+        case 'poppins':
+            return "'Poppins', Arial, sans-serif"
+        case 'arial':
+            return 'Arial, Helvetica, sans-serif'
+        case 'times-new-roman':
+            return "'Times New Roman', Times, serif"
+        case 'roboto':
+            return "'Roboto', Times, serif"
+    }
+}
+
+const getNoteFormTextFontInDevice = (): TNoteFormTextFonts | null => {
+    return localStorage.getItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT) as TNoteFormTextFonts | null
+}
+
+const setNoteFormTextFontInDevice = (font: TNoteFormTextFonts): void => {
+    localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
 }

@@ -14,7 +14,6 @@ $mmn-page-padding-bottom: 100px;
 
 #page-main {
     padding: 10px 50px $mmn-page-padding-bottom;
-    z-index: z-indexes.$mmn-base-zidx;
 
     .note-quick-look {
         display: flex;
@@ -69,6 +68,7 @@ $mmn-page-padding-bottom: 100px;
     transition:
         opacity 0.2s,
         bottom 0.2s;
+    z-index: z-indexes.$mmn-base-zidx + 10;
 
     &.active {
         bottom: 80px;
@@ -87,9 +87,9 @@ $mmn-page-padding-bottom: 100px;
 
         i {
             font-size: 2rem;
-            color: colors.$mmn-regular-white-cl;
             transition: color 0.2s;
             transform: translateY(-1px);
+            color: colors.$mmn-regular-white-cl;
         }
 
         &:hover {

@@ -396,8 +396,8 @@ const setStatusOfSettingsForm = (formTarget: HTMLFormElement, type: 'unsaved' | 
         isSaved
 }
 
-const setRealtimeModeHandler = (type: TRealtimeModeTypes): void => {
-    if (type === 'sync') {
+const setRealtimeModeHandler = (status: TFormCheckValues): void => {
+    if (status && status === 'on') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
         const currentRealtimeMode = getRealtimeModeInDevice()
         if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
@@ -406,7 +406,23 @@ const setRealtimeModeHandler = (type: TRealtimeModeTypes): void => {
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')
     }
-    setRealtimeModeInDevice(type)
+    setRealtimeModeInDevice(status ? 'sync' : 'stop')
+}
+
+const setNightModeHandler = (status: TFormCheckValues): void => {
+    const blender = document.getElementById('night-mode-blender') as HTMLElement
+    if (status && status === 'on') {
+        blender.classList.add('active-z-index', 'blend')
+        setNightModeInDevice('on')
+    } else {
+        const duration =
+            parseFloat(getCssVariable('--mmn-blender-transition-duration').split('s')[0]) * 1000
+        setTimeout(() => {
+            blender.classList.remove('active-z-index')
+        }, duration)
+        blender.classList.remove('blend')
+        setNightModeInDevice('off')
+    }
 }
 
 const saveSettingsChangeModes = async (e: SubmitEvent): Promise<void> => {
@@ -417,19 +433,11 @@ const saveSettingsChangeModes = async (e: SubmitEvent): Promise<void> => {
 
     const realtimeMode = formData.get('realtime-mode') as TFormCheckValues
     const notifyNoteEditedMode = formData.get('notify-note-edited') as TFormCheckValues
+    const nightMode = formData.get('night-mode') as TFormCheckValues
 
-    if (realtimeMode) {
-        if (realtimeMode === 'on') {
-            setRealtimeModeHandler('sync')
-        }
-    } else {
-        setRealtimeModeHandler('stop')
-    }
-    if (notifyNoteEditedMode) {
-        setNotifyNoteEditedModeInDevice('on')
-    } else {
-        setNotifyNoteEditedModeInDevice('off')
-    }
+    setRealtimeModeHandler(realtimeMode)
+    setNotifyNoteEditedModeInDevice(notifyNoteEditedMode ? 'on' : 'off')
+    setNightModeHandler(nightMode)
 
     setStatusOfSettingsForm(form, 'saved')
 }
@@ -438,6 +446,12 @@ type TNavigateFormTypes = 'change-modes' | 'password'
 
 type TPasswordTabTypes = 'set-password' | 'remove-password'
 
+const changeNoteFormTextFontHandler = (font: TNoteFormTextFonts): void => {
+    const textFont = convertToCssFontFamily(font)
+    document.documentElement.style.setProperty('--mmn-note-form-fonf', textFont)
+    setNoteFormTextFontInDevice(font)
+}
+
 const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
@@ -445,8 +459,13 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     const formData = new FormData(form)
 
     const editedNotifyStyle = formData.get('edited-notify-style') as TEditedNotifyStyleTypes
+    const noteFormFont = formData.get('note-form-font') as TNoteFormTextFonts
+
     if (editedNotifyStyle) {
         setEditedNotifyStyleInDevice(editedNotifyStyle)
+    }
+    if (noteFormFont) {
+        changeNoteFormTextFontHandler(noteFormFont)
     }
 
     setStatusOfSettingsForm(form, 'saved')
@@ -522,6 +541,20 @@ const initPage = (): void => {
             editedNotifyStyleSelect.value = editedNotifyStyle
         }
     }
+    // setup "note form text font"
+    const noteFormTextFont = getNoteFormTextFontInDevice()
+    const noteFormTextFontSelect = document.getElementById(
+        'note-form-font-select',
+    ) as HTMLSelectElement
+    if (noteFormTextFont) {
+        changeNoteFormTextFontHandler(noteFormTextFont)
+        const optionExists = Array.from(noteFormTextFontSelect.options).some(
+            (option) => option.value === noteFormTextFont,
+        )
+        if (optionExists) {
+            noteFormTextFontSelect.value = noteFormTextFont
+        }
+    }
     const userInterfaceForm = document.getElementById(
         'settings-form-user-interface',
     ) as HTMLFormElement
@@ -552,5 +585,13 @@ const initPage = (): void => {
             scrollToTopBtn.classList.remove('active')
         }
     })
+
+    // setup "night mode"
+    const nightMode = getNightModeInDevice()
+    if (nightMode && nightMode === 'on') {
+        const nightModeInput = document.getElementById('night-mode-input') as HTMLInputElement
+        nightModeInput.checked = true
+        setNightModeHandler('on')
+    }
 }
 initPage()

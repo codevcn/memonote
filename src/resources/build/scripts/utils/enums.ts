@@ -11,6 +11,8 @@ enum ELocalStorageKeys {
     REALTIME_MODE = 'realtime-mode',
     NOTE_CHANGES_DISPLAY_MODE = 'notify-note-edited-mode',
     EDITING_NOTIFY_STYLE = 'edited-notify-style',
+    NIGHT_MODE = 'night-mode',
+    NOTE_FORM_TEXT_FONT = 'note-form-text-font',
 }
 
 enum ENoteLengths {

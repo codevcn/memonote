@@ -14,7 +14,7 @@ $mmn-scrollbar-on-blur-cl: rgba(153, 153, 153, 0.333);
 $mmn-load-more-notifications: #e68500;
 
 :root {
-    --mmn-ring-notification-duration: 0.5s;
+    --mmn-blender-transition-duration: 0.8s;
 }
 
 /* @rules
@@ -276,7 +276,7 @@ h6 {
     position: sticky;
     top: 0;
     left: 0;
-    z-index: z-indexes.$mmn-base-notif-board-zidx + 10;
+    z-index: z-indexes.$mmn-nav-bar-zidx + 1;
     background-color: colors.$mmn-regular-white-cl;
 
     .app-logo-container {
@@ -364,12 +364,12 @@ h6 {
                 .notification-btn {
                     display: flex;
                     padding: 0;
-                    background-color: colors.$mmn-regular-white-cl;
+                    background-color: transparent;
                     height: 100%;
                     padding: 0 10px;
                     transition: transform 0.5s;
                     animation-timing-function: linear;
-                    animation-duration: var(--mmn-ring-notification-duration);
+                    animation-duration: 0.5s;
                     animation-iteration-count: 1;
 
                     .icon-wrapper {
@@ -417,7 +417,7 @@ h6 {
     height: calc(100vh - $mmn-height-of-nav-bar - $spacing-top - 30px);
     min-width: $mmn-notif-board-min-height;
     cursor: auto;
-    z-index: z-indexes.$mmn-base-notif-board-zidx;
+    z-index: z-indexes.$mmn-notif-board-zidx;
 
     &.active {
         display: block;
@@ -429,14 +429,14 @@ h6 {
         left: 0;
         right: 0;
         bottom: 0;
-        z-index: calc(z-indexes.$mmn-base-notif-board-zidx + 1);
+        z-index: z-indexes.$mmn-notif-board-zidx + 1;
         background-color: colors.$mmn-modal-bgcl;
     }
 
     .notifs-content {
         height: 100%;
         position: relative;
-        z-index: calc(z-indexes.$mmn-base-notif-board-zidx + 2);
+        z-index: calc(z-indexes.$mmn-notif-board-zidx + 2);
         background-color: colors.$mmn-regular-white-cl;
         border-radius: 5px;
 
@@ -801,6 +801,27 @@ h6 {
     &.clicked {
         transform: $mmn-app-toaster-initial-transform;
         animation: none;
+    }
+}
+
+#night-mode-blender {
+    position: fixed;
+    bottom: 27px;
+    right: 27px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    background-color: colors.$mmn-night-mode-diff-cl;
+    transition: transform var(--mmn-blender-transition-duration);
+    z-index: z-indexes.$mmn-base-zidx + 9;
+
+    &.blend {
+        transform: scale(100);
+    }
+    &.active-z-index {
+        z-index: z-indexes.$mmn-night-mode-blender-zidx;
     }
 }
 

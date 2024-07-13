@@ -1,5 +1,5 @@
 :root {
-    --mmn-ring-notification-duration: 0.5s;
+    --mmn-blender-transition-duration: 0.8s;
 }
 
 /* @rules
@@ -164,7 +164,7 @@ h6 {
     position: sticky;
     top: 0;
     left: 0;
-    z-index: 110;
+    z-index: 101;
     background-color: #fff;
 }
 #nav-bar .app-logo-container {
@@ -239,12 +239,12 @@ h6 {
 #nav-bar .right-side-menu .menu-item.notification .notification-btn {
     display: flex;
     padding: 0;
-    background-color: #fff;
+    background-color: transparent;
     height: 100%;
     padding: 0 10px;
     transition: transform 0.5s;
     animation-timing-function: linear;
-    animation-duration: var(--mmn-ring-notification-duration);
+    animation-duration: 0.5s;
     animation-iteration-count: 1;
 }
 #nav-bar .right-side-menu .menu-item.notification .notification-btn .icon-wrapper {
@@ -279,7 +279,7 @@ h6 {
     height: calc(100vh - 60px - 5px - 30px);
     min-width: 300px;
     cursor: auto;
-    z-index: 100;
+    z-index: 200;
 }
 #notifs-board.active {
     display: block;
@@ -290,13 +290,13 @@ h6 {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 101;
+    z-index: 201;
     background-color: rgba(0, 0, 0, 0.278);
 }
 #notifs-board .notifs-content {
     height: 100%;
     position: relative;
-    z-index: 102;
+    z-index: 202;
     background-color: #fff;
     border-radius: 5px;
 }
@@ -529,7 +529,7 @@ h6 {
     padding: 15px;
     border-radius: 5px;
     box-shadow: none;
-    z-index: 1060;
+    z-index: 1090;
     cursor: pointer;
     overflow: hidden;
     left: 20px;
@@ -603,6 +603,26 @@ h6 {
 #app-toaster.clicked {
     transform: translateX(calc(-100% - 20px - 5px));
     animation: none;
+}
+
+#night-mode-blender {
+    position: fixed;
+    bottom: 27px;
+    right: 27px;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    background-color: rgb(233, 233, 233);
+    transition: transform var(--mmn-blender-transition-duration);
+    z-index: 10;
+}
+#night-mode-blender.blend {
+    transform: scale(100);
+}
+#night-mode-blender.active-z-index {
+    z-index: 1100;
 }
 
 @keyframes slide-app-toaster-a {

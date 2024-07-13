@@ -1,5 +1,9 @@
-$mmn-primary-fontf: 'Work Sans', Arial, sans-serif;
+// base
+$mmn-work-sans-fontf: 'Work Sans', Arial, sans-serif;
 $mmn-poppins-fontf: 'Poppins', Arial, sans-serif;
 $mmn-arial-fontf: Arial, Helvetica, sans-serif;
 $mmn-times-new-roman-fontf: 'Times New Roman', Times, serif;
 $mmn-roboto-regular-fontf: 'Roboto', Times, serif;
+
+// components
+$mmn-primary-fontf: $mmn-work-sans-fontf;

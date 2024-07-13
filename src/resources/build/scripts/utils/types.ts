@@ -37,9 +37,11 @@ type TNoteForm = {
 
 type TRealtimeModeTypes = 'sync' | 'stop'
 
-type TNotifyNoteEditedModeTypes = 'on' | 'off'
+type TModeStatus = 'on' | 'off'
 
 type TEditedNotifyStyleTypes = 'blink' | 'slither'
+
+type TNoteFormTextFonts = 'work-sans' | 'arial' | 'poppins' | 'times-new-roman' | 'roboto'
 
 type TFormCheckValues = null | 'on'
 

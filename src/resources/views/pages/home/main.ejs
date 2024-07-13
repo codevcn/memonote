@@ -12,12 +12,12 @@
         <section class="note-form">
             <div class="note-form-item note-title">
                 <input type="text" value="<%= note.title || '' %>" placeholder="Add a title..."
-                    oninput="broadcastNoteTitleTypingHanlder(this)" />
+                    oninput="broadcastNoteTitleTypingHanlder(this)" id="note-title" />
                 <div class="note-annotation">Title</div>
             </div>
             <div class="note-form-item note-author">
                 <input type="text" value="<%= note.author || '' %>" placeholder="Add an author..."
-                    oninput="broadcastNoteAuthorTypingHanlder(this)" />
+                    oninput="broadcastNoteAuthorTypingHanlder(this)" id="note-author" />
                 <div class="note-annotation">Author</div>
             </div>
             <div class="note-form-item note-editor-board">
@@ -54,21 +54,23 @@
             </div>
         </section>
     </section>
-
-    <div id="scroll-to-top">
-        <div class="scroll-to-top-btn" onclick="scrollToTop()" title="Scroll to top">
-            <i class="bi bi-chevron-double-up"></i>
-        </div>
-    </div>
-
-    <div id="bubble-note-settings">
-        <span data-bs-toggle="tooltip" data-bs-placement="left" title="Settings">
-            <div class="bubble-note-settings-btn" data-bs-toggle="modal" data-bs-target="#note-settings-modal">
-                <i class="bi bi-gear-fill"></i>
-            </div>
-        </span>
-    </div>
 </main>
+
+<div id="scroll-to-top">
+    <div class="scroll-to-top-btn" onclick="scrollToTop()" title="Scroll to top">
+        <i class="bi bi-chevron-double-up"></i>
+    </div>
+</div>
+
+<div id="bubble-note-settings">
+    <span data-bs-toggle="tooltip" data-bs-placement="left" title="Settings">
+        <div class="bubble-note-settings-btn" data-bs-toggle="modal" data-bs-target="#note-settings-modal">
+            <i class="bi bi-gear-fill"></i>
+        </div>
+    </span>
+</div>
+
+<div id="night-mode-blender"></div>
 
 <!-- Modal - app settings -->
 <div class="modal" id="note-settings-modal" tabindex="-1">
@@ -136,6 +138,19 @@
                                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
                                             title="When this mode and the realtime mode is both turned off, your note in this device won't be notified to be edited. Click for more details."
                                             class="details-btn">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="form-check form-switch form-group">
+                                    <input class="form-check-input form-field" type="checkbox" id="night-mode-input"
+                                        name="night-mode">
+                                    <div class="info">
+                                        <label class="form-check-label" for="night-mode-input">
+                                            Night mode.
+                                        </label>
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Turn on / turn off night mode (dark mode)." class="details-btn">
                                             <i class="bi bi-info-circle-fill"></i>
                                         </span>
                                     </div>
@@ -266,6 +281,23 @@
                                         id="edited-notify-style-select">
                                         <option value="blink" selected>Blink</option>
                                         <option value="slither">Slither</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="note-form-font-select">
+                                        <span>Change text font</span>
+                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                            title="Change text font for your note" class="details-btn">
+                                            <i class="bi bi-info-circle-fill"></i>
+                                        </span>
+                                    </label>
+                                    <select class="form-select form-field" name="note-form-font"
+                                        id="note-form-font-select">
+                                        <option value="work-sans" selected>Work Sans</option>
+                                        <option value="arial">Arial</option>
+                                        <option value="poppins">Poppins</option>
+                                        <option value="times-new-roman">Times New Roman</option>
+                                        <option value="roboto">Roboto</option>
                                     </select>
                                 </div>
                             </div>

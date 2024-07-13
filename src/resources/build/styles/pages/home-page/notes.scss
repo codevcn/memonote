@@ -9,6 +9,10 @@ $mmn-note-horizon-padding: 80px;
 $mmn-note-margin-top: 15px;
 $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 
+:root {
+    --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
+}
+
 @mixin useful-note-action-btn-styling {
     display: flex;
     align-items: center;
@@ -28,8 +32,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 
 @mixin on-focus-display-note-annotation-styling {
     &:focus {
-        & + .note-annotation {
-            transform: translateX(0) translateY(-50%);
+        & ~ .note-annotation {
             opacity: 1;
         }
     }
@@ -99,14 +102,12 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                     position: absolute;
                     right: calc(100% + 10px);
                     top: 50%;
-                    transform: translate(-10px, -50%);
+                    transform: translate(0, -50%);
                     border-right: 3px $mmn-note-annotaion-border-cl solid;
                     padding-right: 8px;
                     font-size: 0.9rem;
                     opacity: 0;
-                    transition:
-                        opacity 0.15s,
-                        transform 0.15s;
+                    transition: opacity 0.15s;
                     width: max-content;
                     max-width: $mmn-note-horizon-padding;
                     text-align: right;
@@ -123,6 +124,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                         position: relative;
                         z-index: calc(z-indexes.$mmn-base-zidx + 2);
                         line-height: 1rem;
+                        font-family: var(--mmn-note-form-fonf);
 
                         &::placeholder {
                             color: colors.$mmn-regular-gray-cl;
@@ -145,6 +147,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                         position: relative;
                         z-index: calc(z-indexes.$mmn-base-zidx + 2);
                         line-height: 1rem;
+                        font-family: var(--mmn-note-form-fonf);
 
                         &::placeholder {
                             color: colors.$mmn-regular-gray-cl;
@@ -171,29 +174,23 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 
                             .note-annotation {
                                 top: 10px;
-                                transform: translate(-10px, 0);
                             }
 
                             &::after,
                             .note-editor {
                                 grid-area: 1 / 1 / 2 / 2;
                                 width: 100%;
-                                font-family: text-fonts.$mmn-arial-fontf;
+                                font-family: var(--mmn-note-form-fonf);
                                 font-size: $mmn-note-content-font-size;
                             }
 
                             .note-editor {
-                                background-color: colors.$mmn-regular-white-cl;
+                                background-color: transparent;
                                 resize: none;
                                 overflow: hidden;
                                 padding: 0;
 
-                                &:focus {
-                                    & + .note-annotation {
-                                        opacity: 1;
-                                        transform: translate(0, 0);
-                                    }
-                                }
+                                @include on-focus-display-note-annotation-styling;
                             }
 
                             &::after {
@@ -207,7 +204,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                             display: flex;
                             justify-content: space-between;
                             font-size: 0.85rem;
-                            color: colors.$mmn-regular-gray-cl;
+                            color: colors.$mmn-regular-darkgray-cl;
                             line-height: 1;
                             padding-right: 5px;
                             margin-bottom: 5px;

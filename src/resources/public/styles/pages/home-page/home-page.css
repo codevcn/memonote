@@ -1,3 +1,7 @@
+:root {
+    --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
+}
+
 #page-main .notes {
     padding: 0 80px;
     margin-top: 15px;
@@ -51,14 +55,12 @@
     position: absolute;
     right: calc(100% + 10px);
     top: 50%;
-    transform: translate(-10px, -50%);
+    transform: translate(0, -50%);
     border-right: 3px #a5a5a5 solid;
     padding-right: 8px;
     font-size: 0.9rem;
     opacity: 0;
-    transition:
-        opacity 0.15s,
-        transform 0.15s;
+    transition: opacity 0.15s;
     width: max-content;
     max-width: 80px;
     text-align: right;
@@ -73,12 +75,12 @@
     position: relative;
     z-index: 3;
     line-height: 1rem;
+    font-family: var(--mmn-note-form-fonf);
 }
 #page-main .notes .note-form .note-form-item.note-title input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-form .note-form-item.note-title input:focus + .note-annotation {
-    transform: translateX(0) translateY(-50%);
+#page-main .notes .note-form .note-form-item.note-title input:focus ~ .note-annotation {
     opacity: 1;
 }
 #page-main .notes .note-form .note-form-item.note-author {
@@ -94,12 +96,12 @@
     position: relative;
     z-index: 3;
     line-height: 1rem;
+    font-family: var(--mmn-note-form-fonf);
 }
 #page-main .notes .note-form .note-form-item.note-author input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-form .note-form-item.note-author input:focus + .note-annotation {
-    transform: translateX(0) translateY(-50%);
+#page-main .notes .note-form .note-form-item.note-author input:focus ~ .note-annotation {
     opacity: 1;
 }
 #page-main .notes .note-form .note-form-item.note-editor-board {
@@ -130,7 +132,6 @@
     .note-editor-wrapper
     .note-annotation {
     top: 10px;
-    transform: translate(-10px, 0);
 }
 #page-main
     .notes
@@ -147,7 +148,7 @@
     .note-editor {
     grid-area: 1/1/2/2;
     width: 100%;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--mmn-note-form-fonf);
     font-size: 17px;
 }
 #page-main
@@ -157,7 +158,7 @@
     .note-editor-container
     .note-editor-wrapper
     .note-editor {
-    background-color: #fff;
+    background-color: transparent;
     resize: none;
     overflow: hidden;
     padding: 0;
@@ -169,9 +170,8 @@
     .note-editor-container
     .note-editor-wrapper
     .note-editor:focus
-    + .note-annotation {
+    ~ .note-annotation {
     opacity: 1;
-    transform: translate(0, 0);
 }
 #page-main
     .notes
@@ -192,7 +192,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
-    color: #909090;
+    color: #595959;
     line-height: 1;
     padding-right: 5px;
     margin-bottom: 5px;
@@ -360,6 +360,7 @@
     position: fixed;
     bottom: 25px;
     right: 25px;
+    z-index: 11;
 }
 #bubble-note-settings .bubble-note-settings-btn {
     background-color: #18181b;
@@ -405,7 +406,7 @@
     row-gap: 30px;
     justify-content: space-between;
     border-right: 1px lightgray solid;
-    width: 170px;
+    width: 180px;
 }
 #note-settings-modal
     .modal-dialog
@@ -435,7 +436,7 @@
     color: #333;
     text-decoration: none;
     padding: 5px 15px;
-    border-left: 3px #fff solid;
+    border-left: 5px #fff solid;
     cursor: pointer;
     width: 100%;
 }
@@ -456,7 +457,7 @@
     .nav-tabs-list
     .nav-tab.active {
     background-color: #e9e9e9;
-    border-left: 3px #6a6a6a solid;
+    border-left: 5px #6a6a6a solid;
 }
 #note-settings-modal
     .modal-dialog
@@ -792,13 +793,14 @@
     height: 1.2rem;
     width: 2.5rem;
     margin-top: 0;
-    border-color: lightgray;
+    border-color: #909090;
+    border-width: 1.5px;
     cursor: pointer;
 }
 #settings-form-change-modes .form-content .form-group .form-check-input:focus,
 #settings-form-change-modes .form-content .form-group .form-check-input:hover {
     box-shadow: 0 0 0 0.25rem lightgray;
-    border-color: lightgray;
+    border-color: #909090;
 }
 #settings-form-change-modes .form-content .form-group .form-check-input:checked {
     background-color: #18181b;
@@ -894,13 +896,14 @@
     height: 1.2rem;
     width: 2.5rem;
     margin-top: 0;
-    border-color: lightgray;
+    border-color: #909090;
+    border-width: 1.5px;
     cursor: pointer;
 }
 #settings-form-set-password .form-content .form-group.logout-all .form-check-input:focus,
 #settings-form-set-password .form-content .form-group.logout-all .form-check-input:hover {
     box-shadow: 0 0 0 0.25rem lightgray;
-    border-color: lightgray;
+    border-color: #909090;
 }
 #settings-form-set-password .form-content .form-group.logout-all .form-check-input:checked {
     background-color: #18181b;
@@ -925,6 +928,9 @@
     font-size: 1.1rem;
 }
 
+#settings-form-user-interface .form-content .form-group:not(:nth-of-type(1)) {
+    margin-top: 15px;
+}
 #settings-form-user-interface .form-content .form-group label {
     display: flex;
     column-gap: 7px;
@@ -944,12 +950,12 @@
     transform: scale(1.2);
 }
 #settings-form-user-interface .form-content .form-group .form-select {
+    border: 1.5px #909090 solid;
     cursor: pointer;
 }
 #settings-form-user-interface .form-content .form-group .form-select:hover,
 #settings-form-user-interface .form-content .form-group .form-select:focus {
     box-shadow: 0 0 0 0.25rem lightgray;
-    border-color: lightgray;
 }
 
 :root {
@@ -958,7 +964,6 @@
 
 #page-main {
     padding: 10px 50px 100px;
-    z-index: 1;
 }
 #page-main .note-quick-look {
     display: flex;
@@ -1006,6 +1011,7 @@
     transition:
         opacity 0.2s,
         bottom 0.2s;
+    z-index: 11;
 }
 #scroll-to-top.active {
     bottom: 80px;
@@ -1023,9 +1029,9 @@
 }
 #scroll-to-top .scroll-to-top-btn i {
     font-size: 2rem;
-    color: #fff;
     transition: color 0.2s;
     transform: translateY(-1px);
+    color: #fff;
 }
 #scroll-to-top .scroll-to-top-btn:hover {
     background-color: #fff;

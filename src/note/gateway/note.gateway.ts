@@ -61,7 +61,7 @@ export class NoteGateway
     ) {
         let noteUniqueName: string
         try {
-            const result = await this.authService.validateIncommingSocket(clientSocket)
+            const result = await this.authService.validateIncommingMessage(clientSocket)
             noteUniqueName = result.noteUniqueName
         } catch (error) {
             return { data, success: false }
@@ -75,7 +75,7 @@ export class NoteGateway
     async fetchNoteForm(@ConnectedSocket() clientSocket: Socket) {
         let noteUniqueName: string
         try {
-            const result = await this.authService.validateIncommingSocket(clientSocket)
+            const result = await this.authService.validateIncommingMessage(clientSocket)
             noteUniqueName = result.noteUniqueName
         } catch (error) {
             return { data: {}, success: false }

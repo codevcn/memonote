@@ -1,3 +1,7 @@
+:root {
+    --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
+}
+
 #page-main .notes {
     padding: 0 80px;
     margin-top: 15px;
@@ -51,14 +55,12 @@
     position: absolute;
     right: calc(100% + 10px);
     top: 50%;
-    transform: translate(-10px, -50%);
+    transform: translate(0, -50%);
     border-right: 3px #a5a5a5 solid;
     padding-right: 8px;
     font-size: 0.9rem;
     opacity: 0;
-    transition:
-        opacity 0.15s,
-        transform 0.15s;
+    transition: opacity 0.15s;
     width: max-content;
     max-width: 80px;
     text-align: right;
@@ -73,12 +75,12 @@
     position: relative;
     z-index: 3;
     line-height: 1rem;
+    font-family: var(--mmn-note-form-fonf);
 }
 #page-main .notes .note-form .note-form-item.note-title input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-form .note-form-item.note-title input:focus + .note-annotation {
-    transform: translateX(0) translateY(-50%);
+#page-main .notes .note-form .note-form-item.note-title input:focus ~ .note-annotation {
     opacity: 1;
 }
 #page-main .notes .note-form .note-form-item.note-author {
@@ -94,12 +96,12 @@
     position: relative;
     z-index: 3;
     line-height: 1rem;
+    font-family: var(--mmn-note-form-fonf);
 }
 #page-main .notes .note-form .note-form-item.note-author input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-form .note-form-item.note-author input:focus + .note-annotation {
-    transform: translateX(0) translateY(-50%);
+#page-main .notes .note-form .note-form-item.note-author input:focus ~ .note-annotation {
     opacity: 1;
 }
 #page-main .notes .note-form .note-form-item.note-editor-board {
@@ -130,7 +132,6 @@
     .note-editor-wrapper
     .note-annotation {
     top: 10px;
-    transform: translate(-10px, 0);
 }
 #page-main
     .notes
@@ -147,7 +148,7 @@
     .note-editor {
     grid-area: 1/1/2/2;
     width: 100%;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: var(--mmn-note-form-fonf);
     font-size: 17px;
 }
 #page-main
@@ -157,7 +158,7 @@
     .note-editor-container
     .note-editor-wrapper
     .note-editor {
-    background-color: #fff;
+    background-color: transparent;
     resize: none;
     overflow: hidden;
     padding: 0;
@@ -169,9 +170,8 @@
     .note-editor-container
     .note-editor-wrapper
     .note-editor:focus
-    + .note-annotation {
+    ~ .note-annotation {
     opacity: 1;
-    transform: translate(0, 0);
 }
 #page-main
     .notes
@@ -192,7 +192,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
-    color: #909090;
+    color: #595959;
     line-height: 1;
     padding-right: 5px;
     margin-bottom: 5px;

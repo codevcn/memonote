@@ -13,6 +13,8 @@ var ELocalStorageKeys
     ELocalStorageKeys['REALTIME_MODE'] = 'realtime-mode'
     ELocalStorageKeys['NOTE_CHANGES_DISPLAY_MODE'] = 'notify-note-edited-mode'
     ELocalStorageKeys['EDITING_NOTIFY_STYLE'] = 'edited-notify-style'
+    ELocalStorageKeys['NIGHT_MODE'] = 'night-mode'
+    ELocalStorageKeys['NOTE_FORM_TEXT_FONT'] = 'note-form-text-font'
 })(ELocalStorageKeys || (ELocalStorageKeys = {}))
 var ENoteLengths
 ;(function (ENoteLengths) {

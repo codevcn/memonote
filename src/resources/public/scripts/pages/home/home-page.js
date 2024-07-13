@@ -359,8 +359,8 @@ const setStatusOfSettingsForm = (formTarget, type) => {
     formTarget.querySelector('.form-title .status .status-item.saved').hidden = !isSaved
     formTarget.querySelector('.form-title .status .status-item.unsaved').hidden = isSaved
 }
-const setRealtimeModeHandler = (type) => {
-    if (type === 'sync') {
+const setRealtimeModeHandler = (status) => {
+    if (status && status === 'on') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
         const currentRealtimeMode = getRealtimeModeInDevice()
         if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
@@ -369,7 +369,22 @@ const setRealtimeModeHandler = (type) => {
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')
     }
-    setRealtimeModeInDevice(type)
+    setRealtimeModeInDevice(status ? 'sync' : 'stop')
+}
+const setNightModeHandler = (status) => {
+    const blender = document.getElementById('night-mode-blender')
+    if (status && status === 'on') {
+        blender.classList.add('active-z-index', 'blend')
+        setNightModeInDevice('on')
+    } else {
+        const duration =
+            parseFloat(getCssVariable('--mmn-blender-transition-duration').split('s')[0]) * 1000
+        setTimeout(() => {
+            blender.classList.remove('active-z-index')
+        }, duration)
+        blender.classList.remove('blend')
+        setNightModeInDevice('off')
+    }
 }
 const saveSettingsChangeModes = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -378,28 +393,29 @@ const saveSettingsChangeModes = (e) =>
         const formData = new FormData(form)
         const realtimeMode = formData.get('realtime-mode')
         const notifyNoteEditedMode = formData.get('notify-note-edited')
-        if (realtimeMode) {
-            if (realtimeMode === 'on') {
-                setRealtimeModeHandler('sync')
-            }
-        } else {
-            setRealtimeModeHandler('stop')
-        }
-        if (notifyNoteEditedMode) {
-            setNotifyNoteEditedModeInDevice('on')
-        } else {
-            setNotifyNoteEditedModeInDevice('off')
-        }
+        const nightMode = formData.get('night-mode')
+        setRealtimeModeHandler(realtimeMode)
+        setNotifyNoteEditedModeInDevice(notifyNoteEditedMode ? 'on' : 'off')
+        setNightModeHandler(nightMode)
         setStatusOfSettingsForm(form, 'saved')
     })
+const changeNoteFormTextFontHandler = (font) => {
+    const textFont = convertToCssFontFamily(font)
+    document.documentElement.style.setProperty('--mmn-note-form-fonf', textFont)
+    setNoteFormTextFontInDevice(font)
+}
 const saveSettingsUserInterface = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
         const form = e.target
         const formData = new FormData(form)
         const editedNotifyStyle = formData.get('edited-notify-style')
+        const noteFormFont = formData.get('note-form-font')
         if (editedNotifyStyle) {
             setEditedNotifyStyleInDevice(editedNotifyStyle)
+        }
+        if (noteFormFont) {
+            changeNoteFormTextFontHandler(noteFormFont)
         }
         setStatusOfSettingsForm(form, 'saved')
     })
@@ -465,6 +481,18 @@ const initPage = () => {
             editedNotifyStyleSelect.value = editedNotifyStyle
         }
     }
+    // setup "note form text font"
+    const noteFormTextFont = getNoteFormTextFontInDevice()
+    const noteFormTextFontSelect = document.getElementById('note-form-font-select')
+    if (noteFormTextFont) {
+        changeNoteFormTextFontHandler(noteFormTextFont)
+        const optionExists = Array.from(noteFormTextFontSelect.options).some(
+            (option) => option.value === noteFormTextFont,
+        )
+        if (optionExists) {
+            noteFormTextFontSelect.value = noteFormTextFont
+        }
+    }
     const userInterfaceForm = document.getElementById('settings-form-user-interface')
     const userInterfaceFormSelects = userInterfaceForm.querySelectorAll('.form-field')
     for (const userInterfaceFormInput of userInterfaceFormSelects) {
@@ -490,5 +518,12 @@ const initPage = () => {
             scrollToTopBtn.classList.remove('active')
         }
     })
+    // setup "night mode"
+    const nightMode = getNightModeInDevice()
+    if (nightMode && nightMode === 'on') {
+        const nightModeInput = document.getElementById('night-mode-input')
+        nightModeInput.checked = true
+        setNightModeHandler('on')
+    }
 }
 initPage()

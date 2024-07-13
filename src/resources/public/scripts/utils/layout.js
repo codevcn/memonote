@@ -151,7 +151,7 @@ class LayoutController {
     }
 }
 LayoutController.NOTIFICATION_TIMEOUT = 3000
-LayoutController.GENERAL_STATUS_TIMEOUT = 3000
+LayoutController.GENERAL_STATUS_TIMEOUT = 300000
 LayoutController.toasterAnimationFlag = true
 LayoutController.toasterTimer = null
 LayoutController.generalAppStatus = document.getElementById('general-app-status')
