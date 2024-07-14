@@ -14,7 +14,8 @@ $mmn-scrollbar-on-blur-cl: rgba(153, 153, 153, 0.333);
 $mmn-load-more-notifications: #e68500;
 
 :root {
-    --mmn-blender-transition-duration: 0.8s;
+    --mmn-blender-transition-duration: 0.5s;
+    --mmn-mix-blend-mode-reversed: normal;
 }
 
 /* @rules
@@ -250,6 +251,8 @@ h6 {
 }
 
 #general-app-status {
+    mix-blend-mode: var(--mmn-mix-blend-mode-reversed);
+
     i {
         font-size: 1.4rem;
 
@@ -806,22 +809,30 @@ h6 {
 
 #night-mode-blender {
     position: fixed;
-    bottom: 27px;
-    right: 27px;
+    bottom: 0;
+    left: 0;
     height: 40px;
     width: 40px;
     border-radius: 50%;
     pointer-events: none;
     mix-blend-mode: difference;
+    transform: scale(0);
     background-color: colors.$mmn-night-mode-diff-cl;
-    transition: transform var(--mmn-blender-transition-duration);
-    z-index: z-indexes.$mmn-base-zidx + 9;
+    transition:
+        transform var(--mmn-blender-transition-duration),
+        height var(--mmn-blender-transition-duration),
+        width var(--mmn-blender-transition-duration);
+    z-index: z-indexes.$mmn-night-mode-blender-zidx;
 
     &.blend {
         transform: scale(100);
     }
-    &.active-z-index {
-        z-index: z-indexes.$mmn-night-mode-blender-zidx;
+    &.end-transition {
+        transition: none;
+        width: 100%;
+        height: 100%;
+        transform: scale(100);
+        border-radius: 0;
     }
 }
 

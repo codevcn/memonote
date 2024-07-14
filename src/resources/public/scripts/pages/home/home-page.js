@@ -371,18 +371,22 @@ const setRealtimeModeHandler = (status) => {
     }
     setRealtimeModeInDevice(status ? 'sync' : 'stop')
 }
+let blenderTimer = undefined
 const setNightModeHandler = (status) => {
     const blender = document.getElementById('night-mode-blender')
+    clearTimeout(blenderTimer)
     if (status && status === 'on') {
-        blender.classList.add('active-z-index', 'blend')
-        setNightModeInDevice('on')
-    } else {
+        writeCssVariable('--mmn-mix-blend-mode-reversed', 'difference')
+        blender.classList.add('blend')
         const duration =
             parseFloat(getCssVariable('--mmn-blender-transition-duration').split('s')[0]) * 1000
-        setTimeout(() => {
-            blender.classList.remove('active-z-index')
-        }, duration)
-        blender.classList.remove('blend')
+        blenderTimer = setTimeout(() => {
+            blender.classList.add('end-transition')
+        }, duration / 3)
+        setNightModeInDevice('on')
+    } else {
+        writeCssVariable('--mmn-mix-blend-mode-reversed', 'normal')
+        blender.classList.remove('blend', 'end-transition')
         setNightModeInDevice('off')
     }
 }
@@ -401,7 +405,7 @@ const saveSettingsChangeModes = (e) =>
     })
 const changeNoteFormTextFontHandler = (font) => {
     const textFont = convertToCssFontFamily(font)
-    document.documentElement.style.setProperty('--mmn-note-form-fonf', textFont)
+    writeCssVariable('--mmn-note-form-fonf', textFont)
     setNoteFormTextFontInDevice(font)
 }
 const saveSettingsUserInterface = (e) =>

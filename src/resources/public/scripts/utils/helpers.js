@@ -104,3 +104,6 @@ const getNoteFormTextFontInDevice = () => {
 const setNoteFormTextFontInDevice = (font) => {
     localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
 }
+const writeCssVariable = (cssVarName, value) => {
+    document.documentElement.style.setProperty(cssVarName, value)
+}

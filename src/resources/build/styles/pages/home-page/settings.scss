@@ -4,7 +4,7 @@
 @use '../../global/z-indexes';
 
 $mmn-settings-navigation-container-width: 180px;
-$mmn-settings-nav-item-bgcl: #e9e9e9;
+$mmn-settings-nav-item-bgcl: #ececec;
 
 @mixin modal-header-styling {
     .btn-close:focus {
@@ -242,14 +242,15 @@ $mmn-settings-nav-item-bgcl: #e9e9e9;
                                 color: colors.$mmn-regular-black-cl;
                                 text-decoration: none;
                                 padding: 5px 15px;
-                                border-left: 5px colors.$mmn-regular-white-cl solid;
+                                border: 1.5px transparent solid;
+                                border-left-width: 3px;
                                 cursor: pointer;
                                 width: 100%;
 
                                 &:hover,
                                 &.active {
                                     background-color: $mmn-settings-nav-item-bgcl;
-                                    border-left: 5px darken($mmn-settings-nav-item-bgcl, 50%) solid;
+                                    border-color: darken($mmn-settings-nav-item-bgcl, 50%);
                                 }
                             }
                         }

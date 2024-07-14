@@ -409,18 +409,25 @@ const setRealtimeModeHandler = (status: TFormCheckValues): void => {
     setRealtimeModeInDevice(status ? 'sync' : 'stop')
 }
 
+let blenderTimer: ReturnType<typeof setTimeout> | undefined = undefined
 const setNightModeHandler = (status: TFormCheckValues): void => {
     const blender = document.getElementById('night-mode-blender') as HTMLElement
+    clearTimeout(blenderTimer)
     if (status && status === 'on') {
-        blender.classList.add('active-z-index', 'blend')
-        setNightModeInDevice('on')
-    } else {
+        writeCssVariable('--mmn-mix-blend-mode-reversed', 'difference')
+
+        blender.classList.add('blend')
         const duration =
             parseFloat(getCssVariable('--mmn-blender-transition-duration').split('s')[0]) * 1000
-        setTimeout(() => {
-            blender.classList.remove('active-z-index')
-        }, duration)
-        blender.classList.remove('blend')
+        blenderTimer = setTimeout(() => {
+            blender.classList.add('end-transition')
+        }, duration / 3)
+
+        setNightModeInDevice('on')
+    } else {
+        writeCssVariable('--mmn-mix-blend-mode-reversed', 'normal')
+        blender.classList.remove('blend', 'end-transition')
+
         setNightModeInDevice('off')
     }
 }
@@ -448,7 +455,7 @@ type TPasswordTabTypes = 'set-password' | 'remove-password'
 
 const changeNoteFormTextFontHandler = (font: TNoteFormTextFonts): void => {
     const textFont = convertToCssFontFamily(font)
-    document.documentElement.style.setProperty('--mmn-note-form-fonf', textFont)
+    writeCssVariable('--mmn-note-form-fonf', textFont)
     setNoteFormTextFontInDevice(font)
 }
 
