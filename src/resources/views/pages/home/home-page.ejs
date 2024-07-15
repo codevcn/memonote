@@ -11,12 +11,12 @@
     <%- include('../../partials/nav-bar') %>
     <%- include('./main') %>
     <%- include('../../partials/page-bottom') %>
-    <%- include('../../partials/doc-script') %>
     <script>
         const pageData = {
             noteId: '<%= note.noteId %>'
         }
     </script>
+    <%- include('../../partials/doc-scripts') %>
     <script src="/scripts/pages/home/socket.js" defer></script>
     <script src="/scripts/pages/home/home-page.js" defer></script>
 </body>

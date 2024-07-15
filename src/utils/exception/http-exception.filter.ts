@@ -3,9 +3,11 @@ import type { Request, Response } from 'express'
 import { HttpExceptionValidation } from '../validation/http-exception.validation'
 import type { THttpExceptionResBody } from '../types'
 import { ClientViewPages } from '../application/view-pages'
+import { I18nContext } from 'nestjs-i18n'
+import type { IHomePageTranslations } from '../../lang/i18n.generated'
 
 @Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
+export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     constructor(private httpExceptionValidation: HttpExceptionValidation) {}
 
     private isAPIException(request: Request): boolean {
@@ -17,7 +19,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp()
         const response = ctx.getResponse<Response<THttpExceptionResBody>>()
         const request = ctx.getRequest<Request>()
+        const i18n = I18nContext.current<IHomePageTranslations>(host)
+
         const validatedException = this.httpExceptionValidation.validateException(exception)
+
         if (this.isAPIException(request)) {
             response.status(validatedException.status).json({
                 name: validatedException.name,
@@ -25,6 +30,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 timestamp: new Date(),
                 isUserException: validatedException.isUserException,
                 status: validatedException.status,
+                lang: i18n?.lang || 'unknown',
             })
         } else {
             if (validatedException.status === HttpStatus.NOT_FOUND) {

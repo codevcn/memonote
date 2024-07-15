@@ -1,0 +1,13 @@
+{
+    "Realtime_Mode": "Realtime Mode",
+    "Notifications": "Notifications",
+    "Close_notifications": "Close notifications",
+    "Notifications_tooltip": "This section shows up your activities such as changing password, removing pasword, and more... Click for more details.",
+    "About_Us": "About Us",
+    "FAQ": "FAQ",
+    "All": "All",
+    "New": "New",
+    "Empty_notification": "This note has no notification.",
+    "Load_more": "More Notifications",
+    "Empty_new_notification": "There's no new notification now."
+}

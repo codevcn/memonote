@@ -9,7 +9,7 @@ import { EAuthEncryption } from './enums'
 import type { TNoteForm } from './types'
 import { AddPasswordForNotePayloadDTO } from './DTOs'
 import { UserSessions } from './gateway/sessions'
-import { ENotificationTypes } from '@/notification/enums'
+import { ENotificationTypes, EEngNotifMessages } from '@/notification/enums'
 import path from 'path'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ENoteMessages } from './messages'
@@ -28,7 +28,7 @@ export class NoteService {
     }
 
     async createNewNote(noteUniqueName: string): Promise<TNoteDocument> {
-        return await this.noteModel.create({ uniqueName: noteUniqueName })
+        return await this.noteModel.create({ uniqueName: noteUniqueName, status: { active: true } })
     }
 
     async updateNoteForm(noteUniqueName: string, noteForm: TNoteForm): Promise<void> {
@@ -116,8 +116,8 @@ export class NoteService {
             UserSessions.logoutUserSessions(noteUniqueName, jwt)
         }
 
-        await this.notificationService.createNotifHandler(note.id, note.uniqueName, {
-            message: 'Password has been changed by user',
+        await this.notificationService.createNewNotifHandler(note.id, note.uniqueName, {
+            message: EEngNotifMessages.SET_PASSWORD,
             type: ENotificationTypes.SET_PASSWORD,
             createdAt: setPasswordDate,
         })
@@ -137,8 +137,8 @@ export class NoteService {
             },
         )
         const removePasswordDate = new Date()
-        await this.notificationService.createNotifHandler(note.id, note.uniqueName, {
-            message: 'Password has been removed by user',
+        await this.notificationService.createNewNotifHandler(note.id, note.uniqueName, {
+            message: EEngNotifMessages.REMOVE_PASSWORD,
             type: ENotificationTypes.REMOVE_PASSWORD,
             createdAt: removePasswordDate,
         })

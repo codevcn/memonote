@@ -8,7 +8,7 @@ export class ApplicationService {
     private applicationFileName: string = 'application.yml'
 
     async getApplicationInfo(): Promise<TApplicationInfo> {
-        const file = await readFile(`application/${this.applicationFileName}`, 'utf8')
+        const file = await readFile(`src/utils/application/${this.applicationFileName}`, 'utf8')
         const appInfo = yaml.load(file) as TApplication
         return appInfo.info
     }

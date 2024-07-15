@@ -11,20 +11,21 @@
 
     <section class="right-side-menu">
         <div class="menu-item realtime-mode-display inactive" data-bs-toggle="tooltip" data-bs-placement="bottom"
-            title="Realtime Mode">
+            title="<%= t('home-page.Realtime_Mode',i18nLang) %>">
             <div class="display-icon">
                 <i class="bi bi-arrow-repeat"></i>
             </div>
         </div>
 
-        <a href="/menu/about" class="menu-item">About Us</a>
+        <a href="/menu/about" class="menu-item"><%= t('home-page.About_Us',i18nLang) %></a>
 
-        <a href="/menu/faq" class="menu-item">FAQ</a>
+        <a href="/menu/faq" class="menu-item"><%= t('home-page.FAQ',i18nLang) %></a>
 
         <% if (verified) { %>
         <div class="menu-item notification">
             <div class="notification-btn" onclick="NotificationsController.showNotificationsBoard(true)"
-                data-bs-toggle="tooltip" data-bs-placement="bottom" title="Notifications">
+                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="<%= t('home-page.Notifications',i18nLang) %>">
                 <div class="icon-wrapper">
                     <i class="bi bi-bell-fill"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
@@ -38,25 +39,26 @@
 
                 <div class="notifs-content tab-navigator">
                     <div class="close-btn" onclick="NotificationsController.showNotificationsBoard(false)"
-                        data-bs-toggle="tooltip" data-bs-placement="left" title="Close notifications">
+                        data-bs-toggle="tooltip" data-bs-placement="left"
+                        title="<%= t('home-page.Close_notifications',i18nLang) %>">
                         <i class="bi bi-x-circle-fill"></i>
                     </div>
 
                     <div class="title-box">
-                        <h2 class="title">Notifications</h2>
+                        <h2 class="title"><%= t('home-page.Notifications',i18nLang) %></h2>
                         <span class="details-btn" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="This section shows up your activities such as changing password, removing pasword, and more... Click for more details.">
+                            title="<%= t('home-page.Notifications_tooltip',i18nLang) %>">
                             <i class="bi bi-question-circle-fill"></i>
                         </span>
                     </div>
 
                     <div class="nav-tabs-list">
                         <button class="nav-tab active" data-mmn-tab-value="all">
-                            <span class="label">All</span>
+                            <span class="label"><%= t('home-page.All',i18nLang) %></span>
                             <span class="count">0</span>
                         </button>
                         <button class="nav-tab" data-mmn-tab-value="is-new">
-                            <span class="label">New</span>
+                            <span class="label"><%= t('home-page.New',i18nLang) %></span>
                             <span class="count">0</span>
                         </button>
                     </div>
@@ -64,19 +66,19 @@
                     <div class="notifs-scroller all nav-destination active">
                         <div class="notifs">
                             <div class="empty-message">
-                                <span>This note has no notification.</span>
+                                <span><%= t('home-page.Empty_notification',i18nLang) %></span>
                                 <span>¯\_(ツ)_/¯</span>
                             </div>
                         </div>
                         <span class="load-more-btn" onclick="NotificationsController.loadMoreNotifs()">
-                            <span>More Notifications</span>
+                            <span><%= t('home-page.Load_more',i18nLang) %></span>
                         </span>
                     </div>
 
                     <div class="notifs-scroller is-new nav-destination">
                         <div class="notifs">
                             <div class="empty-message">
-                                <span>There's no new notification now.</span>
+                                <span><%= t('home-page.Empty_new_notification',i18nLang) %></span>
                                 <span>¯\_(ツ)_/¯</span>
                             </div>
                         </div>

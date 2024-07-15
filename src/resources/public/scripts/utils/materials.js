@@ -18,21 +18,13 @@ class Materials {
         if (notifData.isNew) {
             notif.classList.add('is-new')
         }
-        let notifType = 'Remind'
-        switch (notifData.type) {
-            case ENotificationTypes.SET_PASSWORD:
-                notifType = 'Set password'
-                break
-            case ENotificationTypes.REMOVE_PASSWORD:
-                notifType = 'Remove password'
-                break
-        }
+        const translation = notifData.translation
         notif.innerHTML = `
             <div class="notif-content">
-                <p class="title">${notifData.message}</p>
+                <p class="title">${translation.message}</p>
                 <div class="d-flex column-gap-2 mt-1">
-                    <span class="notif-type">${notifType}</span>
-                    <span class="time-ago">${calculateTimeDifference(notifData.createdAt)} ago</span>
+                    <span class="notif-type">${translation.type}</span>
+                    <span class="time-ago">${calculateTimeDifference(translation.createdAt)} ago</span>
                 </div>
             </div>`
         return notif

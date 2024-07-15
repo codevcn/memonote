@@ -146,10 +146,6 @@ class LayoutController {
     }
 }
 
-type TNotifData = TNotif & {
-    isNew: boolean
-}
-
 type TNotifCategory = 'all' | 'is-new'
 
 class NotificationsController {

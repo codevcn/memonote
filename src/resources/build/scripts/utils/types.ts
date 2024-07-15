@@ -45,10 +45,20 @@ type TNoteFormTextFonts = 'work-sans' | 'arial' | 'poppins' | 'times-new-roman' 
 
 type TFormCheckValues = null | 'on'
 
+type TTranslationNotif = {
+    message: string
+    type: string
+    createdAt: string
+}
+
 type TNotif = {
     _id: string
-    title: string
     message: string
     type: ENotificationTypes
     createdAt: string
+    translation: TTranslationNotif
+}
+
+type TNotifData = TNotif & {
+    isNew: boolean
 }

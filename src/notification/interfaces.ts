@@ -5,5 +5,6 @@ export interface INotificationController {
     getNotifications: (
         params: GetNotifsParamsDTO,
         body: GetNotifsBodyDTO,
+        lang: string,
     ) => Promise<TGetNotifsReturn>
 }

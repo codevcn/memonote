@@ -8,6 +8,7 @@ export type THttpExceptionResBody = {
     timestamp: Date
     isUserException: boolean
     status: number
+    lang: string
 }
 
 export type TCustomExceptionPayload = {

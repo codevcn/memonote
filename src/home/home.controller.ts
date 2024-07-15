@@ -62,22 +62,21 @@ export class HomeController implements IHomeController {
                         }),
                     )
                 }
-            } else {
-                return res.status(HttpStatus.OK).render(
-                    ClientViewPages.home,
-                    createServerData<THomePagePageData>({
-                        verified: true,
-                        appInfo,
-                        note: {
-                            content: note.content,
-                            title: note.title,
-                            author: note.author,
-                            passwordSet: false,
-                            noteId: note._id.toString(),
-                        },
-                    }),
-                )
             }
+            return res.status(HttpStatus.OK).render(
+                ClientViewPages.home,
+                createServerData<THomePagePageData>({
+                    verified: true,
+                    appInfo,
+                    note: {
+                        content: note.content,
+                        title: note.title,
+                        author: note.author,
+                        passwordSet: false,
+                        noteId: note._id.toString(),
+                    },
+                }),
+            )
         }
         try {
             const createdNote = await this.noteService.createNewNote(noteUniqueName)

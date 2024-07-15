@@ -10,7 +10,7 @@ export class Status {
     @Prop({ required: true })
     active: boolean
 
-    @Prop({ required: true })
+    @Prop()
     message: string
 }
 
@@ -39,11 +39,8 @@ export class Note {
     })
     password: string
 
-    @Prop({ type: Status })
+    @Prop({ type: Status, required: true })
     status: Status
-
-    @Prop({ default: Date.now, required: true })
-    updatedAt?: Date
 
     @Prop({ default: Date.now, required: true })
     createdAt?: Date

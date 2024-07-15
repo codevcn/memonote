@@ -1,17 +1,22 @@
 import { Module } from '@nestjs/common'
 import * as path from 'path'
-import { AcceptLanguageResolver, I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n'
+import { AcceptLanguageResolver, CookieResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n'
 
 @Module({
     imports: [
         I18nModule.forRoot({
             fallbackLanguage: 'en',
+            fallbacks: {
+                vi: 'vi',
+            },
             loaderOptions: {
-                path: path.join(__dirname, '/i18n/'),
+                path: path.join(__dirname, '../lang/i18n/'),
                 watch: true,
             },
-            resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
+            resolvers: [new CookieResolver(['lang']), AcceptLanguageResolver],
             viewEngine: 'ejs',
+            typesOutputPath: path.join(__dirname, '../lang/i18n.generated.ts'),
+            loader: I18nJsonLoader,
         }),
     ],
     controllers: [],

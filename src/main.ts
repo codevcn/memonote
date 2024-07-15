@@ -18,8 +18,8 @@ async function bootstrap() {
     app.use(cookieParser())
 
     // ejs
-    app.useStaticAssets(join(__dirname, '..', `src/${resourcesFolder}/public`))
-    app.setBaseViewsDir(join(__dirname, '..', `src/${resourcesFolder}/views`))
+    app.useStaticAssets(join(__dirname, `../src/${resourcesFolder}/public`))
+    app.setBaseViewsDir(join(__dirname, `../src/${resourcesFolder}/views`))
     app.setViewEngine('ejs')
 
     // validation

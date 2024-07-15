@@ -7,7 +7,19 @@ export type TNewNotif = {
     createdAt: Date
 }
 
+export type TTranslationNotif = Notification & {
+    translation: {
+        message: string
+        type: string
+        createdAt: string
+    }
+}
+
 export type TGetNotifsReturn = {
-    notifs: Notification[]
+    notifs: TTranslationNotif[]
     isEnd: boolean
+}
+
+export type TGetNotifTranslationReturn = {
+    message: string
 }

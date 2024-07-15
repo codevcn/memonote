@@ -8,7 +8,7 @@ import { AuthModule } from './auth/auth.module'
 import { NotificationModule } from './notification/notification.module'
 import { initEventEmitter } from './configs/event-emitter'
 import { HealthcheckModule } from './healthcheck/healthcheck.module'
-// import { I18nConfigModule } from './configs/init-i18n'
+import { I18nConfigModule } from './configs/init-i18n'
 
 @Module({
     imports: [
@@ -16,7 +16,7 @@ import { HealthcheckModule } from './healthcheck/healthcheck.module'
         connectToDB(),
         configJWT(),
         DBModelsModule,
-        // I18nConfigModule,
+        I18nConfigModule,
         HomeModule,
         NoteModule,
         AuthModule,
