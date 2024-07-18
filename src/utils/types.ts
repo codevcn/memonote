@@ -1,3 +1,5 @@
+import type { TApplicationInfo } from '@/utils/application/types'
+
 export type TSuccess = {
     success: boolean // always true
 }
@@ -21,4 +23,9 @@ export type TCustomExceptionPayload = {
 
 export type TRedirectController = {
     url: string
+}
+
+export type TCommonPageData = {
+    appInfo: TApplicationInfo
+    verified: boolean
 }

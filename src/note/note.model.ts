@@ -43,7 +43,7 @@ export class Note {
     status: Status
 
     @Prop({ default: Date.now, required: true })
-    createdAt?: Date
+    createdAt: Date
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note)

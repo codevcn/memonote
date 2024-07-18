@@ -21,7 +21,7 @@ export class Notification {
     type: ENotificationTypes
 
     @Prop({ default: Date.now, required: true })
-    createdAt?: Date
+    createdAt: Date
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification)

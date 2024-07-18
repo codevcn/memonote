@@ -1,13 +1,65 @@
 {
-    "Realtime_Mode": "Realtime Mode",
-    "Notifications": "Notifications",
-    "Close_notifications": "Close notifications",
-    "Notifications_tooltip": "This section shows up your activities such as changing password, removing pasword, and more... Click for more details.",
-    "About_Us": "About Us",
-    "FAQ": "FAQ",
-    "All": "All",
-    "New": "New",
-    "Empty_notification": "This note has no notification.",
-    "Load_more": "More Notifications",
-    "Empty_new_notification": "There's no new notification now."
+    "Scroll_to_top": "Scroll to top",
+    "settings": {
+        "Settings": "Settings",
+        "changeModes": {
+            "Change_Modes": "Change Modes",
+            "Realtime_mode_tooltip": "When enabled, your note in this device will be updated in real-time. Click for more details.",
+            "Notify_edited_tooltip": "When this mode and the realtime mode is both turned off, your note in this device won't be notified to be edited. Click for more details.",
+            "Night_mode_tooltip": "Turn on / turn off night mode (dark mode).",
+            "Realtime_mode_label": "Real-time mode in this device",
+            "Notify_edited_label": "Notify note has been edited",
+            "Night_mode_label": "Night mode"
+        },
+        "password": {
+            "Password": "Password",
+            "Password_has_been_set": "Password has been set",
+            "Logout_all_users_tooltip": "When enabled, logout all other users also currently using this note after changing password successfully.",
+            "Add_Or_Change_Password": "Add Or Change Password",
+            "Remove_Password": "Remove Password",
+            "Add_Or_Change_Password_title": "Add Or Change Password For This Note",
+            "Add_Or_Change_Password_helper_text": "At least four characters",
+            "Logout_all_users": "Logout all other users.",
+            "Remove_Password_title": "Remove Password From This Note",
+            "Remove_Password_confirm": "Confirm to remove password from this note?",
+            "Unset_password": "You haven't set password for this note.",
+            "Change_Password": "Change Password",
+            "Add_Password": "Add Password",
+            "Enter_password_here": "Enter password here..."
+        },
+        "userInterface": {
+            "User_Interface": "User Interface",
+            "User_Interface_title": "Change User Interface",
+            "Notify_edited_styling_title": "Editing note notification styling",
+            "Blink": "Blink",
+            "Slither": "Slither",
+            "Notify_edited_styling_tooltip": "Change how your note will be notified to be edited",
+            "Change_text_font_title": "Change text font",
+            "Change_text_font_tooltip": "Change text font for your note"
+        },
+        "language": {
+            "Language": "Language",
+            "Change_language_label": "Change language",
+            "Change_language_tootlip": "Change language for your note.",
+            "langs": {
+                "en": "English",
+                "vi": "Vietnamese"
+            }
+        },
+        "Logout": "Logout",
+        "Save_Changes": "Save Changes",
+        "Submit": "Submit",
+        "Saved": "saved",
+        "Unsaved": "unsaved",
+        "Close": "Close",
+        "Confirm": "Confirm"
+    },
+    "noteForm": {
+        "Title_placeholder": "Add a title...",
+        "Author_placeholder": "Add an author...",
+        "Content_placeholder": "Write your note here...",
+        "Note_annotation_Title": "Title",
+        "Note_annotation_Author": "Author",
+        "Note_annotation_Content": "Your Note"
+    }
 }

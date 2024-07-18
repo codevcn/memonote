@@ -1,14 +1,13 @@
-import type { TJWTPayload, TSendJWTParamOptions } from './types'
+import type { TJwtCookieOptions, TJWTPayload, TSendJWTParamOptions } from './types'
 import { JwtService } from '@nestjs/jwt'
 import { Injectable } from '@nestjs/common'
-import type { IJWTService } from './interfaces'
 import ms from 'ms'
 import type { Response, Request, CookieOptions } from 'express'
 import * as cookieParser from 'cookie'
 
 @Injectable()
-export class JWTService implements IJWTService {
-    jwtCookieOptions = {
+export class JWTService {
+    private readonly jwtCookieOptions: TJwtCookieOptions = {
         maxAge: ms(process.env.JWT_MAX_AGE_IN_HOUR),
         domain: process.env.APPLICATION_DOMAIN_DEV,
         path: '/',

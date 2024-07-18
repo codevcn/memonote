@@ -9,6 +9,7 @@ import { NotificationModule } from './notification/notification.module'
 import { initEventEmitter } from './configs/event-emitter'
 import { HealthcheckModule } from './healthcheck/healthcheck.module'
 import { I18nConfigModule } from './configs/init-i18n'
+import { LangModule } from './lang/lang.module'
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { I18nConfigModule } from './configs/init-i18n'
         AuthModule,
         NotificationModule,
         initEventEmitter(),
+        LangModule,
         HealthcheckModule,
     ],
 })

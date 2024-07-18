@@ -9,11 +9,14 @@ import { EAuthEncryption } from './enums'
 import type { TNoteForm } from './types'
 import { AddPasswordForNotePayloadDTO } from './DTOs'
 import { UserSessions } from './gateway/sessions'
-import { ENotificationTypes, EEngNotifMessages } from '@/notification/enums'
+import { ENotificationTypes } from '@/notification/enums'
 import path from 'path'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ENoteMessages } from './messages'
 import { NotificationService } from '@/notification/notification.service'
+import { I18nService } from 'nestjs-i18n'
+import type { IDataI18nTranslations } from '@/lang/i18n.generated'
+import { ELangCodes } from '@/lang/enums'
 
 @Injectable()
 export class NoteService {
@@ -21,6 +24,7 @@ export class NoteService {
         @InjectModel(Note.name) private noteModel: TNoteModel,
         private jwtService: JWTService,
         private notificationService: NotificationService,
+        private i18n: I18nService<IDataI18nTranslations>,
     ) {}
 
     async findNote(noteUniqueName: string): Promise<TNoteDocument | null> {
@@ -29,6 +33,16 @@ export class NoteService {
 
     async createNewNote(noteUniqueName: string): Promise<TNoteDocument> {
         return await this.noteModel.create({ uniqueName: noteUniqueName, status: { active: true } })
+    }
+
+    async createNewNoteHandler(noteUniqueName: string): Promise<TNoteDocument> {
+        const note = await this.createNewNote(noteUniqueName)
+        await this.notificationService.createNewNotif(note._id.toString(), {
+            createdAt: new Date(),
+            message: this.i18n.t('notification.message.Create_new_note', { lang: ELangCodes.EN }),
+            type: ENotificationTypes.CREATE_NEW_NOTE,
+        })
+        return note
     }
 
     async updateNoteForm(noteUniqueName: string, noteForm: TNoteForm): Promise<void> {
@@ -117,7 +131,7 @@ export class NoteService {
         }
 
         await this.notificationService.createNewNotifHandler(note.id, note.uniqueName, {
-            message: EEngNotifMessages.SET_PASSWORD,
+            message: this.i18n.t('notification.message.Set_password', { lang: ELangCodes.EN }),
             type: ENotificationTypes.SET_PASSWORD,
             createdAt: setPasswordDate,
         })
@@ -138,7 +152,7 @@ export class NoteService {
         )
         const removePasswordDate = new Date()
         await this.notificationService.createNewNotifHandler(note.id, note.uniqueName, {
-            message: EEngNotifMessages.REMOVE_PASSWORD,
+            message: this.i18n.t('notification.message.Remove_password', { lang: ELangCodes.EN }),
             type: ENotificationTypes.REMOVE_PASSWORD,
             createdAt: removePasswordDate,
         })

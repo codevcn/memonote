@@ -1,12 +1,12 @@
-import type { TApplicationInfo } from '@/utils/application/types'
+import type { TCommonPageData } from '@/utils/types'
 
 export type TRedirectHomePage = {
     url: string
 }
 
-export type TCommonPageData = {
-    appInfo: TApplicationInfo
-    verified: boolean
+export type TUILanguage = {
+    code: string
+    label: string
 }
 
 export type THomePagePageData = TCommonPageData & {
@@ -17,4 +17,13 @@ export type THomePagePageData = TCommonPageData & {
         passwordSet: boolean | null
         noteId: string
     }
+    settings: {
+        langs: TUILanguage[]
+        currentLang: string
+    }
+}
+
+export type TDataLanguage = {
+    en: 'English'
+    vi: 'Vietnamese'
 }

@@ -63,41 +63,6 @@ function getCssVariable(variableName: string): string {
     return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
 }
 
-function calculateTimeDifference(inputTime: string): string {
-    const now = dayjs()
-    const specifiedTime = dayjs(inputTime)
-    const differenceInSeconds = Math.abs(now.diff(specifiedTime, 'second'))
-    let timeUnit: string
-    let timeCount: number = 0
-
-    if (differenceInSeconds >= 31536000) {
-        // greater than 12 months
-        timeCount = Math.floor(differenceInSeconds / 31536000)
-        timeUnit = 'y'
-    } else if (differenceInSeconds >= 2678400) {
-        // greater than 31 days
-        timeCount = Math.floor(differenceInSeconds / 2678400)
-        timeUnit = 'm'
-    } else if (differenceInSeconds >= 86400) {
-        // greater than 24 hours
-        timeCount = Math.floor(differenceInSeconds / 86400)
-        timeUnit = 'd'
-    } else if (differenceInSeconds >= 3600) {
-        // greater than 60 minutes
-        timeCount = Math.floor(differenceInSeconds / 3600)
-        timeUnit = 'h'
-    } else if (differenceInSeconds >= 60) {
-        // greater than 60 seconds
-        timeCount = Math.floor(differenceInSeconds / 60)
-        timeUnit = 'm'
-    } else {
-        timeCount = differenceInSeconds // seconds gap
-        timeUnit = 's'
-    }
-
-    return timeCount + timeUnit
-}
-
 const getNightModeInDevice = (): TModeStatus | null => {
     return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE) as TModeStatus | null
 }

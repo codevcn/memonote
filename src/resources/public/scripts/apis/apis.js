@@ -15,3 +15,5 @@ const signInAPI = (password, noteUniqueName) =>
 // notification
 const getNotificationsAPI = (noteId, lastNotif) =>
     axiosClient.post(`/notification?n=${noteId}`, { lastNotif: lastNotif || {} })
+// lang
+const requestLangAPI = (langCode) => axiosClient.post(`/lang/request-lang`, { langCode })

@@ -151,7 +151,7 @@ class LayoutController {
     }
 }
 LayoutController.NOTIFICATION_TIMEOUT = 3000
-LayoutController.GENERAL_STATUS_TIMEOUT = 300000
+LayoutController.GENERAL_STATUS_TIMEOUT = 3000
 LayoutController.toasterAnimationFlag = true
 LayoutController.toasterTimer = null
 LayoutController.generalAppStatus = document.getElementById('general-app-status')
@@ -293,10 +293,10 @@ class NotificationsController {
                 }
             }
             this.setLoadMoreBtn('innerHtml', htmlBefore)
-            if (apiResult && apiResult.notifs.length > 0) {
-                const notifs = apiResult.notifs
-                    .map((notif) => Object.assign(Object.assign({}, notif), { isNew: false }))
-                    .filter(({ createdAt }) => dayjs(createdAt).isBefore(this.startingTimestamp))
+            if (apiResult && apiResult.notifs && apiResult.notifs.length > 0) {
+                const notifs = apiResult.notifs.map((notif) =>
+                    Object.assign(Object.assign({}, notif), { isNew: false }),
+                )
                 this.addNotifsData(notifs)
                 for (const notif of notifs) {
                     notifsList.appendChild(Materials.createElementNotif(notif))

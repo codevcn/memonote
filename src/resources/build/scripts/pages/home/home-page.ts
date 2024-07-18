@@ -299,7 +299,7 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
     const logoutAll = formData.get('logout-all') as TFormCheckValues
 
     if (validatePassword(password)) {
-        const submitBtn = form.querySelector('.form-btn') as HTMLButtonElement
+        const submitBtn = form.querySelector('.form-submit-btn') as HTMLButtonElement
         submitBtn.classList.add('on-progress')
         const innerHTML_beforeUpdate = submitBtn.innerHTML
         submitBtn.innerHTML = Materials.createHTMLLoading('border')
@@ -338,7 +338,9 @@ const removePasswordOfNote = async (noteUniqueName: string): Promise<void> => {
 const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
-    const submitBtn = (e.target as HTMLFormElement).querySelector('.form-btn') as HTMLButtonElement
+    const submitBtn = (e.target as HTMLFormElement).querySelector(
+        '.form-submit-btn',
+    ) as HTMLButtonElement
     const innerHTML_beforeRemove = submitBtn.innerHTML
     submitBtn.innerHTML = Materials.createHTMLLoading('border')
     let apiSuccess: boolean = false
@@ -478,11 +480,37 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     setStatusOfSettingsForm(form, 'saved')
 }
 
-const scrollToTop = () => {
+const scrollToTop = (): void => {
     if (window.scrollY > SCROLL_Y_BEGIN) {
         window.scrollTo({ top: 100, behavior: 'instant' })
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+}
+
+const onChangLanguageHandler = async (e: Event): Promise<void> => {
+    const selectEle = e.target as HTMLSelectElement
+    const formSubmitBtn = selectEle
+        .closest('.form-group')!
+        .querySelector('.progress-container') as HTMLElement
+    const htmlBefore = formSubmitBtn.innerHTML
+    formSubmitBtn.innerHTML = Materials.createHTMLLoading('border')
+
+    const lang = selectEle.value as TLanguages
+
+    let apiSuccess: boolean = false
+    try {
+        await requestLangAPI(lang)
+        apiSuccess = true
+    } catch (error) {
+        if (error instanceof Error) {
+            const err = HTTPErrorHandler.handleError(error)
+            LayoutController.toast('error', err.message)
+        }
+    }
+    if (apiSuccess) {
+        window.location.reload()
+    }
+    formSubmitBtn.innerHTML = htmlBefore
 }
 
 const initPage = (): void => {

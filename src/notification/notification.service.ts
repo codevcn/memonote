@@ -11,16 +11,20 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { BaseCustomEvent } from '@/note/gateway/events'
 import { EEventEmitterEvents } from './gateway/enums'
 import type { TGetNotifsReturn, TGetNotifTranslationReturn, TNewNotif } from './types'
-import { EDBMessages } from '@/utils/messages'
-import { EEngNotifMessages, ENotificationTypes, EPagination, EViNotifMessages } from './enums'
+import { EDBMessages, ESystemMessages } from '@/utils/messages'
+import { ENotificationTypes, EPagination } from './enums'
 import type { LastNotificationDTO } from './DTOs'
 import { ELangCodes } from '@/lang/enums'
+import dayjs from 'dayjs'
+import { I18nService } from 'nestjs-i18n'
+import type { IDataI18nTranslations } from '@/lang/i18n.generated'
 
 @Injectable()
 export class NotificationService {
     constructor(
         @InjectModel(Notification.name) private notificationModel: TNotificationModel,
         private eventEmitter: EventEmitter2,
+        private i18n: I18nService<IDataI18nTranslations>,
     ) {}
 
     async findNotifs(noteId: string, limit: number, createdAt?: Date): Promise<Notification[]> {
@@ -57,23 +61,90 @@ export class NotificationService {
         )
     }
 
+    calculateTimeDifference(inputTime: Date): string {
+        const now = dayjs()
+        const specifiedTime = dayjs(inputTime)
+        const differenceInSeconds = Math.abs(now.diff(specifiedTime, 'second'))
+        let timeUnit: string
+        let timeCount: number = 0
+
+        if (differenceInSeconds >= 31536000) {
+            // greater than 12 months
+            timeCount = Math.floor(differenceInSeconds / 31536000)
+            timeUnit = 'y'
+        } else if (differenceInSeconds >= 2678400) {
+            // greater than 31 days
+            timeCount = Math.floor(differenceInSeconds / 2678400)
+            timeUnit = 'm'
+        } else if (differenceInSeconds >= 86400) {
+            // greater than 24 hours
+            timeCount = Math.floor(differenceInSeconds / 86400)
+            timeUnit = 'd'
+        } else if (differenceInSeconds >= 3600) {
+            // greater than 60 minutes
+            timeCount = Math.floor(differenceInSeconds / 3600)
+            timeUnit = 'h'
+        } else if (differenceInSeconds >= 60) {
+            // greater than 60 seconds
+            timeCount = Math.floor(differenceInSeconds / 60)
+            timeUnit = 'm'
+        } else {
+            timeCount = differenceInSeconds // seconds gap
+            timeUnit = 's'
+        }
+
+        return timeCount + timeUnit + 'ago'
+    }
+
     getNotifTranslation(notif: Notification, lang: ELangCodes): TGetNotifTranslationReturn {
         const notifType = notif.type
+        const createdAt = this.calculateTimeDifference(notif.createdAt)
         if (lang === ELangCodes.VI) {
+            const config = { lang: ELangCodes.VI }
             switch (notifType) {
                 case ENotificationTypes.REMOVE_PASSWORD:
-                    return { message: EViNotifMessages.REMOVE_PASSWORD }
+                    return {
+                        message: this.i18n.t('notification.message.Remove_password', config),
+                        type: this.i18n.t('notification.type.Remove_password', config),
+                        createdAt: this.i18n.t('notification.createdAt', {
+                            ...config,
+                            args: { date: createdAt },
+                        }),
+                    }
                 case ENotificationTypes.SET_PASSWORD:
-                    return { message: EViNotifMessages.SET_PASSWORD }
+                    return {
+                        message: this.i18n.t('notification.message.Set_password', config),
+                        type: this.i18n.t('notification.type.Set_password', config),
+                        createdAt: this.i18n.t('notification.createdAt', {
+                            ...config,
+                            args: { date: createdAt },
+                        }),
+                    }
             }
         } else {
+            const config = { lang: ELangCodes.EN }
             switch (notifType) {
                 case ENotificationTypes.REMOVE_PASSWORD:
-                    return { message: EEngNotifMessages.REMOVE_PASSWORD }
+                    return {
+                        message: this.i18n.t('notification.message.Set_password', config),
+                        type: this.i18n.t('notification.type.Set_password', config),
+                        createdAt: this.i18n.t('notification.createdAt', {
+                            ...config,
+                            args: { date: createdAt },
+                        }),
+                    }
                 case ENotificationTypes.SET_PASSWORD:
-                    return { message: EEngNotifMessages.SET_PASSWORD }
+                    return {
+                        message: this.i18n.t('notification.message.Set_password', config),
+                        type: this.i18n.t('notification.type.Set_password', config),
+                        createdAt: this.i18n.t('notification.createdAt', {
+                            ...config,
+                            args: { date: createdAt },
+                        }),
+                    }
             }
         }
+        throw new BaseCustomException(ESystemMessages.INTERNAL_SERVER_ERROR)
     }
 
     async fetchNotificationsHandler(
@@ -91,10 +162,7 @@ export class NotificationService {
         const isEnd = limit > notifications.length
         const notifs = notifications.slice(0, EPagination.MAX_NOTIFS_PER_PAGE).map((notif) => ({
             ...notif,
-            translation: {
-                message: this.getNotifTranslation(notif, lang).message,
-                type: '',
-            },
+            translation: this.getNotifTranslation(notif, lang),
         }))
         return { notifs, isEnd }
     }

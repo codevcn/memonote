@@ -22,4 +22,6 @@ export type TGetNotifsReturn = {
 
 export type TGetNotifTranslationReturn = {
     message: string
+    type: string
+    createdAt: string
 }

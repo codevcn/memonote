@@ -5,7 +5,7 @@ const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
 class LayoutController {
     private static readonly NOTIFICATION_TIMEOUT: number = 3000
-    private static readonly GENERAL_STATUS_TIMEOUT: number = 300000
+    private static readonly GENERAL_STATUS_TIMEOUT: number = 3000
     private static toasterAnimationFlag: boolean = true
     private static toasterTimer: ReturnType<typeof setTimeout> | null = null
     private static generalAppStatus = document.getElementById('general-app-status') as HTMLElement
@@ -325,10 +325,8 @@ class NotificationsController {
             }
         }
         this.setLoadMoreBtn('innerHtml', htmlBefore)
-        if (apiResult && apiResult.notifs.length > 0) {
-            const notifs = apiResult.notifs
-                .map((notif) => ({ ...notif, isNew: false }))
-                .filter(({ createdAt }) => dayjs(createdAt).isBefore(this.startingTimestamp))
+        if (apiResult && apiResult.notifs && apiResult.notifs.length > 0) {
+            const notifs = apiResult.notifs.map((notif) => ({ ...notif, isNew: false }))
             this.addNotifsData(notifs)
             for (const notif of notifs) {
                 notifsList.appendChild(Materials.createElementNotif(notif))

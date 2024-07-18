@@ -1,0 +1,287 @@
+<div class="note-settings-board tab-navigator">
+    <section class="note-settings-navigation">
+        <div class="nav-tabs-list" data-mmn-destination-class="forms">
+            <span data-mmn-tab-value="change-modes" class="nav-tab active">
+                <i class="bi bi-gear-wide-connected"></i>
+                <span><%= t('home-page.settings.changeModes.Change_Modes',i18nLang) %></span>
+            </span>
+            <span data-mmn-tab-value="password" class="nav-tab">
+                <i class="bi bi-lock-fill"></i>
+                <span><%= t('home-page.settings.password.Password',i18nLang) %></span>
+            </span>
+            <span data-mmn-tab-value="user-interface" class="nav-tab">
+                <i class="bi bi-image-alt"></i>
+                <span><%= t('home-page.settings.userInterface.User_Interface',i18nLang) %></span>
+            </span>
+            <span data-mmn-tab-value="language" class="nav-tab">
+                <i class="bi bi-translate"></i>
+                <span><%= t('home-page.settings.language.Language',i18nLang) %></span>
+            </span>
+        </div>
+        <span onclick="logoutHandler(this)" class="nav-tab logout-btn" <%= note.passwordSet ? '' : 'hidden' %>>
+            <span><%= t('home-page.settings.Logout',i18nLang) %></span>
+            <i class="bi bi-box-arrow-right"></i>
+        </span>
+    </section>
+
+    <div class="forms change-modes nav-destination active">
+        <form class="note-settings-form change-modes" id="settings-form-change-modes" action="#"
+            onsubmit="saveSettingsChangeModes(event)">
+            <div class="form-title">
+                <h2 class="content"><%= t('home-page.settings.changeModes.Change_Modes',i18nLang) %></h2>
+                <div class="status">
+                    <span class="status-item unsaved" hidden>(<%= t('home-page.settings.Unsaved',i18nLang) %>)</span>
+                    <span class="status-item saved" hidden>(<%= t('home-page.settings.Saved',i18nLang) %>)</span>
+                </div>
+            </div>
+            <div class="form-content active">
+                <div class="form-check form-switch form-group form-group-switch">
+                    <input class="form-check-input form-field" type="checkbox" id="realtime-mode-input"
+                        name="realtime-mode">
+                    <div class="details">
+                        <label class="form-check-label" for="realtime-mode-input">
+                            <%= t('home-page.settings.changeModes.Realtime_mode_label',i18nLang) %>
+                        </label>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.changeModes.Realtime_mode_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-check form-switch form-group form-group-switch">
+                    <input class="form-check-input form-field" type="checkbox" id="notify-note-edited-input"
+                        name="notify-note-edited" checked>
+                    <div class="details">
+                        <label class="form-check-label" for="notify-note-edited-input">
+                            <%= t('home-page.settings.changeModes.Notify_edited_label',i18nLang) %>
+                        </label>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.changeModes.Notify_edited_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-check form-switch form-group form-group-switch">
+                    <input class="form-check-input form-field" type="checkbox" id="night-mode-input"
+                        name="night-mode" />
+                    <div class="details">
+                        <label class="form-check-label" for="night-mode-input">
+                            <%= t('home-page.settings.changeModes.Night_mode_label',i18nLang) %>
+                        </label>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.changeModes.Night_mode_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="form-submit-btn">
+                <i class="bi bi-check-lg"></i>
+                <span><%= t('home-page.settings.Submit',i18nLang) %></span>
+            </button>
+        </form>
+    </div>
+
+    <div class="forms password tab-navigator nav-destination">
+        <div class="nav-tabs-list">
+            <button class="nav-tab set-password active" data-mmn-tab-value="set-password">
+                <i class="bi bi-pen-fill"></i>
+                <span class="content"><%= t('home-page.settings.password.Add_Or_Change_Password',i18nLang) %></span>
+            </button>
+            <button class="nav-tab remove-password" data-mmn-tab-value="remove-password">
+                <i class="bi bi-pen-fill"></i>
+                <span class="content"><%= t('home-page.settings.password.Remove_Password',i18nLang) %></span>
+            </button>
+        </div>
+
+        <form class="note-settings-form set-password nav-destination active" id="settings-form-set-password" action="#"
+            onsubmit="saveSettingsSetPasswordForNote(event)">
+            <div class="form-title">
+                <h2 class="content">
+                    <%= t('home-page.settings.password.Add_Or_Change_Password_title',i18nLang) %>
+                </h2>
+                <div class="status">
+                    <span class="status-item unsaved" hidden>(<%= t('home-page.settings.Unsaved',i18nLang) %>)</span>
+                    <span class="status-item saved" hidden>(<%= t('home-page.settings.Saved',i18nLang) %>)</span>
+                </div>
+            </div>
+            <div class="form-content">
+                <div class="form-group form-group-text-field enter-password">
+                    <label for="password-input">
+                        <% if (note.passwordSet) { %>
+                        <%= t('home-page.settings.password.Change_Password',i18nLang) %>
+                        <% } else { %>
+                        <%= t('home-page.settings.password.Add_Password',i18nLang) %>
+                        <% } %>
+                    </label>
+                    <div class="input-wrapper">
+                        <input id="password-input" type="password"
+                            placeholder="<%= t('home-page.settings.password.Enter_password_here',i18nLang) %>"
+                            name="password" class="form-field" />
+                        <div class="input-actions">
+                            <span class="hidden" onclick="hideShowPassword_homePage(this,false)">
+                                <i class="bi bi-eye-slash"></i>
+                            </span>
+                            <span class="shown inactive" onclick="hideShowPassword_homePage(this,true)">
+                                <i class="bi bi-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="helper-text">
+                        <div class="helper-text-item">
+                            <%= t('home-page.settings.password.Add_Or_Change_Password_helper_text',i18nLang) %>
+                        </div>
+                    </div>
+                    <div class="message"></div>
+                </div>
+                <div class="form-check form-switch form-group form-group-switch logout-all">
+                    <input class="form-check-input form-field" type="checkbox" id="logout-all-input"
+                        name="logout-all" />
+                    <div class="details">
+                        <label class="form-check-label" for="logout-all-input">
+                            <%= t('home-page.settings.password.Logout_all_users',i18nLang) %>
+                        </label>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.password.Logout_all_users_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="form-submit-btn">
+                <i class="bi bi-check-lg"></i>
+                <span>
+                    <%= t('home-page.settings.Submit',i18nLang) %>
+                </span>
+            </button>
+        </form>
+
+        <form class="note-settings-form remove-password nav-destination" id="settings-form-remove-password" action="#"
+            onsubmit="saveSettingsRemovePasswordOfNote(event)">
+            <div class="form-content-container" <%= note.passwordSet ? '' : 'hidden' %>>
+                <div class="form-title">
+                    <h2 class="content">
+                        <%= t('home-page.settings.password.Remove_Password_title',i18nLang) %>
+                    </h2>
+                </div>
+                <div class="form-content">
+                    <p class="mt-1">
+                        <%= t('home-page.settings.password.Remove_Password_confirm',i18nLang) %>
+                    </p>
+                </div>
+                <button type="submit" class="form-submit-btn">
+                    <i class="bi bi-check-lg"></i>
+                    <span>
+                        <%= t('home-page.settings.Confirm',i18nLang) %>
+                    </span>
+                </button>
+            </div>
+            <div class="unset-password-notice" <%= note.passwordSet ? 'hidden' : '' %>>
+                <i class="bi bi-emoji-frown-fill"></i>
+                <span>
+                    <%= t('home-page.settings.password.Unset_password',i18nLang) %>
+                </span>
+            </div>
+        </form>
+    </div>
+
+    <div class="forms user-interface nav-destination">
+        <form action="#" class="note-settings-form user-interface" id="settings-form-user-interface"
+            onsubmit="saveSettingsUserInterface(event)">
+            <div class="form-title">
+                <h2 class="content">
+                    <%= t('home-page.settings.userInterface.User_Interface_title',i18nLang) %>
+                </h2>
+                <div class="status">
+                    <span class="status-item unsaved" hidden>(<%= t('home-page.settings.Unsaved',i18nLang) %>)</span>
+                    <span class="status-item saved" hidden>(<%= t('home-page.settings.Saved',i18nLang) %>)</span>
+                </div>
+            </div>
+            <div class="form-content">
+                <div class="form-group form-group-select">
+                    <label for="edited-notify-style-select">
+                        <span>
+                            <%= t('home-page.settings.userInterface.Notify_edited_styling_title',i18nLang) %>
+                        </span>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.userInterface.Notify_edited_styling_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </label>
+                    <select class="form-select form-field" name="edited-notify-style" id="edited-notify-style-select">
+                        <option value="blink" selected>
+                            <%= t('home-page.settings.userInterface.Blink',i18nLang) %>
+                        </option>
+                        <option value="slither">
+                            <%= t('home-page.settings.userInterface.Slither',i18nLang) %>
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group form-group-select">
+                    <label for="note-form-font-select">
+                        <span>
+                            <%= t('home-page.settings.userInterface.Change_text_font_title',i18nLang) %>
+                        </span>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.userInterface.Change_text_font_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </label>
+                    <select class="form-select form-field" name="note-form-font" id="note-form-font-select">
+                        <option value="work-sans" selected>Work Sans</option>
+                        <option value="arial">Arial</option>
+                        <option value="poppins">Poppins</option>
+                        <option value="times-new-roman">Times New Roman</option>
+                        <option value="roboto">Roboto</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="form-submit-btn">
+                <i class="bi bi-check-lg"></i>
+                <span>
+                    <%= t('home-page.settings.Save_Changes',i18nLang) %>
+                </span>
+            </button>
+        </form>
+    </div>
+
+    <div class="forms language nav-destination">
+        <section class="note-settings-form language" id="settings-form-language">
+            <div class="form-title">
+                <h2 class="content">
+                    <%= t('home-page.settings.language.Language',i18nLang) %>
+                </h2>
+            </div>
+            <div class="form-content">
+                <div class="form-group form-group-select">
+                    <label for="change-language-input">
+                        <span>
+                            <%= t('home-page.settings.language.Change_language_label',i18nLang) %>
+                        </span>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.language.Change_language_tootlip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </label>
+                    <select class="form-select form-field" id="change-language-select"
+                        onchange="onChangLanguageHandler(event)">
+                        <% settings.langs.map(({code,label})=> { %>
+                        <option value="<%= code %>" <%= settings.currentLang === code ? 'selected' : '' %>>
+                            <%= label %>
+                        </option>
+                        <% }) %>
+                    </select>
+                    <div class="message"></div>
+                    <div class="progress-container"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -1,13 +1,65 @@
 {
-    "Realtime_Mode": "Chế độ thời gian thực",
-    "Notifications": "Thông báo",
-    "Close_notifications": "Đóng thông báo",
-    "Notifications_tooltip": "Thông báo hiển thị các hoạt động của người dùng như thay đổi mật khẩu, xóa mật khẩu, v.v... Nhấp để biết thêm chi tiết.",
-    "About_Us": "Về chúng tôi",
-    "FAQ": "FAQ",
-    "All": "Tất cả",
-    "New": "Mới",
-    "Empty_notification": "Ghi chú này chưa có bất cứ thông báo nào.",
-    "Load_more": "Tải thêm",
-    "Empty_new_notification": "Hiện chưa có thông báo mới."
+    "Scroll_to_top": "Cuộn lên đầu",
+    "settings": {
+        "Settings": "Cài đặt",
+        "changeModes": {
+            "Change_Modes": "Các chế độ",
+            "Realtime_mode_tooltip": "Khi được bật, ghi chú của bạn trong thiết bị này sẽ được cập nhật theo thời gian thực. Bấm để biết thêm chi tiết.",
+            "Notify_edited_tooltip": "Khi cả chế độ này và chế độ thời gian thực đều bị tắt, ghi chú của bạn trên thiết bị này sẽ không được thông báo chỉnh sửa. Bấm để biết thêm chi tiết.",
+            "Night_mode_tooltip": "Bật / tắt chế độ ban đêm (dark mode).",
+            "Realtime_mode_label": "Chế độ Chế độ thời gian thực trong thiết bị này",
+            "Notify_edited_label": "Thông báo cho bạn ghi chú đã được chỉnh sửa",
+            "Night_mode_label": "Chế bộ ban đêm"
+        },
+        "password": {
+            "Password": "Mật khẩu",
+            "Password_has_been_set": "Mật khẩu đã được đặt",
+            "Logout_all_users_tooltip": "Khi được bật, sẽ đăng xuất tất cả những người dùng khác hiện cũng đang sử dụng ghi chú này sau khi đổi mật khẩu thành công.",
+            "Add_Or_Change_Password": "Thêm / thay đổi mật khẩu",
+            "Remove_Password": "Xóa mật khẩu",
+            "Add_Or_Change_Password_title": "Thêm hoặc thay đổi mật khẩu cho ghi chú này",
+            "Add_Or_Change_Password_helper_text": "Ít nhất 4 kí tự",
+            "Logout_all_users": "Đăng xuất tất cả những người dùng khác",
+            "Remove_Password_title": "Xóa mật khẩu khỏi ghi chú",
+            "Remove_Password_confirm": "Bạn xác nhận sẽ xóa mật khẩu khỏi ghi chú này?",
+            "Unset_password": "Bạn chưa đặt mật khẩu cho ghi chú này.",
+            "Change_Password": "Thay đổi mật khẩu",
+            "Add_Password": "Thêm mật khẩu",
+            "Enter_password_here": "Nhập mật khẩu ở đây..."
+        },
+        "userInterface": {
+            "User_Interface": "Giao diện",
+            "User_Interface_title": "Điều chỉnh giao diện người dùng",
+            "Notify_edited_styling_title": "Kiểu dáng của thông báo chỉnh sửa ghi chú",
+            "Blink": "Nhấp nháy",
+            "Slither": "Trườn bò",
+            "Notify_edited_styling_tooltip": "Thay đổi cách thông báo cho bạn ghi chú đã được chỉnh sửa",
+            "Change_text_font_title": "Đổi phông chữ",
+            "Change_text_font_tooltip": "Đổi phông chữ cho ghi chú"
+        },
+        "language": {
+            "Language": "Ngôn ngữ",
+            "Change_language_label": "Đổi ngôn ngữ",
+            "Change_language_tootlip": "Đổi ngôn ngữ cho giao diện trang web.",
+            "langs": {
+                "en": "Tiếng Anh",
+                "vi": "Tiếng Việt"
+            }
+        },
+        "Logout": "Đăng xuất",
+        "Save_Changes": "Lưu thay đổi",
+        "Submit": "Gửi",
+        "Saved": "đã lưu",
+        "Unsaved": "chưa lưu",
+        "Close": "Đóng",
+        "Confirm": "Xác nhận"
+    },
+    "noteForm": {
+        "Title_placeholder": "Thêm tiêu đề...",
+        "Author_placeholder": "Thêm tác giả...",
+        "Content_placeholder": "Viết ghi chú của bạn ở đây...",
+        "Note_annotation_Title": "Tiêu đề",
+        "Note_annotation_Author": "Tác giả",
+        "Note_annotation_Content": "Ghi chú của bạn"
+    }
 }

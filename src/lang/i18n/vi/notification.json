@@ -1,0 +1,13 @@
+{
+    "type": {
+        "Set_password": "Đổi mật khẩu",
+        "Remove_password": "Xóa mật khẩu",
+        "Create_new_note": "Ghi chú mới"
+    },
+    "message": {
+        "Set_password": "Mật khẩu đã được thay đổi bởi người dùng",
+        "Remove_password": "Mật khẩu đã bị xóa bỏ bởi người dùng",
+        "Create_new_note": "Đã tạo một ghi chú mới"
+    },
+    "createdAt": "{date} trước"
+}

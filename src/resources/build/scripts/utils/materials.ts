@@ -26,9 +26,7 @@ class Materials {
                 <p class="title">${translation.message}</p>
                 <div class="d-flex column-gap-2 mt-1">
                     <span class="notif-type">${translation.type}</span>
-                    <span class="time-ago">${calculateTimeDifference(
-                        translation.createdAt,
-                    )} ago</span>
+                    <span class="time-ago">${translation.createdAt} ago</span>
                 </div>
             </div>`
         return notif

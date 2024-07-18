@@ -4,7 +4,6 @@ import { HttpExceptionValidation } from '../validation/http-exception.validation
 import type { THttpExceptionResBody } from '../types'
 import { ClientViewPages } from '../application/view-pages'
 import { I18nContext } from 'nestjs-i18n'
-import type { IHomePageTranslations } from '../../lang/i18n.generated'
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
@@ -19,7 +18,7 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         const ctx = host.switchToHttp()
         const response = ctx.getResponse<Response<THttpExceptionResBody>>()
         const request = ctx.getRequest<Request>()
-        const i18n = I18nContext.current<IHomePageTranslations>(host)
+        const i18n = I18nContext.current(host)
 
         const validatedException = this.httpExceptionValidation.validateException(exception)
 

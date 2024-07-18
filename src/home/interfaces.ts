@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express'
 import type { GetNoteOnHomePageParamsDTO } from './DTOs'
-import type { TRedirectController } from '@/utils/types'
-import type { TCommonPageData } from './types'
+import type { TCommonPageData, TRedirectController } from '@/utils/types'
 import type { ELangCodes } from '@/lang/enums'
 
 export interface IHomeController {

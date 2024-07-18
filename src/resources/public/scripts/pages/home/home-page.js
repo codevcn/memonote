@@ -270,7 +270,7 @@ const saveSettingsSetPasswordForNote = (e) =>
         const password = formData.get('password')
         const logoutAll = formData.get('logout-all')
         if (validatePassword(password)) {
-            const submitBtn = form.querySelector('.form-btn')
+            const submitBtn = form.querySelector('.form-submit-btn')
             submitBtn.classList.add('on-progress')
             const innerHTML_beforeUpdate = submitBtn.innerHTML
             submitBtn.innerHTML = Materials.createHTMLLoading('border')
@@ -305,7 +305,7 @@ const removePasswordOfNote = (noteUniqueName) =>
 const saveSettingsRemovePasswordOfNote = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
-        const submitBtn = e.target.querySelector('.form-btn')
+        const submitBtn = e.target.querySelector('.form-submit-btn')
         const innerHTML_beforeRemove = submitBtn.innerHTML
         submitBtn.innerHTML = Materials.createHTMLLoading('border')
         let apiSuccess = false
@@ -429,6 +429,28 @@ const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 }
+const onChangLanguageHandler = (e) =>
+    __awaiter(void 0, void 0, void 0, function* () {
+        const selectEle = e.target
+        const formSubmitBtn = selectEle.closest('.form-group').querySelector('.progress-container')
+        const htmlBefore = formSubmitBtn.innerHTML
+        formSubmitBtn.innerHTML = Materials.createHTMLLoading('border')
+        const lang = selectEle.value
+        let apiSuccess = false
+        try {
+            yield requestLangAPI(lang)
+            apiSuccess = true
+        } catch (error) {
+            if (error instanceof Error) {
+                const err = HTTPErrorHandler.handleError(error)
+                LayoutController.toast('error', err.message)
+            }
+        }
+        if (apiSuccess) {
+            window.location.reload()
+        }
+        formSubmitBtn.innerHTML = htmlBefore
+    })
 const initPage = () => {
     // setup "navigate" settings
     const navTabs = noteSettingsBoard.querySelectorAll(

@@ -1,0 +1,13 @@
+{
+    "type": {
+        "Set_password": "Set password",
+        "Remove_password": "Remove password",
+        "Create_new_note": "New note"
+    },
+    "message": {
+        "Set_password": "Password has been changed by user",
+        "Remove_password": "Password has been removed by user",
+        "Create_new_note": "Created a new note"
+    },
+    "createdAt": "{date} ago"
+}

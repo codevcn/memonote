@@ -38,3 +38,7 @@ const getNotificationsAPI = (
     lastNotif?: TNotif,
 ): Promise<TAxiosHTTPRes<TGetNotifications>> =>
     axiosClient.post(`/notification?n=${noteId}`, { lastNotif: lastNotif || {} })
+
+// lang
+const requestLangAPI = (langCode: string): Promise<TAxiosHTTPRes<{}>> =>
+    axiosClient.post(`/lang/request-lang`, { langCode })

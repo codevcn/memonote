@@ -7,17 +7,16 @@ import { HttpExceptionFilter } from './utils/exception/http-exception.filter'
 import { HttpExceptionValidation } from './utils/validation/http-exception.validation'
 import cookieParser from 'cookie-parser'
 
-const resourcesFolder = 'resources'
-
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-    const PORT = process.env.PORT
+    const { PORT, HOSTNAME } = process.env
 
     // cookie
     app.use(cookieParser())
 
     // ejs
+    const resourcesFolder = 'resources'
     app.useStaticAssets(join(__dirname, `../src/${resourcesFolder}/public`))
     app.setBaseViewsDir(join(__dirname, `../src/${resourcesFolder}/views`))
     app.setViewEngine('ejs')
@@ -32,7 +31,7 @@ async function bootstrap() {
     // exception filter
     app.useGlobalFilters(new HttpExceptionFilter(new HttpExceptionValidation()))
 
-    await app.listen(PORT)
-    console.log('>>> Server is working on http://localhost:' + PORT)
+    await app.listen(PORT, HOSTNAME)
+    console.log(`>>> Server is working on http://${HOSTNAME}:${PORT}`)
 }
 bootstrap()

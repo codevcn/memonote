@@ -3,7 +3,7 @@
         <div class="quick-look-items">
             <div class="quick-look-item password-set" <%= note.passwordSet ? '' : 'hidden' %>>
                 <i class="bi bi-lock-fill"></i>
-                <span class="text">Password has been set</span>
+                <span class="text"><%= t('home-page.settings.password.Password_has_been_set',i18nLang) %></span>
             </div>
         </div>
     </section>
@@ -11,22 +11,27 @@
     <section class="notes">
         <section class="note-form">
             <div class="note-form-item note-title">
-                <input type="text" value="<%= note.title || '' %>" placeholder="Add a title..."
+                <input type="text" value="<%= note.title || '' %>"
+                    placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>"
                     oninput="broadcastNoteTitleTypingHanlder(this)" id="note-title" />
-                <div class="note-annotation">Title</div>
+                <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Title',i18nLang) %></div>
             </div>
             <div class="note-form-item note-author">
-                <input type="text" value="<%= note.author || '' %>" placeholder="Add an author..."
+                <input type="text" value="<%= note.author || '' %>"
+                    placeholder="<%= t('home-page.noteForm.Author_placeholder',i18nLang) %>"
                     oninput="broadcastNoteAuthorTypingHanlder(this)" id="note-author" />
-                <div class="note-annotation">Author</div>
+                <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
             </div>
             <div class="note-form-item note-editor-board">
                 <div class="note-editor-container">
                     <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
-                        <textarea class="note-editor" id="note-editor" rows="5" placeholder="Write your note here..."
+                        <textarea class="note-editor" id="note-editor" rows="5"
+                            placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
                             oninput="noteTyping(this)" onkeyup="catchBackspaceWhenTyping(this,event)"
                             data-replicated-value=""><%= note.content || '' %></textarea>
-                        <div class="note-annotation">Your Note</div>
+                        <div class="note-annotation">
+                            <%= t('home-page.noteForm.Note_annotation_Content',i18nLang) %>
+                        </div>
                     </div>
                     <div class="letters-count">
                         <span></span>
@@ -57,13 +62,13 @@
 </main>
 
 <div id="scroll-to-top">
-    <div class="scroll-to-top-btn" onclick="scrollToTop()" title="Scroll to top">
+    <div class="scroll-to-top-btn" onclick="scrollToTop()" title="<%= t('home-page.Scroll_to_top',i18nLang) %>">
         <i class="bi bi-chevron-double-up"></i>
     </div>
 </div>
 
 <div id="bubble-note-settings">
-    <span data-bs-toggle="tooltip" data-bs-placement="left" title="Settings">
+    <span data-bs-toggle="tooltip" data-bs-placement="left" title="<%= t('home-page.settings.Settings',i18nLang) %>">
         <div class="bubble-note-settings-btn" data-bs-toggle="modal" data-bs-target="#note-settings-modal">
             <i class="bi bi-gear-fill"></i>
         </div>
@@ -77,241 +82,15 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title fs-5">Settings</h2>
+                <h2 class="modal-title fs-5"><%= t('home-page.settings.Settings',i18nLang) %></h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="note-settings-board tab-navigator">
-                    <section class="note-settings-navigation">
-                        <div class="nav-tabs-list" data-mmn-destination-class="forms">
-                            <span data-mmn-tab-value="change-modes" class="nav-tab active">
-                                <i class="bi bi-gear-wide-connected"></i>
-                                <span>Change Modes</span>
-                            </span>
-                            <span data-mmn-tab-value="password" class="nav-tab">
-                                <i class="bi bi-lock-fill"></i>
-                                <span>Password</span>
-                            </span>
-                            <span data-mmn-tab-value="user-interface" class="nav-tab">
-                                <i class="bi bi-image-alt"></i>
-                                <span>User Interface</span>
-                            </span>
-                        </div>
-                        <span onclick="logoutHandler(this)" class="logout-btn" <%= note.passwordSet ? '' : 'hidden' %>>
-                            <span>Logout</span>
-                            <i class="bi bi-box-arrow-right"></i>
-                        </span>
-                    </section>
-
-                    <div class="forms change-modes nav-destination active">
-                        <form class="note-settings-form change-modes" id="settings-form-change-modes" action="#"
-                            onsubmit="saveSettingsChangeModes(event)">
-                            <h2 class="form-title">
-                                <span>Change Modes</span>
-                                <div class="status">
-                                    <span class="status-item unsaved" hidden>(unsaved)</span>
-                                    <span class="status-item saved" hidden>(saved)</span>
-                                </div>
-                            </h2>
-                            <div class="form-content active">
-                                <div class="form-check form-switch form-group">
-                                    <input class="form-check-input form-field" type="checkbox" id="realtime-mode-input"
-                                        name="realtime-mode">
-                                    <div class="info">
-                                        <label class="form-check-label" for="realtime-mode-input">
-                                            Real-time mode in this device.
-                                        </label>
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="When enabled, your note in this device will be updated in real-time. Click for more details."
-                                            class="details-btn">
-                                            <i class="bi bi-info-circle-fill"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-check form-switch form-group">
-                                    <input class="form-check-input form-field" type="checkbox"
-                                        id="notify-note-edited-input" name="notify-note-edited" checked>
-                                    <div class="info">
-                                        <label class="form-check-label" for="notify-note-edited-input">
-                                            Notify note has been edited.
-                                        </label>
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="When this mode and the realtime mode is both turned off, your note in this device won't be notified to be edited. Click for more details."
-                                            class="details-btn">
-                                            <i class="bi bi-info-circle-fill"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-check form-switch form-group">
-                                    <input class="form-check-input form-field" type="checkbox" id="night-mode-input"
-                                        name="night-mode">
-                                    <div class="info">
-                                        <label class="form-check-label" for="night-mode-input">
-                                            Night mode.
-                                        </label>
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="Turn on / turn off night mode (dark mode)." class="details-btn">
-                                            <i class="bi bi-info-circle-fill"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="form-btn">
-                                <i class="bi bi-check-lg"></i>
-                                <span>Save Changes</span>
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="forms password tab-navigator nav-destination">
-                        <div class="nav-tabs-list">
-                            <button class="nav-tab set-password active" data-mmn-tab-value="set-password">
-                                <i class="bi bi-pen-fill"></i>
-                                <span class="content">Add Or Change Password</span>
-                            </button>
-                            <button class="nav-tab remove-password" data-mmn-tab-value="remove-password">
-                                <i class="bi bi-pen-fill"></i>
-                                <span class="content">Remove Password</span>
-                            </button>
-                        </div>
-
-                        <form class="note-settings-form set-password nav-destination active"
-                            id="settings-form-set-password" action="#" onsubmit="saveSettingsSetPasswordForNote(event)">
-                            <h2 class="form-title">
-                                <span class="content">
-                                    Add Or Change Password For This Note
-                                </span>
-                                <div class="status">
-                                    <span class="status-item unsaved" hidden>(unsaved)</span>
-                                    <span class="status-item saved" hidden>(saved)</span>
-                                </div>
-                            </h2>
-                            <div class="form-content">
-                                <div class="form-group enter-password">
-                                    <label for="password-input">
-                                        <%= note.passwordSet ? 'Change Password' : 'Add Password' %>
-                                    </label>
-                                    <div class="input-wrapper">
-                                        <input id="password-input" type="password" placeholder="Enter password here..."
-                                            name="password" class="form-field" />
-                                        <div class="input-actions">
-                                            <span class="hidden" onclick="hideShowPassword_homePage(this,false)">
-                                                <i class="bi bi-eye-slash"></i>
-                                            </span>
-                                            <span class="shown inactive" onclick="hideShowPassword_homePage(this,true)">
-                                                <i class="bi bi-eye"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="helper-text">
-                                        <div class="helper-text-item">At least four characters</div>
-                                    </div>
-                                    <div class="message"></div>
-                                </div>
-                                <div class="form-check form-switch form-group logout-all">
-                                    <input class="form-check-input form-field" type="checkbox" id="logout-all-input"
-                                        name="logout-all" />
-                                    <div class="info">
-                                        <label class="form-check-label" for="logout-all-input">
-                                            Logout all other users.
-                                        </label>
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="When enabled, logout all other users also currently using this note after changing password successfully."
-                                            class="details-btn">
-                                            <i class="bi bi-info-circle-fill"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="form-btn">
-                                <i class="bi bi-check-lg"></i>
-                                <span>Submit</span>
-                            </button>
-                        </form>
-
-                        <form class="note-settings-form remove-password nav-destination"
-                            id="settings-form-remove-password" action="#"
-                            onsubmit="saveSettingsRemovePasswordOfNote(event)">
-                            <div class="form-content-container" <%= note.passwordSet ? '' : 'hidden' %>>
-                                <h2 class="form-title">
-                                    <span>
-                                        Remove Password From This Note
-                                    </span>
-                                </h2>
-                                <div class="form-content">
-                                    <div class="form-group">
-                                        <p>Confirm to remove password from this note?</p>
-                                    </div>
-                                </div>
-                                <button type="submit" class="form-btn">
-                                    <i class="bi bi-check-lg"></i>
-                                    <span>Confirm</span>
-                                </button>
-                            </div>
-                            <div class="unset-password-notice" <%= note.passwordSet ? 'hidden' : '' %>>
-                                <i class="bi bi-emoji-frown-fill"></i>
-                                <span>You haven't set password for this note.</span>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="forms user-interface nav-destination">
-                        <form action="#" class="note-settings-form user-interface" id="settings-form-user-interface"
-                            onsubmit="saveSettingsUserInterface(event)">
-                            <h2 class="form-title">
-                                <span>
-                                    Change User Interface
-                                </span>
-                                <div class="status">
-                                    <span class="status-item unsaved" hidden>(unsaved)</span>
-                                    <span class="status-item saved" hidden>(saved)</span>
-                                </div>
-                            </h2>
-                            <div class="form-content">
-                                <div class="form-group">
-                                    <label for="edited-notify-style-select">
-                                        <span>Editing note notification styling</span>
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="Change how your note will be notified to be edited"
-                                            class="details-btn">
-                                            <i class="bi bi-info-circle-fill"></i>
-                                        </span>
-                                    </label>
-                                    <select class="form-select form-field" name="edited-notify-style"
-                                        id="edited-notify-style-select">
-                                        <option value="blink" selected>Blink</option>
-                                        <option value="slither">Slither</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="note-form-font-select">
-                                        <span>Change text font</span>
-                                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                            title="Change text font for your note" class="details-btn">
-                                            <i class="bi bi-info-circle-fill"></i>
-                                        </span>
-                                    </label>
-                                    <select class="form-select form-field" name="note-form-font"
-                                        id="note-form-font-select">
-                                        <option value="work-sans" selected>Work Sans</option>
-                                        <option value="arial">Arial</option>
-                                        <option value="poppins">Poppins</option>
-                                        <option value="times-new-roman">Times New Roman</option>
-                                        <option value="roboto">Roboto</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <button type="submit" class="form-btn">
-                                <i class="bi bi-check-lg"></i>
-                                <span>Save Changes</span>
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                <%- include('./settings-board') %>
             </div>
             <div class="modal-footer">
                 <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
-                    Close
+                    <%= t('home-page.settings.Close',i18nLang) %>
                 </button>
             </div>
         </div>

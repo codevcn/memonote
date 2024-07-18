@@ -8,8 +8,12 @@ import { GetNoteOnHomePageParamsDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ApplicationService } from '@/utils/application/application.service'
 import { ViewRoutes } from '@/utils/routes'
-import type { TCommonPageData, THomePagePageData } from './types'
+import type { TDataLanguage, THomePagePageData } from './types'
 import { createServerData } from '@/utils/helpers'
+import { I18nService } from 'nestjs-i18n'
+import type { IUII18nTranslations } from '@/lang/i18n.generated'
+import type { TCommonPageData } from '@/utils/types'
+import { LangService } from '@/lang/lang.service'
 
 @Controller(ViewRoutes.home)
 export class HomeController implements IHomeController {
@@ -17,6 +21,8 @@ export class HomeController implements IHomeController {
         private noteService: NoteService,
         private authService: AuthService,
         private applicationService: ApplicationService,
+        private i18n: I18nService<IUII18nTranslations>,
+        private langService: LangService,
     ) {}
 
     @Get()
@@ -35,6 +41,9 @@ export class HomeController implements IHomeController {
         const { noteUniqueName } = params
         const note = await this.noteService.findNote(noteUniqueName)
         const appInfo = await this.applicationService.getApplicationInfo()
+        const langTrans = this.i18n.t('home-page.settings.language.langs') as TDataLanguage
+        const currentLang = this.langService.getCurrentLang()
+        const langs = Object.entries(langTrans).map(([code, label]) => ({ code, label }))
         if (note) {
             if (note.password) {
                 try {
@@ -50,6 +59,10 @@ export class HomeController implements IHomeController {
                                 author: note.author,
                                 passwordSet: true,
                                 noteId: note._id.toString(),
+                            },
+                            settings: {
+                                langs,
+                                currentLang,
                             },
                         }),
                     )
@@ -75,11 +88,15 @@ export class HomeController implements IHomeController {
                         passwordSet: false,
                         noteId: note._id.toString(),
                     },
+                    settings: {
+                        langs,
+                        currentLang,
+                    },
                 }),
             )
         }
         try {
-            const createdNote = await this.noteService.createNewNote(noteUniqueName)
+            const createdNote = await this.noteService.createNewNoteHandler(noteUniqueName)
             return res.status(HttpStatus.OK).render(
                 ClientViewPages.home,
                 createServerData<THomePagePageData>({
@@ -91,6 +108,10 @@ export class HomeController implements IHomeController {
                         author: null,
                         passwordSet: false,
                         noteId: createdNote._id.toString(),
+                    },
+                    settings: {
+                        langs,
+                        currentLang,
                     },
                 }),
             )

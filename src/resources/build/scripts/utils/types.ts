@@ -43,6 +43,8 @@ type TEditedNotifyStyleTypes = 'blink' | 'slither'
 
 type TNoteFormTextFonts = 'work-sans' | 'arial' | 'poppins' | 'times-new-roman' | 'roboto'
 
+type TLanguages = 'Vietnamese' | 'English'
+
 type TFormCheckValues = null | 'on'
 
 type TTranslationNotif = {
