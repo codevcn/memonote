@@ -108,11 +108,15 @@
     margin-top: 15px;
 }
 #page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container {
+    display: none;
     height: 100%;
     width: 100%;
     position: relative;
     z-index: 3;
     padding: 5px 10px;
+}
+#page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container.active {
+    display: block;
 }
 #page-main
     .notes

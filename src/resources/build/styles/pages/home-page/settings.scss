@@ -57,9 +57,7 @@ $mmn-settings-nav-item-bgcl: #ececec;
 }
 
 @mixin form-group-styling--form-text-field {
-    &:not(:nth-of-type(1)) {
-        margin-top: 15px;
-    }
+    margin-top: 15px;
 
     label {
         @include label-form-group-styling;
@@ -125,10 +123,7 @@ $mmn-settings-nav-item-bgcl: #ececec;
     display: flex;
     align-items: center;
     column-gap: 10px;
-
-    &:not(:nth-of-type(1)) {
-        margin-top: 10px;
-    }
+    margin-top: 10px;
 
     .form-check-input {
         height: 1.2rem;
@@ -170,9 +165,7 @@ $mmn-settings-nav-item-bgcl: #ececec;
 }
 
 @mixin form-group-styling--form-select {
-    &:not(:nth-of-type(1)) {
-        margin-top: 15px;
-    }
+    margin-top: 15px;
 
     label {
         @include label-form-group-styling;
@@ -417,12 +410,11 @@ $mmn-settings-nav-item-bgcl: #ececec;
                             .form-title {
                                 .content {
                                     display: inline-block;
-                                    column-gap: 5px;
                                     margin-top: 0;
                                     color: colors.$mmn-regular-black-cl;
                                     font-size: 1.3rem;
                                     font-weight: bold;
-                                    margin-bottom: 20px;
+                                    margin-bottom: 5px;
                                 }
 
                                 .status {
@@ -430,9 +422,20 @@ $mmn-settings-nav-item-bgcl: #ececec;
 
                                     .status-item {
                                         font-size: 1rem;
-                                        color: gray;
+                                        color: colors.$mmn-regular-darkgray-cl;
                                     }
                                 }
+                            }
+
+                            .notice-text {
+                                padding: 15px;
+                                background-color: colors.$mmn-is-new-notif-bgcl;
+                                font-style: italic;
+                                font-size: 0.9rem;
+                                border-radius: 5px;
+                                color: colors.$mmn-regular-darkgray-cl;
+                                border-left: 5px darken(colors.$mmn-is-new-notif-bgcl, 50%) solid;
+                                margin-top: 10px;
                             }
 
                             .form-content {
@@ -515,6 +518,54 @@ $mmn-settings-nav-item-bgcl: #ececec;
         .form-group {
             .progress-container {
                 margin-top: 10px;
+            }
+        }
+    }
+}
+
+#settings-form-editors {
+    .form-content {
+        .editors {
+            display: flex;
+            width: 100%;
+            margin-top: 5px;
+            row-gap: 10px;
+            column-gap: 10px;
+
+            .editor {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 50%;
+                column-gap: 10px;
+                padding: 10px 0;
+                cursor: pointer;
+                position: relative;
+                border: 1px colors.$mmn-regular-lightgray-cl solid;
+                border-radius: 30px;
+                border-bottom: 5px colors.$mmn-regular-lightgray-cl solid;
+                font-weight: 500;
+                background-color: colors.$mmn-regular-white-cl;
+                outline: none;
+
+                .details-btn {
+                    position: absolute;
+                    right: 10px;
+                    width: fit-content;
+
+                    i {
+                        font-size: 1.1rem;
+                    }
+
+                    &.picked-btn {
+                        left: 10px;
+                    }
+                }
+
+                &:hover,
+                &.picked {
+                    border-color: colors.$mmn-regular-black-cl;
+                }
             }
         }
     }

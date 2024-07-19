@@ -115,12 +115,12 @@ const selectNoteEditorFromInside = (target: HTMLElement): HTMLTextAreaElement =>
 const setForNoteFormChanged = (noteForm: TNoteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor') as HTMLTextAreaElement
-    const noteContainer = noteEditor.closest('.note-form') as HTMLElement
+    const noteFormEle = noteEditor.closest('.note-form') as HTMLElement
     if (title || title === '') {
-        ;(noteContainer.querySelector('.note-title input') as HTMLInputElement).value = title
+        ;(noteFormEle.querySelector('.note-title input') as HTMLInputElement).value = title
     }
     if (author || author === '') {
-        ;(noteContainer.querySelector('.note-author input') as HTMLInputElement).value = author
+        ;(noteFormEle.querySelector('.note-author input') as HTMLInputElement).value = author
     }
     if (content || content === '') {
         setNoteEditor(noteEditor, content)
@@ -511,6 +511,24 @@ const onChangLanguageHandler = async (e: Event): Promise<void> => {
         window.location.reload()
     }
     formSubmitBtn.innerHTML = htmlBefore
+}
+
+const changeEditorHandler = (type: 'normal' | 'rich') => {
+    const noteContainers = homePage_pageMain.querySelectorAll<HTMLElement>(
+        '.notes .note-form .note-editor-board .note-editor-container',
+    )
+    for (const noteContainer of noteContainers) {
+        noteContainer.classList.remove('active')
+    }
+    homePage_pageMain
+        .querySelector(`.notes .note-form .note-editor-board .note-editor-container.${type}-editor`)
+        ?.classList.add('active')
+
+    if (type === 'rich') {
+        tinymce.init({
+            selector: 'textarea#mmn-rich-note-editor',
+        })
+    }
 }
 
 const initPage = (): void => {

@@ -23,7 +23,7 @@
                 <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
             </div>
             <div class="note-form-item note-editor-board">
-                <div class="note-editor-container">
+                <div class="note-editor-container normal-editor active">
                     <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
                         <textarea class="note-editor" id="note-editor" rows="5"
                             placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
@@ -37,6 +37,9 @@
                         <span></span>
                         <span class="count"><%= note.content ? note.content.length : 0 %> / 50000</span>
                     </div>
+                </div>
+                <div class="note-editor-container rich-editor">
+                    <textarea id="mmn-rich-note-editor"></textarea>
                 </div>
                 <!-- <div class="useful-note-actions">
                     <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">

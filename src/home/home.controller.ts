@@ -41,9 +41,11 @@ export class HomeController implements IHomeController {
         const { noteUniqueName } = params
         const note = await this.noteService.findNote(noteUniqueName)
         const appInfo = await this.applicationService.getApplicationInfo()
-        const langTrans = this.i18n.t('home-page.settings.language.langs') as TDataLanguage
         const currentLang = this.langService.getCurrentLang()
-        const langs = Object.entries(langTrans).map(([code, label]) => ({ code, label }))
+        const langsTrans = this.i18n.t('home-page.settings.language.langs', {
+            lang: currentLang,
+        }) as TDataLanguage
+        const langs = Object.entries(langsTrans).map(([code, label]) => ({ code, label }))
         if (note) {
             if (note.password) {
                 try {

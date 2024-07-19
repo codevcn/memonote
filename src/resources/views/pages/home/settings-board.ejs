@@ -17,6 +17,10 @@
                 <i class="bi bi-translate"></i>
                 <span><%= t('home-page.settings.language.Language',i18nLang) %></span>
             </span>
+            <span data-mmn-tab-value="editors" class="nav-tab">
+                <i class="bi bi-keyboard"></i>
+                <span><%= t('home-page.settings.editors.Editors',i18nLang) %></span>
+            </span>
         </div>
         <span onclick="logoutHandler(this)" class="nav-tab logout-btn" <%= note.passwordSet ? '' : 'hidden' %>>
             <span><%= t('home-page.settings.Logout',i18nLang) %></span>
@@ -278,7 +282,59 @@
                         </option>
                         <% }) %>
                     </select>
-                    <div class="message"></div>
+                    <div class="progress-container"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="forms editors nav-destination">
+        <section class="note-settings-form editors" id="settings-form-editors">
+            <div class="form-title">
+                <h2 class="content">
+                    <%= t('home-page.settings.editors.Change_editor',i18nLang) %>
+                </h2>
+            </div>
+            <p class="notice-text">
+                You can switch between editors for your note below. Note that when you use "Rich editor",
+                your note will loose ability to update in real-time. If you want to update or sync your note,
+                you have to reload (or refresh) page.
+            </p>
+            <div class="form-content">
+                <div class="form-group form-group-select">
+                    <label for="change-language-input">
+                        <span>
+                            <%= t('home-page.settings.editors.Pick_an_editor',i18nLang) %>
+                        </span>
+                    </label>
+                    <section class="editors">
+                        <button class="editor normal" onclick="changeEditorHandler('normal')">
+                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn picked-btn"
+                                title="<%= t('home-page.settings.editors.Picked',i18nLang) %>">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </span>
+                            <span>
+                                Normal editor
+                            </span>
+                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn"
+                                title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>">
+                                <i class="bi bi-info-circle"></i>
+                            </span>
+                        </button>
+                        <button class="editor rich" onclick="changeEditorHandler('rich')">
+                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn picked-btn"
+                                title="<%= t('home-page.settings.editors.Picked',i18nLang) %>">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </span>
+                            <span>
+                                Rich editor
+                            </span>
+                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn"
+                                title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>">
+                                <i class="bi bi-info-circle"></i>
+                            </span>
+                        </button>
+                    </section>
                     <div class="progress-container"></div>
                 </div>
             </div>

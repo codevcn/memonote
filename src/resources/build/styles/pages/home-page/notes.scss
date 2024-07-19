@@ -161,11 +161,16 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                     margin-top: 15px;
 
                     .note-editor-container {
+                        display: none;
                         height: 100%;
                         width: 100%;
                         position: relative;
                         z-index: calc(z-indexes.$mmn-base-zidx + 2);
                         padding: 5px 10px;
+
+                        &.active {
+                            display: block;
+                        }
 
                         .note-editor-wrapper {
                             display: grid;

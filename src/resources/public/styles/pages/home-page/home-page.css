@@ -108,11 +108,15 @@
     margin-top: 15px;
 }
 #page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container {
+    display: none;
     height: 100%;
     width: 100%;
     position: relative;
     z-index: 3;
     padding: 5px 10px;
+}
+#page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container.active {
+    display: block;
 }
 #page-main
     .notes
@@ -599,12 +603,11 @@
     .form-title
     .content {
     display: inline-block;
-    column-gap: 5px;
     margin-top: 0;
     color: #333;
     font-size: 1.3rem;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 #note-settings-modal
     .modal-dialog
@@ -628,7 +631,24 @@
     .status
     .status-item {
     font-size: 1rem;
-    color: gray;
+    color: #595959;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .notice-text {
+    padding: 15px;
+    background-color: rgba(255, 214, 101, 0.2);
+    font-style: italic;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    color: #595959;
+    border-left: 5px rgba(101, 74, 0, 0.2) solid;
+    margin-top: 10px;
 }
 #note-settings-modal
     .modal-dialog
@@ -642,16 +662,6 @@
     display: flex;
     align-items: center;
     column-gap: 10px;
-}
-#note-settings-modal
-    .modal-dialog
-    .modal-content
-    .modal-body
-    .note-settings-board
-    .forms
-    .note-settings-form
-    .form-content
-    .form-group.form-group-switch:not(:nth-of-type(1)) {
     margin-top: 10px;
 }
 #note-settings-modal
@@ -769,7 +779,7 @@
     .forms
     .note-settings-form
     .form-content
-    .form-group.form-group-text-field:not(:nth-of-type(1)) {
+    .form-group.form-group-text-field {
     margin-top: 15px;
 }
 #note-settings-modal
@@ -982,7 +992,7 @@
     .forms
     .note-settings-form
     .form-content
-    .form-group.form-group-select:not(:nth-of-type(1)) {
+    .form-group.form-group-select {
     margin-top: 15px;
 }
 #note-settings-modal
@@ -1251,6 +1261,45 @@
 
 #settings-form-language .form-content .form-group .progress-container {
     margin-top: 10px;
+}
+
+#settings-form-editors .form-content .editors {
+    display: flex;
+    width: 100%;
+    margin-top: 5px;
+    row-gap: 10px;
+    column-gap: 10px;
+}
+#settings-form-editors .form-content .editors .editor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    column-gap: 10px;
+    padding: 10px 0;
+    cursor: pointer;
+    position: relative;
+    border: 1px lightgray solid;
+    border-radius: 30px;
+    border-bottom: 5px lightgray solid;
+    font-weight: 500;
+    background-color: #fff;
+    outline: none;
+}
+#settings-form-editors .form-content .editors .editor .details-btn {
+    position: absolute;
+    right: 10px;
+    width: fit-content;
+}
+#settings-form-editors .form-content .editors .editor .details-btn i {
+    font-size: 1.1rem;
+}
+#settings-form-editors .form-content .editors .editor .details-btn.picked-btn {
+    left: 10px;
+}
+#settings-form-editors .form-content .editors .editor:hover,
+#settings-form-editors .form-content .editors .editor.picked {
+    border-color: #333;
 }
 
 :root {

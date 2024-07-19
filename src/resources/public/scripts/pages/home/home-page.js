@@ -118,12 +118,12 @@ const selectNoteEditorFromInside = (target) => {
 const setForNoteFormChanged = (noteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor')
-    const noteContainer = noteEditor.closest('.note-form')
+    const noteFormEle = noteEditor.closest('.note-form')
     if (title || title === '') {
-        noteContainer.querySelector('.note-title input').value = title
+        noteFormEle.querySelector('.note-title input').value = title
     }
     if (author || author === '') {
-        noteContainer.querySelector('.note-author input').value = author
+        noteFormEle.querySelector('.note-author input').value = author
     }
     if (content || content === '') {
         setNoteEditor(noteEditor, content)
@@ -451,6 +451,25 @@ const onChangLanguageHandler = (e) =>
         }
         formSubmitBtn.innerHTML = htmlBefore
     })
+const changeEditorHandler = (type) => {
+    var _a
+    const noteContainers = homePage_pageMain.querySelectorAll(
+        '.notes .note-form .note-editor-board .note-editor-container',
+    )
+    for (const noteContainer of noteContainers) {
+        noteContainer.classList.remove('active')
+    }
+    ;(_a = homePage_pageMain.querySelector(
+        `.notes .note-form .note-editor-board .note-editor-container.${type}-editor`,
+    )) === null || _a === void 0
+        ? void 0
+        : _a.classList.add('active')
+    if (type === 'rich') {
+        tinymce.init({
+            selector: 'textarea#mmn-rich-note-editor',
+        })
+    }
+}
 const initPage = () => {
     // setup "navigate" settings
     const navTabs = noteSettingsBoard.querySelectorAll(
