@@ -2,15 +2,15 @@
     --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
 }
 
-#page-main .notes {
+#page-main .note-form {
     padding: 0 80px;
     margin-top: 15px;
 }
-#page-main .notes .note-form .note-form-item {
+#page-main .note-form .note-form-item {
     position: relative;
 }
-#page-main .notes .note-form .note-form-item::before,
-#page-main .notes .note-form .note-form-item::after {
+#page-main .note-form .note-form-item::before,
+#page-main .note-form .note-form-item::after {
     content: '';
     display: block;
     height: 0;
@@ -18,32 +18,32 @@
     position: absolute;
     z-index: 2;
 }
-#page-main .notes .note-form .note-form-item::before {
+#page-main .note-form .note-form-item::before {
     border-right: 1px #909090 solid;
     border-bottom: 1px #909090 solid;
     top: 0;
     right: 0;
 }
-#page-main .notes .note-form .note-form-item::after {
+#page-main .note-form .note-form-item::after {
     border-top: 1px #909090 solid;
     border-left: 1px #909090 solid;
     bottom: 0;
     left: 0;
 }
-#page-main .notes .note-form .note-form-item.notify-note-edited.slither::before,
-#page-main .notes .note-form .note-form-item.notify-note-edited.slither::after {
+#page-main .note-form .note-form-item.notify-note-edited.slither::before,
+#page-main .note-form .note-form-item.notify-note-edited.slither::after {
     animation-duration: 6s;
     animation-timing-function: ease-in;
     animation-iteration-count: infinite;
     animation-fill-mode: backwards;
 }
-#page-main .notes .note-form .note-form-item.notify-note-edited.slither::before {
+#page-main .note-form .note-form-item.notify-note-edited.slither::before {
     animation-name: notify-slither-note-edited-before;
 }
-#page-main .notes .note-form .note-form-item.notify-note-edited.slither::after {
+#page-main .note-form .note-form-item.notify-note-edited.slither::after {
     animation-name: notify-slither-note-edited-after;
 }
-#page-main .notes .note-form .note-form-item.notify-note-edited.blink {
+#page-main .note-form .note-form-item.notify-note-edited.blink {
     outline: 1px #909090 solid;
     animation-name: notify-blink-note-edited;
     animation-duration: 1s;
@@ -51,7 +51,7 @@
     animation-iteration-count: infinite;
     animation-direction: reverse;
 }
-#page-main .notes .note-form .note-form-item .note-annotation {
+#page-main .note-form .note-form-item .note-annotation {
     position: absolute;
     right: calc(100% + 10px);
     top: 50%;
@@ -65,7 +65,7 @@
     max-width: 80px;
     text-align: right;
 }
-#page-main .notes .note-form .note-form-item.note-title input {
+#page-main .note-form .note-form-item.note-title input {
     background-color: transparent;
     width: 100%;
     padding: 0 10px;
@@ -77,16 +77,16 @@
     line-height: 1rem;
     font-family: var(--mmn-note-form-fonf);
 }
-#page-main .notes .note-form .note-form-item.note-title input::placeholder {
+#page-main .note-form .note-form-item.note-title input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-form .note-form-item.note-title input:focus ~ .note-annotation {
+#page-main .note-form .note-form-item.note-title input:focus ~ .note-annotation {
     opacity: 1;
 }
-#page-main .notes .note-form .note-form-item.note-author {
+#page-main .note-form .note-form-item.note-author {
     margin-top: 5px;
 }
-#page-main .notes .note-form .note-form-item.note-author input {
+#page-main .note-form .note-form-item.note-author input {
     background-color: transparent;
     width: 100%;
     padding: 5px 10px;
@@ -98,16 +98,16 @@
     line-height: 1rem;
     font-family: var(--mmn-note-form-fonf);
 }
-#page-main .notes .note-form .note-form-item.note-author input::placeholder {
+#page-main .note-form .note-form-item.note-author input::placeholder {
     color: #909090;
 }
-#page-main .notes .note-form .note-form-item.note-author input:focus ~ .note-annotation {
+#page-main .note-form .note-form-item.note-author input:focus ~ .note-annotation {
     opacity: 1;
 }
-#page-main .notes .note-form .note-form-item.note-editor-board {
+#page-main .note-form .note-form-item.note-editor-board {
     margin-top: 15px;
 }
-#page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-container {
     display: none;
     height: 100%;
     width: 100%;
@@ -115,11 +115,10 @@
     z-index: 3;
     padding: 5px 10px;
 }
-#page-main .notes .note-form .note-form-item.note-editor-board .note-editor-container.active {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-container.active {
     display: block;
 }
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
@@ -129,7 +128,6 @@
     overflow-y: auto;
 }
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
@@ -138,13 +136,11 @@
     top: 10px;
 }
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
     .note-editor-wrapper::after,
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
@@ -156,7 +152,6 @@
     font-size: 17px;
 }
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
@@ -168,7 +163,6 @@
     padding: 0;
 }
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
@@ -178,7 +172,6 @@
     opacity: 1;
 }
 #page-main
-    .notes
     .note-form
     .note-form-item.note-editor-board
     .note-editor-container
@@ -187,12 +180,7 @@
     white-space: pre-wrap;
     visibility: hidden;
 }
-#page-main
-    .notes
-    .note-form
-    .note-form-item.note-editor-board
-    .note-editor-container
-    .letters-count {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-container .letters-count {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
@@ -202,13 +190,13 @@
     margin-bottom: 5px;
     margin-top: 5px;
 }
-#page-main .notes .note-form .note-form-item.note-editor-board .useful-note-actions {
+#page-main .note-form .note-form-item.note-editor-board .useful-note-actions {
     display: flex;
     column-gap: 5px;
     width: 100%;
     margin-top: 15px;
 }
-#page-main .notes .note-form .note-form-item.note-editor-board .useful-note-actions .action {
+#page-main .note-form .note-form-item.note-editor-board .useful-note-actions .action {
     display: flex;
     align-items: center;
     column-gap: 5px;
@@ -219,9 +207,47 @@
     color: #fff;
     border: 2px #18181b solid;
 }
-#page-main .notes .note-form .note-form-item.note-editor-board .useful-note-actions .action i {
+#page-main .note-form .note-form-item.note-editor-board .useful-note-actions .action i {
     font-size: 0.9rem;
     color: inherit;
+}
+
+#rich-editor-edit-mode .actions {
+    display: flex;
+    column-gap: 10px;
+    margin-bottom: 10px;
+}
+#rich-editor-edit-mode .actions .action {
+    display: flex;
+    align-items: center;
+    column-gap: 7px;
+    border-radius: 5px;
+    border: 1px lightgray solid;
+    background-color: #fff;
+    padding: 3px 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+#rich-editor-edit-mode .actions .action i {
+    font-size: 0.9rem;
+}
+#rich-editor-edit-mode .actions .action:hover {
+    background-color: #e9e9e9;
+}
+#rich-editor-edit-mode .actions .action.active {
+    background-color: #333;
+    color: #fff;
+    border-color: #333;
+}
+#rich-editor-edit-mode .actions .action.active i {
+    color: #fff;
+}
+
+#rich-editor-view-mode {
+    display: none;
+}
+#rich-editor-view-mode.active {
+    display: block;
 }
 
 @keyframes notify-blink-note-edited {

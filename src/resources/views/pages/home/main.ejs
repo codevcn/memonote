@@ -8,40 +8,51 @@
         </div>
     </section>
 
-    <section class="notes">
-        <section class="note-form">
-            <div class="note-form-item note-title">
-                <input type="text" value="<%= note.title || '' %>"
-                    placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>"
-                    oninput="broadcastNoteTitleTypingHanlder(this)" id="note-title" />
-                <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Title',i18nLang) %></div>
-            </div>
-            <div class="note-form-item note-author">
-                <input type="text" value="<%= note.author || '' %>"
-                    placeholder="<%= t('home-page.noteForm.Author_placeholder',i18nLang) %>"
-                    oninput="broadcastNoteAuthorTypingHanlder(this)" id="note-author" />
-                <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
-            </div>
-            <div class="note-form-item note-editor-board">
-                <div class="note-editor-container normal-editor">
-                    <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
-                        <textarea class="note-editor" id="note-editor" rows="5"
-                            placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
-                            oninput="noteTyping(this)" onkeyup="catchBackspaceWhenTyping(this,event)"
-                            data-replicated-value=""><%= note.content || '' %></textarea>
-                        <div class="note-annotation">
-                            <%= t('home-page.noteForm.Note_annotation_Content',i18nLang) %>
-                        </div>
-                    </div>
-                    <div class="letters-count">
-                        <span></span>
-                        <span class="count"><%= note.content ? note.content.length : 0 %> / 50000</span>
+    <section class="note-form">
+        <div class="note-form-item note-title">
+            <input type="text" value="<%= note.title || '' %>"
+                placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>"
+                oninput="broadcastNoteTitleTypingHanlder(this)" id="note-title" />
+            <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Title',i18nLang) %></div>
+        </div>
+        <div class="note-form-item note-author">
+            <input type="text" value="<%= note.author || '' %>"
+                placeholder="<%= t('home-page.noteForm.Author_placeholder',i18nLang) %>"
+                oninput="broadcastNoteAuthorTypingHanlder(this)" id="note-author" />
+            <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
+        </div>
+        <div class="note-form-item note-editor-board">
+            <section class="note-editor-container normal-editor">
+                <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
+                    <textarea class="note-editor" id="note-editor" rows="5"
+                        placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
+                        oninput="noteTyping(this)" onkeyup="catchBackspaceWhenTyping(this,event)"
+                        data-replicated-value=""><%= note.content || '' %></textarea>
+                    <div class="note-annotation">
+                        <%= t('home-page.noteForm.Note_annotation_Content',i18nLang) %>
                     </div>
                 </div>
-                <div class="note-editor-container rich-editor">
-                    <textarea id="mmn-rich-note-editor"></textarea>
+                <div class="letters-count">
+                    <span></span>
+                    <span class="count"><%= note.content ? note.content.length : 0 %> / 50000</span>
                 </div>
-                <!-- <div class="useful-note-actions">
+            </section>
+            <section class="note-editor-container rich-editor" id="rich-editor-edit-mode">
+                <div class="actions">
+                    <button class="action" data-mmn-editor-mode="view-mode">
+                        <i class="bi bi-eye"></i>
+                        <span>View Mode</span>
+                    </button>
+                    <button class="action" data-mmn-editor-mode="edit-mode">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Edit Mode</span>
+                    </button>
+                </div>
+                <textarea id="mmn-rich-note-editor"></textarea>
+            </section>
+            <section id="rich-editor-view-mode">
+            </section>
+            <!-- <div class="useful-note-actions">
                     <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">
                         <i class="bi bi-clipboard"></i>
                         <span>Clipboard Paste</span>
@@ -59,8 +70,7 @@
                         <span>Clear</span>
                     </button>
                 </div> -->
-            </div>
-        </section>
+        </div>
     </section>
 </main>
 

@@ -39,197 +39,241 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 }
 
 #page-main {
-    .notes {
+    .note-form {
         padding: 0 $mmn-note-horizon-padding;
         margin-top: $mmn-note-margin-top;
 
-        .note-form {
-            .note-form-item {
-                position: relative;
+        .note-form-item {
+            position: relative;
 
-                &::before,
-                &::after {
-                    content: '';
-                    display: block;
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    z-index: calc(z-indexes.$mmn-base-zidx + 1);
-                }
+            &::before,
+            &::after {
+                content: '';
+                display: block;
+                height: 0;
+                width: 0;
+                position: absolute;
+                z-index: calc(z-indexes.$mmn-base-zidx + 1);
+            }
 
-                &::before {
-                    border-right: $mmn-notify-note-edited-line;
-                    border-bottom: $mmn-notify-note-edited-line;
-                    top: 0;
-                    right: 0;
-                }
+            &::before {
+                border-right: $mmn-notify-note-edited-line;
+                border-bottom: $mmn-notify-note-edited-line;
+                top: 0;
+                right: 0;
+            }
 
-                &::after {
-                    border-top: $mmn-notify-note-edited-line;
-                    border-left: $mmn-notify-note-edited-line;
-                    bottom: 0;
-                    left: 0;
-                }
+            &::after {
+                border-top: $mmn-notify-note-edited-line;
+                border-left: $mmn-notify-note-edited-line;
+                bottom: 0;
+                left: 0;
+            }
 
-                &.notify-note-edited {
-                    &.slither {
-                        &::before,
-                        &::after {
-                            animation-duration: 6s;
-                            animation-timing-function: ease-in;
-                            animation-iteration-count: infinite;
-                            animation-fill-mode: backwards;
-                        }
-                        &::before {
-                            animation-name: notify-slither-note-edited-before;
-                        }
-                        &::after {
-                            animation-name: notify-slither-note-edited-after;
-                        }
-                    }
-
-                    &.blink {
-                        outline: $mmn-notify-note-edited-line;
-                        animation-name: notify-blink-note-edited;
-                        animation-duration: 1s;
-                        animation-timing-function: ease-out;
+            &.notify-note-edited {
+                &.slither {
+                    &::before,
+                    &::after {
+                        animation-duration: 6s;
+                        animation-timing-function: ease-in;
                         animation-iteration-count: infinite;
-                        animation-direction: reverse;
+                        animation-fill-mode: backwards;
+                    }
+                    &::before {
+                        animation-name: notify-slither-note-edited-before;
+                    }
+                    &::after {
+                        animation-name: notify-slither-note-edited-after;
                     }
                 }
 
-                .note-annotation {
-                    position: absolute;
-                    right: calc(100% + 10px);
-                    top: 50%;
-                    transform: translate(0, -50%);
-                    border-right: 3px $mmn-note-annotaion-border-cl solid;
-                    padding-right: 8px;
-                    font-size: 0.9rem;
-                    opacity: 0;
-                    transition: opacity 0.15s;
-                    width: max-content;
-                    max-width: $mmn-note-horizon-padding;
-                    text-align: right;
+                &.blink {
+                    outline: $mmn-notify-note-edited-line;
+                    animation-name: notify-blink-note-edited;
+                    animation-duration: 1s;
+                    animation-timing-function: ease-out;
+                    animation-iteration-count: infinite;
+                    animation-direction: reverse;
                 }
+            }
 
-                &.note-title {
-                    input {
-                        background-color: transparent;
-                        width: 100%;
-                        padding: 0 10px;
-                        box-sizing: border-box;
-                        font-size: 2rem;
-                        font-weight: bold;
-                        position: relative;
-                        z-index: calc(z-indexes.$mmn-base-zidx + 2);
-                        line-height: 1rem;
-                        font-family: var(--mmn-note-form-fonf);
+            .note-annotation {
+                position: absolute;
+                right: calc(100% + 10px);
+                top: 50%;
+                transform: translate(0, -50%);
+                border-right: 3px $mmn-note-annotaion-border-cl solid;
+                padding-right: 8px;
+                font-size: 0.9rem;
+                opacity: 0;
+                transition: opacity 0.15s;
+                width: max-content;
+                max-width: $mmn-note-horizon-padding;
+                text-align: right;
+            }
 
-                        &::placeholder {
-                            color: colors.$mmn-regular-gray-cl;
+            &.note-title {
+                input {
+                    background-color: transparent;
+                    width: 100%;
+                    padding: 0 10px;
+                    box-sizing: border-box;
+                    font-size: 2rem;
+                    font-weight: bold;
+                    position: relative;
+                    z-index: calc(z-indexes.$mmn-base-zidx + 2);
+                    line-height: 1rem;
+                    font-family: var(--mmn-note-form-fonf);
+
+                    &::placeholder {
+                        color: colors.$mmn-regular-gray-cl;
+                    }
+
+                    @include on-focus-display-note-annotation-styling;
+                }
+            }
+
+            &.note-author {
+                margin-top: 5px;
+
+                input {
+                    background-color: transparent;
+                    width: 100%;
+                    padding: 5px 10px;
+                    box-sizing: border-box;
+                    font-size: 15px;
+                    font-weight: 500;
+                    position: relative;
+                    z-index: calc(z-indexes.$mmn-base-zidx + 2);
+                    line-height: 1rem;
+                    font-family: var(--mmn-note-form-fonf);
+
+                    &::placeholder {
+                        color: colors.$mmn-regular-gray-cl;
+                    }
+
+                    @include on-focus-display-note-annotation-styling;
+                }
+            }
+
+            &.note-editor-board {
+                margin-top: 15px;
+
+                .note-editor-container {
+                    display: none;
+                    height: 100%;
+                    width: 100%;
+                    position: relative;
+                    z-index: calc(z-indexes.$mmn-base-zidx + 2);
+                    padding: 5px 10px;
+
+                    &.active {
+                        display: block;
+                    }
+
+                    .note-editor-wrapper {
+                        display: grid;
+                        max-height: $mmn-note-editor-max-height;
+                        overflow-y: auto;
+
+                        .note-annotation {
+                            top: 10px;
                         }
 
-                        @include on-focus-display-note-annotation-styling;
-                    }
-                }
-
-                &.note-author {
-                    margin-top: 5px;
-
-                    input {
-                        background-color: transparent;
-                        width: 100%;
-                        padding: 5px 10px;
-                        box-sizing: border-box;
-                        font-size: 15px;
-                        font-weight: 500;
-                        position: relative;
-                        z-index: calc(z-indexes.$mmn-base-zidx + 2);
-                        line-height: 1rem;
-                        font-family: var(--mmn-note-form-fonf);
-
-                        &::placeholder {
-                            color: colors.$mmn-regular-gray-cl;
+                        &::after,
+                        .note-editor {
+                            grid-area: 1 / 1 / 2 / 2;
+                            width: 100%;
+                            font-family: var(--mmn-note-form-fonf);
+                            font-size: $mmn-note-content-font-size;
                         }
 
-                        @include on-focus-display-note-annotation-styling;
+                        .note-editor {
+                            background-color: transparent;
+                            resize: none;
+                            overflow: hidden;
+                            padding: 0;
+
+                            @include on-focus-display-note-annotation-styling;
+                        }
+
+                        &::after {
+                            content: attr(data-replicated-value) ' ';
+                            white-space: pre-wrap;
+                            visibility: hidden;
+                        }
+                    }
+
+                    .letters-count {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 0.85rem;
+                        color: colors.$mmn-regular-darkgray-cl;
+                        line-height: 1;
+                        padding-right: 5px;
+                        margin-bottom: 5px;
+                        margin-top: 5px;
                     }
                 }
 
-                &.note-editor-board {
+                .useful-note-actions {
+                    display: flex;
+                    column-gap: 5px;
+                    width: 100%;
                     margin-top: 15px;
 
-                    .note-editor-container {
-                        display: none;
-                        height: 100%;
-                        width: 100%;
-                        position: relative;
-                        z-index: calc(z-indexes.$mmn-base-zidx + 2);
-                        padding: 5px 10px;
-
-                        &.active {
-                            display: block;
-                        }
-
-                        .note-editor-wrapper {
-                            display: grid;
-                            max-height: $mmn-note-editor-max-height;
-                            overflow-y: auto;
-
-                            .note-annotation {
-                                top: 10px;
-                            }
-
-                            &::after,
-                            .note-editor {
-                                grid-area: 1 / 1 / 2 / 2;
-                                width: 100%;
-                                font-family: var(--mmn-note-form-fonf);
-                                font-size: $mmn-note-content-font-size;
-                            }
-
-                            .note-editor {
-                                background-color: transparent;
-                                resize: none;
-                                overflow: hidden;
-                                padding: 0;
-
-                                @include on-focus-display-note-annotation-styling;
-                            }
-
-                            &::after {
-                                content: attr(data-replicated-value) ' ';
-                                white-space: pre-wrap;
-                                visibility: hidden;
-                            }
-                        }
-
-                        .letters-count {
-                            display: flex;
-                            justify-content: space-between;
-                            font-size: 0.85rem;
-                            color: colors.$mmn-regular-darkgray-cl;
-                            line-height: 1;
-                            padding-right: 5px;
-                            margin-bottom: 5px;
-                            margin-top: 5px;
-                        }
-                    }
-
-                    .useful-note-actions {
-                        display: flex;
-                        column-gap: 5px;
-                        width: 100%;
-                        margin-top: 15px;
-
-                        .action {
-                            @include useful-note-action-btn-styling;
-                        }
+                    .action {
+                        @include useful-note-action-btn-styling;
                     }
                 }
             }
         }
+    }
+}
+
+#rich-editor-edit-mode {
+    .actions {
+        display: flex;
+        column-gap: 10px;
+        margin-bottom: 10px;
+
+        .action {
+            display: flex;
+            align-items: center;
+            column-gap: 7px;
+            border-radius: 5px;
+            border: 1px colors.$mmn-regular-lightgray-cl solid;
+            background-color: colors.$mmn-regular-white-cl;
+            padding: 3px 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+
+            i {
+                font-size: 0.9rem;
+            }
+
+            &:hover {
+                background-color: scale-color(colors.$mmn-regular-lightgray-cl, $lightness: 50%);
+            }
+
+            &.active {
+                background-color: colors.$mmn-regular-black-cl;
+                color: colors.$mmn-regular-white-cl;
+                border-color: colors.$mmn-regular-black-cl;
+
+                i {
+                    color: colors.$mmn-regular-white-cl;
+                }
+            }
+        }
+    }
+}
+
+#rich-editor-view-mode {
+    display: none;
+
+    &.active {
+        display: block;
     }
 }
 

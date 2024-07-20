@@ -25,7 +25,7 @@ export type THomePagePageData = TCommonPageData & {
     }
 }
 
-export type TDataLanguage = {
+export type TLanguagesDataTrans = {
     en: 'English'
     vi: 'Vietnamese'
 }

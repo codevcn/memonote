@@ -61,44 +61,44 @@ export class NotificationService {
         )
     }
 
-    calculateTimeDifference(inputTime: Date): string {
+    calculateTimeDifference(inputTime: Date, lang: ELangCodes): string {
         const now = dayjs()
         const specifiedTime = dayjs(inputTime)
         const differenceInSeconds = Math.abs(now.diff(specifiedTime, 'second'))
-        let timeUnit: string
+        let timeUnit: 'year' | 'month' | 'day' | 'hour' | 'minute' | 'seconds'
         let timeCount: number = 0
 
         if (differenceInSeconds >= 31536000) {
             // greater than 12 months
             timeCount = Math.floor(differenceInSeconds / 31536000)
-            timeUnit = 'y'
+            timeUnit = 'year'
         } else if (differenceInSeconds >= 2678400) {
             // greater than 31 days
             timeCount = Math.floor(differenceInSeconds / 2678400)
-            timeUnit = 'm'
+            timeUnit = 'month'
         } else if (differenceInSeconds >= 86400) {
             // greater than 24 hours
             timeCount = Math.floor(differenceInSeconds / 86400)
-            timeUnit = 'd'
+            timeUnit = 'day'
         } else if (differenceInSeconds >= 3600) {
             // greater than 60 minutes
             timeCount = Math.floor(differenceInSeconds / 3600)
-            timeUnit = 'h'
+            timeUnit = 'hour'
         } else if (differenceInSeconds >= 60) {
             // greater than 60 seconds
             timeCount = Math.floor(differenceInSeconds / 60)
-            timeUnit = 'min'
+            timeUnit = 'minute'
         } else {
             timeCount = differenceInSeconds // seconds gap
-            timeUnit = 's'
+            timeUnit = 'seconds'
         }
 
-        return timeCount + timeUnit + 'ago'
+        return `${timeCount} ${this.i18n.t(`notification.timeUnits.${timeUnit}`, { lang })}`
     }
 
     getNotifTranslation(notif: Notification, lang: ELangCodes): TGetNotifTranslationReturn {
         const notifType = notif.type
-        const createdAt = this.calculateTimeDifference(notif.createdAt)
+        const createdAt = this.calculateTimeDifference(notif.createdAt, lang)
         if (lang === ELangCodes.VI) {
             const config = { lang: ELangCodes.VI }
             switch (notifType) {

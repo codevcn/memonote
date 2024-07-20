@@ -8,7 +8,10 @@ class LayoutController {
     private static readonly GENERAL_STATUS_TIMEOUT: number = 3000
     private static toasterAnimationFlag: boolean = true
     private static toasterTimer: ReturnType<typeof setTimeout> | null = null
-    private static generalAppStatus = document.getElementById('general-app-status') as HTMLElement
+
+    private static readonly generalAppStatus = document.getElementById(
+        'general-app-status',
+    ) as HTMLElement
 
     static notifyNoteEdited(type: 'on' | 'off', noteForm: TNoteForm): void {
         let baseClasses = ['notify-note-edited', 'slither', 'blink']
@@ -16,6 +19,7 @@ class LayoutController {
         notifyNoteEditedClass.push(getEditedNotifyStyleInDevice() || 'blink')
         let noteFormItem: HTMLElement
         const { title, author, content } = noteForm
+        const noteFormEle = homePage_pageMain.querySelector('.note-form') as HTMLElement
         if (title || title === '') {
             noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
             noteFormItem.classList.remove(...baseClasses)

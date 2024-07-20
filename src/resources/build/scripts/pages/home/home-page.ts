@@ -1,5 +1,4 @@
 const homePage_pageMain = document.querySelector('#page-main') as HTMLElement
-const notesSection = homePage_pageMain.querySelector('.notes') as HTMLElement
 const realtimeModeDisplay = document.querySelector('#nav-bar .realtime-mode-display') as HTMLElement
 const noteSettingsBoard = document.querySelector(
     '#note-settings-modal .note-settings-board',
@@ -14,7 +13,6 @@ const removePasswordForm = document.getElementById(
 const noteQuickLook = homePage_pageMain.querySelector(
     '.note-quick-look .quick-look-items',
 ) as HTMLElement
-const noteFormEle = notesSection.querySelector('.note-form') as HTMLElement
 const scrollToTopBtn = document.querySelector('#scroll-to-top') as HTMLElement
 
 type TNoteContentHistory = {
@@ -104,14 +102,6 @@ const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> 
     setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
 }
 
-const selectNoteEditorFromInside = (target: HTMLElement): HTMLTextAreaElement => {
-    return target
-        .closest('.note-form')!
-        .querySelector(
-            '.note-editor-board .note-editor-container .note-editor',
-        ) as HTMLTextAreaElement
-}
-
 const setForNoteFormChanged = (noteForm: TNoteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor') as HTMLTextAreaElement
@@ -166,7 +156,11 @@ type TUsefulActions =
     | 'redoNoteContent'
 
 const performUsefulActions = async (target: HTMLElement, type: TUsefulActions): Promise<void> => {
-    const noteEditor = selectNoteEditorFromInside(target)
+    const noteEditor = target
+        .closest('.note-form')!
+        .querySelector(
+            '.note-editor-board .note-editor-container .note-editor',
+        ) as HTMLTextAreaElement
     switch (type) {
         case 'clipboardPaste':
             await pasteFromClipboard(noteEditor)

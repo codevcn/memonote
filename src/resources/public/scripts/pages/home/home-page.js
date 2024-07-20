@@ -31,7 +31,6 @@ var __awaiter =
         })
     }
 const homePage_pageMain = document.querySelector('#page-main')
-const notesSection = homePage_pageMain.querySelector('.notes')
 const realtimeModeDisplay = document.querySelector('#nav-bar .realtime-mode-display')
 const noteSettingsBoard = document.querySelector('#note-settings-modal .note-settings-board')
 const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
@@ -40,7 +39,6 @@ const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
 const setPasswordForm = document.getElementById('settings-form-set-password')
 const removePasswordForm = document.getElementById('settings-form-remove-password')
 const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
-const noteFormEle = notesSection.querySelector('.note-form')
 const scrollToTopBtn = document.querySelector('#scroll-to-top')
 const noteContentHistory = { history: [''], index: 0 }
 const SCROLL_Y_BEGIN = 200
@@ -110,11 +108,6 @@ const noteTyping = (noteEditorTarget) =>
         setNoteContentHistory(noteContent)
         setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
     })
-const selectNoteEditorFromInside = (target) => {
-    return target
-        .closest('.note-form')
-        .querySelector('.note-editor-board .note-editor-container .note-editor')
-}
 const setForNoteFormChanged = (noteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor')
@@ -158,7 +151,9 @@ const undoNoteContent = (noteEditorTarget) => {
 }
 const performUsefulActions = (target, type) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        const noteEditor = selectNoteEditorFromInside(target)
+        const noteEditor = target
+            .closest('.note-form')
+            .querySelector('.note-editor-board .note-editor-container .note-editor')
         switch (type) {
             case 'clipboardPaste':
                 yield pasteFromClipboard(noteEditor)

@@ -41,7 +41,7 @@ export class Note {
 
     @Prop({
         required: true,
-        default: false,
+        default: EEditors.NORMAL,
         enum: Object.values(EEditors),
     })
     editor: EEditors

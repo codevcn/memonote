@@ -43,6 +43,7 @@ class LayoutController {
         notifyNoteEditedClass.push(getEditedNotifyStyleInDevice() || 'blink')
         let noteFormItem
         const { title, author, content } = noteForm
+        const noteFormEle = homePage_pageMain.querySelector('.note-form')
         if (title || title === '') {
             noteFormItem = noteFormEle.querySelector('.note-title')
             noteFormItem.classList.remove(...baseClasses)

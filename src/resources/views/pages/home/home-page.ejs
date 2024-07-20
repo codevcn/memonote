@@ -17,7 +17,8 @@
             editor: "<%= note.editor %>",
             initRichEditorData: {
                 placeholder: "<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
-            }
+            },
+            currentLang: "<%= settings.currentLang %>"
         }
     </script>
     <%- include('../../partials/doc-scripts') %>
