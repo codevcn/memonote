@@ -13,7 +13,11 @@
     <%- include('../../partials/page-bottom') %>
     <script>
         const pageData = {
-            noteId: '<%= note.noteId %>'
+            noteId: "<%= note.noteId %>",
+            editor: "<%= note.editor %>",
+            initRichEditorData: {
+                placeholder: "<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
+            }
         }
     </script>
     <%- include('../../partials/doc-scripts') %>
@@ -21,6 +25,7 @@
         referrerpolicy="origin"></script>
     <script src="/scripts/pages/home/socket.js" defer></script>
     <script src="/scripts/pages/home/home-page.js" defer></script>
+    <script src="/scripts/pages/home/editors.js" defer></script>
 </body>
 
 </html>

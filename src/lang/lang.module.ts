@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { LangController } from './lang.controller'
+import { LangController } from './lang-api.controller'
 import { LangService } from './lang.service'
 
 @Module({

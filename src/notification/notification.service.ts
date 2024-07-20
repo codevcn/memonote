@@ -87,7 +87,7 @@ export class NotificationService {
         } else if (differenceInSeconds >= 60) {
             // greater than 60 seconds
             timeCount = Math.floor(differenceInSeconds / 60)
-            timeUnit = 'm'
+            timeUnit = 'min'
         } else {
             timeCount = differenceInSeconds // seconds gap
             timeUnit = 's'

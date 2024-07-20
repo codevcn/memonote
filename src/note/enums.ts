@@ -12,3 +12,8 @@ export enum ENoteLengths {
 export enum EAuthEncryption {
     HASH_PASSWORD_NUMBER_OF_ROUNDS = 10,
 }
+
+export enum EEditors {
+    NORMAL = 'normal',
+    RICH = 'rich',
+}

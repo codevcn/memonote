@@ -24,6 +24,14 @@ interface INotificationDataTrans {
         Create_new_note: string
     }
     createdAt: string
+    timeUnits: {
+        year: string
+        month: string
+        day: string
+        hour: string
+        minute: string
+        seconds: string
+    }
 }
 
 interface ISettings {

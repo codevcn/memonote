@@ -5,6 +5,7 @@
 
 $mmn-settings-navigation-container-width: 180px;
 $mmn-settings-nav-item-bgcl: #ececec;
+$mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
 
 @mixin modal-header-styling {
     .btn-close:focus {
@@ -531,6 +532,30 @@ $mmn-settings-nav-item-bgcl: #ececec;
             margin-top: 5px;
             row-gap: 10px;
             column-gap: 10px;
+            position: relative;
+
+            .progress {
+                display: none;
+                justify-content: center;
+                align-items: center;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: $mmn-settings-switch-editor-progress-bgcl;
+                z-index: z-indexes.$mmn-base-zidx + 2;
+
+                &.active {
+                    display: flex;
+                }
+
+                .spinner {
+                    color: colors.$mmn-regular-black-cl;
+                    height: 24px;
+                    width: 24px;
+                }
+            }
 
             .editor {
                 display: flex;
@@ -541,6 +566,7 @@ $mmn-settings-nav-item-bgcl: #ececec;
                 padding: 10px 0;
                 cursor: pointer;
                 position: relative;
+                z-index: z-indexes.$mmn-base-zidx + 1;
                 border: 1px colors.$mmn-regular-lightgray-cl solid;
                 border-radius: 30px;
                 border-bottom: 5px colors.$mmn-regular-lightgray-cl solid;
@@ -548,23 +574,38 @@ $mmn-settings-nav-item-bgcl: #ececec;
                 background-color: colors.$mmn-regular-white-cl;
                 outline: none;
 
-                .details-btn {
+                .details-btn,
+                .picked-btn {
                     position: absolute;
-                    right: 10px;
                     width: fit-content;
+                }
+
+                .details-btn {
+                    right: 10px;
 
                     i {
                         font-size: 1.1rem;
                     }
+                }
 
-                    &.picked-btn {
-                        left: 10px;
+                .picked-btn {
+                    display: none;
+                    left: 10px;
+
+                    i {
+                        font-size: 1.1rem;
                     }
                 }
 
                 &:hover,
                 &.picked {
                     border-color: colors.$mmn-regular-black-cl;
+                }
+
+                &.picked {
+                    .picked-btn {
+                        display: initial;
+                    }
                 }
             }
         }

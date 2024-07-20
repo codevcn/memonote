@@ -3,6 +3,11 @@ var ENotifPagination
 ;(function (ENotifPagination) {
     ENotifPagination[(ENotifPagination['MAX_NOTIFS_PER_PAGE'] = 7)] = 'MAX_NOTIFS_PER_PAGE'
 })(ENotifPagination || (ENotifPagination = {}))
+var EEditors
+;(function (EEditors) {
+    EEditors['NORMAL'] = 'normal'
+    EEditors['RICH'] = 'rich'
+})(EEditors || (EEditors = {}))
 var ENotificationTypes
 ;(function (ENotificationTypes) {
     ENotificationTypes['SET_PASSWORD'] = 'password.set'

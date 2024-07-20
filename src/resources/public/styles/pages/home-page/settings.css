@@ -947,6 +947,27 @@
     margin-top: 5px;
     row-gap: 10px;
     column-gap: 10px;
+    position: relative;
+}
+#settings-form-editors .form-content .editors .progress {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(235, 235, 235, 0.75);
+    z-index: 3;
+}
+#settings-form-editors .form-content .editors .progress.active {
+    display: flex;
+}
+#settings-form-editors .form-content .editors .progress .spinner {
+    color: #333;
+    height: 24px;
+    width: 24px;
 }
 #settings-form-editors .form-content .editors .editor {
     display: flex;
@@ -957,6 +978,7 @@
     padding: 10px 0;
     cursor: pointer;
     position: relative;
+    z-index: 2;
     border: 1px lightgray solid;
     border-radius: 30px;
     border-bottom: 5px lightgray solid;
@@ -964,20 +986,30 @@
     background-color: #fff;
     outline: none;
 }
-#settings-form-editors .form-content .editors .editor .details-btn {
+#settings-form-editors .form-content .editors .editor .details-btn,
+#settings-form-editors .form-content .editors .editor .picked-btn {
     position: absolute;
-    right: 10px;
     width: fit-content;
+}
+#settings-form-editors .form-content .editors .editor .details-btn {
+    right: 10px;
 }
 #settings-form-editors .form-content .editors .editor .details-btn i {
     font-size: 1.1rem;
 }
-#settings-form-editors .form-content .editors .editor .details-btn.picked-btn {
+#settings-form-editors .form-content .editors .editor .picked-btn {
+    display: none;
     left: 10px;
+}
+#settings-form-editors .form-content .editors .editor .picked-btn i {
+    font-size: 1.1rem;
 }
 #settings-form-editors .form-content .editors .editor:hover,
 #settings-form-editors .form-content .editors .editor.picked {
     border-color: #333;
+}
+#settings-form-editors .form-content .editors .editor.picked .picked-btn {
+    display: initial;
 }
 
 /*# sourceMappingURL=settings.css.map */

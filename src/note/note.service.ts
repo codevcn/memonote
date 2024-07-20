@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Note, TNoteDocument, TNoteModel } from './note.model'
-import { ENoteLengths } from './enums'
+import { EEditors, ENoteLengths } from './enums'
 import * as bcrypt from 'bcrypt'
 import type { Response } from 'express'
 import { JWTService } from '@/auth/jwt.service'
 import { EAuthEncryption } from './enums'
 import type { TNoteForm } from './types'
-import { AddPasswordForNotePayloadDTO } from './DTOs'
+import { SetPasswordForNotePayloadDTO } from './DTOs'
 import { UserSessions } from './gateway/sessions'
 import { ENotificationTypes } from '@/notification/enums'
 import path from 'path'
@@ -91,7 +91,7 @@ export class NoteService {
     }
 
     async setPasswordForNote(
-        payload: AddPasswordForNotePayloadDTO,
+        payload: SetPasswordForNotePayloadDTO,
         noteUniqueName: string,
     ): Promise<void> {
         const { password } = payload
@@ -111,7 +111,7 @@ export class NoteService {
     }
 
     async setPasswordForNoteHandler(
-        payload: AddPasswordForNotePayloadDTO,
+        payload: SetPasswordForNotePayloadDTO,
         noteUniqueName: string,
         res: Response,
     ): Promise<void> {
@@ -156,5 +156,16 @@ export class NoteService {
             type: ENotificationTypes.REMOVE_PASSWORD,
             createdAt: removePasswordDate,
         })
+    }
+
+    async switchEditor(noteUniqueName: string, editor: EEditors): Promise<void> {
+        await this.noteModel.updateOne(
+            { uniqueName: noteUniqueName },
+            {
+                $set: {
+                    editor,
+                },
+            },
+        )
     }
 }

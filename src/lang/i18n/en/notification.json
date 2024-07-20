@@ -9,5 +9,13 @@
         "Remove_password": "Password has been removed by user",
         "Create_new_note": "Created a new note"
     },
-    "createdAt": "{date} ago"
+    "createdAt": "{date} ago",
+    "timeUnits": {
+        "year": "y",
+        "month": "m",
+        "day": "d",
+        "hour": "h",
+        "minute": "min",
+        "seconds": "s"
+    }
 }

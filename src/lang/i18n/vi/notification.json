@@ -9,5 +9,13 @@
         "Remove_password": "Mật khẩu đã bị xóa bỏ bởi người dùng",
         "Create_new_note": "Đã tạo một ghi chú mới"
     },
-    "createdAt": "{date} trước"
+    "createdAt": "{date} trước",
+    "timeUnits": {
+        "year": "năm",
+        "month": "tháng",
+        "day": "ngày",
+        "hour": "giờ",
+        "minute": "phút",
+        "seconds": "giây"
+    }
 }

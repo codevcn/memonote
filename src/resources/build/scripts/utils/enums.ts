@@ -2,6 +2,11 @@ enum ENotifPagination {
     MAX_NOTIFS_PER_PAGE = 7,
 }
 
+enum EEditors {
+    NORMAL = 'normal',
+    RICH = 'rich',
+}
+
 enum ENotificationTypes {
     SET_PASSWORD = 'password.set',
     REMOVE_PASSWORD = 'password.remove',

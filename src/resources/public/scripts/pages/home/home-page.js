@@ -451,25 +451,6 @@ const onChangLanguageHandler = (e) =>
         }
         formSubmitBtn.innerHTML = htmlBefore
     })
-const changeEditorHandler = (type) => {
-    var _a
-    const noteContainers = homePage_pageMain.querySelectorAll(
-        '.notes .note-form .note-editor-board .note-editor-container',
-    )
-    for (const noteContainer of noteContainers) {
-        noteContainer.classList.remove('active')
-    }
-    ;(_a = homePage_pageMain.querySelector(
-        `.notes .note-form .note-editor-board .note-editor-container.${type}-editor`,
-    )) === null || _a === void 0
-        ? void 0
-        : _a.classList.add('active')
-    if (type === 'rich') {
-        tinymce.init({
-            selector: 'textarea#mmn-rich-note-editor',
-        })
-    }
-}
 const initPage = () => {
     // setup "navigate" settings
     const navTabs = noteSettingsBoard.querySelectorAll(

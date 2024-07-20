@@ -358,7 +358,6 @@ _e = NotificationsController
 NotificationsController.notifsData = []
 NotificationsController.newNotifsData = []
 NotificationsController.ringNotifFlag = true
-NotificationsController.startingTimestamp = new Date()
 NotificationsController.notificationBtn = document.querySelector(
     '#nav-bar .right-side-menu .menu-item.notification .notification-btn',
 )

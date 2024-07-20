@@ -61,6 +61,7 @@ export class HomeController implements IHomeController {
                                 author: note.author,
                                 passwordSet: true,
                                 noteId: note._id.toString(),
+                                editor: note.editor,
                             },
                             settings: {
                                 langs,
@@ -89,6 +90,7 @@ export class HomeController implements IHomeController {
                         author: note.author,
                         passwordSet: false,
                         noteId: note._id.toString(),
+                        editor: note.editor,
                     },
                     settings: {
                         langs,
@@ -110,6 +112,7 @@ export class HomeController implements IHomeController {
                         author: null,
                         passwordSet: false,
                         noteId: createdNote._id.toString(),
+                        editor: createdNote.editor,
                     },
                     settings: {
                         langs,

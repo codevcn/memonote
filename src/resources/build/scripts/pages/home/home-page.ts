@@ -513,24 +513,6 @@ const onChangLanguageHandler = async (e: Event): Promise<void> => {
     formSubmitBtn.innerHTML = htmlBefore
 }
 
-const changeEditorHandler = (type: 'normal' | 'rich') => {
-    const noteContainers = homePage_pageMain.querySelectorAll<HTMLElement>(
-        '.notes .note-form .note-editor-board .note-editor-container',
-    )
-    for (const noteContainer of noteContainers) {
-        noteContainer.classList.remove('active')
-    }
-    homePage_pageMain
-        .querySelector(`.notes .note-form .note-editor-board .note-editor-container.${type}-editor`)
-        ?.classList.add('active')
-
-    if (type === 'rich') {
-        tinymce.init({
-            selector: 'textarea#mmn-rich-note-editor',
-        })
-    }
-}
-
 const initPage = (): void => {
     // setup "navigate" settings
     const navTabs = noteSettingsBoard.querySelectorAll<HTMLElement>(

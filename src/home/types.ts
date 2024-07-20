@@ -1,3 +1,4 @@
+import type { EEditors } from '@/note/enums'
 import type { TCommonPageData } from '@/utils/types'
 
 export type TRedirectHomePage = {
@@ -16,6 +17,7 @@ export type THomePagePageData = TCommonPageData & {
         author: string | null
         passwordSet: boolean | null
         noteId: string
+        editor: EEditors
     }
     settings: {
         langs: TUILanguage[]

@@ -22,6 +22,9 @@ const removePasswordForNoteAPI = (
 ): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
     axiosClient.delete('/note/remove-password/' + noteUniqueName)
 
+const switchEditorAPI = (noteUniqueName: string, editor: EEditors) =>
+    axiosClient.post('/note/switch-editor/' + noteUniqueName, { editor })
+
 // auth
 const logoutAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
     axiosClient.post('/auth/logout/' + noteUniqueName)

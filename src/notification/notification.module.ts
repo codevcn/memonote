@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { NotificationService } from './notification.service'
-import { NotificationController } from './notification.controller'
+import { NotificationController } from './notification-api.controller'
 import { NotificationGateway } from './gateway/notification.gateway'
 import { AuthService } from '@/auth/auth.service'
 import { JWTService } from '@/auth/jwt.service'

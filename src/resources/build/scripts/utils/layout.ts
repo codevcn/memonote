@@ -152,21 +152,20 @@ class NotificationsController {
     private static notifsData: TNotifData[] = []
     private static newNotifsData: TNotifData[] = []
     private static ringNotifFlag: boolean = true
-    private static startingTimestamp: Date = new Date()
 
-    private static notificationBtn = document.querySelector<HTMLElement>(
+    private static readonly notificationBtn = document.querySelector<HTMLElement>(
         '#nav-bar .right-side-menu .menu-item.notification .notification-btn',
     )
-    private static notificationsBoard = document.getElementById('notifs-board') // could be null
-    private static notifsList_all = this.notificationsBoard?.querySelector<HTMLElement>(
+    private static readonly notificationsBoard = document.getElementById('notifs-board') // could be null
+    private static readonly notifsList_all = this.notificationsBoard?.querySelector<HTMLElement>(
         '.notifs-scroller.all .notifs',
     )
-    private static notifsList_isNew = this.notificationsBoard?.querySelector<HTMLElement>(
+    private static readonly notifsList_isNew = this.notificationsBoard?.querySelector<HTMLElement>(
         '.notifs-scroller.is-new .notifs',
     )
-    private static notifsTabs =
+    private static readonly notifsTabs =
         this.notificationsBoard?.querySelector<HTMLElement>('.nav-tabs-list')
-    private static loadMoreBtn =
+    private static readonly loadMoreBtn =
         this.notificationsBoard?.querySelector<HTMLElement>('.load-more-btn')
 
     private static setNotifsData(notifsData: TNotifData[]): void {

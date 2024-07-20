@@ -8,6 +8,8 @@ const setPasswordForNoteAPI = (password, logoutAll, noteUniqueName) =>
     axiosClient.post('/note/set-password/' + noteUniqueName, { password, logoutAll })
 const removePasswordForNoteAPI = (noteUniqueName) =>
     axiosClient.delete('/note/remove-password/' + noteUniqueName)
+const switchEditorAPI = (noteUniqueName, editor) =>
+    axiosClient.post('/note/switch-editor/' + noteUniqueName, { editor })
 // auth
 const logoutAPI = (noteUniqueName) => axiosClient.post('/auth/logout/' + noteUniqueName)
 const signInAPI = (password, noteUniqueName) =>

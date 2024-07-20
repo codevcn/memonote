@@ -48,7 +48,7 @@
         },
         "editors": {
             "Editors": "Editors",
-            "Change_editor": "Change editor for this note",
+            "Switch_editor": "Switch editor for this note",
             "Pick_an_editor": "Pick an editor",
             "Click_for_more_details": "Click for more details",
             "Picked": "Picked"

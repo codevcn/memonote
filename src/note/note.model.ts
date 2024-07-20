@@ -1,4 +1,4 @@
-import { ENoteLengths } from '@/note/enums'
+import { EEditors, ENoteLengths } from '@/note/enums'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { HydratedDocument, Model } from 'mongoose'
 
@@ -38,6 +38,13 @@ export class Note {
         maxlength: ENoteLengths.MAX_LENGTH_PASSWORD,
     })
     password: string
+
+    @Prop({
+        required: true,
+        default: false,
+        enum: Object.values(EEditors),
+    })
+    editor: EEditors
 
     @Prop({ type: Status, required: true })
     status: Status
