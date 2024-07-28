@@ -1,4 +1,15 @@
 'use strict'
+var ENamespacesOfSocket
+;(function (ENamespacesOfSocket) {
+    ENamespacesOfSocket['EDIT_NOTE'] = 'edit-note'
+    ENamespacesOfSocket['NOTIFICATION'] = 'notification'
+    ENamespacesOfSocket['ARTICLE'] = 'article'
+})(ENamespacesOfSocket || (ENamespacesOfSocket = {}))
+var EInitSocketEvents
+;(function (EInitSocketEvents) {
+    EInitSocketEvents['CLIENT_CONNECTED'] = 'client_connected'
+    EInitSocketEvents['CONNECT_ERROR'] = 'connect_error'
+})(EInitSocketEvents || (EInitSocketEvents = {}))
 var ENotifPagination
 ;(function (ENotifPagination) {
     ENotifPagination[(ENotifPagination['MAX_NOTIFS_PER_PAGE'] = 7)] = 'MAX_NOTIFS_PER_PAGE'
@@ -50,8 +61,12 @@ var EError
 })(EError || (EError = {}))
 var EBroadcastTimeouts
 ;(function (EBroadcastTimeouts) {
-    EBroadcastTimeouts[(EBroadcastTimeouts['NOTE_TYPING_TIMEOUT'] = 7000)] = 'NOTE_TYPING_TIMEOUT'
+    EBroadcastTimeouts[(EBroadcastTimeouts['EDIT_NOTE_TIMEOUT'] = 7000)] = 'EDIT_NOTE_TIMEOUT'
 })(EBroadcastTimeouts || (EBroadcastTimeouts = {}))
+var EArticleChunk
+;(function (EArticleChunk) {
+    EArticleChunk[(EArticleChunk['SIZE_IN_KB_PER_CHUNK'] = 512)] = 'SIZE_IN_KB_PER_CHUNK'
+})(EArticleChunk || (EArticleChunk = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {
     EHttpStatuses[(EHttpStatuses['CONTINUE'] = 100)] = 'CONTINUE'

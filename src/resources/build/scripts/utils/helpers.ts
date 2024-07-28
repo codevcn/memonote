@@ -97,3 +97,25 @@ const setNoteFormTextFontInDevice = (font: TNoteFormTextFonts): void => {
 const writeCssVariable = (cssVarName: string, value: string): void => {
     document.documentElement.style.setProperty(cssVarName, value)
 }
+
+function convertStringToChunks(inputString: string, sizeInKBPerChunk: number): string[] {
+    const chunkSize = sizeInKBPerChunk * 1024
+
+    const blob = new Blob([inputString])
+    const size = blob.size
+
+    if (size <= chunkSize) {
+        return [inputString]
+    }
+
+    const chunks: string[] = []
+    let start: number = 0
+    let end: number
+    while (start < inputString.length) {
+        end = start + chunkSize
+        chunks.push(inputString.slice(start, end))
+        start = end
+    }
+
+    return chunks
+}

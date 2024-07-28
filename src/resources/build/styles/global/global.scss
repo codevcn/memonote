@@ -251,6 +251,7 @@ h6 {
 }
 
 #general-app-status {
+    display: none;
     mix-blend-mode: var(--mmn-mix-blend-mode-reversed);
 
     i {
@@ -264,8 +265,13 @@ h6 {
         }
     }
 
-    &.inactive {
-        display: none;
+    .spinner {
+        height: 1.4rem;
+        width: 1.4rem;
+    }
+
+    &.active {
+        display: block;
     }
 }
 

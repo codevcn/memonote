@@ -30,17 +30,6 @@ var __awaiter =
             step((generator = generator.apply(thisArg, _arguments || [])).next())
         })
     }
-var ENamespacesOfSocket
-;(function (ENamespacesOfSocket) {
-    ENamespacesOfSocket['EDIT_NOTE'] = 'edit-note'
-    ENamespacesOfSocket['NOTIFICATION'] = 'notification'
-})(ENamespacesOfSocket || (ENamespacesOfSocket = {}))
-var TInitSocketEvents
-;(function (TInitSocketEvents) {
-    TInitSocketEvents['CLIENT_CONNECTED'] = 'client_connected'
-    TInitSocketEvents['CONNECT_ERROR'] = 'connect_error'
-})(TInitSocketEvents || (TInitSocketEvents = {}))
-// === edit note section ===
 // init types, enums, ...
 var ENoteEvents
 ;(function (ENoteEvents) {
@@ -56,7 +45,7 @@ const editNoteSocket = io(`/${ENamespacesOfSocket.EDIT_NOTE}`, clientSocketConfi
 // init vars
 const editNoteSocketReconnecting = { flag: false }
 // listeners
-editNoteSocket.on(TInitSocketEvents.CLIENT_CONNECTED, (data) =>
+editNoteSocket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) =>
     __awaiter(void 0, void 0, void 0, function* () {
         if (editNoteSocketReconnecting.flag) {
             LayoutController.toast('success', 'Connected to server.', 2000)
@@ -65,7 +54,7 @@ editNoteSocket.on(TInitSocketEvents.CLIENT_CONNECTED, (data) =>
         console.log('>>> Socket connected to server.')
     }),
 )
-editNoteSocket.on(TInitSocketEvents.CONNECT_ERROR, (err) =>
+editNoteSocket.on(EInitSocketEvents.CONNECT_ERROR, (err) =>
     __awaiter(void 0, void 0, void 0, function* () {
         if (editNoteSocket.active) {
             LayoutController.toast('info', 'Trying to connect with the server.', 2000)
@@ -80,7 +69,7 @@ editNoteSocket.on(ENoteEvents.NOTE_FORM_EDITED, (data) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const realtimeMode = getRealtimeModeInDevice()
         if (realtimeMode && realtimeMode === 'sync') {
-            setForNoteFormChanged(data)
+            setForNoteFormEdited(data)
         } else {
             const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
             if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
@@ -92,8 +81,9 @@ editNoteSocket.on(ENoteEvents.NOTE_FORM_EDITED, (data) =>
 // emitters
 const broadcastNoteTyping = (note) =>
     __awaiter(void 0, void 0, void 0, function* () {
+        LayoutController.setUIOfGeneralAppStatus('loading')
         editNoteSocket
-            .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
+            .timeout(EBroadcastTimeouts.EDIT_NOTE_TIMEOUT)
             .emit(ENoteEvents.NOTE_FORM_EDITED, note, (err, res) => {
                 if (err) {
                     LayoutController.setUIOfGeneralAppStatus('error')
@@ -111,7 +101,7 @@ const broadcastNoteTyping = (note) =>
 const fetchNoteContent = () =>
     __awaiter(void 0, void 0, void 0, function* () {
         editNoteSocket
-            .timeout(EBroadcastTimeouts.NOTE_TYPING_TIMEOUT)
+            .timeout(EBroadcastTimeouts.EDIT_NOTE_TIMEOUT)
             .emit(ENoteEvents.FETCH_NOTE_FORM, (err, res) => {
                 LayoutController.notifyNoteEdited('off', {
                     title: 'true',
@@ -119,46 +109,7 @@ const fetchNoteContent = () =>
                     content: 'true',
                 })
                 if (res.success) {
-                    setForNoteFormChanged(res.data)
+                    setForNoteFormEdited(res.data)
                 }
             })
     })
-// === notification section ===
-// init types, enums, ...
-var ENotificationEvents
-;(function (ENotificationEvents) {
-    ENotificationEvents['NOTIFY'] = 'notify'
-})(ENotificationEvents || (ENotificationEvents = {}))
-// init socket
-const notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSocketConfig)
-// init vars
-const notificationSocketReconnecting = { flag: false }
-// listeners
-notificationSocket.on(TInitSocketEvents.CLIENT_CONNECTED, (data) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (notificationSocketReconnecting.flag) {
-            LayoutController.toast('success', 'Connected to server.', 2000)
-            notificationSocketReconnecting.flag = false
-        }
-        console.log('>>> Socket connected to server.')
-    }),
-)
-notificationSocket.on(TInitSocketEvents.CONNECT_ERROR, (err) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (editNoteSocket.active) {
-            LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-            notificationSocketReconnecting.flag = true
-        } else {
-            LayoutController.toast('error', "Can't connect with the server.")
-            console.error(`>>> connect_error due to ${err.message}`)
-        }
-    }),
-)
-// listeners
-notificationSocket.on(ENotificationEvents.NOTIFY, (notif) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        NotificationsController.addNewNotif(
-            Object.assign(Object.assign({}, notif), { isNew: true }),
-        )
-    }),
-)

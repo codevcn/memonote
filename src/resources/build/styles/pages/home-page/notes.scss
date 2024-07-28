@@ -38,6 +38,28 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
     }
 }
 
+@mixin publish-article-btn-styling {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 15px);
+    border: 2.5px colors.$mmn-regular-black-cl solid;
+    border-radius: 20px;
+    padding: 3px 20px;
+    font-weight: bold;
+    background-color: transparent;
+
+    &:hover {
+        background-color: colors.$mmn-regular-black-cl;
+        color: colors.$mmn-regular-white-cl;
+    }
+
+    .spinner {
+        height: 24px;
+        width: 24px;
+    }
+}
+
 #page-main {
     .note-form {
         padding: 0 $mmn-note-horizon-padding;
@@ -159,7 +181,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
             &.note-editor-board {
                 margin-top: 15px;
 
-                .note-editor-container {
+                .note-editor-section {
                     display: none;
                     height: 100%;
                     width: 100%;
@@ -231,13 +253,13 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
     }
 }
 
-#rich-editor-edit-mode {
+#rich-editor-section {
     .actions {
         display: flex;
         column-gap: 10px;
         margin-bottom: 10px;
 
-        .action {
+        .action-btn {
             display: flex;
             align-items: center;
             column-gap: 7px;
@@ -253,7 +275,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
             }
 
             &:hover {
-                background-color: scale-color(colors.$mmn-regular-lightgray-cl, $lightness: 50%);
+                background-color: scale-color(colors.$mmn-regular-lightgray-cl, $lightness: 40%);
             }
 
             &.active {
@@ -267,13 +289,27 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
             }
         }
     }
-}
 
-#rich-editor-view-mode {
-    display: none;
+    .rich-editor-mode {
+        display: none;
 
-    &.active {
-        display: block;
+        &.active {
+            display: block;
+        }
+
+        &.edit-mode {
+            position: relative;
+
+            .publish-article-btn {
+                @include publish-article-btn-styling;
+            }
+        }
+
+        &.view-mode {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 15px;
+        }
     }
 }
 

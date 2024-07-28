@@ -107,7 +107,7 @@
 #page-main .note-form .note-form-item.note-editor-board {
     margin-top: 15px;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-container {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-section {
     display: none;
     height: 100%;
     width: 100%;
@@ -115,14 +115,10 @@
     z-index: 3;
     padding: 5px 10px;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-container.active {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-section.active {
     display: block;
 }
-#page-main
-    .note-form
-    .note-form-item.note-editor-board
-    .note-editor-container
-    .note-editor-wrapper {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper {
     display: grid;
     max-height: auto;
     overflow-y: auto;
@@ -130,7 +126,7 @@
 #page-main
     .note-form
     .note-form-item.note-editor-board
-    .note-editor-container
+    .note-editor-section
     .note-editor-wrapper
     .note-annotation {
     top: 10px;
@@ -138,12 +134,12 @@
 #page-main
     .note-form
     .note-form-item.note-editor-board
-    .note-editor-container
+    .note-editor-section
     .note-editor-wrapper::after,
 #page-main
     .note-form
     .note-form-item.note-editor-board
-    .note-editor-container
+    .note-editor-section
     .note-editor-wrapper
     .note-editor {
     grid-area: 1/1/2/2;
@@ -154,7 +150,7 @@
 #page-main
     .note-form
     .note-form-item.note-editor-board
-    .note-editor-container
+    .note-editor-section
     .note-editor-wrapper
     .note-editor {
     background-color: transparent;
@@ -165,7 +161,7 @@
 #page-main
     .note-form
     .note-form-item.note-editor-board
-    .note-editor-container
+    .note-editor-section
     .note-editor-wrapper
     .note-editor:focus
     ~ .note-annotation {
@@ -174,13 +170,13 @@
 #page-main
     .note-form
     .note-form-item.note-editor-board
-    .note-editor-container
+    .note-editor-section
     .note-editor-wrapper::after {
     content: attr(data-replicated-value) ' ';
     white-space: pre-wrap;
     visibility: hidden;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-container .letters-count {
+#page-main .note-form .note-form-item.note-editor-board .note-editor-section .letters-count {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
@@ -212,12 +208,12 @@
     color: inherit;
 }
 
-#rich-editor-edit-mode .actions {
+#rich-editor-section .actions {
     display: flex;
     column-gap: 10px;
     margin-bottom: 10px;
 }
-#rich-editor-edit-mode .actions .action {
+#rich-editor-section .actions .action-btn {
     display: flex;
     align-items: center;
     column-gap: 7px;
@@ -228,26 +224,52 @@
     font-size: 0.9rem;
     font-weight: 500;
 }
-#rich-editor-edit-mode .actions .action i {
+#rich-editor-section .actions .action-btn i {
     font-size: 0.9rem;
 }
-#rich-editor-edit-mode .actions .action:hover {
-    background-color: #e9e9e9;
+#rich-editor-section .actions .action-btn:hover {
+    background-color: #e5e5e5;
 }
-#rich-editor-edit-mode .actions .action.active {
+#rich-editor-section .actions .action-btn.active {
     background-color: #333;
     color: #fff;
     border-color: #333;
 }
-#rich-editor-edit-mode .actions .action.active i {
+#rich-editor-section .actions .action-btn.active i {
     color: #fff;
 }
-
-#rich-editor-view-mode {
+#rich-editor-section .rich-editor-mode {
     display: none;
 }
-#rich-editor-view-mode.active {
+#rich-editor-section .rich-editor-mode.active {
     display: block;
+}
+#rich-editor-section .rich-editor-mode.edit-mode {
+    position: relative;
+}
+#rich-editor-section .rich-editor-mode.edit-mode .publish-article-btn {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: calc(100% + 15px);
+    border: 2.5px #333 solid;
+    border-radius: 20px;
+    padding: 3px 20px;
+    font-weight: bold;
+    background-color: transparent;
+}
+#rich-editor-section .rich-editor-mode.edit-mode .publish-article-btn:hover {
+    background-color: #333;
+    color: #fff;
+}
+#rich-editor-section .rich-editor-mode.edit-mode .publish-article-btn .spinner {
+    height: 24px;
+    width: 24px;
+}
+#rich-editor-section .rich-editor-mode.view-mode {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 15px;
 }
 
 @keyframes notify-blink-note-edited {

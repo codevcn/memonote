@@ -69,7 +69,7 @@ const setNoteContentHistory = (noteContent) => {
 const countNoteLetters = (noteEditorTarget, noteContent) => {
     if (!validateNoteContent(noteContent)) return
     noteEditorTarget
-        .closest('.note-editor-container')
+        .closest('.note-editor-section')
         .querySelector('.letters-count .count').innerHTML =
         `${noteContent.length} / ${ENoteLengths.MAX_LENGTH_NOTE_CONTENT}`
 }
@@ -108,7 +108,7 @@ const noteTyping = (noteEditorTarget) =>
         setNoteContentHistory(noteContent)
         setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
     })
-const setForNoteFormChanged = (noteForm) => {
+const setForNoteFormEdited = (noteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor')
     const noteFormEle = noteEditor.closest('.note-form')
@@ -153,7 +153,7 @@ const performUsefulActions = (target, type) =>
     __awaiter(void 0, void 0, void 0, function* () {
         const noteEditor = target
             .closest('.note-form')
-            .querySelector('.note-editor-board .note-editor-container .note-editor')
+            .querySelector('.note-editor-board .note-editor-section .note-editor')
         switch (type) {
             case 'clipboardPaste':
                 yield pasteFromClipboard(noteEditor)

@@ -52,7 +52,7 @@ const setNoteContentHistory = (noteContent: string) => {
 const countNoteLetters = (noteEditorTarget: HTMLTextAreaElement, noteContent: string): void => {
     if (!validateNoteContent(noteContent)) return
     noteEditorTarget
-        .closest('.note-editor-container')!
+        .closest('.note-editor-section')!
         .querySelector('.letters-count .count')!.innerHTML =
         `${noteContent.length} / ${ENoteLengths.MAX_LENGTH_NOTE_CONTENT}`
 }
@@ -102,7 +102,7 @@ const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> 
     setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
 }
 
-const setForNoteFormChanged = (noteForm: TNoteForm) => {
+const setForNoteFormEdited = (noteForm: TNoteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor') as HTMLTextAreaElement
     const noteFormEle = noteEditor.closest('.note-form') as HTMLElement
@@ -159,7 +159,7 @@ const performUsefulActions = async (target: HTMLElement, type: TUsefulActions): 
     const noteEditor = target
         .closest('.note-form')!
         .querySelector(
-            '.note-editor-board .note-editor-container .note-editor',
+            '.note-editor-board .note-editor-section .note-editor',
         ) as HTMLTextAreaElement
     switch (type) {
         case 'clipboardPaste':

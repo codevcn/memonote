@@ -14,10 +14,10 @@ import { ENoteEvents } from './enums'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
 import { BroadcastNoteTypingDTO } from './DTOs'
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
-import { WsExceptionsFilter } from './filters'
 import { ECommonStatuses } from '@/utils/enums'
 import { AuthService } from '@/auth/auth.service'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
+import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.EDIT_NOTE })
 @UsePipes(new ValidationPipe())

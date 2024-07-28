@@ -1,10 +1,16 @@
-// others
+type TSocketReconnecting = {
+    flag: boolean
+}
+type TClientConnectedEventPld = {
+    connectionStatus: string
+}
+
 type TAxiosHTTPRes<T> = {
     [key: string]: any
     data: T
 }
 
-type TResBodySuccess = {
+type TSuccess = {
     success: boolean
 }
 
@@ -27,7 +33,7 @@ type TAPIError = {
     originalError: TOriginalAPIError
 }
 
-type TCommonStatus = 'success' | 'error' | 'warning'
+type TCommonStatus = 'success' | 'error' | 'warning' | 'loading'
 
 type TNoteForm = {
     title?: string

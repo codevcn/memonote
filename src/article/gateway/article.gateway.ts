@@ -1,32 +1,36 @@
 import { ECommonStatuses, EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
-import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import {
-    WebSocketGateway,
-    OnGatewayDisconnect,
+    MessageBody,
     OnGatewayConnection,
+    OnGatewayDisconnect,
     OnGatewayInit,
+    SubscribeMessage,
+    WebSocketGateway,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
-import { AuthService } from '@/auth/auth.service'
-import { BaseCustomEvent } from '@/note/gateway/events'
-import { OnEvent } from '@nestjs/event-emitter'
-import { EEventEmitterEvents, ENotificationEvents } from './enums'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
-import type { TNotificationDocument } from '../notification.model'
+import { AuthService } from '@/auth/auth.service'
+import { EArticleEvents } from './enums'
+import { PublishNotePayloadDTO } from './DTOs'
+import { ArticleService } from '../article.service'
+import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 
-@WebSocketGateway({ namespace: ESocketNamespaces.NOTIFICATION })
+@WebSocketGateway({ namespace: ESocketNamespaces.ARTICLE })
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsExceptionsFilter())
-export class NotificationGateway
+export class ArticleGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
 {
     private io: Server
 
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+        private articleService: ArticleService,
+    ) {}
 
-    afterInit(server: Server): void {
+    afterInit(server: Server) {
         server.use(async (socket, next) => {
             let result: TAuthSocketConnectionReturn
             try {
@@ -48,9 +52,21 @@ export class NotificationGateway
 
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
-    @OnEvent(EEventEmitterEvents.TRIGGER_NOTIFY)
-    notify(event: BaseCustomEvent<TNotificationDocument>) {
-        const { payload, noteUniqueName } = event
-        this.io.to(noteUniqueName).emit(ENotificationEvents.NOTIFY, payload)
+    @SubscribeMessage(EArticleEvents.PUBLISH_ARTICLE)
+    async publishArticle(@MessageBody() data: PublishNotePayloadDTO) {
+        const { articleChunk, totalChunks, noteUniqueName, noteId } = data
+        console.log('>>> article in chunk >>>', {
+            articleChunk,
+            totalChunks,
+            noteUniqueName,
+            noteId,
+        })
+        await this.articleService.uploadArticleChunk(
+            articleChunk,
+            totalChunks,
+            noteUniqueName,
+            noteId,
+        )
+        return { success: true }
     }
 }

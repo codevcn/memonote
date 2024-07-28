@@ -45,7 +45,7 @@ class LayoutController {
 
     static setUIOfGeneralAppStatus(status: TCommonStatus): void {
         const generalAppStatus = this.generalAppStatus
-        const icons = generalAppStatus.querySelectorAll<HTMLElement>('i')
+        const icons = generalAppStatus.querySelectorAll<HTMLElement>('.status-icon')
         for (const icon of icons) {
             if (icon.classList.contains(`${status}-icon`)) {
                 icon.hidden = false
@@ -53,10 +53,12 @@ class LayoutController {
                 icon.hidden = true
             }
         }
-        generalAppStatus.classList.remove('inactive')
-        setTimeout(() => {
-            generalAppStatus.classList.add('inactive')
-        }, this.GENERAL_STATUS_TIMEOUT)
+        generalAppStatus.classList.add('active')
+        if (status !== 'loading') {
+            setTimeout(() => {
+                generalAppStatus.classList.remove('active')
+            }, this.GENERAL_STATUS_TIMEOUT)
+        }
     }
 
     static toast(
@@ -156,6 +158,7 @@ class NotificationsController {
     private static notifsData: TNotifData[] = []
     private static newNotifsData: TNotifData[] = []
     private static ringNotifFlag: boolean = true
+    private notificationSocket: any
 
     private static readonly notificationBtn = document.querySelector<HTMLElement>(
         '#nav-bar .right-side-menu .menu-item.notification .notification-btn',
@@ -171,6 +174,45 @@ class NotificationsController {
         this.notificationsBoard?.querySelector<HTMLElement>('.nav-tabs-list')
     private static readonly loadMoreBtn =
         this.notificationsBoard?.querySelector<HTMLElement>('.load-more-btn')
+
+    constructor() {
+        // init types, enums, ...
+        enum ENotificationEvents {
+            NOTIFY = 'notify',
+        }
+
+        // init socket
+        this.notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSocketConfig)
+
+        // init vars
+        const notificationSocketReconnecting: TSocketReconnecting = { flag: false }
+
+        // listeners
+        this.notificationSocket.on(
+            EInitSocketEvents.CLIENT_CONNECTED,
+            async (data: TClientConnectedEventPld) => {
+                if (notificationSocketReconnecting.flag) {
+                    LayoutController.toast('success', 'Connected to server.', 2000)
+                    notificationSocketReconnecting.flag = false
+                }
+                console.log('>>> Socket connected to server.')
+            },
+        )
+
+        this.notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
+            if (editNoteSocket.active) {
+                LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                notificationSocketReconnecting.flag = true
+            } else {
+                LayoutController.toast('error', "Can't connect with the server.")
+                console.error(`>>> connect_error due to ${err.message}`)
+            }
+        })
+
+        this.notificationSocket.on(ENotificationEvents.NOTIFY, async (notif: TNotif) => {
+            NotificationsController.addNewNotif({ ...notif, isNew: true })
+        })
+    }
 
     private static setNotifsData(notifsData: TNotifData[]): void {
         this.notifsData = notifsData

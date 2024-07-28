@@ -22,7 +22,7 @@
             <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
         </div>
         <div class="note-form-item note-editor-board">
-            <section class="note-editor-container normal-editor">
+            <section class="note-editor-section normal-editor">
                 <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
                     <textarea class="note-editor" id="note-editor" rows="5"
                         placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
@@ -37,20 +37,24 @@
                     <span class="count"><%= note.content ? note.content.length : 0 %> / 50000</span>
                 </div>
             </section>
-            <section class="note-editor-container rich-editor" id="rich-editor-edit-mode">
+            <section class="note-editor-section rich-editor" id="rich-editor-section">
                 <div class="actions">
-                    <button class="action" data-mmn-editor-mode="view-mode">
+                    <button class="action-btn" data-mmn-editor-mode="view-mode">
                         <i class="bi bi-eye"></i>
                         <span>View Mode</span>
                     </button>
-                    <button class="action" data-mmn-editor-mode="edit-mode">
+                    <button class="action-btn active" data-mmn-editor-mode="edit-mode">
                         <i class="bi bi-pencil-square"></i>
                         <span>Edit Mode</span>
                     </button>
                 </div>
-                <textarea id="mmn-rich-note-editor"></textarea>
-            </section>
-            <section id="rich-editor-view-mode">
+                <section class="rich-editor-mode view-mode"></section>
+                <section class="rich-editor-mode edit-mode active">
+                    <button class="publish-article-btn" onclick="RichEditorController.publishArticleHandler(this)">
+                        <span>Publish</span>
+                    </button>
+                    <textarea id="mmn-rich-note-editor"></textarea>
+                </section>
             </section>
             <!-- <div class="useful-note-actions">
                     <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">

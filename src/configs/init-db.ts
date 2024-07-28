@@ -1,9 +1,10 @@
+import { Article, ArticleSchema } from '@/article/article.model'
 import { Note, NoteSchema } from '@/note/note.model'
 import { Notification, NotificationSchema } from '@/notification/notification.model'
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 
-export const connectToDB = () => {
+export const configDB = () => {
     return MongooseModule.forRoot(process.env.DATABASE_URL, {
         onConnectionCreate(connection) {
             connection.on('error', (error) => {
@@ -28,6 +29,7 @@ export const connectToDB = () => {
 export const registerModels: DynamicModule[] = [
     MongooseModule.forFeature([{ name: Note.name, schema: NoteSchema }]),
     MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]),
+    MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
 ]
 
 @Global()

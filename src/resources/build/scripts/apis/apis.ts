@@ -14,25 +14,20 @@ const setPasswordForNoteAPI = (
     password: string,
     logoutAll: boolean,
     noteUniqueName: string,
-): Promise<TResBodySuccess> =>
+): Promise<TSuccess> =>
     axiosClient.post('/note/set-password/' + noteUniqueName, { password, logoutAll })
 
-const removePasswordForNoteAPI = (
-    noteUniqueName: string,
-): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
+const removePasswordForNoteAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TSuccess>> =>
     axiosClient.delete('/note/remove-password/' + noteUniqueName)
 
 const switchEditorAPI = (noteUniqueName: string, editor: EEditors) =>
     axiosClient.post('/note/switch-editor/' + noteUniqueName, { editor })
 
 // auth
-const logoutAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
+const logoutAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TSuccess>> =>
     axiosClient.post('/auth/logout/' + noteUniqueName)
 
-const signInAPI = (
-    password: string,
-    noteUniqueName: string,
-): Promise<TAxiosHTTPRes<TResBodySuccess>> =>
+const signInAPI = (password: string, noteUniqueName: string): Promise<TAxiosHTTPRes<TSuccess>> =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
 
 // notification

@@ -1,3 +1,14 @@
+enum ENamespacesOfSocket {
+    EDIT_NOTE = 'edit-note',
+    NOTIFICATION = 'notification',
+    ARTICLE = 'article',
+}
+
+enum EInitSocketEvents {
+    CLIENT_CONNECTED = 'client_connected',
+    CONNECT_ERROR = 'connect_error',
+}
+
 enum ENotifPagination {
     MAX_NOTIFS_PER_PAGE = 7,
 }
@@ -48,7 +59,11 @@ enum EError {
 }
 
 enum EBroadcastTimeouts {
-    NOTE_TYPING_TIMEOUT = 7000,
+    EDIT_NOTE_TIMEOUT = 7000,
+}
+
+enum EArticleChunk {
+    SIZE_IN_KB_PER_CHUNK = 512,
 }
 
 enum EHttpStatuses {

@@ -143,6 +143,7 @@ h6 {
 }
 
 #general-app-status {
+    display: none;
     mix-blend-mode: var(--mmn-mix-blend-mode-reversed);
 }
 #general-app-status i {
@@ -154,8 +155,12 @@ h6 {
 #general-app-status i.error-icon {
     color: #ff2424;
 }
-#general-app-status.inactive {
-    display: none;
+#general-app-status .spinner {
+    height: 1.4rem;
+    width: 1.4rem;
+}
+#general-app-status.active {
+    display: block;
 }
 
 #nav-bar {

@@ -68,7 +68,7 @@ class LayoutController {
     }
     static setUIOfGeneralAppStatus(status) {
         const generalAppStatus = this.generalAppStatus
-        const icons = generalAppStatus.querySelectorAll('i')
+        const icons = generalAppStatus.querySelectorAll('.status-icon')
         for (const icon of icons) {
             if (icon.classList.contains(`${status}-icon`)) {
                 icon.hidden = false
@@ -76,10 +76,12 @@ class LayoutController {
                 icon.hidden = true
             }
         }
-        generalAppStatus.classList.remove('inactive')
-        setTimeout(() => {
-            generalAppStatus.classList.add('inactive')
-        }, this.GENERAL_STATUS_TIMEOUT)
+        generalAppStatus.classList.add('active')
+        if (status !== 'loading') {
+            setTimeout(() => {
+                generalAppStatus.classList.remove('active')
+            }, this.GENERAL_STATUS_TIMEOUT)
+        }
     }
     static toast(type, message, durationInMs = this.NOTIFICATION_TIMEOUT) {
         if (this.toasterTimer) {
@@ -157,6 +159,43 @@ LayoutController.toasterAnimationFlag = true
 LayoutController.toasterTimer = null
 LayoutController.generalAppStatus = document.getElementById('general-app-status')
 class NotificationsController {
+    constructor() {
+        // init types, enums, ...
+        let ENotificationEvents
+        ;(function (ENotificationEvents) {
+            ENotificationEvents['NOTIFY'] = 'notify'
+        })(ENotificationEvents || (ENotificationEvents = {}))
+        // init socket
+        this.notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSocketConfig)
+        // init vars
+        const notificationSocketReconnecting = { flag: false }
+        // listeners
+        this.notificationSocket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) =>
+            __awaiter(this, void 0, void 0, function* () {
+                if (notificationSocketReconnecting.flag) {
+                    LayoutController.toast('success', 'Connected to server.', 2000)
+                    notificationSocketReconnecting.flag = false
+                }
+                console.log('>>> Socket connected to server.')
+            }),
+        )
+        this.notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, (err) =>
+            __awaiter(this, void 0, void 0, function* () {
+                if (editNoteSocket.active) {
+                    LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                    notificationSocketReconnecting.flag = true
+                } else {
+                    LayoutController.toast('error', "Can't connect with the server.")
+                    console.error(`>>> connect_error due to ${err.message}`)
+                }
+            }),
+        )
+        this.notificationSocket.on(ENotificationEvents.NOTIFY, (notif) =>
+            __awaiter(this, void 0, void 0, function* () {
+                _e.addNewNotif(Object.assign(Object.assign({}, notif), { isNew: true }))
+            }),
+        )
+    }
     static setNotifsData(notifsData) {
         this.notifsData = notifsData
     }

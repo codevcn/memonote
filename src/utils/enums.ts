@@ -10,6 +10,7 @@ export enum ECommonStatuses {
 export enum ESocketNamespaces {
     EDIT_NOTE = 'edit-note',
     NOTIFICATION = 'notification',
+    ARTICLE = 'article',
 }
 
 export enum EInitialSocketEvents {

@@ -40,8 +40,12 @@ class EditorsController {
             editorsProgress.classList.add('active')
         }
     }
+    /**
+     * Editors switcher
+     * @param editor editor which switch to
+     */
     static setEditors(editor) {
-        const noteContainers = this.noteEditorBoard.querySelectorAll('.note-editor-container')
+        const noteContainers = this.noteEditorBoard.querySelectorAll('.note-editor-section')
         for (const noteContainer of noteContainers) {
             noteContainer.classList.remove('active')
         }
@@ -53,15 +57,15 @@ class EditorsController {
         }
         if (editor) {
             this.noteEditorBoard
-                .querySelector(`.note-editor-container.${editor}-editor`)
+                .querySelector(`.note-editor-section.${editor}-editor`)
                 .classList.add('active')
             document
                 .querySelector(`#settings-form-editors .form-content .editors .editor.${editor}`)
                 .classList.add('picked')
         }
         if (editor === EEditors.RICH && !this.switchedToRichEditor) {
-            const { placeholder } = pageData.initRichEditorData
-            RichEditorController.connectRichEditor({ lang: pageData.currentLang, placeholder })
+            const { placeholder } = pageData.richEditorData
+            RichEditorController.connect({ lang: pageData.currentLang, placeholder })
             this.switchedToRichEditor = true
         }
     }
@@ -88,7 +92,7 @@ class EditorsController {
 EditorsController.switchedToRichEditor = false
 EditorsController.noteEditorBoard = homePage_pageMain.querySelector('.note-form .note-editor-board')
 class RichEditorController {
-    static connectRichEditor(config) {
+    static connect(config) {
         const initConfig = {
             selector: 'textarea#mmn-rich-note-editor',
             plugins: 'link lists table wordcount linkchecker preview',
@@ -103,29 +107,91 @@ class RichEditorController {
         }
         tinymce.init(initConfig)
     }
+    static setEditModeContent(content) {
+        // tinymce.get(this.richEditorId).setContent(content)
+    }
+    static setViewModeContent(content, editor) {
+        editor.innerHTML = content
+    }
+    /**
+     * Rich editor modes switcher
+     * @param btnTarget html target with an attribute "data-" contains a mode
+     */
     static setEditorModes(btnTarget) {
         if (btnTarget.classList.contains('active')) return
         const mode = btnTarget.getAttribute('data-mmn-editor-mode')
-        const content = tinymce.get('mmn-rich-note-editor').getContent()
-        const viewModeContainer = document.getElementById('rich-editor-view-mode')
-        viewModeContainer.innerHTML = content
-        viewModeContainer.classList.remove('active')
-        EditorsController.setEditors()
+        const content = tinymce.get(this.richEditorId).getContent()
+        const actions = btnTarget.closest('.actions').querySelectorAll('.action-btn')
+        for (const actionBtn of actions) {
+            actionBtn.classList.remove('active')
+        }
+        btnTarget.classList.add('active')
+        const viewModeSection = document.querySelector(
+            '#rich-editor-section .rich-editor-mode.view-mode',
+        )
+        this.setViewModeContent(content, viewModeSection)
+        viewModeSection.classList.remove('active')
+        const editModeSection = document.querySelector(
+            '#rich-editor-section .rich-editor-mode.edit-mode',
+        )
+        editModeSection.classList.remove('active')
         if (mode === EEditorModes.EDIT_MODE) {
-            EditorsController.setEditors(EEditors.RICH)
+            editModeSection.classList.add('active')
         } else if (mode === EEditorModes.VIEW_MODE) {
-            viewModeContainer.classList.add('active')
+            viewModeSection.classList.add('active')
         }
     }
+    static validateNoteContent(noteContent) {
+        let isValid = true
+        if (!noteContent) {
+            isValid = false
+            LayoutController.toast('error', 'Do not empty your note')
+        }
+        return isValid
+    }
+    static publishArticleHandler(target) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const noteContent = tinymce.get(this.richEditorId).getContent()
+            if (this.validateNoteContent(noteContent)) {
+                const htmlBefore = target.innerHTML
+                target.innerHTML = Materials.createHTMLLoading('border')
+                try {
+                    yield this.publishArticle(noteContent)
+                } catch (error) {
+                    if (error instanceof Error) {
+                        LayoutController.toast('error', error.message)
+                    }
+                }
+                target.innerHTML = htmlBefore
+            }
+        })
+    }
+    static publishArticle(noteContent) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const chunks = convertStringToChunks(noteContent, EArticleChunk.SIZE_IN_KB_PER_CHUNK)
+            for (const chunk of chunks) {
+                yield publishArticleInChunks({
+                    articleChunk: chunk,
+                    noteId: pageData.noteId,
+                    noteUniqueName: getNoteUniqueNameFromURL(),
+                    totalChunks: chunks.length,
+                })
+            }
+        })
+    }
 }
+RichEditorController.richEditorId = 'mmn-rich-note-editor'
 const initEditors = () => {
-    const { editor } = pageData
-    if (editor) {
+    const { editor, richEditorData } = pageData
+    if (editor && richEditorData) {
         EditorsController.setEditors(editor)
+        RichEditorController.setEditModeContent(richEditorData.content)
+    } else {
+        EditorsController.setEditors(EEditors.NORMAL)
     }
     // setup "actions"
-    const actionBtns = homePage_pageMain.querySelectorAll('#rich-editor-edit-mode .actions .action')
-    for (const actionBtn of actionBtns) {
+    const actions = homePage_pageMain.querySelectorAll('#rich-editor-section .actions .action-btn')
+    for (const actionBtn of actions) {
         actionBtn.addEventListener('click', function (e) {
             RichEditorController.setEditorModes(actionBtn)
         })

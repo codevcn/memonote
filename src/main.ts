@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common'
 import { HttpExceptionFilter } from './utils/exception/http-exception.filter'
 import { HttpExceptionValidation } from './utils/validation/http-exception.validation'
 import cookieParser from 'cookie-parser'
+import { WsExceptionsFilter } from './utils/exception/gateway.filter'
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -29,7 +30,10 @@ async function bootstrap() {
     )
 
     // exception filter
-    app.useGlobalFilters(new HttpExceptionFilter(new HttpExceptionValidation()))
+    app.useGlobalFilters(
+        new HttpExceptionFilter(new HttpExceptionValidation()),
+        new WsExceptionsFilter(),
+    )
 
     await app.listen(PORT, HOSTNAME)
     console.log(`>>> Server is working on http://${HOSTNAME}:${PORT}`)
