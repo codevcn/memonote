@@ -1,11 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsISO8601, IsMongoId, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
-
-export class GetNotifsParamsDTO {
-    @IsNotEmpty()
-    @IsMongoId()
-    n: string // noteId
-}
+import { IsISO8601, IsOptional, ValidateNested } from 'class-validator'
 
 export class LastNotificationDTO {
     @IsOptional()

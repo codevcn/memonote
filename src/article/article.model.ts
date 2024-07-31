@@ -22,6 +22,9 @@ export class Article {
     note: Note | Types.ObjectId
 
     @Prop({ required: true })
+    filename: string
+
+    @Prop({ required: true })
     localPath: string
 
     @Prop({ type: Content, required: true })

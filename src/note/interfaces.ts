@@ -1,6 +1,6 @@
 import type { TSuccess } from '@/utils/types'
 import type {
-    NoteUniqueNameParamsDTO,
+    NoteUniqueNameDTO,
     SetPasswordForNotePayloadDTO,
     SwitchEditorPayloadDTO,
 } from './DTOs'
@@ -8,13 +8,10 @@ import type { Response } from 'express'
 
 export interface INoteAPIController {
     setPasswordForNote(
-        params: NoteUniqueNameParamsDTO,
+        params: NoteUniqueNameDTO,
         payload: SetPasswordForNotePayloadDTO,
         res: Response<TSuccess>,
     ): Promise<TSuccess>
-    removePasswordForNote(params: NoteUniqueNameParamsDTO): Promise<TSuccess>
-    switchEditor(
-        params: NoteUniqueNameParamsDTO,
-        payload: SwitchEditorPayloadDTO,
-    ): Promise<TSuccess>
+    removePasswordForNote(params: NoteUniqueNameDTO): Promise<TSuccess>
+    switchEditor(params: NoteUniqueNameDTO, payload: SwitchEditorPayloadDTO): Promise<TSuccess>
 }

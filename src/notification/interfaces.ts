@@ -1,9 +1,10 @@
-import type { GetNotifsBodyDTO, GetNotifsParamsDTO } from './DTOs'
+import type { NoteIdDTO } from '@/note/DTOs'
+import type { GetNotifsBodyDTO } from './DTOs'
 import type { TGetNotifsReturn } from './types'
 
-export interface INotificationController {
+export interface INotificationAPIController {
     getNotifications: (
-        params: GetNotifsParamsDTO,
+        params: NoteIdDTO,
         body: GetNotifsBodyDTO,
         lang: string,
     ) => Promise<TGetNotifsReturn>

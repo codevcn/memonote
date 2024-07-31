@@ -104,11 +104,23 @@ class RichEditorController {
             height: '500px',
             menubar: false,
             elementpath: false,
+            setup: (editor) => {
+                editor.on('init', (e) => {
+                    console.log('>>> editor >>>', editor)
+                    this.fetchArticle()
+                        .then((res) => {})
+                        .catch((err) => {
+                            if (err instanceof Error) {
+                                LayoutController.toast('error', err.message)
+                            }
+                        })
+                })
+            },
         }
         tinymce.init(initConfig)
     }
-    static setEditModeContent(content) {
-        // tinymce.get(this.richEditorId).setContent(content)
+    static setArticleContent(content) {
+        tinymce.get(this.richEditorId).setContent(content)
     }
     static setViewModeContent(content, editor) {
         editor.innerHTML = content
@@ -154,7 +166,7 @@ class RichEditorController {
             const noteContent = tinymce.get(this.richEditorId).getContent()
             if (this.validateNoteContent(noteContent)) {
                 const htmlBefore = target.innerHTML
-                target.innerHTML = Materials.createHTMLLoading('border')
+                this.setLoading(target, true)
                 try {
                     yield this.publishArticle(noteContent)
                 } catch (error) {
@@ -162,7 +174,7 @@ class RichEditorController {
                         LayoutController.toast('error', error.message)
                     }
                 }
-                target.innerHTML = htmlBefore
+                this.setLoading(target, false, htmlBefore)
             }
         })
     }
@@ -179,13 +191,47 @@ class RichEditorController {
             }
         })
     }
+    static setLoading(target, loading, htmlBefore) {
+        if (loading) {
+            target.innerHTML = Materials.createHTMLLoading('border')
+            target.classList.add('loading')
+        } else if (htmlBefore) {
+            target.innerHTML = htmlBefore
+            target.classList.remove('loading')
+        }
+    }
+    static fetchArticle() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { noteId } = pageData
+            let apiResult
+            const publishArticleBtn = document.getElementById('publish-article-submit-btn')
+            const htmlBefore = publishArticleBtn.innerHTML
+            this.setLoading(publishArticleBtn, true)
+            try {
+                const { data } = yield fetchArticleAPI(noteId)
+                apiResult = data
+            } catch (error) {
+                console.error('>>> error fetch article >>>', error)
+                return
+            }
+            if (apiResult) {
+                const reader = new FileReader()
+                reader.onload = function () {
+                    const content = reader.result
+                    console.log('>>> content >>>', content)
+                    RichEditorController.setArticleContent(content)
+                }
+                reader.readAsText(apiResult)
+            }
+            this.setLoading(publishArticleBtn, false, htmlBefore)
+        })
+    }
 }
 RichEditorController.richEditorId = 'mmn-rich-note-editor'
 const initEditors = () => {
-    const { editor, richEditorData } = pageData
-    if (editor && richEditorData) {
+    const { editor } = pageData
+    if (editor) {
         EditorsController.setEditors(editor)
-        RichEditorController.setEditModeContent(richEditorData.content)
     } else {
         EditorsController.setEditors(EEditors.NORMAL)
     }

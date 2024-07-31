@@ -4,7 +4,8 @@ import type { Response, Request } from 'express'
 import { APIRoutes } from '@/utils/routes'
 import type { IAuthAPIController } from './interfaces'
 import { APIAuthGuard } from '@/auth/auth.guard'
-import { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './DTOs'
+import { NoteUniqueNameDTO } from '@/note/DTOs'
+import { SignInPayloadDTO } from './DTOs'
 
 @Controller(APIRoutes.auth)
 export class AuthAPIController implements IAuthAPIController {
@@ -12,7 +13,7 @@ export class AuthAPIController implements IAuthAPIController {
 
     @Post('sign-in/:noteUniqueName')
     async signIn(
-        @Param() params: NoteUniqueNameOnParamDTO,
+        @Param() params: NoteUniqueNameDTO,
         @Body() signInPayload: SignInPayloadDTO,
         @Res({ passthrough: true }) res: Response,
     ) {
@@ -26,7 +27,7 @@ export class AuthAPIController implements IAuthAPIController {
     async logout(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
-        @Param() params: NoteUniqueNameOnParamDTO,
+        @Param() params: NoteUniqueNameDTO,
     ) {
         const { noteUniqueName } = params
         await this.authService.logout(req, res, noteUniqueName)

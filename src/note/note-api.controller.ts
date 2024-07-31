@@ -1,10 +1,6 @@
 import { APIRoutes } from '@/utils/routes'
 import { Controller, Post, Param, Body, Delete, Res, UseGuards } from '@nestjs/common'
-import {
-    SetPasswordForNotePayloadDTO,
-    NoteUniqueNameParamsDTO,
-    SwitchEditorPayloadDTO,
-} from './DTOs'
+import { SetPasswordForNotePayloadDTO, NoteUniqueNameDTO, SwitchEditorPayloadDTO } from './DTOs'
 import { NoteService } from './note.service'
 import type { INoteAPIController } from './interfaces'
 import type { Response } from 'express'
@@ -18,7 +14,7 @@ export class NoteAPIController implements INoteAPIController {
     @Post('set-password/:noteUniqueName')
     @UseGuards(APIAuthGuard)
     async setPasswordForNote(
-        @Param() params: NoteUniqueNameParamsDTO,
+        @Param() params: NoteUniqueNameDTO,
         @Body() payload: SetPasswordForNotePayloadDTO,
         @Res({ passthrough: true }) res: Response<TSuccess>,
     ) {
@@ -29,7 +25,7 @@ export class NoteAPIController implements INoteAPIController {
 
     @Delete('remove-password/:noteUniqueName')
     @UseGuards(APIAuthGuard)
-    async removePasswordForNote(@Param() params: NoteUniqueNameParamsDTO) {
+    async removePasswordForNote(@Param() params: NoteUniqueNameDTO) {
         const { noteUniqueName } = params
         await this.noteService.removePasswordForNote(noteUniqueName)
         return { success: true }
@@ -37,7 +33,7 @@ export class NoteAPIController implements INoteAPIController {
 
     @Post('switch-editor/:noteUniqueName')
     async switchEditor(
-        @Param() params: NoteUniqueNameParamsDTO,
+        @Param() params: NoteUniqueNameDTO,
         @Body() payload: SwitchEditorPayloadDTO,
     ) {
         const { noteUniqueName } = params

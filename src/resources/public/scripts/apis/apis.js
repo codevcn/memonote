@@ -16,6 +16,9 @@ const signInAPI = (password, noteUniqueName) =>
     axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
 // notification
 const getNotificationsAPI = (noteId, lastNotif) =>
-    axiosClient.post(`/notification?n=${noteId}`, { lastNotif: lastNotif || {} })
+    axiosClient.post(`/notification/${noteId}`, { lastNotif: lastNotif || {} })
 // lang
 const requestLangAPI = (langCode) => axiosClient.post(`/lang/request-lang`, { langCode })
+// article
+const fetchArticleAPI = (noteId) =>
+    axiosClient.get(`/article/fetch-article/${noteId}`, { responseType: 'blob' })

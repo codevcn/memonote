@@ -1,19 +1,22 @@
-import { appendFile, mkdir, truncate, unlink } from 'fs/promises'
-import { existsSync } from 'fs'
+import { appendFile, mkdir, stat, truncate, unlink } from 'fs/promises'
+import { createReadStream, existsSync } from 'fs'
 import dayjs from 'dayjs'
 import type { TArticleChunkStatus, TcreateDirOfArticleChunk } from './types'
 import { join } from 'path'
 import ms from 'ms'
-import { Injectable } from '@nestjs/common'
+import { Injectable, StreamableFile } from '@nestjs/common'
 import { Article, TArticleDocument, TArticleModel } from './article.model'
 import { InjectModel } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
+import AppRoot from 'app-root-path'
+import { BaseCustomException } from '@/utils/exception/custom.exception'
+import { EArticleMessages } from './messages'
 
 @Injectable()
 export class ArticleService {
     private readonly articleChunksStatus = new Map<string, TArticleChunkStatus>()
     private readonly articlesDirname: string = 'articles'
-    private readonly articlesDirPath = join(__dirname, this.articlesDirname)
+    private readonly articlesDirPath = join(AppRoot.path, 'src', 'article', this.articlesDirname)
     private readonly chunkStatusTimeout: number = ms('60s')
     private readonly articleUnicode: NodeJS.BufferEncoding = 'utf-8'
     private readonly articleFiletype: string = 'txt'
@@ -22,12 +25,14 @@ export class ArticleService {
 
     private async createNewArticle(
         noteUniqueName: string,
+        noteId: string,
         localPath: string,
     ): Promise<TArticleDocument> {
         return await this.articleModel.create({
-            note: noteUniqueName,
+            note: new Types.ObjectId(noteId),
             localPath,
             content: { createdAt: new Date() },
+            filename: this.formatArticleFilename(noteUniqueName),
         })
     }
 
@@ -92,7 +97,7 @@ export class ArticleService {
             chunksReceived: 0,
             totalChunks,
             timeoutId: null,
-            relativePath: relativePath,
+            relativePath,
             isCreatedBefore,
         })
         return { relativePath, isCreatedBefore }
@@ -130,7 +135,7 @@ export class ArticleService {
         if (chunkStatus.chunksReceived === totalChunks) {
             this.articleChunksStatus.delete(noteUniqueName)
             if (!result.isCreatedBefore) {
-                await this.createNewArticle(noteUniqueName, chunkStatus.relativePath)
+                await this.createNewArticle(noteUniqueName, noteId, chunkStatus.relativePath)
             }
         } else {
             chunkStatus.timeoutId = setTimeout(async () => {
@@ -145,11 +150,35 @@ export class ArticleService {
             console.log('>>> item >>>', { item: key + ' - ' + value })
         }
         const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
-        console.log('>>> chunk status to clean >>>', { chunkStatus })
+        console.log('>>> chunk status to clean >>>', {
+            chunkStatus,
+            pathToClean: join(this.articlesDirPath, chunkStatus.relativePath, noteUniqueName),
+        })
         const articleFilePath = join(this.articlesDirPath, chunkStatus.relativePath, noteUniqueName)
-        if (existsSync(articleFilePath)) {
+        if (existsSync(articleFilePath) && !chunkStatus.isCreatedBefore) {
             unlink(articleFilePath)
         }
         this.articleChunksStatus.delete(noteUniqueName)
+    }
+
+    async fetchArticle(noteId: string): Promise<StreamableFile> {
+        const article = await this.articleModel.findOne({
+            note: new Types.ObjectId(noteId),
+        })
+        if (!article) {
+            throw new BaseCustomException(EArticleMessages.ARTICLE_NOT_FOUND)
+        }
+        const filenameWithExtension = this.formatArticleFilename(article.filename)
+        const articleFilepath = join(
+            this.formatAbsoluteDirPathOfArticle(article.localPath),
+            filenameWithExtension,
+        )
+        const readStream = createReadStream(articleFilepath)
+        const articleStat = await stat(articleFilepath)
+        return new StreamableFile(readStream, {
+            type: 'text/plain',
+            disposition: `attachment; filename="${filenameWithExtension}"`,
+            length: articleStat.size,
+        })
     }
 }

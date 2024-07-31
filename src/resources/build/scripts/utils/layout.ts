@@ -47,12 +47,10 @@ class LayoutController {
         const generalAppStatus = this.generalAppStatus
         const icons = generalAppStatus.querySelectorAll<HTMLElement>('.status-icon')
         for (const icon of icons) {
-            if (icon.classList.contains(`${status}-icon`)) {
-                icon.hidden = false
-            } else {
-                icon.hidden = true
-            }
+            icon.hidden = true
         }
+        const icon = generalAppStatus.querySelector(`.status-icon.${status}-icon`) as HTMLElement
+        icon.hidden = false
         generalAppStatus.classList.add('active')
         if (status !== 'loading') {
             setTimeout(() => {

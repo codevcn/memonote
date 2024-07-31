@@ -88,13 +88,25 @@ class RichEditorController {
             height: '500px',
             menubar: false,
             elementpath: false,
+            setup: (editor: any) => {
+                editor.on('init', (e: any) => {
+                    console.log('>>> editor >>>', editor)
+                    this.fetchArticle()
+                        .then((res) => {})
+                        .catch((err) => {
+                            if (err instanceof Error) {
+                                LayoutController.toast('error', err.message)
+                            }
+                        })
+                })
+            },
         }
 
         tinymce.init(initConfig)
     }
 
-    static setEditModeContent(content: string): void {
-        // tinymce.get(this.richEditorId).setContent(content)
+    static setArticleContent(content: string): void {
+        tinymce.get(this.richEditorId).setContent(content)
     }
 
     static setViewModeContent(content: string, editor: HTMLElement): void {
@@ -148,7 +160,7 @@ class RichEditorController {
         const noteContent = tinymce.get(this.richEditorId).getContent()
         if (this.validateNoteContent(noteContent)) {
             const htmlBefore = target.innerHTML
-            target.innerHTML = Materials.createHTMLLoading('border')
+            this.setLoading(target, true)
             try {
                 await this.publishArticle(noteContent)
             } catch (error) {
@@ -156,7 +168,7 @@ class RichEditorController {
                     LayoutController.toast('error', error.message)
                 }
             }
-            target.innerHTML = htmlBefore
+            this.setLoading(target, false, htmlBefore)
         }
     }
 
@@ -171,13 +183,49 @@ class RichEditorController {
             })
         }
     }
+
+    private static setLoading(target: HTMLElement, loading: boolean, htmlBefore?: string): void {
+        if (loading) {
+            target.innerHTML = Materials.createHTMLLoading('border')
+            target.classList.add('loading')
+        } else if (htmlBefore) {
+            target.innerHTML = htmlBefore
+            target.classList.remove('loading')
+        }
+    }
+
+    static async fetchArticle(): Promise<void> {
+        const { noteId } = pageData
+        let apiResult: Blob
+        const publishArticleBtn = document.getElementById(
+            'publish-article-submit-btn',
+        ) as HTMLElement
+        const htmlBefore = publishArticleBtn.innerHTML
+        this.setLoading(publishArticleBtn, true)
+        try {
+            const { data } = await fetchArticleAPI(noteId)
+            apiResult = data
+        } catch (error) {
+            console.error('>>> error fetch article >>>', error)
+            return
+        }
+        if (apiResult) {
+            const reader = new FileReader()
+            reader.onload = function () {
+                const content = reader.result as string
+                console.log('>>> content >>>', content)
+                RichEditorController.setArticleContent(content)
+            }
+            reader.readAsText(apiResult)
+        }
+        this.setLoading(publishArticleBtn, false, htmlBefore)
+    }
 }
 
 const initEditors = (): void => {
-    const { editor, richEditorData } = pageData
-    if (editor && richEditorData) {
+    const { editor } = pageData
+    if (editor) {
         EditorsController.setEditors(editor as EEditors)
-        RichEditorController.setEditModeContent(richEditorData.content)
     } else {
         EditorsController.setEditors(EEditors.NORMAL)
     }

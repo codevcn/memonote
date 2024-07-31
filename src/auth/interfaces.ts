@@ -1,12 +1,13 @@
 import type { Response, Request } from 'express'
 import type { TSuccess } from '@/utils/types'
-import type { NoteUniqueNameOnParamDTO, SignInPayloadDTO } from './DTOs'
+import type { NoteUniqueNameDTO } from '@/note/DTOs'
+import type { SignInPayloadDTO } from './DTOs'
 
 export interface IAuthAPIController {
     signIn(
-        params: NoteUniqueNameOnParamDTO,
+        params: NoteUniqueNameDTO,
         signInPayload: SignInPayloadDTO,
         res: Response,
     ): Promise<TSuccess>
-    logout(req: Request, res: Response, params: NoteUniqueNameOnParamDTO): Promise<TSuccess>
+    logout(req: Request, res: Response, params: NoteUniqueNameDTO): Promise<TSuccess>
 }

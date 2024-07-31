@@ -1,22 +1,23 @@
-import { Body, Controller, Post, Query } from '@nestjs/common'
-import type { INotificationController } from './interfaces'
+import { Body, Controller, Param, Post } from '@nestjs/common'
+import type { INotificationAPIController } from './interfaces'
 import { NotificationService } from './notification.service'
 import { APIRoutes } from '@/utils/routes'
-import { GetNotifsBodyDTO, GetNotifsParamsDTO } from './DTOs'
+import { GetNotifsBodyDTO } from './DTOs'
 import { ELangCodes } from '@/lang/enums'
 import { Lang } from '@/lang/lang.decorator'
+import { NoteIdDTO } from '@/note/DTOs'
 
 @Controller(APIRoutes.notification)
-export class NotificationController implements INotificationController {
+export class NotificationAPIController implements INotificationAPIController {
     constructor(private notificationSerice: NotificationService) {}
 
-    @Post()
+    @Post(':noteId')
     async getNotifications(
-        @Query() query: GetNotifsParamsDTO,
+        @Param() params: NoteIdDTO,
         @Body() body: GetNotifsBodyDTO,
         @Lang() lang: ELangCodes,
     ) {
-        const { n } = query
-        return await this.notificationSerice.fetchNotificationsHandler(n, body.lastNotif, lang)
+        const { noteId } = params
+        return await this.notificationSerice.fetchNotificationsHandler(noteId, body.lastNotif, lang)
     }
 }
