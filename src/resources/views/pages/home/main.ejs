@@ -50,11 +50,14 @@
                 </div>
                 <section class="rich-editor-mode view-mode"></section>
                 <section class="rich-editor-mode edit-mode active">
-                    <button id="publish-article-submit-btn" onclick="RichEditorController.publishArticleHandler(this)">
-                        <span>Publish</span>
-                    </button>
                     <textarea id="mmn-rich-note-editor"></textarea>
                 </section>
+            </section>
+            <section class="under-section">
+                <span></span>
+                <button id="publish-article-submit-btn" onclick="RichEditorController.publishArticleHandler(this)">
+                    <span>Publish</span>
+                </button>
             </section>
             <!-- <div class="useful-note-actions">
                     <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">
@@ -78,19 +81,21 @@
     </section>
 </main>
 
-<div id="scroll-to-top">
-    <div class="scroll-to-top-btn" onclick="scrollToTop()" title="<%= t('home-page.Scroll_to_top',i18nLang) %>">
+<section id="bubble-btns">
+    <button class="scroll-to-top-btn" onclick="scrollToTop()" title="<%= t('home-page.Scroll_to_top',i18nLang) %>">
         <i class="bi bi-chevron-double-up"></i>
-    </div>
-</div>
+    </button>
 
-<div id="bubble-note-settings">
+    <button class="scroll-to-bottom-btn" onclick="scrollToBottom()">
+        <i class="bi bi-chevron-double-down"></i>
+    </button>
+
     <span data-bs-toggle="tooltip" data-bs-placement="left" title="<%= t('home-page.settings.Settings',i18nLang) %>">
         <div class="bubble-note-settings-btn" data-bs-toggle="modal" data-bs-target="#note-settings-modal">
             <i class="bi bi-gear-fill"></i>
         </div>
     </span>
-</div>
+</section>
 
 <div id="night-mode-blender"></div>
 

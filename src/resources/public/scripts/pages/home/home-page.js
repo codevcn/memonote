@@ -39,9 +39,11 @@ const settingsModal_logoutBtn = noteSettingsBoard.querySelector(
 const setPasswordForm = document.getElementById('settings-form-set-password')
 const removePasswordForm = document.getElementById('settings-form-remove-password')
 const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
-const scrollToTopBtn = document.querySelector('#scroll-to-top')
+const scrollToTopBtn = document.querySelector('#bubble-btns .scroll-to-top-btn')
+const scrollToBottomBtn = document.querySelector('#bubble-btns .scroll-to-bottom-btn')
 const noteContentHistory = { history: [''], index: 0 }
-const SCROLL_Y_BEGIN = 200
+const SCROLL_TO_TOP_THRESHOLD = 200
+const SCROLL_TO_BOTTOM_THRESHOLD = 200
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
         return false
@@ -403,6 +405,17 @@ const changeNoteFormTextFontHandler = (font) => {
     writeCssVariable('--mmn-note-form-fonf', textFont)
     setNoteFormTextFontInDevice(font)
 }
+const setNavBarPosHandler = (pos) => {
+    setNavBarPosInDevice(pos)
+    const navBar = document.getElementById('nav-bar')
+    const posClasses = ['pos-sticky', 'pos-static']
+    navBar.classList.remove(...posClasses)
+    if (pos === 'sticky') {
+        navBar.classList.add(posClasses[0])
+    } else if (pos === 'static') {
+        navBar.classList.add(posClasses[1])
+    }
+}
 const saveSettingsUserInterface = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
         e.preventDefault()
@@ -410,19 +423,35 @@ const saveSettingsUserInterface = (e) =>
         const formData = new FormData(form)
         const editedNotifyStyle = formData.get('edited-notify-style')
         const noteFormFont = formData.get('note-form-font')
+        const navBarPos = formData.get('nav-bar-pos')
         if (editedNotifyStyle) {
             setEditedNotifyStyleInDevice(editedNotifyStyle)
         }
         if (noteFormFont) {
             changeNoteFormTextFontHandler(noteFormFont)
         }
+        if (navBarPos) {
+            setNavBarPosHandler(navBarPos)
+        }
         setStatusOfSettingsForm(form, 'saved')
     })
 const scrollToTop = () => {
-    if (window.scrollY > SCROLL_Y_BEGIN) {
+    if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
         window.scrollTo({ top: 100, behavior: 'instant' })
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+}
+const scrollToBottom = () => {
+    const windowHeight = window.innerHeight
+    const heightToScroll = document.body.scrollHeight - windowHeight
+    window.scrollTo({
+        top: heightToScroll - 100,
+        behavior: 'instant',
+    })
+    window.scrollTo({
+        top: heightToScroll,
+        behavior: 'smooth',
+    })
 }
 const onChangLanguageHandler = (e) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -446,6 +475,15 @@ const onChangLanguageHandler = (e) =>
         }
         formSubmitBtn.innerHTML = htmlBefore
     })
+const setupScrollToBottom = () => {
+    const scrollPosition = window.innerHeight + window.scrollY
+    const threshold = document.body.scrollHeight - SCROLL_TO_BOTTOM_THRESHOLD
+    if (scrollPosition > threshold) {
+        scrollToBottomBtn.classList.add('active')
+    } else {
+        scrollToBottomBtn.classList.remove('active')
+    }
+}
 const initPage = () => {
     // setup "navigate" settings
     const navTabs = noteSettingsBoard.querySelectorAll(
@@ -531,13 +569,18 @@ const initPage = () => {
             quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
         })
     }
-    // setup "scroll to top"
+    // setup "scroll to"
     window.addEventListener('scroll', function (e) {
-        if (window.scrollY > SCROLL_Y_BEGIN) {
-            scrollToTopBtn.classList.add('active')
-        } else {
-            scrollToTopBtn.classList.remove('active')
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            // scroll to top
+            if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
+                scrollToTopBtn.classList.add('active')
+            } else {
+                scrollToTopBtn.classList.remove('active')
+            }
+            // scroll to bottom
+            setupScrollToBottom()
+        })
     })
     // setup "night mode"
     const nightMode = getNightModeInDevice()
@@ -545,6 +588,11 @@ const initPage = () => {
         const nightModeInput = document.getElementById('night-mode-input')
         nightModeInput.checked = true
         setNightModeHandler('on')
+    }
+    // setup nav bar pos
+    const navBarPos = getNavBarPosInDevice()
+    if (navBarPos) {
+        setNavBarPosHandler(navBarPos)
     }
 }
 initPage()

@@ -245,6 +245,22 @@
                         <option value="roboto">Roboto</option>
                     </select>
                 </div>
+                <div class="form-group form-group-select">
+                    <label for="nav-bar-pos-select">
+                        <span>
+                            <%= t('home-page.settings.userInterface.Change_text_font_title',i18nLang) %>
+                        </span>
+                        <span data-bs-toggle="tooltip" data-bs-placement="bottom"
+                            title="<%= t('home-page.settings.userInterface.Change_text_font_tooltip',i18nLang) %>"
+                            class="details-btn">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </span>
+                    </label>
+                    <select class="form-select form-field" name="nav-bar-pos" id="nav-bar-pos-select">
+                        <option value="sticky" selected>Sticky</option>
+                        <option value="static">Static</option>
+                    </select>
+                </div>
             </div>
             <button type="submit" class="form-submit-btn">
                 <i class="bi bi-check-lg"></i>

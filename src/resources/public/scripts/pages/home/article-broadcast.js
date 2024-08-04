@@ -6,15 +6,25 @@ var EArticleEvents
 })(EArticleEvents || (EArticleEvents = {}))
 // init socket
 const articleSocket = io(`/${ENamespacesOfSocket.ARTICLE}`, clientSocketConfig)
-const publishArticleInChunks = (chunkPayload) => {
-    console.log('>>> chunk Payload >>>', { chunkPayload })
+let chunkIdx = 0
+const publishArticleInChunks = (chunks, chunkPayload) => {
     return new Promise((resolve, reject) => {
-        articleSocket.emit(EArticleEvents.PUBLISH_ARTICLE, chunkPayload, (res) => {
-            if (res.success) {
-                resolve(true)
-            } else {
-                reject(new BaseCustomError("Couldn't upload chunks"))
-            }
-        })
+        articleSocket.emit(
+            EArticleEvents.PUBLISH_ARTICLE,
+            Object.assign(Object.assign({}, chunkPayload), { articleChunk: chunks[chunkIdx] }),
+            (res) => {
+                if (res.success) {
+                    chunkIdx++
+                    if (chunkIdx < chunks.length - 1) {
+                        publishArticleInChunks(chunks, chunkPayload)
+                    } else {
+                        resolve(true)
+                    }
+                } else {
+                    chunkIdx = 0
+                    reject(new BaseCustomError("Couldn't upload article"))
+                }
+            },
+        )
     })
 }

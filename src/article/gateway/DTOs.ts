@@ -16,4 +16,7 @@ export class PublishNotePayloadDTO {
     @IsNotEmpty()
     @IsMongoId()
     noteId: string
+
+    @IsNotEmpty()
+    uploadId: string
 }

@@ -256,39 +256,6 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
     }
 }
 
-#bubble-note-settings {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: z-indexes.$mmn-base-zidx + 10;
-
-    .bubble-note-settings-btn {
-        background-color: colors.$mmn-primary-cl;
-        border-radius: 50%;
-        padding: 4px;
-        cursor: pointer;
-        border: 2px colors.$mmn-primary-cl solid;
-        transition:
-            background-color 0.2s,
-            transform 0.2s;
-
-        i {
-            font-size: 2rem;
-            color: colors.$mmn-regular-white-cl;
-            transition: color 0.2s;
-        }
-
-        &:hover {
-            background-color: colors.$mmn-regular-white-cl;
-            transform: rotate(180deg);
-
-            i {
-                color: colors.$mmn-primary-cl;
-            }
-        }
-    }
-}
-
 #note-settings-modal {
     .modal-dialog {
         .modal-content {

@@ -42,10 +42,19 @@ class EditorsController {
                 .classList.add('picked')
         }
 
-        if (editor === EEditors.RICH && !this.switchedToRichEditor) {
-            const { placeholder } = pageData.richEditorData
-            RichEditorController.connect({ lang: pageData.currentLang, placeholder })
-            this.switchedToRichEditor = true
+        const publishArticleBtn = document.getElementById(
+            'publish-article-submit-btn',
+        ) as HTMLElement
+        if (editor === EEditors.RICH) {
+            publishArticleBtn.classList.add('active')
+
+            if (!this.switchedToRichEditor) {
+                const { placeholder } = pageData.richEditorData
+                RichEditorController.connect({ lang: pageData.currentLang, placeholder })
+                this.switchedToRichEditor = true
+            }
+        } else if (editor === EEditors.NORMAL) {
+            publishArticleBtn.classList.remove('active')
         }
     }
 
@@ -78,27 +87,32 @@ class RichEditorController {
 
     static connect(config: TConnectRichEditorOptions): void {
         const initConfig = {
-            selector: 'textarea#mmn-rich-note-editor',
+            selector: `textarea#${this.richEditorId}`,
             plugins: 'link lists table wordcount linkchecker preview',
             placeholder: config.placeholder,
             toolbar:
                 'undo redo | blocks fontfamily fontsize forecolor backcolor | bold italic underline strikethrough | link table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
             skin: 'bootstrap',
             language: config.lang,
-            height: '500px',
             menubar: false,
             elementpath: false,
+            content_css: '/styles/pages/home-page/tinymce.css',
+            font_family_formats: `Arial=Arial, Helvetica, sans-serif; 
+                Work Sans=Work Sans, Arial, sans-serif;
+                Poppins=Poppins, Arial, sans-serif;
+                Times New Roman=Times New Roman, Times, serif;
+                Roboto=Roboto, Times, serif`,
+            min_height: 400,
+            height: 400,
             setup: (editor: any) => {
                 editor.on('init', (e: any) => {
-                    console.log('>>> editor >>>', editor)
                     this.fetchArticle()
                         .then((res) => {})
-                        .catch((err) => {
-                            if (err instanceof Error) {
-                                LayoutController.toast('error', err.message)
-                            }
-                        })
+                        .catch((err) => {})
                 })
+                setTimeout(() => {
+                    setupScrollToBottom()
+                }, 1000)
             },
         }
 
@@ -174,14 +188,13 @@ class RichEditorController {
 
     static async publishArticle(noteContent: string): Promise<void> {
         const chunks = convertStringToChunks(noteContent, EArticleChunk.SIZE_IN_KB_PER_CHUNK)
-        for (const chunk of chunks) {
-            await publishArticleInChunks({
-                articleChunk: chunk,
-                noteId: pageData.noteId,
-                noteUniqueName: getNoteUniqueNameFromURL(),
-                totalChunks: chunks.length,
-            })
-        }
+        const uploadId = ''
+        await publishArticleInChunks(chunks, {
+            noteId: pageData.noteId,
+            noteUniqueName: getNoteUniqueNameFromURL(),
+            totalChunks: chunks.length,
+            uploadId,
+        })
     }
 
     private static setLoading(target: HTMLElement, loading: boolean, htmlBefore?: string): void {
@@ -206,14 +219,16 @@ class RichEditorController {
             const { data } = await fetchArticleAPI(noteId)
             apiResult = data
         } catch (error) {
-            console.error('>>> error fetch article >>>', error)
+            if (error instanceof Error) {
+                const err = HTTPErrorHandler.handleError(error)
+                LayoutController.toast('error', err.message)
+            }
             return
         }
-        if (apiResult) {
+        if (apiResult && apiResult.size > 0) {
             const reader = new FileReader()
             reader.onload = function () {
                 const content = reader.result as string
-                console.log('>>> content >>>', content)
                 RichEditorController.setArticleContent(content)
             }
             reader.readAsText(apiResult)

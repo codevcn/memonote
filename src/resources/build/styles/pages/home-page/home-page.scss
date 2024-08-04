@@ -12,6 +12,44 @@ $mmn-page-padding-bottom: 100px;
     --mmn-quick-look-icon-initial-size: 30px;
 }
 
+@mixin scroll-to-styling {
+    background-color: colors.$mmn-primary-cl;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+    border: 2px colors.$mmn-primary-cl solid;
+    position: relative;
+    bottom: -10px;
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.2s,
+        bottom 0.2s,
+        background-color 0.2s;
+
+    &.active {
+        bottom: 0;
+        cursor: pointer;
+        pointer-events: auto;
+        opacity: 1;
+    }
+
+    i {
+        font-size: 2rem;
+        transition: color 0.2s;
+        transform: translateY(-1px);
+        color: colors.$mmn-regular-white-cl;
+    }
+
+    &:hover {
+        background-color: colors.$mmn-regular-white-cl;
+
+        i {
+            color: colors.$mmn-primary-cl;
+        }
+    }
+}
+
 #page-main {
     padding: 10px 50px $mmn-page-padding-bottom;
 
@@ -59,41 +97,42 @@ $mmn-page-padding-bottom: 100px;
     }
 }
 
-#scroll-to-top {
+#bubble-btns {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
     position: fixed;
-    bottom: 70px;
+    bottom: 25px;
     right: 25px;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-        opacity 0.2s,
-        bottom 0.2s;
     z-index: z-indexes.$mmn-base-zidx + 10;
 
-    &.active {
-        bottom: 80px;
-        cursor: pointer;
-        pointer-events: auto;
-        opacity: 1;
+    .scroll-to-bottom-btn {
+        @include scroll-to-styling;
     }
 
     .scroll-to-top-btn {
+        @include scroll-to-styling;
+    }
+
+    .bubble-note-settings-btn {
         background-color: colors.$mmn-primary-cl;
         border-radius: 50%;
         padding: 4px;
         cursor: pointer;
         border: 2px colors.$mmn-primary-cl solid;
-        transition: background-color 0.2s;
+        transition:
+            background-color 0.2s,
+            transform 0.2s;
 
         i {
             font-size: 2rem;
-            transition: color 0.2s;
-            transform: translateY(-1px);
             color: colors.$mmn-regular-white-cl;
+            transition: color 0.2s;
         }
 
         &:hover {
             background-color: colors.$mmn-regular-white-cl;
+            transform: rotate(180deg);
 
             i {
                 color: colors.$mmn-primary-cl;

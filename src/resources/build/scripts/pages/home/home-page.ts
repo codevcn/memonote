@@ -13,7 +13,10 @@ const removePasswordForm = document.getElementById(
 const noteQuickLook = homePage_pageMain.querySelector(
     '.note-quick-look .quick-look-items',
 ) as HTMLElement
-const scrollToTopBtn = document.querySelector('#scroll-to-top') as HTMLElement
+const scrollToTopBtn = document.querySelector('#bubble-btns .scroll-to-top-btn') as HTMLElement
+const scrollToBottomBtn = document.querySelector(
+    '#bubble-btns .scroll-to-bottom-btn',
+) as HTMLElement
 
 type TNoteContentHistory = {
     history: string[]
@@ -21,7 +24,8 @@ type TNoteContentHistory = {
 }
 
 const noteContentHistory: TNoteContentHistory = { history: [''], index: 0 }
-const SCROLL_Y_BEGIN: number = 200
+const SCROLL_TO_TOP_THRESHOLD: number = 200
+const SCROLL_TO_BOTTOM_THRESHOLD: number = 200
 
 const validateNoteContent = (noteContent: string): boolean => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -455,6 +459,19 @@ const changeNoteFormTextFontHandler = (font: TNoteFormTextFonts): void => {
     setNoteFormTextFontInDevice(font)
 }
 
+const setNavBarPosHandler = (pos: TNavBarPos): void => {
+    setNavBarPosInDevice(pos)
+    const navBar = document.getElementById('nav-bar') as HTMLElement
+    const posClasses = ['pos-sticky', 'pos-static']
+
+    navBar.classList.remove(...posClasses)
+    if (pos === 'sticky') {
+        navBar.classList.add(posClasses[0])
+    } else if (pos === 'static') {
+        navBar.classList.add(posClasses[1])
+    }
+}
+
 const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
@@ -463,6 +480,7 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
 
     const editedNotifyStyle = formData.get('edited-notify-style') as TEditedNotifyStyleTypes
     const noteFormFont = formData.get('note-form-font') as TNoteFormTextFonts
+    const navBarPos = formData.get('nav-bar-pos') as TNavBarPos
 
     if (editedNotifyStyle) {
         setEditedNotifyStyleInDevice(editedNotifyStyle)
@@ -470,15 +488,31 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     if (noteFormFont) {
         changeNoteFormTextFontHandler(noteFormFont)
     }
+    if (navBarPos) {
+        setNavBarPosHandler(navBarPos)
+    }
 
     setStatusOfSettingsForm(form, 'saved')
 }
 
 const scrollToTop = (): void => {
-    if (window.scrollY > SCROLL_Y_BEGIN) {
+    if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
         window.scrollTo({ top: 100, behavior: 'instant' })
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+}
+
+const scrollToBottom = (): void => {
+    const windowHeight = window.innerHeight
+    const heightToScroll = document.body.scrollHeight - windowHeight
+    window.scrollTo({
+        top: heightToScroll - 100,
+        behavior: 'instant',
+    })
+    window.scrollTo({
+        top: heightToScroll,
+        behavior: 'smooth',
+    })
 }
 
 const onChangLanguageHandler = async (e: Event): Promise<void> => {
@@ -505,6 +539,16 @@ const onChangLanguageHandler = async (e: Event): Promise<void> => {
         window.location.reload()
     }
     formSubmitBtn.innerHTML = htmlBefore
+}
+
+const setupScrollToBottom = (): void => {
+    const scrollPosition = window.innerHeight + window.scrollY
+    const threshold = document.body.scrollHeight - SCROLL_TO_BOTTOM_THRESHOLD
+    if (scrollPosition > threshold) {
+        scrollToBottomBtn.classList.add('active')
+    } else {
+        scrollToBottomBtn.classList.remove('active')
+    }
 }
 
 const initPage = (): void => {
@@ -606,13 +650,17 @@ const initPage = (): void => {
         })
     }
 
-    // setup "scroll to top"
-    window.addEventListener('scroll', function (e) {
-        if (window.scrollY > SCROLL_Y_BEGIN) {
+    // setup "scroll to"
+    window.addEventListener('scroll', async function (e) {
+        // scroll to top
+        if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
             scrollToTopBtn.classList.add('active')
         } else {
             scrollToTopBtn.classList.remove('active')
         }
+
+        // scroll to bottom
+        setupScrollToBottom()
     })
 
     // setup "night mode"
@@ -621,6 +669,12 @@ const initPage = (): void => {
         const nightModeInput = document.getElementById('night-mode-input') as HTMLInputElement
         nightModeInput.checked = true
         setNightModeHandler('on')
+    }
+
+    // setup nav bar pos
+    const navBarPos = getNavBarPosInDevice()
+    if (navBarPos) {
+        setNavBarPosHandler(navBarPos)
     }
 }
 initPage()

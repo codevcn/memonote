@@ -70,3 +70,5 @@ type TNotif = {
 type TNotifData = TNotif & {
     isNew: boolean
 }
+
+type TNavBarPos = 'sticky' | 'static'

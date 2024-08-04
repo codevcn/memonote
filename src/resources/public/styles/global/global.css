@@ -1,8 +1,3 @@
-:root {
-    --mmn-blender-transition-duration: 0.5s;
-    --mmn-mix-blend-mode-reversed: normal;
-}
-
 /* @rules
 normal - regular
 bold - bold
@@ -14,25 +9,25 @@ bold - bold
 /* ==================== Poppins ====================== */
 @font-face {
     font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+    src: url('/styles/fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: normal;
 }
 @font-face {
     font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+    src: url('/styles/fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: bold;
 }
 @font-face {
     font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
+    src: url('/styles/fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: 500;
 }
 @font-face {
     font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+    src: url('/styles/fonts/poppins/poppins-light-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: 300;
 }
@@ -40,25 +35,25 @@ bold - bold
 /* ==================== Work Sans ==================== */
 @font-face {
     font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+    src: url('/styles/fonts/worksans/WorkSans-Regular.woff2') format('woff2');
     font-style: normal;
     font-weight: normal;
 }
 @font-face {
     font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+    src: url('/styles/fonts/worksans/WorkSans-Bold.woff2') format('woff2');
     font-style: normal;
     font-weight: bold;
 }
 @font-face {
     font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Medium.woff2') format('woff2');
+    src: url('/styles/fonts/worksans/WorkSans-Medium.woff2') format('woff2');
     font-style: normal;
     font-weight: 500;
 }
 @font-face {
     font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
+    src: url('/styles/fonts/worksans/WorkSans-Light.woff2') format('woff2');
     font-style: normal;
     font-weight: 300;
 }
@@ -66,22 +61,27 @@ bold - bold
 /* ==================== Roboto ==================== */
 @font-face {
     font-family: 'Roboto';
-    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    src: url('/styles/fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: normal;
 }
 @font-face {
-    font-family: 'Roboto bold';
-    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: bold;
 }
 @font-face {
-    font-family: 'Roboto light';
-    src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-light-webfont.woff2') format('woff2');
     font-style: normal;
     font-weight: 300;
 }
+:root {
+    --mmn-blender-transition-duration: 0.5s;
+    --mmn-mix-blend-mode-reversed: normal;
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -94,8 +94,16 @@ p,
 button,
 input,
 section,
-textarea {
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: 'Work Sans', Arial, sans-serif;
+    margin: 0;
+    line-height: 1.5;
     font-weight: normal;
     outline: none;
 }
@@ -119,16 +127,6 @@ i {
 a {
     text-decoration: none;
     cursor: pointer;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    margin: 0;
 }
 
 .tab-navigator .nav-destination {
@@ -170,11 +168,16 @@ h6 {
     padding: 0 50px;
     height: 60px;
     border-bottom: 1px #e6e6e6 solid;
-    position: sticky;
     top: 0;
     left: 0;
     z-index: 101;
     background-color: #fff;
+}
+#nav-bar.pos-sticky {
+    position: sticky;
+}
+#nav-bar.pos-static {
+    position: static;
 }
 #nav-bar .app-logo-container {
     display: flex;

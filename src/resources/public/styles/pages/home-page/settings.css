@@ -1,3 +1,82 @@
+/* @rules
+normal - regular
+bold - bold
+500 - medium
+300 - light
+100 - thin
+*/
+/* =================================================== */
+/* ==================== Poppins ====================== */
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Work Sans ==================== */
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Roboto ==================== */
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
 .modal .modal-dialog .modal-content .modal-header .btn-close:focus {
     box-shadow: 0 0 0px 0.25rem #ffdddd;
 }
@@ -36,35 +115,6 @@
 .modal .modal-dialog .modal-content .modal-footer button.modal-save-change-btn .spinner-border {
     height: 1.5rem;
     width: 1.5rem;
-}
-
-#bubble-note-settings {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    z-index: 11;
-}
-#bubble-note-settings .bubble-note-settings-btn {
-    background-color: #18181b;
-    border-radius: 50%;
-    padding: 4px;
-    cursor: pointer;
-    border: 2px #18181b solid;
-    transition:
-        background-color 0.2s,
-        transform 0.2s;
-}
-#bubble-note-settings .bubble-note-settings-btn i {
-    font-size: 2rem;
-    color: #fff;
-    transition: color 0.2s;
-}
-#bubble-note-settings .bubble-note-settings-btn:hover {
-    background-color: #fff;
-    transform: rotate(180deg);
-}
-#bubble-note-settings .bubble-note-settings-btn:hover i {
-    color: #18181b;
 }
 
 #note-settings-modal .modal-dialog .modal-content .modal-header {

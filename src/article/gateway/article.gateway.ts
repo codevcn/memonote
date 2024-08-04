@@ -54,18 +54,20 @@ export class ArticleGateway
 
     @SubscribeMessage(EArticleEvents.PUBLISH_ARTICLE)
     async publishArticle(@MessageBody() data: PublishNotePayloadDTO) {
-        const { articleChunk, totalChunks, noteUniqueName, noteId } = data
+        const { articleChunk, totalChunks, noteUniqueName, noteId, uploadId } = data
         console.log('>>> article in chunk >>>', {
             articleChunk,
             totalChunks,
             noteUniqueName,
             noteId,
+            uploadId,
         })
         await this.articleService.uploadArticleChunk(
             articleChunk,
             totalChunks,
             noteUniqueName,
             noteId,
+            uploadId,
         )
         return { success: true }
     }

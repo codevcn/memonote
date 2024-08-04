@@ -1,4 +1,11 @@
 @use './colors';
+@use './text-fonts';
 
 $mmn-cubic-bezier: cubic-bezier(0.65, 0, 0.076, 1);
 $mmn-box-shadow-on-input: 0 0 0 0.25rem colors.$mmn-regular-lightgray-cl;
+
+@mixin sharing-editor-view-styling {
+    font-family: text-fonts.$mmn-primary-fontf;
+    margin: 0;
+    line-height: 1.5;
+}

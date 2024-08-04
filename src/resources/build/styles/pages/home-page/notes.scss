@@ -39,17 +39,18 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 }
 
 @mixin publish-article-submit-btn-styling {
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    top: 0;
-    left: calc(100% + 15px);
     border: 2.5px colors.$mmn-regular-black-cl solid;
     border-radius: 20px;
-    padding: 3px 20px;
+    padding: 3px 50px;
     font-weight: bold;
     background-color: transparent;
+
+    &.active {
+        display: flex;
+    }
 
     &:hover {
         background-color: colors.$mmn-regular-black-cl;
@@ -246,6 +247,17 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                     }
                 }
 
+                .under-section {
+                    margin-top: 15px;
+                }
+
+                .under-section {
+                    display: flex;
+                    justify-content: space-between;
+                    top: 15px;
+                    padding: 0 10px;
+                }
+
                 .useful-note-actions {
                     display: flex;
                     column-gap: 5px;
@@ -259,6 +271,10 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
             }
         }
     }
+}
+
+#publish-article-submit-btn {
+    @include publish-article-submit-btn-styling;
 }
 
 #rich-editor-section {
@@ -315,10 +331,6 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
             padding: 15px;
         }
     }
-}
-
-#publish-article-submit-btn {
-    @include publish-article-submit-btn-styling;
 }
 
 @keyframes notify-blink-note-edited {

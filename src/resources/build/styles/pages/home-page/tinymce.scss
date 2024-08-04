@@ -1,0 +1,10 @@
+@use '../../global/components';
+@use '../../global/text-fonts';
+
+body {
+    padding: 10px 5px;
+}
+
+p {
+    @include components.sharing-editor-view-styling;
+}

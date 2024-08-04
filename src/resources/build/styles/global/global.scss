@@ -1,6 +1,7 @@
 @use 'text-fonts';
 @use 'colors';
 @use 'z-indexes';
+@use 'components';
 
 $mmn-height-of-nav-bar: 60px;
 $mmn-app-toaster-left-gap: 20px;
@@ -16,97 +17,6 @@ $mmn-load-more-notifications: #e68500;
 :root {
     --mmn-blender-transition-duration: 0.5s;
     --mmn-mix-blend-mode-reversed: normal;
-}
-
-/* @rules
-normal - regular
-bold - bold
-500 - medium
-300 - light
-100 - thin
-*/
-
-/* =================================================== */
-/* ==================== Poppins ====================== */
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: bold;
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: 'Poppins';
-    src: url('../fonts/poppins/poppins-light-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 300;
-}
-
-/* =================================================== */
-/* ==================== Work Sans ==================== */
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Regular.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Bold.woff2') format('woff2');
-    font-style: normal;
-    font-weight: bold;
-}
-
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Medium.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 500;
-}
-
-@font-face {
-    font-family: 'Work Sans';
-    src: url('../fonts/worksans/WorkSans-Light.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 300;
-}
-
-/* =================================================== */
-/* ==================== Roboto ==================== */
-@font-face {
-    font-family: 'Roboto';
-    src: url('../fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: 'Roboto bold';
-    src: url('../fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: bold;
-}
-
-@font-face {
-    font-family: 'Roboto light';
-    src: url('../fonts/roboto/roboto-light-webfont.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 300;
 }
 
 @mixin regular-scrollbar-styling {
@@ -199,8 +109,14 @@ p,
 button,
 input,
 section,
-textarea {
-    font-family: text-fonts.$mmn-primary-fontf;
+textarea,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @include components.sharing-editor-view-styling;
     font-weight: normal;
     outline: none;
 }
@@ -224,16 +140,6 @@ i {
 a {
     text-decoration: none;
     cursor: pointer;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    margin: 0;
 }
 
 .tab-navigator {
@@ -282,11 +188,17 @@ h6 {
     padding: 0 50px;
     height: $mmn-height-of-nav-bar;
     border-bottom: 1px colors.$mmn-divider-border-cl solid;
-    position: sticky;
     top: 0;
     left: 0;
     z-index: z-indexes.$mmn-nav-bar-zidx + 1;
     background-color: colors.$mmn-regular-white-cl;
+
+    &.pos-sticky {
+        position: sticky;
+    }
+    &.pos-static {
+        position: static;
+    }
 
     .app-logo-container {
         display: flex;

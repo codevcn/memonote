@@ -92,3 +92,9 @@ function convertStringToChunks(inputString, sizeInKBPerChunk) {
     }
     return chunks
 }
+const setNavBarPosInDevice = (pos) => {
+    localStorage.setItem(ELocalStorageKeys.NAV_BAR_POS, pos)
+}
+const getNavBarPosInDevice = () => {
+    return localStorage.getItem(ELocalStorageKeys.NAV_BAR_POS)
+}

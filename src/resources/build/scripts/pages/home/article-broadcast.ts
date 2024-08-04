@@ -4,24 +4,40 @@ enum EArticleEvents {
 }
 
 type TPublishArticleInChunksPyld = {
-    articleChunk: string
     totalChunks: number
     noteUniqueName: string
     noteId: string
+    uploadId: string
 }
 
 // init socket
 const articleSocket = io(`/${ENamespacesOfSocket.ARTICLE}`, clientSocketConfig)
 
-const publishArticleInChunks = (chunkPayload: TPublishArticleInChunksPyld): Promise<boolean> => {
-    console.log('>>> chunk Payload >>>', { chunkPayload })
+let chunkIdx: number = 0
+const publishArticleInChunks = (
+    chunks: string[],
+    chunkPayload: TPublishArticleInChunksPyld,
+): Promise<boolean> => {
     return new Promise<boolean>((resolve, reject) => {
-        articleSocket.emit(EArticleEvents.PUBLISH_ARTICLE, chunkPayload, (res: TSuccess) => {
-            if (res.success) {
-                resolve(true)
-            } else {
-                reject(new BaseCustomError("Couldn't upload chunks"))
-            }
-        })
+        articleSocket.emit(
+            EArticleEvents.PUBLISH_ARTICLE,
+            {
+                ...chunkPayload,
+                articleChunk: chunks[chunkIdx],
+            },
+            (res: TSuccess) => {
+                if (res.success) {
+                    chunkIdx++
+                    if (chunkIdx < chunks.length - 1) {
+                        publishArticleInChunks(chunks, chunkPayload)
+                    } else {
+                        resolve(true)
+                    }
+                } else {
+                    chunkIdx = 0
+                    reject(new BaseCustomError("Couldn't upload article"))
+                }
+            },
+        )
     })
 }

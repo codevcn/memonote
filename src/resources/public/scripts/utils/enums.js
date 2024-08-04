@@ -41,6 +41,7 @@ var ELocalStorageKeys
     ELocalStorageKeys['EDITING_NOTIFY_STYLE'] = 'edited-notify-style'
     ELocalStorageKeys['NIGHT_MODE'] = 'night-mode'
     ELocalStorageKeys['NOTE_FORM_TEXT_FONT'] = 'note-form-text-font'
+    ELocalStorageKeys['NAV_BAR_POS'] = 'nav-bar-pos'
 })(ELocalStorageKeys || (ELocalStorageKeys = {}))
 var ENoteLengths
 ;(function (ENoteLengths) {

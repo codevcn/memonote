@@ -1,3 +1,82 @@
+/* @rules
+normal - regular
+bold - bold
+500 - medium
+300 - light
+100 - thin
+*/
+/* =================================================== */
+/* ==================== Poppins ====================== */
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Work Sans ==================== */
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Roboto ==================== */
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
 :root {
     --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
 }
@@ -186,6 +265,15 @@
     margin-bottom: 5px;
     margin-top: 5px;
 }
+#page-main .note-form .note-form-item.note-editor-board .under-section {
+    margin-top: 15px;
+}
+#page-main .note-form .note-form-item.note-editor-board .under-section {
+    display: flex;
+    justify-content: space-between;
+    top: 15px;
+    padding: 0 10px;
+}
 #page-main .note-form .note-form-item.note-editor-board .useful-note-actions {
     display: flex;
     column-gap: 5px;
@@ -206,6 +294,33 @@
 #page-main .note-form .note-form-item.note-editor-board .useful-note-actions .action i {
     font-size: 0.9rem;
     color: inherit;
+}
+
+#publish-article-submit-btn {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border: 2.5px #333 solid;
+    border-radius: 20px;
+    padding: 3px 50px;
+    font-weight: bold;
+    background-color: transparent;
+}
+#publish-article-submit-btn.active {
+    display: flex;
+}
+#publish-article-submit-btn:hover {
+    background-color: #333;
+    color: #fff;
+}
+#publish-article-submit-btn .spinner {
+    height: 20px;
+    width: 20px;
+}
+#publish-article-submit-btn.loading {
+    opacity: 0.4;
+    pointer-events: none;
+    padding: 5px 20px;
 }
 
 #rich-editor-section .actions {
@@ -251,33 +366,6 @@
     border: 1px solid #ced4da;
     border-radius: 5px;
     padding: 15px;
-}
-
-#publish-article-submit-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: calc(100% + 15px);
-    border: 2.5px #333 solid;
-    border-radius: 20px;
-    padding: 3px 20px;
-    font-weight: bold;
-    background-color: transparent;
-}
-#publish-article-submit-btn:hover {
-    background-color: #333;
-    color: #fff;
-}
-#publish-article-submit-btn .spinner {
-    height: 20px;
-    width: 20px;
-}
-#publish-article-submit-btn.loading {
-    opacity: 0.4;
-    pointer-events: none;
-    padding: 5px 20px;
 }
 
 @keyframes notify-blink-note-edited {

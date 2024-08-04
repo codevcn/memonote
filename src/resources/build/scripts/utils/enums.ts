@@ -39,6 +39,7 @@ enum ELocalStorageKeys {
     EDITING_NOTIFY_STYLE = 'edited-notify-style',
     NIGHT_MODE = 'night-mode',
     NOTE_FORM_TEXT_FONT = 'note-form-text-font',
+    NAV_BAR_POS = 'nav-bar-pos',
 }
 
 enum ENoteLengths {

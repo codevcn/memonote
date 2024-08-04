@@ -3,10 +3,16 @@ export type TArticleChunkStatus = {
     totalChunks: number
     timeoutId: NodeJS.Timeout | null
     relativePath: string
-    isCreatedBefore: boolean
+    docWasCreated: boolean
+    uploadId: string
 }
 
 export type TcreateDirOfArticleChunk = {
     relativePath: string
-    isCreatedBefore: boolean
+    docWasCreated: boolean
+}
+
+export type TWriteChunks = {
+    resultOfCreateDir: TcreateDirOfArticleChunk
+    chunkFilePathBackup: string
 }
