@@ -1,18 +1,22 @@
-export type TArticleChunkStatus = {
-    chunksReceived: number
-    totalChunks: number
-    timeoutId: NodeJS.Timeout | null
-    relativePath: string
-    docWasCreated: boolean
+export type TUploadIndentity = {
     uploadId: string
 }
 
-export type TcreateDirOfArticleChunk = {
+export type TArticleChunkStatus = {
+    chunksReceived: number
+    totalChunks: number
     relativePath: string
     docWasCreated: boolean
+    timeoutId: NodeJS.Timeout | null
+}
+
+export type TCreateDirOfArticleChunk = {
+    relativePath: string
+    docWasCreated: boolean
+    isFirstChunk: boolean
 }
 
 export type TWriteChunks = {
-    resultOfCreateDir: TcreateDirOfArticleChunk
+    docWasCreated: boolean
     chunkFilePathBackup: string
 }

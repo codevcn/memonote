@@ -408,7 +408,11 @@ class NotificationsController {
                     'all',
                     apiResult.notifs.map((notif) => ({ ...notif, isNew: false })),
                 )
-                this.setLoadMoreBtn('show')
+                if (apiResult.isEnd) {
+                    this.setLoadMoreBtn('hide')
+                } else {
+                    this.setLoadMoreBtn('show')
+                }
             } else {
                 notifsList.innerHTML = htmlBefore
             }

@@ -42,8 +42,8 @@ const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-l
 const scrollToTopBtn = document.querySelector('#bubble-btns .scroll-to-top-btn')
 const scrollToBottomBtn = document.querySelector('#bubble-btns .scroll-to-bottom-btn')
 const noteContentHistory = { history: [''], index: 0 }
-const SCROLL_TO_TOP_THRESHOLD = 200
-const SCROLL_TO_BOTTOM_THRESHOLD = 200
+const SCROLL_TO_TOP_THRESHOLD = 100
+const SCROLL_TO_BOTTOM_THRESHOLD = 100
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
         return false
@@ -436,16 +436,18 @@ const saveSettingsUserInterface = (e) =>
         setStatusOfSettingsForm(form, 'saved')
     })
 const scrollToTop = () => {
+    const threshold = 50
     if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
-        window.scrollTo({ top: 100, behavior: 'instant' })
+        window.scrollTo({ top: threshold, behavior: 'instant' })
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 }
 const scrollToBottom = () => {
+    const threshold = 50
     const windowHeight = window.innerHeight
     const heightToScroll = document.body.scrollHeight - windowHeight
     window.scrollTo({
-        top: heightToScroll - 100,
+        top: heightToScroll - threshold,
         behavior: 'instant',
     })
     window.scrollTo({
@@ -478,7 +480,7 @@ const onChangLanguageHandler = (e) =>
 const setupScrollToBottom = () => {
     const scrollPosition = window.innerHeight + window.scrollY
     const threshold = document.body.scrollHeight - SCROLL_TO_BOTTOM_THRESHOLD
-    if (scrollPosition > threshold) {
+    if (scrollPosition < threshold) {
         scrollToBottomBtn.classList.add('active')
     } else {
         scrollToBottomBtn.classList.remove('active')

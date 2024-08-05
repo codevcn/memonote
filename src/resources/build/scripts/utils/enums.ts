@@ -64,7 +64,7 @@ enum EBroadcastTimeouts {
 }
 
 enum EArticleChunk {
-    SIZE_IN_KB_PER_CHUNK = 512,
+    SIZE_IN_KB_PER_CHUNK = 12,
 }
 
 enum EHttpStatuses {

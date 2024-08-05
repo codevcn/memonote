@@ -87,14 +87,14 @@ const broadcastNoteTyping = (note) =>
             .emit(ENoteEvents.NOTE_FORM_EDITED, note, (err, res) => {
                 if (err) {
                     LayoutController.setUIOfGeneralAppStatus('error')
-                    console.log('>>> broadcast err >>>', err)
+                    console.log('>>> broadcast note err >>>', err)
                 } else {
                     if (res.success) {
                         LayoutController.setUIOfGeneralAppStatus('success')
                     } else {
                         LayoutController.setUIOfGeneralAppStatus('error')
                     }
-                    console.log('>>> broadcast res >>>', res)
+                    console.log('>>> broadcast note res >>>', res)
                 }
             })
     })

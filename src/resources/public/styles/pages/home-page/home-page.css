@@ -1496,44 +1496,12 @@ bold - bold
 #bubble-btns {
     display: flex;
     flex-direction: column;
-    row-gap: 15px;
+    align-items: center;
+    row-gap: 10px;
     position: fixed;
     bottom: 25px;
     right: 25px;
     z-index: 11;
-}
-#bubble-btns .scroll-to-bottom-btn {
-    background-color: #18181b;
-    border-radius: 50%;
-    padding: 4px;
-    cursor: pointer;
-    border: 2px #18181b solid;
-    position: relative;
-    bottom: -10px;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-        opacity 0.2s,
-        bottom 0.2s,
-        background-color 0.2s;
-}
-#bubble-btns .scroll-to-bottom-btn.active {
-    bottom: 0;
-    cursor: pointer;
-    pointer-events: auto;
-    opacity: 1;
-}
-#bubble-btns .scroll-to-bottom-btn i {
-    font-size: 2rem;
-    transition: color 0.2s;
-    transform: translateY(-1px);
-    color: #fff;
-}
-#bubble-btns .scroll-to-bottom-btn:hover {
-    background-color: #fff;
-}
-#bubble-btns .scroll-to-bottom-btn:hover i {
-    color: #18181b;
 }
 #bubble-btns .scroll-to-top-btn {
     background-color: #18181b;
@@ -1541,20 +1509,16 @@ bold - bold
     padding: 4px;
     cursor: pointer;
     border: 2px #18181b solid;
-    position: relative;
-    bottom: -10px;
-    opacity: 0;
     pointer-events: none;
     transition:
-        opacity 0.2s,
-        bottom 0.2s,
+        transform 0.2s,
         background-color 0.2s;
+    transform: scale(0);
 }
 #bubble-btns .scroll-to-top-btn.active {
-    bottom: 0;
+    transform: scale(1);
     cursor: pointer;
     pointer-events: auto;
-    opacity: 1;
 }
 #bubble-btns .scroll-to-top-btn i {
     font-size: 2rem;
@@ -1566,6 +1530,35 @@ bold - bold
     background-color: #fff;
 }
 #bubble-btns .scroll-to-top-btn:hover i {
+    color: #18181b;
+}
+#bubble-btns .scroll-to-bottom-btn {
+    background-color: #18181b;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+    border: 2px #18181b solid;
+    pointer-events: none;
+    transition:
+        transform 0.2s,
+        background-color 0.2s;
+    transform: scale(0);
+}
+#bubble-btns .scroll-to-bottom-btn.active {
+    transform: scale(1);
+    cursor: pointer;
+    pointer-events: auto;
+}
+#bubble-btns .scroll-to-bottom-btn i {
+    font-size: 2rem;
+    transition: color 0.2s;
+    transform: translateY(-1px);
+    color: #fff;
+}
+#bubble-btns .scroll-to-bottom-btn:hover {
+    background-color: #fff;
+}
+#bubble-btns .scroll-to-bottom-btn:hover i {
     color: #18181b;
 }
 #bubble-btns .bubble-note-settings-btn {

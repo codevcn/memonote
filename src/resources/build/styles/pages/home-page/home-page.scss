@@ -18,20 +18,16 @@ $mmn-page-padding-bottom: 100px;
     padding: 4px;
     cursor: pointer;
     border: 2px colors.$mmn-primary-cl solid;
-    position: relative;
-    bottom: -10px;
-    opacity: 0;
     pointer-events: none;
     transition:
-        opacity 0.2s,
-        bottom 0.2s,
+        transform 0.2s,
         background-color 0.2s;
+    transform: scale(0);
 
     &.active {
-        bottom: 0;
+        transform: scale(1);
         cursor: pointer;
         pointer-events: auto;
-        opacity: 1;
     }
 
     i {
@@ -100,17 +96,18 @@ $mmn-page-padding-bottom: 100px;
 #bubble-btns {
     display: flex;
     flex-direction: column;
-    row-gap: 15px;
+    align-items: center;
+    row-gap: 10px;
     position: fixed;
     bottom: 25px;
     right: 25px;
     z-index: z-indexes.$mmn-base-zidx + 10;
 
-    .scroll-to-bottom-btn {
+    .scroll-to-top-btn {
         @include scroll-to-styling;
     }
 
-    .scroll-to-top-btn {
+    .scroll-to-bottom-btn {
         @include scroll-to-styling;
     }
 

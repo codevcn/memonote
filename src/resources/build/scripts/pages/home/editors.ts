@@ -105,25 +105,25 @@ class RichEditorController {
             min_height: 400,
             height: 400,
             setup: (editor: any) => {
-                editor.on('init', (e: any) => {
-                    this.fetchArticle()
-                        .then((res) => {})
-                        .catch((err) => {})
-                })
-                setTimeout(() => {
+                editor.on('init', (e: Event) => {
+                    RichEditorController.fetchArticle()
                     setupScrollToBottom()
-                }, 1000)
+                })
             },
         }
 
         tinymce.init(initConfig)
     }
 
-    static setArticleContent(content: string): void {
+    private static setArticleContent(content: string): void {
         tinymce.get(this.richEditorId).setContent(content)
     }
 
-    static setViewModeContent(content: string, editor: HTMLElement): void {
+    private static getArticleContent(): string {
+        return tinymce.get(this.richEditorId).getContent()
+    }
+
+    private static setViewModeContent(content: string, editor: HTMLElement): void {
         editor.innerHTML = content
     }
 
@@ -171,10 +171,10 @@ class RichEditorController {
     }
 
     static async publishArticleHandler(target: HTMLElement): Promise<void> {
-        const noteContent = tinymce.get(this.richEditorId).getContent()
+        const htmlBefore = target.innerHTML
+        this.setLoading(target, true)
+        const noteContent = this.getArticleContent()
         if (this.validateNoteContent(noteContent)) {
-            const htmlBefore = target.innerHTML
-            this.setLoading(target, true)
             try {
                 await this.publishArticle(noteContent)
             } catch (error) {
@@ -182,19 +182,20 @@ class RichEditorController {
                     LayoutController.toast('error', error.message)
                 }
             }
-            this.setLoading(target, false, htmlBefore)
         }
+        this.setLoading(target, false, htmlBefore)
     }
 
     static async publishArticle(noteContent: string): Promise<void> {
         const chunks = convertStringToChunks(noteContent, EArticleChunk.SIZE_IN_KB_PER_CHUNK)
-        const uploadId = ''
+        const uploadId = crypto.randomUUID()
         await publishArticleInChunks(chunks, {
             noteId: pageData.noteId,
             noteUniqueName: getNoteUniqueNameFromURL(),
             totalChunks: chunks.length,
             uploadId,
         })
+        console.log('>>> run this done publish 197')
     }
 
     private static setLoading(target: HTMLElement, loading: boolean, htmlBefore?: string): void {

@@ -1,7 +1,12 @@
 import { appendFile, mkdir, stat, truncate, unlink, copyFile } from 'fs/promises'
 import { createReadStream, existsSync } from 'fs'
 import dayjs from 'dayjs'
-import type { TArticleChunkStatus, TcreateDirOfArticleChunk, TWriteChunks } from './types'
+import type {
+    TArticleChunkStatus,
+    TCreateDirOfArticleChunk,
+    TUploadIndentity,
+    TWriteChunks,
+} from './types'
 import { join } from 'path'
 import ms from 'ms'
 import { Injectable, StreamableFile } from '@nestjs/common'
@@ -14,6 +19,7 @@ import { EArticleMessages } from './messages'
 
 @Injectable()
 export class ArticleService {
+    private readonly uploadsIndentity = new Map<string, TUploadIndentity>()
     private readonly articleChunksStatus = new Map<string, TArticleChunkStatus>()
     private readonly articlesDirname: string = 'articles'
     private readonly articlesDirPath = join(AppRoot.path, 'src', 'article', this.articlesDirname)
@@ -79,14 +85,13 @@ export class ArticleService {
     private async createDirOfArticleChunkHandler(
         noteUniqueName: string,
         noteId: string,
-        totalChunks: number,
-        uploadId: string,
-    ): Promise<TcreateDirOfArticleChunk> {
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)
+    ): Promise<TCreateDirOfArticleChunk> {
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
         if (chunkStatus) {
             return {
                 relativePath: chunkStatus.relativePath,
                 docWasCreated: chunkStatus.docWasCreated,
+                isFirstChunk: false,
             }
         }
         let relativePath: string, docWasCreated: boolean
@@ -99,20 +104,18 @@ export class ArticleService {
             relativePath = await this.createDirOfArticleChunk(dateOfFirstUpload, noteUniqueName)
             docWasCreated = false
         }
-        this.articleChunksStatus.set(noteUniqueName, {
-            chunksReceived: 0,
-            totalChunks,
-            timeoutId: null,
-            relativePath,
-            docWasCreated,
-            uploadId,
-        })
-        return { relativePath, docWasCreated }
+        return { relativePath, docWasCreated, isFirstChunk: true }
     }
 
-    private checkMultipleUploads(noteUniqueName: string, uploadId: string): boolean {
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
-        return chunkStatus.uploadId === uploadId
+    private async checkMultipleUploads(noteUniqueName: string, uploadId: string): Promise<void> {
+        const uploadIdentity = this.uploadsIndentity.get(noteUniqueName)
+        if (uploadIdentity) {
+            if (uploadIdentity.uploadId !== uploadId) {
+                throw new BaseCustomException(EArticleMessages.MULTIPLE_UPLOAD)
+            }
+        } else {
+            this.uploadsIndentity.set(noteUniqueName, { uploadId })
+        }
     }
 
     private async writeChunks(
@@ -120,28 +123,34 @@ export class ArticleService {
         totalChunks: number,
         noteUniqueName: string,
         noteId: string,
-        uploadId: string,
     ): Promise<TWriteChunks> {
-        const resultOfCreateDir = await this.createDirOfArticleChunkHandler(
-            noteUniqueName,
-            noteId,
-            totalChunks,
-            uploadId,
-        )
+        const { docWasCreated, isFirstChunk, relativePath } =
+            await this.createDirOfArticleChunkHandler(noteUniqueName, noteId)
+        if (isFirstChunk) {
+            this.articleChunksStatus.set(noteUniqueName, {
+                chunksReceived: 0,
+                totalChunks,
+                timeoutId: setTimeout(async () => {
+                    await this.cleanupArticleHandler(noteUniqueName)
+                }, this.chunkStatusTimeout),
+                relativePath,
+                docWasCreated,
+            })
+        }
         const articleFilename = this.formatArticleFilename(noteUniqueName)
-        const absoluteDirPath = this.formatAbsoluteDirPathOfArticle(resultOfCreateDir.relativePath)
+        const absoluteDirPath = this.formatAbsoluteDirPathOfArticle(relativePath)
         const chunkFilePath = join(absoluteDirPath, articleFilename)
         const chunkFilePathBackup = join(
             absoluteDirPath,
             this.formatArticleFilenameBackup(noteUniqueName),
         )
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
         if (chunkStatus.chunksReceived === 0 && existsSync(chunkFilePath)) {
             await copyFile(chunkFilePath, chunkFilePathBackup)
             await truncate(chunkFilePath, 0)
         }
         await appendFile(chunkFilePath, chunk, this.articleUnicode)
-        return { chunkFilePathBackup, resultOfCreateDir }
+        return { chunkFilePathBackup, docWasCreated }
     }
 
     async uploadArticleChunk(
@@ -151,30 +160,26 @@ export class ArticleService {
         noteId: string,
         uploadId: string,
     ): Promise<void> {
-        const multipleUploads = this.checkMultipleUploads(noteUniqueName, uploadId)
-        if (multipleUploads) {
-            throw new BaseCustomException(EArticleMessages.MULTIPLE_UPLOAD)
-        }
+        await this.checkMultipleUploads(noteUniqueName, uploadId)
 
-        const { chunkFilePathBackup, resultOfCreateDir } = await this.writeChunks(
+        const { chunkFilePathBackup, docWasCreated } = await this.writeChunks(
             chunk,
             totalChunks,
             noteUniqueName,
             noteId,
-            uploadId,
         )
 
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
         chunkStatus.chunksReceived++
-
         if (chunkStatus.timeoutId) {
             clearTimeout(chunkStatus.timeoutId)
         }
 
         if (chunkStatus.chunksReceived === totalChunks) {
             this.articleChunksStatus.delete(noteUniqueName)
+            this.uploadsIndentity.delete(noteUniqueName)
             await unlink(chunkFilePathBackup)
-            if (!resultOfCreateDir.docWasCreated) {
+            if (!docWasCreated) {
                 await this.createNewArticle(noteUniqueName, noteId, chunkStatus.relativePath)
             }
         } else {
@@ -185,7 +190,7 @@ export class ArticleService {
     }
 
     private async cleanupArticleHandler(noteUniqueName: string): Promise<void> {
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
         if (chunkStatus.docWasCreated) {
             const articleDirPath = join(this.articlesDirPath, chunkStatus.relativePath)
             const articleFileBackupPath = join(
@@ -204,6 +209,7 @@ export class ArticleService {
             await unlink(articleFilePath)
         }
         this.articleChunksStatus.delete(noteUniqueName)
+        this.uploadsIndentity.delete(noteUniqueName)
     }
 
     async fetchArticle(noteId: string): Promise<StreamableFile | null> {

@@ -24,8 +24,8 @@ type TNoteContentHistory = {
 }
 
 const noteContentHistory: TNoteContentHistory = { history: [''], index: 0 }
-const SCROLL_TO_TOP_THRESHOLD: number = 200
-const SCROLL_TO_BOTTOM_THRESHOLD: number = 200
+const SCROLL_TO_TOP_THRESHOLD: number = 100
+const SCROLL_TO_BOTTOM_THRESHOLD: number = 100
 
 const validateNoteContent = (noteContent: string): boolean => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -496,17 +496,19 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
 }
 
 const scrollToTop = (): void => {
+    const threshold: number = 50
     if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
-        window.scrollTo({ top: 100, behavior: 'instant' })
+        window.scrollTo({ top: threshold, behavior: 'instant' })
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 }
 
 const scrollToBottom = (): void => {
+    const threshold: number = 50
     const windowHeight = window.innerHeight
     const heightToScroll = document.body.scrollHeight - windowHeight
     window.scrollTo({
-        top: heightToScroll - 100,
+        top: heightToScroll - threshold,
         behavior: 'instant',
     })
     window.scrollTo({
@@ -544,7 +546,7 @@ const onChangLanguageHandler = async (e: Event): Promise<void> => {
 const setupScrollToBottom = (): void => {
     const scrollPosition = window.innerHeight + window.scrollY
     const threshold = document.body.scrollHeight - SCROLL_TO_BOTTOM_THRESHOLD
-    if (scrollPosition > threshold) {
+    if (scrollPosition < threshold) {
         scrollToBottomBtn.classList.add('active')
     } else {
         scrollToBottomBtn.classList.remove('active')

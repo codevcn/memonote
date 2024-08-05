@@ -96,7 +96,7 @@ export class NotificationService {
         return `${timeCount} ${this.i18n.t(`notification.timeUnits.${timeUnit}`, { lang })}`
     }
 
-    getNotifTranslation(notif: Notification, lang: ELangCodes): TGetNotifTranslationReturn {
+    translateNotif(notif: Notification, lang: ELangCodes): TGetNotifTranslationReturn {
         const notifType = notif.type
         const createdAt = this.calculateTimeDifference(notif.createdAt, lang)
         if (lang === ELangCodes.VI) {
@@ -122,8 +122,8 @@ export class NotificationService {
                     }
                 case ENotificationTypes.CREATE_NEW_NOTE:
                     return {
-                        message: this.i18n.t('notification.message.Set_password', config),
-                        type: this.i18n.t('notification.type.Set_password', config),
+                        message: this.i18n.t('notification.message.Create_new_note', config),
+                        type: this.i18n.t('notification.type.Create_new_note', config),
                         createdAt: this.i18n.t('notification.createdAt', {
                             ...config,
                             args: { date: createdAt },
@@ -135,8 +135,8 @@ export class NotificationService {
             switch (notifType) {
                 case ENotificationTypes.REMOVE_PASSWORD:
                     return {
-                        message: this.i18n.t('notification.message.Set_password', config),
-                        type: this.i18n.t('notification.type.Set_password', config),
+                        message: this.i18n.t('notification.message.Remove_password', config),
+                        type: this.i18n.t('notification.type.Remove_password', config),
                         createdAt: this.i18n.t('notification.createdAt', {
                             ...config,
                             args: { date: createdAt },
@@ -153,8 +153,8 @@ export class NotificationService {
                     }
                 case ENotificationTypes.CREATE_NEW_NOTE:
                     return {
-                        message: this.i18n.t('notification.message.Set_password', config),
-                        type: this.i18n.t('notification.type.Set_password', config),
+                        message: this.i18n.t('notification.message.Create_new_note', config),
+                        type: this.i18n.t('notification.type.Create_new_note', config),
                         createdAt: this.i18n.t('notification.createdAt', {
                             ...config,
                             args: { date: createdAt },
@@ -180,7 +180,7 @@ export class NotificationService {
         const isEnd = limit > notifications.length
         const notifs = notifications.slice(0, EPagination.MAX_NOTIFS_PER_PAGE).map((notif) => ({
             ...notif,
-            translation: this.getNotifTranslation(notif, lang),
+            translation: this.translateNotif(notif, lang),
         }))
         return { notifs, isEnd }
     }

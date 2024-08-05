@@ -15,15 +15,16 @@ const publishArticleInChunks = (chunks, chunkPayload) => {
             (res) => {
                 if (res.success) {
                     chunkIdx++
-                    if (chunkIdx < chunks.length - 1) {
+                    if (chunkIdx < chunks.length) {
                         publishArticleInChunks(chunks, chunkPayload)
                     } else {
                         resolve(true)
                     }
                 } else {
                     chunkIdx = 0
-                    reject(new BaseCustomError("Couldn't upload article"))
+                    reject(new BaseCustomError(res.message || "Couldn't upload article"))
                 }
+                console.log('>>> publish article res >>>', { res })
             },
         )
     })

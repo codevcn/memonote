@@ -16,6 +16,7 @@ import { PublishNotePayloadDTO } from './DTOs'
 import { ArticleService } from '../article.service'
 import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
+import { BaseCustomException } from '@/utils/exception/custom.exception'
 
 @WebSocketGateway({ namespace: ESocketNamespaces.ARTICLE })
 @UsePipes(new ValidationPipe())
@@ -55,20 +56,20 @@ export class ArticleGateway
     @SubscribeMessage(EArticleEvents.PUBLISH_ARTICLE)
     async publishArticle(@MessageBody() data: PublishNotePayloadDTO) {
         const { articleChunk, totalChunks, noteUniqueName, noteId, uploadId } = data
-        console.log('>>> article in chunk >>>', {
-            articleChunk,
-            totalChunks,
-            noteUniqueName,
-            noteId,
-            uploadId,
-        })
-        await this.articleService.uploadArticleChunk(
-            articleChunk,
-            totalChunks,
-            noteUniqueName,
-            noteId,
-            uploadId,
-        )
+        try {
+            await this.articleService.uploadArticleChunk(
+                articleChunk,
+                totalChunks,
+                noteUniqueName,
+                noteId,
+                uploadId,
+            )
+        } catch (error) {
+            if (error instanceof BaseCustomException) {
+                return { success: false, message: error.message }
+            }
+            throw error
+        }
         return { success: true }
     }
 }
