@@ -114,6 +114,7 @@ export class NoteService {
         payload: SetPasswordForNotePayloadDTO,
         noteUniqueName: string,
         res: Response,
+        lang: ELangCodes,
     ): Promise<void> {
         const note = await this.noteModel.findOne({ uniqueName: noteUniqueName })
         if (!note) {
@@ -130,14 +131,19 @@ export class NoteService {
             UserSessions.logoutUserSessions(noteUniqueName, jwt)
         }
 
-        await this.notificationService.createNewNotifHandler(note.id, note.uniqueName, {
-            message: this.i18n.t('notification.message.Set_password', { lang: ELangCodes.EN }),
-            type: ENotificationTypes.SET_PASSWORD,
-            createdAt: setPasswordDate,
-        })
+        await this.notificationService.createNewNotifHandler(
+            note.id,
+            note.uniqueName,
+            {
+                message: this.i18n.t('notification.message.Set_password', { lang: ELangCodes.EN }),
+                type: ENotificationTypes.SET_PASSWORD,
+                createdAt: setPasswordDate,
+            },
+            lang,
+        )
     }
 
-    async removePasswordForNote(noteUniqueName: string): Promise<void> {
+    async removePasswordForNote(noteUniqueName: string, lang: ELangCodes): Promise<void> {
         const note = await this.noteModel.findOne({ uniqueName: noteUniqueName })
         if (!note) {
             throw new BaseCustomException(ENoteMessages.NOTE_NOT_FOUND)
@@ -151,11 +157,18 @@ export class NoteService {
             },
         )
         const removePasswordDate = new Date()
-        await this.notificationService.createNewNotifHandler(note.id, note.uniqueName, {
-            message: this.i18n.t('notification.message.Remove_password', { lang: ELangCodes.EN }),
-            type: ENotificationTypes.REMOVE_PASSWORD,
-            createdAt: removePasswordDate,
-        })
+        await this.notificationService.createNewNotifHandler(
+            note.id,
+            note.uniqueName,
+            {
+                message: this.i18n.t('notification.message.Remove_password', {
+                    lang: ELangCodes.EN,
+                }),
+                type: ENotificationTypes.REMOVE_PASSWORD,
+                createdAt: removePasswordDate,
+            },
+            lang,
+        )
     }
 
     async switchEditor(noteUniqueName: string, editor: EEditors): Promise<void> {

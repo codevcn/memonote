@@ -92,11 +92,11 @@
     <div class="forms password tab-navigator nav-destination">
         <div class="nav-tabs-list">
             <button class="nav-tab set-password active" data-mmn-tab-value="set-password">
-                <i class="bi bi-pen-fill"></i>
+                <i class="bi bi-geo-alt-fill"></i>
                 <span class="content"><%= t('home-page.settings.password.Add_Or_Change_Password',i18nLang) %></span>
             </button>
             <button class="nav-tab remove-password" data-mmn-tab-value="remove-password">
-                <i class="bi bi-pen-fill"></i>
+                <i class="bi bi-geo-alt-fill"></i>
                 <span class="content"><%= t('home-page.settings.password.Remove_Password',i18nLang) %></span>
             </button>
         </div>
@@ -205,6 +205,9 @@
                     <span class="status-item saved" hidden>(<%= t('home-page.settings.Saved',i18nLang) %>)</span>
                 </div>
             </div>
+            <p class="notice-text">
+                This section is for "Normal Editor".
+            </p>
             <div class="form-content">
                 <div class="form-group form-group-select">
                     <label for="edited-notify-style-select">
@@ -338,8 +341,8 @@
                             <span>
                                 Normal editor
                             </span>
-                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn"
-                                title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>">
+                            <span title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>"
+                                class="details-btn">
                                 <i class="bi bi-info-circle"></i>
                             </span>
                         </button>
@@ -351,8 +354,8 @@
                             <span>
                                 Rich editor
                             </span>
-                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn"
-                                title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>">
+                            <span title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>"
+                                class="details-btn">
                                 <i class="bi bi-info-circle"></i>
                             </span>
                         </button>

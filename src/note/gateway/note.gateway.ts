@@ -19,7 +19,7 @@ import { AuthService } from '@/auth/auth.service'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 
-@WebSocketGateway({ namespace: ESocketNamespaces.EDIT_NOTE })
+@WebSocketGateway({ namespace: ESocketNamespaces.NORMAL_EDITOR })
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsExceptionsFilter())
 export class NoteGateway

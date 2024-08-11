@@ -1,7 +1,7 @@
 enum ENamespacesOfSocket {
-    EDIT_NOTE = 'edit-note',
+    NORMAL_EDITOR = 'normal-editor',
     NOTIFICATION = 'notification',
-    ARTICLE = 'article',
+    RICH_EDITOR = 'rich-editor',
 }
 
 enum EInitSocketEvents {
@@ -64,7 +64,7 @@ enum EBroadcastTimeouts {
 }
 
 enum EArticleChunk {
-    SIZE_IN_KB_PER_CHUNK = 12,
+    SIZE_IN_KiB_PER_CHUNK = 50,
 }
 
 enum EHttpStatuses {

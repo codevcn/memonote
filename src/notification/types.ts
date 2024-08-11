@@ -20,8 +20,12 @@ export type TGetNotifsReturn = {
     isEnd: boolean
 }
 
-export type TGetNotifTranslationReturn = {
+export type TNotifTranslation = {
     message: string
     type: string
     createdAt: string
+}
+
+export type TNotifWithTrans = Notification & {
+    translation: TNotifTranslation
 }

@@ -16,6 +16,7 @@ import { Types } from 'mongoose'
 import AppRoot from 'app-root-path'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { EArticleMessages } from './messages'
+import { EArticleChunk } from './enums'
 
 @Injectable()
 export class ArticleService {
@@ -224,7 +225,9 @@ export class ArticleService {
             this.formatAbsoluteDirPathOfArticle(article.localPath),
             filenameWithExtension,
         )
-        const readStream = createReadStream(articleFilepath)
+        const readStream = createReadStream(articleFilepath, {
+            highWaterMark: EArticleChunk.SIZE_IN_KiB_PER_CHUNK * 1024,
+        })
         const articleStat = await stat(articleFilepath)
         return new StreamableFile(readStream, {
             type: 'text/plain',

@@ -8,9 +8,9 @@ export enum ECommonStatuses {
 }
 
 export enum ESocketNamespaces {
-    EDIT_NOTE = 'edit-note',
+    NORMAL_EDITOR = 'normal-editor',
     NOTIFICATION = 'notification',
-    ARTICLE = 'article',
+    RICH_EDITOR = 'rich-editor',
 }
 
 export enum EInitialSocketEvents {

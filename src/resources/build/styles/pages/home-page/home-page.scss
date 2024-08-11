@@ -1,12 +1,13 @@
 // import modules
 @use '../../global/colors';
 @use '../../global/z-indexes';
+@use '../../global/responsive';
 @use '../../global/components';
 // import scss files
 @use './notes.scss';
 @use './settings.scss';
 
-$mmn-page-padding-bottom: 100px;
+$mmn-page-padding-bottom: 200px;
 
 :root {
     --mmn-quick-look-icon-initial-size: 30px;
@@ -47,50 +48,7 @@ $mmn-page-padding-bottom: 100px;
 }
 
 #page-main {
-    padding: 10px 50px $mmn-page-padding-bottom;
-
-    .note-quick-look {
-        display: flex;
-        justify-content: space-between;
-        column-gap: 50px;
-
-        .quick-look-items {
-            display: flex;
-            column-gap: 10px;
-
-            .quick-look-item {
-                display: flex;
-                align-items: center;
-                height: var(--mmn-quick-look-icon-initial-size);
-                width: var(--mmn-quick-look-icon-initial-size);
-                overflow: hidden;
-                padding: 6px;
-                transition: width 0.25s components.$mmn-cubic-bezier;
-                column-gap: 5px;
-
-                i {
-                    font-size: 1.1rem;
-                }
-
-                .text {
-                    display: block;
-                    width: max-content;
-                    color: colors.$mmn-regular-white-cl;
-                    white-space: nowrap;
-                    font-size: 0.9rem;
-                }
-
-                &.password-set {
-                    background-color: colors.$mmn-regular-red-cl;
-                    border-radius: 1.6rem;
-
-                    i {
-                        color: colors.$mmn-regular-white-cl;
-                    }
-                }
-            }
-        }
-    }
+    padding: 10px 0 $mmn-page-padding-bottom;
 }
 
 #bubble-btns {
@@ -133,6 +91,26 @@ $mmn-page-padding-bottom: 100px;
 
             i {
                 color: colors.$mmn-primary-cl;
+            }
+        }
+    }
+
+    @media only screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
+        .scroll-to-top-btn {
+            i {
+                font-size: 1.8rem;
+            }
+        }
+
+        .scroll-to-bottom-btn {
+            i {
+                font-size: 1.8rem;
+            }
+        }
+
+        .bubble-note-settings-btn {
+            i {
+                font-size: 1.8rem;
             }
         }
     }

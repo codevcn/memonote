@@ -2,6 +2,7 @@
 @use '../../global/text-fonts';
 @use '../../global/components';
 @use '../../global/z-indexes';
+@use '../../global/responsive';
 
 $mmn-settings-navigation-container-width: 180px;
 $mmn-settings-nav-item-bgcl: #ececec;
@@ -386,7 +387,11 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
                                 }
 
                                 .status {
-                                    display: inline-block;
+                                    display: none;
+
+                                    &.active {
+                                        display: inline-block;
+                                    }
 
                                     .status-item {
                                         font-size: 1rem;
@@ -403,7 +408,7 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
                                 border-radius: 5px;
                                 color: colors.$mmn-regular-darkgray-cl;
                                 border-left: 5px darken(colors.$mmn-is-new-notif-bgcl, 50%) solid;
-                                margin-top: 10px;
+                                margin: 10px 0;
                             }
 
                             .form-content {
@@ -466,6 +471,36 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
                             align-items: center;
                             font-size: 1rem;
                             padding: 15px 0;
+                        }
+                    }
+                }
+            }
+
+            @media screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
+                .modal-body {
+                    .note-settings-board {
+                        flex-direction: column;
+
+                        .note-settings-navigation {
+                            width: 100%;
+                            border-bottom: 1px colors.$mmn-regular-lightgray-cl solid;
+                            margin-bottom: 10px;
+                            padding-bottom: 10px;
+
+                            .nav-tabs-list {
+                                .nav-tab {
+                                    column-gap: 10px;
+                                    justify-content: center;
+                                }
+                            }
+                        }
+
+                        .forms {
+                            &.password {
+                                .nav-tabs-list {
+                                    font-size: 0.8rem;
+                                }
+                            }
                         }
                     }
                 }
@@ -573,6 +608,18 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
                     .picked-btn {
                         display: initial;
                     }
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
+        .form-content {
+            .editors {
+                flex-direction: column;
+
+                .editor {
+                    width: 100%;
                 }
             }
         }

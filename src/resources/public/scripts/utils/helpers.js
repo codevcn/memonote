@@ -79,7 +79,6 @@ function convertStringToChunks(inputString, sizeInKBPerChunk) {
     const chunkSize = sizeInKBPerChunk * 1024
     const blob = new Blob([inputString])
     const size = blob.size
-    console.log('>>> size info >>>', { size })
     if (size <= chunkSize) {
         return [inputString]
     }

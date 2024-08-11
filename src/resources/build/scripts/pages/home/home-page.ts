@@ -85,17 +85,17 @@ const setBoardUIOfNoteEditor = (
 
 const broadcastNoteContentTypingHanlder = debounce((noteContent: string): void => {
     LayoutController.notifyNoteEdited('off', { content: 'true' })
-    broadcastNoteTyping({ content: noteContent })
+    NormalEditorController.broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteTitleTypingHanlder = debounce((target: HTMLInputElement): void => {
     LayoutController.notifyNoteEdited('off', { title: 'true' })
-    broadcastNoteTyping({ title: target.value })
+    NormalEditorController.broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const broadcastNoteAuthorTypingHanlder = debounce((target: HTMLInputElement): void => {
     LayoutController.notifyNoteEdited('off', { author: 'true' })
-    broadcastNoteTyping({ author: target.value })
+    NormalEditorController.broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 
 const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> => {
@@ -390,9 +390,11 @@ const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
 
 const setStatusOfSettingsForm = (formTarget: HTMLFormElement, type: 'unsaved' | 'saved') => {
     const isSaved = type === 'saved'
-    ;(formTarget.querySelector('.form-title .status .status-item.saved') as HTMLElement).hidden =
+    const formStatus = formTarget.querySelector('.form-title .status') as HTMLElement
+    formStatus.classList.add('active')
+    ;(formStatus.querySelector('.form-title .status .status-item.saved') as HTMLElement).hidden =
         !isSaved
-    ;(formTarget.querySelector('.form-title .status .status-item.unsaved') as HTMLElement).hidden =
+    ;(formStatus.querySelector('.form-title .status .status-item.unsaved') as HTMLElement).hidden =
         isSaved
 }
 
@@ -401,7 +403,7 @@ const setRealtimeModeHandler = (status: TFormCheckValues): void => {
         realtimeModeDisplay.classList.replace('inactive', 'active')
         const currentRealtimeMode = getRealtimeModeInDevice()
         if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
-            fetchNoteContent()
+            NormalEditorController.fetchNoteContent()
         }
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')

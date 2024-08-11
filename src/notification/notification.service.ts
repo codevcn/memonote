@@ -10,7 +10,7 @@ import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { BaseCustomEvent } from '@/note/gateway/events'
 import { EEventEmitterEvents } from './gateway/enums'
-import type { TGetNotifsReturn, TGetNotifTranslationReturn, TNewNotif } from './types'
+import type { TGetNotifsReturn, TNotifTranslation, TNewNotif, TNotifWithTrans } from './types'
 import { EDBMessages, ESystemMessages } from '@/utils/messages'
 import { ENotificationTypes, EPagination } from './enums'
 import type { LastNotificationDTO } from './DTOs'
@@ -53,11 +53,13 @@ export class NotificationService {
         noteId: string,
         noteUniqueName: string,
         notif: TNewNotif,
+        lang: ELangCodes,
     ): Promise<void> {
         const newNotif = await this.createNewNotif(noteId, notif)
+        const translation = this.translateNotif(newNotif, lang)
         this.eventEmitter.emit(
             EEventEmitterEvents.TRIGGER_NOTIFY,
-            new BaseCustomEvent<TNotificationDocument>(newNotif, noteUniqueName),
+            new BaseCustomEvent<TNotifWithTrans>({ ...newNotif, translation }, noteUniqueName),
         )
     }
 
@@ -96,7 +98,7 @@ export class NotificationService {
         return `${timeCount} ${this.i18n.t(`notification.timeUnits.${timeUnit}`, { lang })}`
     }
 
-    translateNotif(notif: Notification, lang: ELangCodes): TGetNotifTranslationReturn {
+    translateNotif(notif: Notification, lang: ELangCodes): TNotifTranslation {
         const notifType = notif.type
         const createdAt = this.calculateTimeDifference(notif.createdAt, lang)
         if (lang === ELangCodes.VI) {

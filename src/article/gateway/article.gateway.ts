@@ -18,7 +18,7 @@ import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 
-@WebSocketGateway({ namespace: ESocketNamespaces.ARTICLE })
+@WebSocketGateway({ namespace: ESocketNamespaces.RICH_EDITOR })
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsExceptionsFilter())
 export class ArticleGateway

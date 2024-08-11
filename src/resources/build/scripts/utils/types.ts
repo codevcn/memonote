@@ -53,7 +53,7 @@ type TLanguages = 'Vietnamese' | 'English'
 
 type TFormCheckValues = null | 'on'
 
-type TTranslationNotif = {
+type TNotifTranslation = {
     message: string
     type: string
     createdAt: string
@@ -64,10 +64,10 @@ type TNotif = {
     message: string
     type: ENotificationTypes
     createdAt: string
-    translation: TTranslationNotif
 }
 
 type TNotifData = TNotif & {
+    translation: TNotifTranslation
     isNew: boolean
 }
 

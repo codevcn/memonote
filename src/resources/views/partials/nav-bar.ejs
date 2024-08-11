@@ -26,8 +26,7 @@
 
         <% if (verified) { %>
         <div class="menu-item notification">
-            <div class="notification-btn" onclick="NotificationsController.showNotificationsBoard(true)"
-                data-bs-toggle="tooltip" data-bs-placement="bottom"
+            <button class="notification-btn" onclick="NotificationsController.showNotificationsBoard(true)"
                 title="<%= t('layout.navBar.Notifications',i18nLang) %>">
                 <div class="icon-wrapper">
                     <i class="bi bi-bell-fill"></i>
@@ -35,19 +34,16 @@
                         0
                     </span>
                 </div>
-            </div>
+            </button>
 
             <section id="notifs-board">
                 <div class="notifs-modal" onclick="NotificationsController.showNotificationsBoard(false)"></div>
 
                 <div class="notifs-content tab-navigator">
-                    <div class="close-btn" onclick="NotificationsController.showNotificationsBoard(false)"
-                        data-bs-toggle="tooltip" data-bs-placement="left"
-                        title="<%= t('layout.navBar.Close_notifications',i18nLang) %>">
-                        <i class="bi bi-x-circle-fill"></i>
-                    </div>
-
                     <div class="title-box">
+                        <div class="close-btn" onclick="NotificationsController.showNotificationsBoard(false)">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </div>
                         <h2 class="title"><%= t('layout.navBar.Notifications',i18nLang) %></h2>
                         <span class="details-btn" data-bs-toggle="tooltip" data-bs-placement="bottom"
                             title="<%= t('layout.navBar.Notifications_tooltip',i18nLang) %>">

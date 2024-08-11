@@ -2,7 +2,6 @@
     "navBar": {
         "Syncing": "Syncing",
         "Notifications": "Notifications",
-        "Close_notifications": "Close notifications",
         "Notifications_tooltip": "This section shows up your activities such as changing password, removing pasword, and more... Click for more details.",
         "About_Us": "About Us",
         "FAQ": "FAQ",

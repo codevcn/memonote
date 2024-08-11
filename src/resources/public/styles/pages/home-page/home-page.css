@@ -81,11 +81,50 @@ bold - bold
     --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
 }
 
+#page-main .note-quick-look {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 50px;
+    padding: 0 50px;
+}
+#page-main .note-quick-look .quick-look-items {
+    display: flex;
+    column-gap: 10px;
+    padding: 0;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item {
+    display: flex;
+    align-items: center;
+    height: var(--mmn-quick-look-icon-initial-size);
+    width: var(--mmn-quick-look-icon-initial-size);
+    overflow: hidden;
+    padding: 6px;
+    transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);
+    column-gap: 5px;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item i {
+    font-size: 1.1rem;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item .text {
+    display: block;
+    width: max-content;
+    color: #fff;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item.password-set {
+    background-color: #ff2424;
+    border-radius: 1.6rem;
+}
+#page-main .note-quick-look .quick-look-items .quick-look-item.password-set i {
+    color: #fff;
+}
 #page-main .note-form {
-    padding: 0 80px;
+    padding: 0 130px;
     margin-top: 15px;
 }
 #page-main .note-form .note-form-item {
+    font-size: 1rem;
     position: relative;
 }
 #page-main .note-form .note-form-item::before,
@@ -141,7 +180,7 @@ bold - bold
     opacity: 0;
     transition: opacity 0.15s;
     width: max-content;
-    max-width: 80px;
+    max-width: 100px;
     text-align: right;
 }
 #page-main .note-form .note-form-item.note-title input {
@@ -149,7 +188,7 @@ bold - bold
     width: 100%;
     padding: 0 10px;
     box-sizing: border-box;
-    font-size: 2rem;
+    font-size: 2em;
     font-weight: bold;
     position: relative;
     z-index: 3;
@@ -170,8 +209,8 @@ bold - bold
     width: 100%;
     padding: 5px 10px;
     box-sizing: border-box;
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 0.95em;
+    font-weight: normal;
     position: relative;
     z-index: 3;
     line-height: 1rem;
@@ -199,7 +238,6 @@ bold - bold
 }
 #page-main .note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper {
     display: grid;
-    max-height: auto;
     overflow-y: auto;
 }
 #page-main
@@ -208,7 +246,8 @@ bold - bold
     .note-editor-section
     .note-editor-wrapper
     .note-annotation {
-    top: 10px;
+    top: 5px;
+    transform: translate(0, 0);
 }
 #page-main
     .note-form
@@ -224,7 +263,7 @@ bold - bold
     grid-area: 1/1/2/2;
     width: 100%;
     font-family: var(--mmn-note-form-fonf);
-    font-size: 17px;
+    font-size: 1.05em;
 }
 #page-main
     .note-form
@@ -266,13 +305,10 @@ bold - bold
     margin-top: 5px;
 }
 #page-main .note-form .note-form-item.note-editor-board .under-section {
-    margin-top: 15px;
-}
-#page-main .note-form .note-form-item.note-editor-board .under-section {
     display: flex;
     justify-content: space-between;
     top: 15px;
-    padding: 0 10px;
+    margin-top: 15px;
 }
 #page-main .note-form .note-form-item.note-editor-board .useful-note-actions {
     display: flex;
@@ -294,6 +330,20 @@ bold - bold
 #page-main .note-form .note-form-item.note-editor-board .useful-note-actions .action i {
     font-size: 0.9rem;
     color: inherit;
+}
+@media only screen and (max-width: 700px) {
+    #page-main .note-quick-look {
+        padding: 0 15px;
+    }
+    #page-main .note-form {
+        padding: 0 5px;
+    }
+    #page-main .note-form .note-form-item {
+        font-size: 0.9rem;
+    }
+    #page-main .note-form .note-form-item .note-annotation {
+        display: none;
+    }
 }
 
 #publish-article-submit-btn {
@@ -733,6 +783,17 @@ bold - bold
     .note-settings-form
     .form-title
     .status {
+    display: none;
+}
+#note-settings-modal
+    .modal-dialog
+    .modal-content
+    .modal-body
+    .note-settings-board
+    .forms
+    .note-settings-form
+    .form-title
+    .status.active {
     display: inline-block;
 }
 #note-settings-modal
@@ -763,7 +824,7 @@ bold - bold
     border-radius: 5px;
     color: #595959;
     border-left: 5px rgba(101, 74, 0, 0.2) solid;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 #note-settings-modal
     .modal-dialog
@@ -1368,6 +1429,42 @@ bold - bold
     font-size: 1rem;
     padding: 15px 0;
 }
+@media screen and (max-width: 700px) {
+    #note-settings-modal .modal-dialog .modal-content .modal-body .note-settings-board {
+        flex-direction: column;
+    }
+    #note-settings-modal
+        .modal-dialog
+        .modal-content
+        .modal-body
+        .note-settings-board
+        .note-settings-navigation {
+        width: 100%;
+        border-bottom: 1px lightgray solid;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+    #note-settings-modal
+        .modal-dialog
+        .modal-content
+        .modal-body
+        .note-settings-board
+        .note-settings-navigation
+        .nav-tabs-list
+        .nav-tab {
+        column-gap: 10px;
+        justify-content: center;
+    }
+    #note-settings-modal
+        .modal-dialog
+        .modal-content
+        .modal-body
+        .note-settings-board
+        .forms.password
+        .nav-tabs-list {
+        font-size: 0.8rem;
+    }
+}
 
 #settings-form-change-modes .form-content {
     display: flex;
@@ -1448,49 +1545,21 @@ bold - bold
 #settings-form-editors .form-content .editors .editor.picked .picked-btn {
     display: initial;
 }
+@media screen and (max-width: 700px) {
+    #settings-form-editors .form-content .editors {
+        flex-direction: column;
+    }
+    #settings-form-editors .form-content .editors .editor {
+        width: 100%;
+    }
+}
 
 :root {
     --mmn-quick-look-icon-initial-size: 30px;
 }
 
 #page-main {
-    padding: 10px 50px 100px;
-}
-#page-main .note-quick-look {
-    display: flex;
-    justify-content: space-between;
-    column-gap: 50px;
-}
-#page-main .note-quick-look .quick-look-items {
-    display: flex;
-    column-gap: 10px;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item {
-    display: flex;
-    align-items: center;
-    height: var(--mmn-quick-look-icon-initial-size);
-    width: var(--mmn-quick-look-icon-initial-size);
-    overflow: hidden;
-    padding: 6px;
-    transition: width 0.25s cubic-bezier(0.65, 0, 0.076, 1);
-    column-gap: 5px;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item i {
-    font-size: 1.1rem;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item .text {
-    display: block;
-    width: max-content;
-    color: #fff;
-    white-space: nowrap;
-    font-size: 0.9rem;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item.password-set {
-    background-color: #ff2424;
-    border-radius: 1.6rem;
-}
-#page-main .note-quick-look .quick-look-items .quick-look-item.password-set i {
-    color: #fff;
+    padding: 10px 0 200px;
 }
 
 #bubble-btns {
@@ -1582,6 +1651,17 @@ bold - bold
 }
 #bubble-btns .bubble-note-settings-btn:hover i {
     color: #18181b;
+}
+@media only screen and (max-width: 700px) {
+    #bubble-btns .scroll-to-top-btn i {
+        font-size: 1.8rem;
+    }
+    #bubble-btns .scroll-to-bottom-btn i {
+        font-size: 1.8rem;
+    }
+    #bubble-btns .bubble-note-settings-btn i {
+        font-size: 1.8rem;
+    }
 }
 
 /*# sourceMappingURL=home-page.css.map */

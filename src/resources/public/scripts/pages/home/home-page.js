@@ -92,15 +92,15 @@ const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
 }
 const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
     LayoutController.notifyNoteEdited('off', { content: 'true' })
-    broadcastNoteTyping({ content: noteContent })
+    NormalEditorController.broadcastNoteTyping({ content: noteContent })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteTitleTypingHanlder = debounce((target) => {
     LayoutController.notifyNoteEdited('off', { title: 'true' })
-    broadcastNoteTyping({ title: target.value })
+    NormalEditorController.broadcastNoteTyping({ title: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const broadcastNoteAuthorTypingHanlder = debounce((target) => {
     LayoutController.notifyNoteEdited('off', { author: 'true' })
-    broadcastNoteTyping({ author: target.value })
+    NormalEditorController.broadcastNoteTyping({ author: target.value })
 }, ENoteTyping.NOTE_BROADCAST_DELAY)
 const noteTyping = (noteEditorTarget) =>
     __awaiter(void 0, void 0, void 0, function* () {
@@ -353,15 +353,17 @@ const logoutHandler = (target) =>
     })
 const setStatusOfSettingsForm = (formTarget, type) => {
     const isSaved = type === 'saved'
-    formTarget.querySelector('.form-title .status .status-item.saved').hidden = !isSaved
-    formTarget.querySelector('.form-title .status .status-item.unsaved').hidden = isSaved
+    const formStatus = formTarget.querySelector('.form-title .status')
+    formStatus.classList.add('active')
+    formStatus.querySelector('.form-title .status .status-item.saved').hidden = !isSaved
+    formStatus.querySelector('.form-title .status .status-item.unsaved').hidden = isSaved
 }
 const setRealtimeModeHandler = (status) => {
     if (status && status === 'on') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
         const currentRealtimeMode = getRealtimeModeInDevice()
         if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
-            fetchNoteContent()
+            NormalEditorController.fetchNoteContent()
         }
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')

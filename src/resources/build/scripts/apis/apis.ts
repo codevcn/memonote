@@ -5,7 +5,7 @@ const axiosClient = axios.create({
 })
 
 type TGetNotifications = {
-    notifs: TNotif[]
+    notifs: TNotifData[]
     isEnd: boolean
 }
 

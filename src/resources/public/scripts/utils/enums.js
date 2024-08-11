@@ -1,9 +1,9 @@
 'use strict'
 var ENamespacesOfSocket
 ;(function (ENamespacesOfSocket) {
-    ENamespacesOfSocket['EDIT_NOTE'] = 'edit-note'
+    ENamespacesOfSocket['NORMAL_EDITOR'] = 'normal-editor'
     ENamespacesOfSocket['NOTIFICATION'] = 'notification'
-    ENamespacesOfSocket['ARTICLE'] = 'article'
+    ENamespacesOfSocket['RICH_EDITOR'] = 'rich-editor'
 })(ENamespacesOfSocket || (ENamespacesOfSocket = {}))
 var EInitSocketEvents
 ;(function (EInitSocketEvents) {
@@ -66,7 +66,7 @@ var EBroadcastTimeouts
 })(EBroadcastTimeouts || (EBroadcastTimeouts = {}))
 var EArticleChunk
 ;(function (EArticleChunk) {
-    EArticleChunk[(EArticleChunk['SIZE_IN_KB_PER_CHUNK'] = 12)] = 'SIZE_IN_KB_PER_CHUNK'
+    EArticleChunk[(EArticleChunk['SIZE_IN_KiB_PER_CHUNK'] = 50)] = 'SIZE_IN_KiB_PER_CHUNK'
 })(EArticleChunk || (EArticleChunk = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {
