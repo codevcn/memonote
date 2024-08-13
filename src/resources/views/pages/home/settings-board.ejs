@@ -123,7 +123,7 @@
                     </label>
                     <div class="input-wrapper">
                         <input id="password-input" type="password"
-                            placeholder="<%= t('home-page.settings.password.Enter_password_here',i18nLang) %>"
+                            placeholder="<%= t('home-page.settings.password.Enter_password_here',i18nLang) %>..."
                             name="password" class="form-field" />
                         <div class="input-actions">
                             <span class="hidden" onclick="hideShowPassword_homePage(this,false)">
@@ -206,7 +206,7 @@
                 </div>
             </div>
             <p class="notice-text">
-                This section is for "Normal Editor".
+                <%= t('home-page.settings.userInterface.Notice_text',i18nLang) %>
             </p>
             <div class="form-content">
                 <div class="form-group form-group-select">
@@ -251,17 +251,21 @@
                 <div class="form-group form-group-select">
                     <label for="nav-bar-pos-select">
                         <span>
-                            <%= t('home-page.settings.userInterface.Change_text_font_title',i18nLang) %>
+                            <%= t('home-page.settings.userInterface.Nav_bar_position',i18nLang) %>
                         </span>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.userInterface.Change_text_font_tooltip',i18nLang) %>"
+                            title="<%= t('home-page.settings.userInterface.Nav_bar_position_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
                     </label>
                     <select class="form-select form-field" name="nav-bar-pos" id="nav-bar-pos-select">
-                        <option value="sticky" selected>Sticky</option>
-                        <option value="static">Static</option>
+                        <option value="sticky" selected>
+                            <%= t('home-page.settings.userInterface.navBaPositions.sticky',i18nLang) %>
+                        </option>
+                        <option value="static">
+                            <%= t('home-page.settings.userInterface.navBaPositions.static',i18nLang) %>
+                        </option>
                     </select>
                 </div>
             </div>
@@ -295,9 +299,9 @@
                     </label>
                     <select class="form-select form-field" id="change-language-select"
                         onchange="onChangLanguageHandler(event)">
-                        <% settings.langs.map(({code,label})=> { %>
+                        <% settings.langs.map((code)=> { %>
                         <option value="<%= code %>" <%= settings.currentLang === code ? 'selected' : '' %>>
-                            <%= label %>
+                            <%= t(`home-page.settings.language.langs.${code}`,i18nLang) %>
                         </option>
                         <% }) %>
                     </select>
@@ -315,9 +319,7 @@
                 </h2>
             </div>
             <p class="notice-text">
-                You can switch between editors for your note below. Note that when you use "Rich editor",
-                your note will loose ability to update in real-time. If you want to update or sync your note,
-                you have to reload (or refresh) page.
+                <%= t('home-page.settings.editors.Notice_text',i18nLang) %>
             </p>
             <div class="form-content">
                 <div class="form-group form-group-select">
@@ -339,7 +341,7 @@
                                 <i class="bi bi-check-circle-fill"></i>
                             </span>
                             <span>
-                                Normal editor
+                                Normal
                             </span>
                             <span title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>"
                                 class="details-btn">
@@ -352,7 +354,7 @@
                                 <i class="bi bi-check-circle-fill"></i>
                             </span>
                             <span>
-                                Rich editor
+                                Rich
                             </span>
                             <span title="<%= t('home-page.settings.editors.Click_for_more_details',i18nLang) %>"
                                 class="details-btn">

@@ -13,8 +13,7 @@ $mmn-app-toaster-initial-transform: translateX(calc(-100% - $mmn-app-toaster-lef
 $mmn-app-toaster-max-height: 150px;
 
 :root {
-    --mmn-blender-transition-duration: 0.5s;
-    --mmn-mix-blend-mode-reversed: normal;
+    --mmn-mix-night-mode-reversed: normal;
 }
 
 @mixin ring-notification-keyframes($type) {
@@ -130,7 +129,7 @@ a {
 
 #general-app-status {
     display: none;
-    mix-blend-mode: var(--mmn-mix-blend-mode-reversed);
+    mix-blend-mode: var(--mmn-mix-night-mode-reversed);
 
     i {
         font-size: 1.4rem;
@@ -157,7 +156,7 @@ a {
     display: flex;
     column-gap: 30px;
     justify-content: space-between;
-    padding: 0 components.$mmn-nav-bar-horizon-padding;
+    padding: 0 components.$mmn-nav-bar-padding-x;
     height: components.$mmn-height-of-nav-bar;
     border-bottom: 1px colors.$mmn-divider-border-cl solid;
     top: 0;
@@ -296,7 +295,7 @@ a {
     }
 
     @media only screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
-        padding: 0 components.$mmn-nav-bar-horizon-padding-for-large-breakpoint;
+        padding: 0 components.$mmn-nav-bar-padding-x-for-large-breakpoint;
 
         .menu-item {
             &:not(.notification) {
@@ -419,32 +418,21 @@ a {
     }
 }
 
-#night-mode-blender {
+#night-mode-mixer {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
+    height: 100vh;
+    width: 100vw;
     pointer-events: none;
     mix-blend-mode: difference;
-    transform: scale(0);
     background-color: colors.$mmn-night-mode-diff-cl;
-    transition:
-        transform var(--mmn-blender-transition-duration),
-        height var(--mmn-blender-transition-duration),
-        width var(--mmn-blender-transition-duration);
-    z-index: z-indexes.$mmn-night-mode-blender-zidx;
+    transition: opacity 0.5s;
+    opacity: 0;
+    z-index: z-indexes.$mmn-night-mode-mixer-zidx;
 
-    &.blend {
-        transform: scale(100);
-    }
-    &.end-transition {
-        transition: none;
-        width: 100%;
-        height: 100%;
-        transform: scale(100);
-        border-radius: 0;
+    &.mix {
+        opacity: 1;
     }
 }
 

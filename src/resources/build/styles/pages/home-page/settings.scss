@@ -274,7 +274,6 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
                     .note-settings-navigation {
                         display: flex;
                         flex-direction: column;
-                        row-gap: 30px;
                         justify-content: space-between;
                         border-right: 1px colors.$mmn-regular-lightgray-cl solid;
                         width: $mmn-settings-navigation-container-width;
@@ -312,6 +311,7 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
                             font-weight: bold;
                             column-gap: 10px;
                             color: colors.$mmn-regular-red-cl;
+                            margin-top: 15px;
 
                             .spinner {
                                 height: 24px;

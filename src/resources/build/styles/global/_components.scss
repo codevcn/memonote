@@ -6,8 +6,8 @@ $mmn-box-shadow-on-input: 0 0 0 0.25rem colors.$mmn-regular-lightgray-cl;
 $mmn-height-of-nav-bar: 60px;
 $mmn-scrollbar-on-blur-cl: rgba(153, 153, 153, 0.333);
 $mmn-scrollbar-on-hover-cl: #999999;
-$mmn-nav-bar-horizon-padding: 50px;
-$mmn-nav-bar-horizon-padding-for-large-breakpoint: 15px;
+$mmn-nav-bar-padding-x: 50px;
+$mmn-nav-bar-padding-x-for-large-breakpoint: 15px;
 
 @mixin sharing-editor-view-styling {
     font-family: text-fonts.$mmn-primary-fontf;

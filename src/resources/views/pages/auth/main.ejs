@@ -6,7 +6,7 @@
                     onblur="handleOnBlurTypePasswordInput(this)" oninput="typingPassword()" />
                 <div class="input-animation"></div>
                 <div class="input-placeholder">
-                    Type password...
+                    <%= t('signin-page.Enter_password',i18nLang) %>...
                 </div>
                 <div class="input-actions">
                     <span class="hidden" onclick="hideShowPassword_signInPage(this,false)">
@@ -20,7 +20,9 @@
         </div>
         <div class="input-message"></div>
         <button class="submit-btn" type="submit">
-            <span>Submit</span>
+            <span>
+                <%= t('signin-page.Submit',i18nLang) %>
+            </span>
         </button>
         <div class="sign-in-message"></div>
     </form>

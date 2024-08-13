@@ -9,7 +9,6 @@ import * as cookieParser from 'cookie'
 export class JWTService {
     private readonly jwtCookieOptions: TJwtCookieOptions = {
         maxAge: ms(process.env.JWT_MAX_AGE_IN_HOUR),
-        domain: process.env.APPLICATION_DOMAIN_DEV,
         path: '/',
         httpOnly: true,
         secure: true,

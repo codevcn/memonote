@@ -25,7 +25,7 @@
             "Unset_password": "Bạn chưa đặt mật khẩu cho ghi chú này.",
             "Change_Password": "Thay đổi mật khẩu",
             "Add_Password": "Thêm mật khẩu",
-            "Enter_password_here": "Nhập mật khẩu ở đây..."
+            "Enter_password_here": "Nhập mật khẩu ở đây"
         },
         "userInterface": {
             "User_Interface": "Giao diện",
@@ -35,7 +35,13 @@
             "Slither": "Trườn bò",
             "Notify_edited_styling_tooltip": "Thay đổi cách thông báo cho bạn ghi chú đã được chỉnh sửa",
             "Change_text_font_title": "Đổi phông chữ",
-            "Change_text_font_tooltip": "Đổi phông chữ cho ghi chú"
+            "Change_text_font_tooltip": "Đổi phông chữ cho ghi chú",
+            "Nav_bar_position": "Đặt vị trí thanh điều hướng",
+            "Nav_bar_position_tooltip": "Đặt vị trí thanh điều hướng (tĩnh, linh hoạt, ...).",
+            "navBaPositions": {
+                "sticky": "Linh hoạt",
+                "static": "Cố định"
+            }
         },
         "language": {
             "Language": "Ngôn ngữ",
@@ -46,6 +52,14 @@
                 "vi": "Tiếng Việt"
             }
         },
+        "editors": {
+            "Notice_text": "Bạn có thể chuyển đổi giữa các trình soạn thảo cho ghi chú của mình bên dưới. Lưu ý rằng khi bạn chọn \"Rich\", ghi chú của bạn sẽ mất khả năng cập nhật theo thời gian thực. Nếu bạn muốn cập nhật hoặc đồng bộ hóa ghi chú của mình, bạn phải tải lại (hoặc làm mới) trang.",
+            "Editors": "Trình soạn thảo",
+            "Switch_editor": "Chuyển đổi trình soạn thảo cho ghi chú của bạn",
+            "Pick_an_editor": "Chọn một trình soạn thảo",
+            "Click_for_more_details": "Nhấn để biết thêm chi tiết",
+            "Picked": "Đã chọn"
+        },
         "Logout": "Đăng xuất",
         "Save_Changes": "Lưu thay đổi",
         "Submit": "Gửi",
@@ -55,11 +69,16 @@
         "Confirm": "Xác nhận"
     },
     "noteForm": {
-        "Title_placeholder": "Thêm tiêu đề...",
-        "Author_placeholder": "Thêm tác giả...",
-        "Content_placeholder": "Viết ghi chú của bạn ở đây...",
+        "Title_placeholder": "Thêm tiêu đề",
+        "Author_placeholder": "Thêm tác giả",
+        "Content_placeholder": "Viết ghi chú của bạn ở đây",
         "Note_annotation_Title": "Tiêu đề",
         "Note_annotation_Author": "Tác giả",
-        "Note_annotation_Content": "Ghi chú"
+        "Note_annotation_Content": "Ghi chú",
+        "richEditor": {
+            "View_mode": "Chế độ xem",
+            "Edit_mode": "Chế độ soạn thảo",
+            "Enter_height": "Nhập chiều cao"
+        }
     }
 }

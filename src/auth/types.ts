@@ -11,7 +11,6 @@ export type TSendJWTParamOptions = {
 
 export type TJwtCookieOptions = {
     maxAge: number
-    domain: string
     path: string
     httpOnly: boolean
     secure: boolean

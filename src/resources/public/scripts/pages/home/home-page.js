@@ -370,22 +370,15 @@ const setRealtimeModeHandler = (status) => {
     }
     setRealtimeModeInDevice(status ? 'sync' : 'stop')
 }
-let blenderTimer = undefined
 const setNightModeHandler = (status) => {
-    const blender = document.getElementById('night-mode-blender')
-    clearTimeout(blenderTimer)
+    const mixer = document.getElementById('night-mode-mixer')
     if (status && status === 'on') {
-        writeCssVariable('--mmn-mix-blend-mode-reversed', 'difference')
-        blender.classList.add('blend')
-        const duration =
-            parseFloat(getCssVariable('--mmn-blender-transition-duration').split('s')[0]) * 1000
-        blenderTimer = setTimeout(() => {
-            blender.classList.add('end-transition')
-        }, duration / 3)
+        writeCssVariable('--mmn-mix-night-mode-reversed', 'difference')
+        mixer.classList.add('mix')
         setNightModeInDevice('on')
     } else {
-        writeCssVariable('--mmn-mix-blend-mode-reversed', 'normal')
-        blender.classList.remove('blend', 'end-transition')
+        writeCssVariable('--mmn-mix-night-mode-reversed', 'normal')
+        mixer.classList.remove('mix')
         setNightModeInDevice('off')
     }
 }
@@ -407,7 +400,7 @@ const changeNoteFormTextFontHandler = (font) => {
     writeCssVariable('--mmn-note-form-fonf', textFont)
     setNoteFormTextFontInDevice(font)
 }
-const setNavBarPosHandler = (pos) => {
+const changeNavBarPosHandler = (pos) => {
     setNavBarPosInDevice(pos)
     const navBar = document.getElementById('nav-bar')
     const posClasses = ['pos-sticky', 'pos-static']
@@ -433,7 +426,7 @@ const saveSettingsUserInterface = (e) =>
             changeNoteFormTextFontHandler(noteFormFont)
         }
         if (navBarPos) {
-            setNavBarPosHandler(navBarPos)
+            changeNavBarPosHandler(navBarPos)
         }
         setStatusOfSettingsForm(form, 'saved')
     })
@@ -535,8 +528,8 @@ const initPage = () => {
     }
     // setup "user interface" form
     const editedNotifyStyle = getEditedNotifyStyleInDevice()
-    const editedNotifyStyleSelect = document.getElementById('edited-notify-style-select')
     if (editedNotifyStyle) {
+        const editedNotifyStyleSelect = document.getElementById('edited-notify-style-select')
         const optionExists = Array.from(editedNotifyStyleSelect.options).some(
             (option) => option.value === editedNotifyStyle,
         )
@@ -546,8 +539,8 @@ const initPage = () => {
     }
     // setup "note form text font"
     const noteFormTextFont = getNoteFormTextFontInDevice()
-    const noteFormTextFontSelect = document.getElementById('note-form-font-select')
     if (noteFormTextFont) {
+        const noteFormTextFontSelect = document.getElementById('note-form-font-select')
         changeNoteFormTextFontHandler(noteFormTextFont)
         const optionExists = Array.from(noteFormTextFontSelect.options).some(
             (option) => option.value === noteFormTextFont,
@@ -596,7 +589,14 @@ const initPage = () => {
     // setup nav bar pos
     const navBarPos = getNavBarPosInDevice()
     if (navBarPos) {
-        setNavBarPosHandler(navBarPos)
+        const navBarPosSelect = document.getElementById('nav-bar-pos-select')
+        changeNavBarPosHandler(navBarPos)
+        const optionExists = Array.from(navBarPosSelect.options).some(
+            (option) => option.value === navBarPos,
+        )
+        if (optionExists) {
+            navBarPosSelect.value = navBarPos
+        }
     }
 }
 initPage()

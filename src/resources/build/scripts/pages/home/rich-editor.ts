@@ -7,11 +7,6 @@ type TPublishArticleReturn = TSuccess & {
     message?: string
 }
 
-type TConnectRichEditorOptions = {
-    lang: ELangCodes
-    placeholder: string
-}
-
 type TPublishArticleInChunksPyld = {
     totalChunks: number
     noteUniqueName: string
@@ -30,16 +25,20 @@ class RichEditorController {
     private static readonly richEditorId: string = 'mmn-rich-note-editor'
     private static chunkIdx: number = 0
     private static htmlBefore: string = ''
+    private static minHeightOfEditor: number = 300
 
-    static async connect(config: TConnectRichEditorOptions): Promise<void> {
+    static async connect(): Promise<void> {
+        const { richEditorData, currentLang } = pageData
+        const { placeholder } = richEditorData
+
         const initConfig = {
             selector: `textarea#${this.richEditorId}`,
             plugins: 'link lists table wordcount linkchecker preview save fullscreen',
-            placeholder: config.placeholder,
+            placeholder: placeholder,
             toolbar:
                 'undo redo | blocks fontfamily fontsize forecolor backcolor | bold italic underline strikethrough | link table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | fullscreen',
             skin: 'bootstrap',
-            language: config.lang,
+            language: currentLang,
             menubar: false,
             elementpath: false,
             content_css: '/styles/pages/home-page/tinymce.css',
@@ -48,11 +47,12 @@ class RichEditorController {
                 Poppins=Poppins, Arial, sans-serif;
                 Times New Roman=Times New Roman, Times, serif;
                 Roboto=Roboto, Times, serif`,
-            min_height: 400,
-            height: 400,
+            min_height: this.minHeightOfEditor,
+            height: this.minHeightOfEditor + 100,
+            toolbar_sticky: true,
             mobile: {
                 toolbar_mode: 'wrap',
-                height: 500,
+                height: this.minHeightOfEditor + 200,
             },
             setup: (editor: any) => {
                 editor.on('init', (e: Event) => {
@@ -65,10 +65,30 @@ class RichEditorController {
         tinymce.init(initConfig)
     }
 
-    private setStyleOfEditor(style: TCssForSettingStyleOfEditor): void {
+    private static setStyleOfEditor(style: TCssForSettingStyleOfEditor): void {
         const container = tinymce.activeEditor.getContainer() as HTMLElement
         const { height } = style
         if (height) container.style.height = `${style.height}px`
+    }
+
+    static setHeightOfEditor(e: KeyboardEvent): void {
+        if (e.key === 'Enter') {
+            const input = e.target as HTMLInputElement
+            const height = parseInt(input.value)
+            const messageEle = input
+                .closest('.set-editor-height')!
+                .querySelector('.message') as HTMLElement
+            if (Number.isInteger(height) && height >= this.minHeightOfEditor) {
+                this.setStyleOfEditor({ height })
+                messageEle.classList.remove('active')
+            } else {
+                const message = `Enter an integer equal or greater than ${this.minHeightOfEditor}`
+                messageEle.classList.add('active')
+                messageEle.innerHTML = `
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span class="content">${message}</span>`
+            }
+        }
     }
 
     private static setArticleContent(content: string): void {

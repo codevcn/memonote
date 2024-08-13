@@ -9,7 +9,6 @@ import ms from 'ms'
 export class LangService {
     private readonly langCookie: TLangCookieOptions = {
         maxAge: ms('3 months'),
-        domain: process.env.APPLICATION_DOMAIN_DEV,
         path: '/',
         httpOnly: true,
         secure: true,
@@ -18,6 +17,10 @@ export class LangService {
 
     getCurrentLang(): string {
         return I18nContext.current()?.lang || ELangCodes.EN
+    }
+
+    getSupportedLangs(): string[] {
+        return Object.values(ELangCodes)
     }
 
     requestLang(res: Response, langCode: string): void {

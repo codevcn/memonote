@@ -1,17 +1,21 @@
 @use '../global/colors';
 @use '../global/text-fonts';
+@use '../global/responsive';
 
 $mmn-password-input-border-cl: #d9d9d9;
+$mmn-page-padding-x: 100px;
+$mmn-page-padding-x-for-large-breakpoint: 30px;
+$mmn-sigin-section-margin-top: 45px;
 
 #page-main {
-    padding: 0 100px;
+    padding: 0 $mmn-page-padding-x;
 
     .type-password-section {
         display: flex;
         flex-direction: column;
         align-items: center;
         margin: auto;
-        margin-top: 45px;
+        margin-top: $mmn-sigin-section-margin-top;
 
         .form-group {
             margin-top: 20px;
@@ -52,6 +56,7 @@ $mmn-password-input-border-cl: #d9d9d9;
                 }
 
                 .input-placeholder {
+                    white-space: nowrap;
                     pointer-events: none;
                     position: absolute;
                     left: 50%;
@@ -147,5 +152,9 @@ $mmn-password-input-border-cl: #d9d9d9;
                 font-size: inherit;
             }
         }
+    }
+
+    @media only screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
+        padding: 0 $mmn-page-padding-x-for-large-breakpoint;
     }
 }

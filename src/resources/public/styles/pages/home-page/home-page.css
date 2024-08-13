@@ -302,7 +302,7 @@ bold - bold
     line-height: 1;
     padding-right: 5px;
     margin-bottom: 5px;
-    margin-top: 5px;
+    margin-top: 25px;
 }
 #page-main .note-form .note-form-item.note-editor-board .under-section {
     display: flex;
@@ -373,12 +373,19 @@ bold - bold
     padding: 5px 20px;
 }
 
-#rich-editor-section .actions {
+#rich-editor-section .actions-section {
     display: flex;
-    column-gap: 10px;
+    align-items: start;
+    justify-content: space-between;
+    column-gap: 30px;
+    flex-wrap: wrap;
     margin-bottom: 10px;
 }
-#rich-editor-section .actions .action-btn {
+#rich-editor-section .actions-section .actions {
+    display: flex;
+    column-gap: 10px;
+}
+#rich-editor-section .actions-section .actions .action-btn {
     display: flex;
     align-items: center;
     column-gap: 7px;
@@ -389,19 +396,55 @@ bold - bold
     font-size: 0.9rem;
     font-weight: 500;
 }
-#rich-editor-section .actions .action-btn i {
+#rich-editor-section .actions-section .actions .action-btn i {
     font-size: 0.9rem;
 }
-#rich-editor-section .actions .action-btn:hover {
+#rich-editor-section .actions-section .actions .action-btn:hover {
     background-color: #e5e5e5;
 }
-#rich-editor-section .actions .action-btn.active {
+#rich-editor-section .actions-section .actions .action-btn.active {
     background-color: #333;
     color: #fff;
     border-color: #333;
 }
-#rich-editor-section .actions .action-btn.active i {
+#rich-editor-section .actions-section .actions .action-btn.active i {
     color: #fff;
+}
+#rich-editor-section .actions-section .set-editor-height {
+    font-size: 1rem;
+}
+#rich-editor-section .actions-section .set-editor-height .input-container {
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+}
+#rich-editor-section .actions-section .set-editor-height .input-container input {
+    padding: 5px 10px;
+    border: 1px lightgray solid;
+    border-radius: 5px;
+    font-size: 0.9em;
+    line-height: 1;
+    width: 150px;
+}
+#rich-editor-section .actions-section .set-editor-height .input-container .unit {
+    font-size: 0.9rem;
+}
+#rich-editor-section .actions-section .set-editor-height .message {
+    display: none;
+    color: #ff2424;
+    font-size: 0.85em;
+    margin-top: 2px;
+    font-weight: 500;
+    width: 180px;
+    line-height: 1.3;
+}
+#rich-editor-section .actions-section .set-editor-height .message.active {
+    display: block;
+}
+#rich-editor-section .actions-section .set-editor-height .message i {
+    display: inline;
+    font-size: 0.9em;
+    color: #ff2424;
 }
 #rich-editor-section .rich-editor-mode {
     display: none;
@@ -572,7 +615,6 @@ bold - bold
     .note-settings-navigation {
     display: flex;
     flex-direction: column;
-    row-gap: 30px;
     justify-content: space-between;
     border-right: 1px lightgray solid;
     width: 180px;
@@ -637,6 +679,7 @@ bold - bold
     font-weight: bold;
     column-gap: 10px;
     color: #ff2424;
+    margin-top: 15px;
 }
 #note-settings-modal
     .modal-dialog

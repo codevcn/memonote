@@ -28,6 +28,7 @@
             "Enter_password_here": "Enter password here..."
         },
         "userInterface": {
+            "Notice_text": "This section is for \"Normal Editor\".",
             "User_Interface": "User Interface",
             "User_Interface_title": "Change User Interface",
             "Notify_edited_styling_title": "Editing note notification styling",
@@ -35,7 +36,13 @@
             "Slither": "Slither",
             "Notify_edited_styling_tooltip": "Change how your note will be notified to be edited",
             "Change_text_font_title": "Change text font",
-            "Change_text_font_tooltip": "Change text font for your note"
+            "Change_text_font_tooltip": "Change text font for your note",
+            "Nav_bar_position": "Change navigation bar position",
+            "Nav_bar_position_tooltip": "Change the position of navigation bar",
+            "navBaPositions": {
+                "sticky": "Sticky",
+                "static": "Static"
+            }
         },
         "language": {
             "Language": "Language",
@@ -47,6 +54,7 @@
             }
         },
         "editors": {
+            "Notice_text": "You can switch between editors for your note below. Note that when you use \"Rich editor\", your note will loose ability to update in real-time. If you want to update or sync your note, you have to reload (or refresh) page.",
             "Editors": "Editors",
             "Switch_editor": "Switch editor for this note",
             "Pick_an_editor": "Pick an editor",
@@ -62,11 +70,16 @@
         "Confirm": "Confirm"
     },
     "noteForm": {
-        "Title_placeholder": "Add a title...",
-        "Author_placeholder": "Add an author...",
-        "Content_placeholder": "Write your note here...",
+        "Title_placeholder": "Add a title",
+        "Author_placeholder": "Add an author",
+        "Content_placeholder": "Write your note here",
         "Note_annotation_Title": "Title",
         "Note_annotation_Author": "Author",
-        "Note_annotation_Content": "Your Note"
+        "Note_annotation_Content": "Your Note",
+        "richEditor": {
+            "View_mode": "View Mode",
+            "Edit_mode": "Edit Mode",
+            "Enter_height": "Enter height"
+        }
     }
 }

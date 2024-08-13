@@ -38,16 +38,18 @@ var EArticleEvents
 // init socket
 const richEditorSocket = io(`/${ENamespacesOfSocket.RICH_EDITOR}`, clientSocketConfig)
 class RichEditorController {
-    static connect(config) {
+    static connect() {
         return __awaiter(this, void 0, void 0, function* () {
+            const { richEditorData, currentLang } = pageData
+            const { placeholder } = richEditorData
             const initConfig = {
                 selector: `textarea#${this.richEditorId}`,
                 plugins: 'link lists table wordcount linkchecker preview save fullscreen',
-                placeholder: config.placeholder,
+                placeholder: placeholder,
                 toolbar:
                     'undo redo | blocks fontfamily fontsize forecolor backcolor | bold italic underline strikethrough | link table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat | fullscreen',
                 skin: 'bootstrap',
-                language: config.lang,
+                language: currentLang,
                 menubar: false,
                 elementpath: false,
                 content_css: '/styles/pages/home-page/tinymce.css',
@@ -56,11 +58,12 @@ class RichEditorController {
                 Poppins=Poppins, Arial, sans-serif;
                 Times New Roman=Times New Roman, Times, serif;
                 Roboto=Roboto, Times, serif`,
-                min_height: 400,
-                height: 400,
+                min_height: this.minHeightOfEditor,
+                height: this.minHeightOfEditor + 100,
+                toolbar_sticky: true,
                 mobile: {
                     toolbar_mode: 'wrap',
-                    height: 500,
+                    height: this.minHeightOfEditor + 200,
                 },
                 setup: (editor) => {
                     editor.on('init', (e) => {
@@ -72,10 +75,27 @@ class RichEditorController {
             tinymce.init(initConfig)
         })
     }
-    setStyleOfEditor(style) {
+    static setStyleOfEditor(style) {
         const container = tinymce.activeEditor.getContainer()
         const { height } = style
         if (height) container.style.height = `${style.height}px`
+    }
+    static setHeightOfEditor(e) {
+        if (e.key === 'Enter') {
+            const input = e.target
+            const height = parseInt(input.value)
+            const messageEle = input.closest('.set-editor-height').querySelector('.message')
+            if (Number.isInteger(height) && height >= this.minHeightOfEditor) {
+                this.setStyleOfEditor({ height })
+                messageEle.classList.remove('active')
+            } else {
+                const message = `Enter an integer equal or greater than ${this.minHeightOfEditor}`
+                messageEle.classList.add('active')
+                messageEle.innerHTML = `
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span class="content">${message}</span>`
+            }
+        }
     }
     static setArticleContent(content) {
         tinymce.activeEditor.setContent(content)
@@ -234,3 +254,4 @@ class RichEditorController {
 RichEditorController.richEditorId = 'mmn-rich-note-editor'
 RichEditorController.chunkIdx = 0
 RichEditorController.htmlBefore = ''
+RichEditorController.minHeightOfEditor = 300

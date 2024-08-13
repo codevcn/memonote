@@ -82,7 +82,7 @@ const validateInputValue = (inputValue) => {
     let valid = true
     if (!inputValue) {
         valid = false
-        setInputMessage('Please enter your password!')
+        setInputMessage(pageData.emptyPasswordMessage)
     } else {
         setInputMessage(null)
     }

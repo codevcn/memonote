@@ -49,9 +49,8 @@ class EditorsController {
             publishArticleBtn.classList.add('active')
 
             if (!this.switchedToRichEditor) {
-                const { placeholder } = pageData.richEditorData
                 this.switchedToRichEditor = true
-                RichEditorController.connect({ lang: pageData.currentLang, placeholder })
+                RichEditorController.connect()
             }
         } else if (editor === EEditors.NORMAL) {
             publishArticleBtn.classList.remove('active')

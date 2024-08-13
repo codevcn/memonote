@@ -72,6 +72,12 @@ interface IHomePageUITrans {
             Notify_edited_styling_tooltip: string
             Change_text_font_title: string
             Change_text_font_tooltip: string
+            Nav_bar_position: string
+            Nav_bar_position_tooltip: string
+            navBaPositions: {
+                sticky: string
+                static: string
+            }
         }
         language: {
             Title_placeholder: string
@@ -83,6 +89,14 @@ interface IHomePageUITrans {
             Vietnamese: string
             English: string
             langs: string[]
+        }
+        editors: {
+            Notice_text: string
+            Editors: string
+            Switch_editor: string
+            Pick_an_editor: string
+            Click_for_more_details: string
+            Picked: string
         }
         Logout: string
         Save_Changes: string
@@ -96,13 +110,24 @@ interface IHomePageUITrans {
         Note_annotation_Title: string
         Note_annotation_Author: string
         Note_annotation_Content: string
+        richEditor: {
+            View_mode: string
+            Edit_mode: string
+            Enter_height: string
+        }
     }
+}
+
+interface ISigInPageUITrans {
+    Enter_password: string
+    Submit: string
 }
 
 // UI (client side, ...)
 export interface IUII18nTranslations {
     layout: ILayoutUITrans
     'home-page': IHomePageUITrans
+    'signin-page': ISigInPageUITrans
 }
 // Data (database, ...)
 export interface IDataI18nTranslations {

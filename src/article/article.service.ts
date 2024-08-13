@@ -132,7 +132,7 @@ export class ArticleService {
                 chunksReceived: 0,
                 totalChunks,
                 timeoutId: setTimeout(async () => {
-                    await this.cleanupArticleHandler(noteUniqueName)
+                    await this.cleanupWhenUploadFail(noteUniqueName)
                 }, this.chunkStatusTimeout),
                 relativePath,
                 docWasCreated,
@@ -177,20 +177,29 @@ export class ArticleService {
         }
 
         if (chunkStatus.chunksReceived === totalChunks) {
-            this.articleChunksStatus.delete(noteUniqueName)
-            this.uploadsIndentity.delete(noteUniqueName)
-            await unlink(chunkFilePathBackup)
+            await this.cleanUpWhenUploadSuccess(noteUniqueName, chunkFilePathBackup)
             if (!docWasCreated) {
                 await this.createNewArticle(noteUniqueName, noteId, chunkStatus.relativePath)
             }
         } else {
             chunkStatus.timeoutId = setTimeout(async () => {
-                await this.cleanupArticleHandler(noteUniqueName)
+                await this.cleanupWhenUploadFail(noteUniqueName)
             }, this.chunkStatusTimeout)
         }
     }
 
-    private async cleanupArticleHandler(noteUniqueName: string): Promise<void> {
+    private async cleanUpWhenUploadSuccess(
+        noteUniqueName: string,
+        chunkFilePathBackup: string,
+    ): Promise<void> {
+        if (existsSync(chunkFilePathBackup)) {
+            this.articleChunksStatus.delete(noteUniqueName)
+            this.uploadsIndentity.delete(noteUniqueName)
+            await unlink(chunkFilePathBackup)
+        }
+    }
+
+    private async cleanupWhenUploadFail(noteUniqueName: string): Promise<void> {
         const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
         if (chunkStatus.docWasCreated) {
             const articleDirPath = join(this.articlesDirPath, chunkStatus.relativePath)

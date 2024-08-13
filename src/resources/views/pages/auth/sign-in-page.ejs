@@ -11,6 +11,11 @@
     <%- include('../../partials/nav-bar') %>
     <%- include('./main') %>
     <%- include('../../partials/page-bottom') %>
+    <script>
+        const pageData = {
+            emptyPasswordMessage: "<%= t('signin-page.Empty_password_message',i18nLang) %>"
+        }
+    </script>
     <%- include('../../partials/doc-scripts') %>
     <script src="/scripts/pages/sign-in-page.js" defer></script>
 </body>

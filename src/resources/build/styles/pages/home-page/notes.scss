@@ -9,10 +9,11 @@ $mmn-note-title-font-size: 2em;
 $mmn-note-author-font-size: 0.95em;
 $mmn-note-content-font-size: 1.05em;
 $mmn-note-annotaion-border-cl: #a5a5a5;
-$mmn-note-horizon-padding: 130px;
-$mmn-note-horizon-padding-for-large-breakpoint: 5px;
+$mmn-note-padding-x: 130px;
+$mmn-note-padding-x-for-large-breakpoint: 5px;
 $mmn-note-margin-top: 15px;
 $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
+$mmn-set-height-of-rich-editor-input-width: 150px;
 
 :root {
     --mmn-note-form-fonf: text-fonts.$mmn-work-sans-fontf;
@@ -79,7 +80,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
         display: flex;
         justify-content: space-between;
         column-gap: 50px;
-        padding: 0 components.$mmn-nav-bar-horizon-padding;
+        padding: 0 components.$mmn-nav-bar-padding-x;
 
         .quick-look-items {
             display: flex;
@@ -121,7 +122,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
     }
 
     .note-form {
-        padding: 0 $mmn-note-horizon-padding;
+        padding: 0 $mmn-note-padding-x;
         margin-top: $mmn-note-margin-top;
 
         .note-form-item {
@@ -190,7 +191,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                 opacity: 0;
                 transition: opacity 0.15s;
                 width: max-content;
-                max-width: $mmn-note-horizon-padding - 30px;
+                max-width: $mmn-note-padding-x - 30px;
                 text-align: right;
             }
 
@@ -294,7 +295,7 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
                         line-height: 1;
                         padding-right: 5px;
                         margin-bottom: 5px;
-                        margin-top: 5px;
+                        margin-top: 25px;
                     }
                 }
 
@@ -321,11 +322,11 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 
     @media only screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
         .note-quick-look {
-            padding: 0 components.$mmn-nav-bar-horizon-padding-for-large-breakpoint;
+            padding: 0 components.$mmn-nav-bar-padding-x-for-large-breakpoint;
         }
 
         .note-form {
-            padding: 0 $mmn-note-horizon-padding-for-large-breakpoint;
+            padding: 0 $mmn-note-padding-x-for-large-breakpoint;
 
             .note-form-item {
                 font-size: 0.9rem;
@@ -343,37 +344,91 @@ $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
 }
 
 #rich-editor-section {
-    .actions {
+    .actions-section {
         display: flex;
-        column-gap: 10px;
+        align-items: start;
+        justify-content: space-between;
+        column-gap: 30px;
+        flex-wrap: wrap;
         margin-bottom: 10px;
 
-        .action-btn {
+        .actions {
             display: flex;
-            align-items: center;
-            column-gap: 7px;
-            border-radius: 5px;
-            border: 1px colors.$mmn-regular-lightgray-cl solid;
-            background-color: colors.$mmn-regular-white-cl;
-            padding: 3px 10px;
-            font-size: 0.9rem;
-            font-weight: 500;
+            column-gap: 10px;
 
-            i {
+            .action-btn {
+                display: flex;
+                align-items: center;
+                column-gap: 7px;
+                border-radius: 5px;
+                border: 1px colors.$mmn-regular-lightgray-cl solid;
+                background-color: colors.$mmn-regular-white-cl;
+                padding: 3px 10px;
                 font-size: 0.9rem;
-            }
-
-            &:hover {
-                background-color: scale-color(colors.$mmn-regular-lightgray-cl, $lightness: 40%);
-            }
-
-            &.active {
-                background-color: colors.$mmn-regular-black-cl;
-                color: colors.$mmn-regular-white-cl;
-                border-color: colors.$mmn-regular-black-cl;
+                font-weight: 500;
 
                 i {
+                    font-size: 0.9rem;
+                }
+
+                &:hover {
+                    background-color: scale-color(
+                        colors.$mmn-regular-lightgray-cl,
+                        $lightness: 40%
+                    );
+                }
+
+                &.active {
+                    background-color: colors.$mmn-regular-black-cl;
                     color: colors.$mmn-regular-white-cl;
+                    border-color: colors.$mmn-regular-black-cl;
+
+                    i {
+                        color: colors.$mmn-regular-white-cl;
+                    }
+                }
+            }
+        }
+
+        .set-editor-height {
+            font-size: 1rem;
+
+            .input-container {
+                display: flex;
+                align-items: center;
+                column-gap: 5px;
+
+                input {
+                    padding: 5px 10px;
+                    border: 1px colors.$mmn-regular-lightgray-cl solid;
+                    border-radius: 5px;
+                    font-size: 0.9em;
+                    line-height: 1;
+                    width: $mmn-set-height-of-rich-editor-input-width;
+                }
+
+                .unit {
+                    font-size: 0.9rem;
+                }
+            }
+
+            .message {
+                display: none;
+                color: colors.$mmn-regular-red-cl;
+                font-size: 0.85em;
+                margin-top: 2px;
+                font-weight: 500;
+                width: 180px;
+                line-height: 1.3;
+
+                &.active {
+                    display: block;
+                }
+
+                i {
+                    display: inline;
+                    font-size: 0.9em;
+                    color: colors.$mmn-regular-red-cl;
                 }
             }
         }

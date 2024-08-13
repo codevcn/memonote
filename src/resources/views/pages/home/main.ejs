@@ -11,13 +11,13 @@
     <section class="note-form">
         <div class="note-form-item note-title">
             <input type="text" value="<%= note.title || '' %>"
-                placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>"
+                placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>..."
                 oninput="broadcastNoteTitleTypingHanlder(this)" id="note-title" />
             <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Title',i18nLang) %></div>
         </div>
         <div class="note-form-item note-author">
             <input type="text" value="<%= note.author || '' %>"
-                placeholder="<%= t('home-page.noteForm.Author_placeholder',i18nLang) %>"
+                placeholder="<%= t('home-page.noteForm.Author_placeholder',i18nLang) %>..."
                 oninput="broadcastNoteAuthorTypingHanlder(this)" id="note-author" />
             <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
         </div>
@@ -25,7 +25,7 @@
             <section class="note-editor-section normal-editor">
                 <div class="note-editor-wrapper" data-replicated-value="<%= note.content || '' %>">
                     <textarea class="note-editor" id="note-editor" rows="5"
-                        placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>"
+                        placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>..."
                         oninput="noteTyping(this)" onkeyup="catchBackspaceWhenTyping(this,event)"
                         data-replicated-value=""><%= note.content || '' %></textarea>
                     <div class="note-annotation">
@@ -38,16 +38,31 @@
                 </div>
             </section>
             <section class="note-editor-section rich-editor" id="rich-editor-section" method="post">
-                <div class="actions">
-                    <button class="action-btn" data-mmn-editor-mode="view-mode" type="button">
-                        <i class="bi bi-eye"></i>
-                        <span>View Mode</span>
-                    </button>
-                    <button class="action-btn active" data-mmn-editor-mode="edit-mode" type="button">
-                        <i class="bi bi-pencil-square"></i>
-                        <span>Edit Mode</span>
-                    </button>
-                </div>
+                <section class="actions-section">
+                    <div class="actions">
+                        <button class="action-btn" data-mmn-editor-mode="view-mode" type="button">
+                            <i class="bi bi-eye"></i>
+                            <span>
+                                <%= t('home-page.noteForm.richEditor.View_mode',i18nLang) %>
+                            </span>
+                        </button>
+                        <button class="action-btn active" data-mmn-editor-mode="edit-mode" type="button">
+                            <i class="bi bi-pencil-square"></i>
+                            <span>
+                                <%= t('home-page.noteForm.richEditor.Edit_mode',i18nLang) %>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="set-editor-height">
+                        <div class="input-container">
+                            <input type="text"
+                                placeholder="<%= t('home-page.noteForm.richEditor.Enter_height',i18nLang) %>..."
+                                onkeydown="RichEditorController.setHeightOfEditor(event)" />
+                            <span class="unit">px</span>
+                        </div>
+                        <div class="message"></div>
+                    </div>
+                </section>
                 <section class="rich-editor-mode view-mode"></section>
                 <section class="rich-editor-mode edit-mode active">
                     <textarea id="mmn-rich-note-editor" name="mmn-rich-note-editor"></textarea>
@@ -96,7 +111,7 @@
     </button>
 </section>
 
-<div id="night-mode-blender"></div>
+<div id="night-mode-mixer"></div>
 
 <!-- Modal - app settings -->
 <div class="modal" id="note-settings-modal" tabindex="-1">

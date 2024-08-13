@@ -5,11 +5,6 @@ export type TRedirectHomePage = {
     url: string
 }
 
-export type TUILanguage = {
-    code: string
-    label: string
-}
-
 export type THomePagePageData = TCommonPageData & {
     note: {
         content: string | null
@@ -20,12 +15,7 @@ export type THomePagePageData = TCommonPageData & {
         editor: EEditors
     }
     settings: {
-        langs: TUILanguage[]
+        langs: string[]
         currentLang: string
     }
-}
-
-export type TLanguagesDataTrans = {
-    en: 'English'
-    vi: 'Vietnamese'
 }

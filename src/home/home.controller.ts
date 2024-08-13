@@ -8,10 +8,8 @@ import { GetNoteOnHomePageParamsDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ApplicationService } from '@/utils/application/application.service'
 import { ViewRoutes } from '@/utils/routes'
-import type { TLanguagesDataTrans, THomePagePageData } from './types'
+import type { THomePagePageData } from './types'
 import { createServerData } from '@/utils/helpers'
-import { I18nService } from 'nestjs-i18n'
-import type { IUII18nTranslations } from '@/lang/i18n.generated'
 import type { TCommonPageData } from '@/utils/types'
 import { LangService } from '@/lang/lang.service'
 
@@ -21,7 +19,6 @@ export class HomeController implements IHomeController {
         private noteService: NoteService,
         private authService: AuthService,
         private applicationService: ApplicationService,
-        private i18n: I18nService<IUII18nTranslations>,
         private langService: LangService,
     ) {}
 
@@ -42,10 +39,7 @@ export class HomeController implements IHomeController {
         const note = await this.noteService.findNote(noteUniqueName)
         const appInfo = await this.applicationService.getApplicationInfo()
         const currentLang = this.langService.getCurrentLang()
-        const langsTrans = this.i18n.t('home-page.settings.language.langs', {
-            lang: currentLang,
-        }) as TLanguagesDataTrans
-        const langs = Object.entries(langsTrans).map(([code, label]) => ({ code, label }))
+        const langs = this.langService.getSupportedLangs()
         if (note) {
             if (note.password) {
                 try {
