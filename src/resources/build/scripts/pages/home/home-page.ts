@@ -401,29 +401,29 @@ const setStatusOfSettingsForm = (formTarget: HTMLFormElement, type: 'unsaved' | 
 const setRealtimeModeHandler = (status: TFormCheckValues): void => {
     if (status && status === 'on') {
         realtimeModeDisplay.classList.replace('inactive', 'active')
-        const currentRealtimeMode = getRealtimeModeInDevice()
+        const currentRealtimeMode = LocalStorageController.getRealtimeMode()
         if (!currentRealtimeMode || currentRealtimeMode !== 'sync') {
             NormalEditorController.fetchNoteContent()
         }
     } else {
         realtimeModeDisplay.classList.replace('active', 'inactive')
     }
-    setRealtimeModeInDevice(status ? 'sync' : 'stop')
+    LocalStorageController.setRealtimeMode(status ? 'sync' : 'stop')
 }
 
 const setNightModeHandler = (status: TFormCheckValues): void => {
     const mixer = document.getElementById('night-mode-mixer') as HTMLElement
     if (status && status === 'on') {
-        writeCssVariable('--mmn-mix-night-mode-reversed', 'difference')
+        LocalStorageController.writeCssVariable('--mmn-mix-night-mode-reversed', 'difference')
 
         mixer.classList.add('mix')
 
-        setNightModeInDevice('on')
+        LocalStorageController.setNightMode('on')
     } else {
-        writeCssVariable('--mmn-mix-night-mode-reversed', 'normal')
+        LocalStorageController.writeCssVariable('--mmn-mix-night-mode-reversed', 'normal')
         mixer.classList.remove('mix')
 
-        setNightModeInDevice('off')
+        LocalStorageController.setNightMode('off')
     }
 }
 
@@ -438,7 +438,7 @@ const saveSettingsChangeModes = async (e: SubmitEvent): Promise<void> => {
     const nightMode = formData.get('night-mode') as TFormCheckValues
 
     setRealtimeModeHandler(realtimeMode)
-    setNotifyNoteEditedModeInDevice(notifyNoteEditedMode ? 'on' : 'off')
+    LocalStorageController.setNotifyNoteEditedMode(notifyNoteEditedMode ? 'on' : 'off')
     setNightModeHandler(nightMode)
 
     setStatusOfSettingsForm(form, 'saved')
@@ -450,12 +450,12 @@ type TPasswordTabTypes = 'set-password' | 'remove-password'
 
 const changeNoteFormTextFontHandler = (font: TNoteFormTextFonts): void => {
     const textFont = convertToCssFontFamily(font)
-    writeCssVariable('--mmn-note-form-fonf', textFont)
-    setNoteFormTextFontInDevice(font)
+    LocalStorageController.writeCssVariable('--mmn-note-form-fonf', textFont)
+    LocalStorageController.setNoteFormTextFont(font)
 }
 
 const changeNavBarPosHandler = (pos: TNavBarPos): void => {
-    setNavBarPosInDevice(pos)
+    LocalStorageController.setNavBarPos(pos)
     const navBar = document.getElementById('nav-bar') as HTMLElement
     const posClasses = ['pos-sticky', 'pos-static']
 
@@ -478,7 +478,7 @@ const saveSettingsUserInterface = async (e: SubmitEvent): Promise<void> => {
     const navBarPos = formData.get('nav-bar-pos') as TNavBarPos
 
     if (editedNotifyStyle) {
-        setEditedNotifyStyleInDevice(editedNotifyStyle)
+        LocalStorageController.setEditedNotifyStyle(editedNotifyStyle)
     }
     if (noteFormFont) {
         changeNoteFormTextFontHandler(noteFormFont)
@@ -548,7 +548,7 @@ const setupScrollToBottom = (): void => {
     }
 }
 
-const initPage = (): void => {
+const initHomePage = (): void => {
     // setup "navigate" settings
     const navTabs = noteSettingsBoard.querySelectorAll<HTMLElement>(
         '.note-settings-navigation .nav-tabs-list .nav-tab',
@@ -560,13 +560,13 @@ const initPage = (): void => {
     }
 
     // setup "change modes" form
-    const realtimeMode = getRealtimeModeInDevice()
+    const realtimeMode = LocalStorageController.getRealtimeMode()
     if (realtimeMode && realtimeMode === 'sync') {
         const realtimeModeInput = document.getElementById('realtime-mode-input') as HTMLInputElement
         realtimeModeInput.checked = true
         realtimeModeDisplay.classList.replace('inactive', 'active')
     }
-    const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
+    const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
     if (notifyNoteEditedMode && notifyNoteEditedMode === 'off') {
         const realtimeModeInput = document.getElementById(
             'notify-note-edited-input',
@@ -599,7 +599,7 @@ const initPage = (): void => {
     }
 
     // setup "user interface" form
-    const editedNotifyStyle = getEditedNotifyStyleInDevice()
+    const editedNotifyStyle = LocalStorageController.getEditedNotifyStyle()
     if (editedNotifyStyle) {
         const editedNotifyStyleSelect = document.getElementById(
             'edited-notify-style-select',
@@ -612,7 +612,7 @@ const initPage = (): void => {
         }
     }
     // setup "note form text font"
-    const noteFormTextFont = getNoteFormTextFontInDevice()
+    const noteFormTextFont = LocalStorageController.getNoteFormTextFont()
     if (noteFormTextFont) {
         const noteFormTextFontSelect = document.getElementById(
             'note-form-font-select',
@@ -643,7 +643,9 @@ const initPage = (): void => {
             quickLookItem.style.width = `${quickLookItem.scrollWidth}px`
         })
         quickLookItem.addEventListener('mouseleave', function (e) {
-            quickLookItem.style.width = getCssVariable('--mmn-quick-look-icon-initial-size')
+            quickLookItem.style.width = LocalStorageController.getCssVariable(
+                '--mmn-quick-look-icon-initial-size',
+            )
         })
     }
 
@@ -661,7 +663,7 @@ const initPage = (): void => {
     })
 
     // setup "night mode"
-    const nightMode = getNightModeInDevice()
+    const nightMode = LocalStorageController.getNightMode()
     if (nightMode && nightMode === 'on') {
         const nightModeInput = document.getElementById('night-mode-input') as HTMLInputElement
         nightModeInput.checked = true
@@ -669,7 +671,7 @@ const initPage = (): void => {
     }
 
     // setup nav bar pos
-    const navBarPos = getNavBarPosInDevice()
+    const navBarPos = LocalStorageController.getNavBarPos()
     if (navBarPos) {
         const navBarPosSelect = document.getElementById('nav-bar-pos-select') as HTMLSelectElement
         changeNavBarPosHandler(navBarPos)
@@ -680,5 +682,7 @@ const initPage = (): void => {
             navBarPosSelect.value = navBarPos
         }
     }
+
+    initUserActions()
 }
-initPage()
+initHomePage()

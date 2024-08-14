@@ -1,9 +1,11 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import type { Request, Response } from 'express'
 import { HttpExceptionValidation } from '../validation/http-exception.validation'
-import type { THttpExceptionResBody } from '../types'
+import type { TCommonPageData, THttpExceptionResBody } from '../types'
 import { ClientViewPages } from '../application/view-pages'
 import { I18nContext } from 'nestjs-i18n'
+import { createClientPageData } from '../helpers'
+import { ApplicationService } from '../application/application.service'
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
@@ -13,8 +15,9 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
         return request.path.search('/api/') !== -1
     }
 
-    catch(exception: HttpException, host: ArgumentsHost) {
-        console.error('>>> http error >>>', exception)
+    async catch(exception: HttpException, host: ArgumentsHost) {
+        console.error('\n>>> http error >>>', exception)
+
         const ctx = host.switchToHttp()
         const response = ctx.getResponse<Response<THttpExceptionResBody>>()
         const request = ctx.getRequest<Request>()
@@ -33,7 +36,14 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
             })
         } else {
             if (validatedException.status === HttpStatus.NOT_FOUND) {
-                response.status(HttpStatus.NOT_FOUND).render(ClientViewPages.page404)
+                const appInfo = await ApplicationService.getApplicationInfo()
+                response.status(HttpStatus.NOT_FOUND).render(
+                    ClientViewPages.page404,
+                    createClientPageData<TCommonPageData>({
+                        appInfo,
+                        verified: false,
+                    }),
+                )
             } else {
                 response.status(validatedException.status).render(ClientViewPages.error, {
                     name: validatedException.name,

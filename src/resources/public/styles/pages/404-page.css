@@ -1,0 +1,124 @@
+@charset "UTF-8";
+/* @rules
+normal - regular
+bold - bold
+500 - medium
+300 - light
+100 - thin
+*/
+/* =================================================== */
+/* ==================== Poppins ====================== */
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-medium-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('/styles/fonts/poppins/poppins-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Work Sans ==================== */
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Work Sans';
+    src: url('/styles/fonts/worksans/WorkSans-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+/* =================================================== */
+/* ==================== Roboto ==================== */
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-regular-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: normal;
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-bold-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: bold;
+}
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/fonts/roboto/roboto-light-webfont.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+#page-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* Màu nền trắng */
+    color: #000000; /* Màu chữ đen */
+    font-family: 'Work Sans', Arial, sans-serif;
+    overflow: hidden;
+    line-height: 1;
+    margin-top: 50px;
+}
+#page-main .animation-container {
+    text-align: center;
+}
+#page-main .animation-container .error {
+    font-size: 120px;
+    margin: 0;
+    color: #000000; /* Màu chữ đen */
+}
+#page-main .animation-container .message {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #000000; /* Màu chữ xám đậm để tương phản nhẹ với màu đen */
+}
+#page-main .animation-container .go-back-your-note {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #000000; /* Màu nền đen */
+    color: #ffffff; /* Màu chữ trắng */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+    border: 3px #000000 solid;
+}
+#page-main .animation-container .go-back-your-note:hover,
+#page-main .animation-container .go-back-your-note:active {
+    background-color: #ffffff; /* Màu nền xám đậm khi hover */
+    color: #000000;
+}
+
+/*# sourceMappingURL=404-page.css.map */

@@ -25,32 +25,56 @@ const redirectAfterMs = (timeToRedirect, href) => {
         window.location.href = href
     }, timeToRedirect)
 }
-const getRealtimeModeInDevice = () => {
-    return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE)
+class LocalStorageController {
+    static getRealtimeMode() {
+        return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE)
+    }
+    static setRealtimeMode(type) {
+        localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
+    }
+    static getNotifyNoteEditedMode() {
+        return localStorage.getItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE)
+    }
+    static setNotifyNoteEditedMode(status) {
+        localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, status)
+    }
+    static getEditedNotifyStyle() {
+        return localStorage.getItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE)
+    }
+    static setEditedNotifyStyle(type) {
+        localStorage.setItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE, type)
+    }
+    static getCssVariable(variableName) {
+        return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
+    }
+    static getNightMode() {
+        return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE)
+    }
+    static setNightMode(status) {
+        localStorage.setItem(ELocalStorageKeys.NIGHT_MODE, status)
+    }
+    static getNoteFormTextFont() {
+        return localStorage.getItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT)
+    }
+    static setNoteFormTextFont(font) {
+        localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
+    }
+    static writeCssVariable(cssVarName, value) {
+        document.documentElement.style.setProperty(cssVarName, value)
+    }
+    static setYourNote(noteUniqueName) {
+        localStorage.setItem(ELocalStorageKeys.CURRENT_NOTE, noteUniqueName)
+    }
+    static getYourNote() {
+        const noteUniqueName = localStorage.getItem(ELocalStorageKeys.CURRENT_NOTE)
+        return noteUniqueName || null
+    }
 }
-const setRealtimeModeInDevice = (type) => {
-    localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
+LocalStorageController.setNavBarPos = (pos) => {
+    localStorage.setItem(ELocalStorageKeys.NAV_BAR_POS, pos)
 }
-const getNotifyNoteEditedModeInDevice = () => {
-    return localStorage.getItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE)
-}
-const setNotifyNoteEditedModeInDevice = (status) => {
-    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, status)
-}
-const getEditedNotifyStyleInDevice = () => {
-    return localStorage.getItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE)
-}
-const setEditedNotifyStyleInDevice = (type) => {
-    localStorage.setItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE, type)
-}
-function getCssVariable(variableName) {
-    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
-}
-const getNightModeInDevice = () => {
-    return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE)
-}
-const setNightModeInDevice = (status) => {
-    localStorage.setItem(ELocalStorageKeys.NIGHT_MODE, status)
+LocalStorageController.getNavBarPos = () => {
+    return localStorage.getItem(ELocalStorageKeys.NAV_BAR_POS)
 }
 const convertToCssFontFamily = (font) => {
     switch (font) {
@@ -66,16 +90,7 @@ const convertToCssFontFamily = (font) => {
             return "'Roboto', Times, serif"
     }
 }
-const getNoteFormTextFontInDevice = () => {
-    return localStorage.getItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT)
-}
-const setNoteFormTextFontInDevice = (font) => {
-    localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
-}
-const writeCssVariable = (cssVarName, value) => {
-    document.documentElement.style.setProperty(cssVarName, value)
-}
-function convertStringToChunks(inputString, sizeInKBPerChunk) {
+const convertStringToChunks = (inputString, sizeInKBPerChunk) => {
     const chunkSize = sizeInKBPerChunk * 1024
     const blob = new Blob([inputString])
     const size = blob.size
@@ -92,9 +107,7 @@ function convertStringToChunks(inputString, sizeInKBPerChunk) {
     }
     return chunks
 }
-const setNavBarPosInDevice = (pos) => {
-    localStorage.setItem(ELocalStorageKeys.NAV_BAR_POS, pos)
-}
-const getNavBarPosInDevice = () => {
-    return localStorage.getItem(ELocalStorageKeys.NAV_BAR_POS)
+const initUserActions = () => {
+    const noteUniqueName = getNoteUniqueNameFromURL()
+    LocalStorageController.setYourNote(noteUniqueName)
 }

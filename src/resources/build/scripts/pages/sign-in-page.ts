@@ -104,3 +104,8 @@ const signInHandler = async (e: SubmitEvent): Promise<void> => {
         submitBtn.innerHTML = htmlBefore
     }
 }
+
+const initSignInPage = (): void => {
+    initUserActions()
+}
+initSignInPage()

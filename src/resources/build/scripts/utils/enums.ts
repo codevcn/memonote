@@ -40,6 +40,7 @@ enum ELocalStorageKeys {
     NIGHT_MODE = 'night-mode',
     NOTE_FORM_TEXT_FONT = 'note-form-text-font',
     NAV_BAR_POS = 'nav-bar-pos',
+    CURRENT_NOTE = 'current-note',
 }
 
 enum ENoteLengths {

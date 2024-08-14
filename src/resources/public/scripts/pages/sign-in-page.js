@@ -119,3 +119,7 @@ const signInHandler = (e) =>
             submitBtn.innerHTML = htmlBefore
         }
     })
+const initSignInPage = () => {
+    initUserActions()
+}
+initSignInPage()

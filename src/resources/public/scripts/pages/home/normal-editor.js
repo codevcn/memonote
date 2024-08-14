@@ -63,11 +63,11 @@ normalEditorSocket.on(EInitSocketEvents.CONNECT_ERROR, (err) =>
 )
 normalEditorSocket.on(ENoteEvents.NOTE_FORM_EDITED, (data) =>
     __awaiter(void 0, void 0, void 0, function* () {
-        const realtimeMode = getRealtimeModeInDevice()
+        const realtimeMode = LocalStorageController.getRealtimeMode()
         if (realtimeMode && realtimeMode === 'sync') {
             setForNoteFormEdited(data)
         } else {
-            const notifyNoteEditedMode = getNotifyNoteEditedModeInDevice()
+            const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
             if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
                 LayoutController.notifyNoteEdited('on', data)
             }

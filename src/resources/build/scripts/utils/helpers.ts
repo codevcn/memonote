@@ -33,42 +33,77 @@ const redirectAfterMs = (timeToRedirect: number, href: string): void => {
     }, timeToRedirect)
 }
 
-const getRealtimeModeInDevice = (): TRealtimeModeTypes | null => {
-    return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE) as TRealtimeModeTypes | null
-}
+class LocalStorageController {
+    static getRealtimeMode(): TRealtimeModeTypes | null {
+        return localStorage.getItem(ELocalStorageKeys.REALTIME_MODE) as TRealtimeModeTypes | null
+    }
 
-const setRealtimeModeInDevice = (type: TRealtimeModeTypes): void => {
-    localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
-}
+    static setRealtimeMode(type: TRealtimeModeTypes): void {
+        localStorage.setItem(ELocalStorageKeys.REALTIME_MODE, type)
+    }
 
-const getNotifyNoteEditedModeInDevice = (): TModeStatus | null => {
-    return localStorage.getItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE) as TModeStatus | null
-}
+    static getNotifyNoteEditedMode(): TModeStatus | null {
+        return localStorage.getItem(
+            ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE,
+        ) as TModeStatus | null
+    }
 
-const setNotifyNoteEditedModeInDevice = (status: TModeStatus): void => {
-    localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, status)
-}
+    static setNotifyNoteEditedMode(status: TModeStatus): void {
+        localStorage.setItem(ELocalStorageKeys.NOTE_CHANGES_DISPLAY_MODE, status)
+    }
 
-const getEditedNotifyStyleInDevice = (): TEditedNotifyStyleTypes | null => {
-    return localStorage.getItem(
-        ELocalStorageKeys.EDITING_NOTIFY_STYLE,
-    ) as TEditedNotifyStyleTypes | null
-}
+    static getEditedNotifyStyle(): TEditedNotifyStyleTypes | null {
+        return localStorage.getItem(
+            ELocalStorageKeys.EDITING_NOTIFY_STYLE,
+        ) as TEditedNotifyStyleTypes | null
+    }
 
-const setEditedNotifyStyleInDevice = (type: TEditedNotifyStyleTypes): void => {
-    localStorage.setItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE, type)
-}
+    static setEditedNotifyStyle(type: TEditedNotifyStyleTypes): void {
+        localStorage.setItem(ELocalStorageKeys.EDITING_NOTIFY_STYLE, type)
+    }
 
-function getCssVariable(variableName: string): string {
-    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
-}
+    static getCssVariable(variableName: string): string {
+        return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim()
+    }
 
-const getNightModeInDevice = (): TModeStatus | null => {
-    return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE) as TModeStatus | null
-}
+    static getNightMode(): TModeStatus | null {
+        return localStorage.getItem(ELocalStorageKeys.NIGHT_MODE) as TModeStatus | null
+    }
 
-const setNightModeInDevice = (status: TModeStatus): void => {
-    localStorage.setItem(ELocalStorageKeys.NIGHT_MODE, status)
+    static setNightMode(status: TModeStatus): void {
+        localStorage.setItem(ELocalStorageKeys.NIGHT_MODE, status)
+    }
+
+    static getNoteFormTextFont(): TNoteFormTextFonts | null {
+        return localStorage.getItem(
+            ELocalStorageKeys.NOTE_FORM_TEXT_FONT,
+        ) as TNoteFormTextFonts | null
+    }
+
+    static setNoteFormTextFont(font: TNoteFormTextFonts): void {
+        localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
+    }
+
+    static writeCssVariable(cssVarName: string, value: string): void {
+        document.documentElement.style.setProperty(cssVarName, value)
+    }
+
+    static setNavBarPos = (pos: TNavBarPos): void => {
+        localStorage.setItem(ELocalStorageKeys.NAV_BAR_POS, pos)
+    }
+
+    static getNavBarPos = (): TNavBarPos => {
+        return localStorage.getItem(ELocalStorageKeys.NAV_BAR_POS) as TNavBarPos
+    }
+
+    static setYourNote(noteUniqueName: string): void {
+        localStorage.setItem(ELocalStorageKeys.CURRENT_NOTE, noteUniqueName)
+    }
+
+    static getYourNote(): string | null {
+        const noteUniqueName = localStorage.getItem(ELocalStorageKeys.CURRENT_NOTE) as string
+        return noteUniqueName || null
+    }
 }
 
 const convertToCssFontFamily = (font: TNoteFormTextFonts) => {
@@ -86,19 +121,7 @@ const convertToCssFontFamily = (font: TNoteFormTextFonts) => {
     }
 }
 
-const getNoteFormTextFontInDevice = (): TNoteFormTextFonts | null => {
-    return localStorage.getItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT) as TNoteFormTextFonts | null
-}
-
-const setNoteFormTextFontInDevice = (font: TNoteFormTextFonts): void => {
-    localStorage.setItem(ELocalStorageKeys.NOTE_FORM_TEXT_FONT, font)
-}
-
-const writeCssVariable = (cssVarName: string, value: string): void => {
-    document.documentElement.style.setProperty(cssVarName, value)
-}
-
-function convertStringToChunks(inputString: string, sizeInKBPerChunk: number): string[] {
+const convertStringToChunks = (inputString: string, sizeInKBPerChunk: number): string[] => {
     const chunkSize = sizeInKBPerChunk * 1024
 
     const blob = new Blob([inputString])
@@ -120,10 +143,7 @@ function convertStringToChunks(inputString: string, sizeInKBPerChunk: number): s
     return chunks
 }
 
-const setNavBarPosInDevice = (pos: TNavBarPos): void => {
-    localStorage.setItem(ELocalStorageKeys.NAV_BAR_POS, pos)
-}
-
-const getNavBarPosInDevice = (): TNavBarPos => {
-    return localStorage.getItem(ELocalStorageKeys.NAV_BAR_POS) as TNavBarPos
+const initUserActions = (): void => {
+    const noteUniqueName = getNoteUniqueNameFromURL()
+    LocalStorageController.setYourNote(noteUniqueName)
 }

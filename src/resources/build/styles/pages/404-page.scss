@@ -1,0 +1,52 @@
+@use '../global/text-fonts';
+
+$mmn-text-cl-black: #000000;
+$mmn-text-cl-white: #ffffff;
+
+#page-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    background-color: $mmn-text-cl-white; /* Màu nền trắng */
+    color: $mmn-text-cl-black; /* Màu chữ đen */
+    font-family: text-fonts.$mmn-primary-fontf;
+    overflow: hidden;
+    line-height: 1;
+    margin-top: 50px;
+
+    .animation-container {
+        text-align: center;
+
+        .error {
+            font-size: 120px;
+            margin: 0;
+            color: $mmn-text-cl-black; /* Màu chữ đen */
+        }
+
+        .message {
+            font-size: 24px;
+            margin: 10px 0;
+            color: $mmn-text-cl-black; /* Màu chữ xám đậm để tương phản nhẹ với màu đen */
+        }
+
+        .go-back-your-note {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: $mmn-text-cl-black; /* Màu nền đen */
+            color: $mmn-text-cl-white; /* Màu chữ trắng */
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+            border: 3px $mmn-text-cl-black solid;
+
+            &:hover,
+            &:active {
+                background-color: $mmn-text-cl-white; /* Màu nền xám đậm khi hover */
+                color: $mmn-text-cl-black;
+            }
+        }
+    }
+}

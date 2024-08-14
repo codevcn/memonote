@@ -11,7 +11,7 @@ class LayoutController {
     static notifyNoteEdited(type, noteForm) {
         let baseClasses = ['notify-note-edited', 'slither', 'blink']
         let notifyNoteEditedClass = ['notify-note-edited']
-        notifyNoteEditedClass.push(getEditedNotifyStyleInDevice() || 'blink')
+        notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
         let noteFormItem
         const { title, author, content } = noteForm
         const noteFormEle = homePage_pageMain.querySelector('.note-form')

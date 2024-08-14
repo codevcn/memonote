@@ -22,7 +22,7 @@ class LayoutController {
     static notifyNoteEdited(type: 'on' | 'off', noteForm: TNoteForm): void {
         let baseClasses: string[] = ['notify-note-edited', 'slither', 'blink']
         let notifyNoteEditedClass: string[] = ['notify-note-edited']
-        notifyNoteEditedClass.push(getEditedNotifyStyleInDevice() || 'blink')
+        notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
         let noteFormItem: HTMLElement
         const { title, author, content } = noteForm
         const noteFormEle = homePage_pageMain.querySelector('.note-form') as HTMLElement

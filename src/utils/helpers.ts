@@ -2,6 +2,6 @@ type TObject = {
     [key: string | number]: any
 }
 
-export function createServerData<T extends TObject>(serverData: T): T {
-    return serverData
+export function createClientPageData<T extends TObject>(data: T): T {
+    return data
 }

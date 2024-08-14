@@ -9,7 +9,7 @@ import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ApplicationService } from '@/utils/application/application.service'
 import { ViewRoutes } from '@/utils/routes'
 import type { THomePagePageData } from './types'
-import { createServerData } from '@/utils/helpers'
+import { createClientPageData } from '@/utils/helpers'
 import type { TCommonPageData } from '@/utils/types'
 import { LangService } from '@/lang/lang.service'
 
@@ -18,7 +18,6 @@ export class HomeController implements IHomeController {
     constructor(
         private noteService: NoteService,
         private authService: AuthService,
-        private applicationService: ApplicationService,
         private langService: LangService,
     ) {}
 
@@ -37,7 +36,7 @@ export class HomeController implements IHomeController {
     ) {
         const { noteUniqueName } = params
         const note = await this.noteService.findNote(noteUniqueName)
-        const appInfo = await this.applicationService.getApplicationInfo()
+        const appInfo = await ApplicationService.getApplicationInfo()
         const currentLang = this.langService.getCurrentLang()
         const langs = this.langService.getSupportedLangs()
         if (note) {
@@ -46,7 +45,7 @@ export class HomeController implements IHomeController {
                     await this.authService.checkAuthentication(req)
                     return res.status(HttpStatus.OK).render(
                         ClientViewPages.home,
-                        createServerData<THomePagePageData>({
+                        createClientPageData<THomePagePageData>({
                             verified: true,
                             appInfo,
                             note: {
@@ -66,7 +65,7 @@ export class HomeController implements IHomeController {
                 } catch (error) {
                     return res.status(HttpStatus.OK).render(
                         ClientViewPages.signIn,
-                        createServerData<TCommonPageData>({
+                        createClientPageData<TCommonPageData>({
                             verified: false,
                             appInfo,
                         }),
@@ -75,7 +74,7 @@ export class HomeController implements IHomeController {
             }
             return res.status(HttpStatus.OK).render(
                 ClientViewPages.home,
-                createServerData<THomePagePageData>({
+                createClientPageData<THomePagePageData>({
                     verified: true,
                     appInfo,
                     note: {
@@ -97,7 +96,7 @@ export class HomeController implements IHomeController {
             const createdNote = await this.noteService.createNewNoteHandler(noteUniqueName)
             return res.status(HttpStatus.OK).render(
                 ClientViewPages.home,
-                createServerData<THomePagePageData>({
+                createClientPageData<THomePagePageData>({
                     verified: true,
                     appInfo,
                     note: {
@@ -122,7 +121,7 @@ export class HomeController implements IHomeController {
     @Get('menu/about')
     @Render(ClientViewPages.about)
     async aboutPage() {
-        const appInfo = await this.applicationService.getApplicationInfo()
+        const appInfo = await ApplicationService.getApplicationInfo()
         return { appInfo, verified: true }
     }
 }
