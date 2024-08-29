@@ -117,6 +117,9 @@ bold - bold
     width: 1.5rem;
 }
 
+#note-settings-modal {
+    z-index: 1400;
+}
 #note-settings-modal .modal-dialog .modal-content .modal-header {
     padding: 10px 20px;
 }

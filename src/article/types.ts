@@ -1,3 +1,5 @@
+import type { UploadApiResponse } from 'cloudinary'
+
 export type TUploadIndentity = {
     uploadId: string
 }
@@ -19,4 +21,9 @@ export type TCreateDirOfArticleChunk = {
 export type TWriteChunks = {
     docWasCreated: boolean
     chunkFilePathBackup: string
+}
+
+export type TUploadedImage = {
+    imgURL: string
+    imgPublicId: string
 }

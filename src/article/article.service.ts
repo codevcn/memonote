@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import type {
     TArticleChunkStatus,
     TCreateDirOfArticleChunk,
+    TUploadedImage,
     TUploadIndentity,
     TWriteChunks,
 } from './types'
@@ -14,9 +15,10 @@ import { Article, TArticleDocument, TArticleModel } from './article.model'
 import { InjectModel } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 import AppRoot from 'app-root-path'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { EArticleMessages } from './messages'
 import { EArticleChunk } from './enums'
+import { v2 as cloudinary, UploadApiOptions, UploadApiResponse } from 'cloudinary'
+import { WsException } from '@nestjs/websockets'
 
 @Injectable()
 export class ArticleService {
@@ -28,8 +30,15 @@ export class ArticleService {
     private readonly articleUnicode: NodeJS.BufferEncoding = 'utf-8'
     private readonly articleFiletype: string = 'txt'
     private readonly backupArticleSuffix: string = 'backup'
+    private readonly artilceImgsPath: string = '/memonote/articles'
 
-    constructor(@InjectModel(Article.name) private articleModel: TArticleModel) {}
+    constructor(@InjectModel(Article.name) private articleModel: TArticleModel) {
+        cloudinary.config({
+            cloud_name: process.env.CLOUDINARY_CLOUDNAME,
+            api_key: process.env.CLOUDINARY_API_KEY,
+            api_secret: process.env.CLOUDINARY_API_SECRET,
+        })
+    }
 
     private async createNewArticle(
         noteUniqueName: string,
@@ -112,7 +121,7 @@ export class ArticleService {
         const uploadIdentity = this.uploadsIndentity.get(noteUniqueName)
         if (uploadIdentity) {
             if (uploadIdentity.uploadId !== uploadId) {
-                throw new BaseCustomException(EArticleMessages.MULTIPLE_UPLOAD)
+                throw new WsException(EArticleMessages.MULTIPLE_UPLOAD)
             }
         } else {
             this.uploadsIndentity.set(noteUniqueName, { uploadId })
@@ -235,7 +244,7 @@ export class ArticleService {
             filenameWithExtension,
         )
         const readStream = createReadStream(articleFilepath, {
-            highWaterMark: EArticleChunk.SIZE_IN_KiB_PER_CHUNK * 1024,
+            highWaterMark: EArticleChunk.SIZE_PER_CHUNK,
         })
         const articleStat = await stat(articleFilepath)
         return new StreamableFile(readStream, {
@@ -243,5 +252,34 @@ export class ArticleService {
             disposition: `attachment; filename="${filenameWithExtension}"`,
             length: articleStat.size,
         })
+    }
+
+    private createImgPath(notedId: string): string {
+        return `${this.artilceImgsPath}/noteId-${notedId}`
+    }
+
+    async uploadImage(image: ArrayBuffer, notedId: string): Promise<TUploadedImage> {
+        const imgInfo: UploadApiOptions = {
+            use_filename: false,
+            resource_type: 'image',
+            folder: this.createImgPath(notedId),
+        }
+        const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+            cloudinary.uploader
+                .upload_stream(imgInfo, (error, uploadResult) => {
+                    if (uploadResult) {
+                        return resolve(uploadResult)
+                    }
+                    if (error) {
+                        return reject(error)
+                    }
+                    reject(new WsException(EArticleMessages.UPLOAD_IMAGE_FAIL))
+                })
+                .end(image)
+        })
+        return {
+            imgURL: result.secure_url,
+            imgPublicId: result.public_id,
+        }
     }
 }

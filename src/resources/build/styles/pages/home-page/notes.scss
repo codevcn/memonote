@@ -9,7 +9,7 @@ $mmn-note-title-font-size: 2em;
 $mmn-note-author-font-size: 0.95em;
 $mmn-note-content-font-size: 1.05em;
 $mmn-note-annotaion-border-cl: #a5a5a5;
-$mmn-note-padding-x: 130px;
+$mmn-note-padding-x: 100px;
 $mmn-note-padding-x-for-large-breakpoint: 5px;
 $mmn-note-margin-top: 15px;
 $mmn-notify-note-edited-line: 1px colors.$mmn-regular-gray-cl solid;
@@ -33,14 +33,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
     i {
         font-size: 0.9rem;
         color: inherit;
-    }
-}
-
-@mixin on-focus-display-note-annotation-styling {
-    &:focus {
-        & ~ .note-annotation {
-            opacity: 1;
-        }
     }
 }
 
@@ -180,21 +172,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
                 }
             }
 
-            .note-annotation {
-                position: absolute;
-                right: calc(100% + 10px);
-                top: 50%;
-                transform: translate(0, -50%);
-                border-right: 3px $mmn-note-annotaion-border-cl solid;
-                padding-right: 8px;
-                font-size: 0.9rem;
-                opacity: 0;
-                transition: opacity 0.15s;
-                width: max-content;
-                max-width: $mmn-note-padding-x - 30px;
-                text-align: right;
-            }
-
             &.note-title {
                 input {
                     background-color: transparent;
@@ -211,8 +188,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
                     &::placeholder {
                         color: colors.$mmn-regular-gray-cl;
                     }
-
-                    @include on-focus-display-note-annotation-styling;
                 }
             }
 
@@ -234,8 +209,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
                     &::placeholder {
                         color: colors.$mmn-regular-gray-cl;
                     }
-
-                    @include on-focus-display-note-annotation-styling;
                 }
             }
 
@@ -258,11 +231,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
                         display: grid;
                         overflow-y: auto;
 
-                        .note-annotation {
-                            top: 5px;
-                            transform: translate(0, 0);
-                        }
-
                         &::after,
                         .note-editor {
                             grid-area: 1 / 1 / 2 / 2;
@@ -276,8 +244,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
                             resize: none;
                             overflow: hidden;
                             padding: 0;
-
-                            @include on-focus-display-note-annotation-styling;
                         }
 
                         &::after {
@@ -330,10 +296,6 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
 
             .note-form-item {
                 font-size: 0.9rem;
-
-                .note-annotation {
-                    display: none;
-                }
             }
         }
     }
@@ -351,6 +313,7 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
         column-gap: 30px;
         flex-wrap: wrap;
         margin-bottom: 10px;
+        row-gap: 10px;
 
         .actions {
             display: flex;
@@ -449,6 +412,7 @@ $mmn-set-height-of-rich-editor-input-width: 150px;
             border: 1px solid #ced4da;
             border-radius: 5px;
             padding: 15px;
+            overflow-y: auto;
         }
     }
 }

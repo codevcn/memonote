@@ -1,35 +1,4 @@
 'use strict'
-var __awaiter =
-    (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
-        function adopt(value) {
-            return value instanceof P
-                ? value
-                : new P(function (resolve) {
-                      resolve(value)
-                  })
-        }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) {
-                try {
-                    step(generator.next(value))
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            function rejected(value) {
-                try {
-                    step(generator['throw'](value))
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            function step(result) {
-                result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected)
-            }
-            step((generator = generator.apply(thisArg, _arguments || [])).next())
-        })
-    }
 var _a, _b, _c, _d
 var _e
 // init types, enums, ...
@@ -42,33 +11,25 @@ const notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSock
 // init vars
 const notificationSocketReconnecting = { flag: false }
 // listeners
-notificationSocket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (notificationSocketReconnecting.flag) {
-            LayoutController.toast('success', 'Connected to server.', 2000)
-            notificationSocketReconnecting.flag = false
-        }
-        console.log('>>> Socket connected to server.')
-    }),
-)
-notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, (err) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (notificationSocket.active) {
-            LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-            notificationSocketReconnecting.flag = true
-        } else {
-            LayoutController.toast('error', "Can't connect with the server.")
-            console.error(`>>> connect_error due to ${err.message}`)
-        }
-    }),
-)
-notificationSocket.on(ENotificationEvents.NOTIFY, (notif) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        NotificationsController.addNewNotif(
-            Object.assign(Object.assign({}, notif), { isNew: true }),
-        )
-    }),
-)
+notificationSocket.on(EInitSocketEvents.CLIENT_CONNECTED, async (data) => {
+    if (notificationSocketReconnecting.flag) {
+        LayoutController.toast('success', 'Connected to server.', 2000)
+        notificationSocketReconnecting.flag = false
+    }
+    console.log('>>> notification Socket connected to server.')
+})
+notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err) => {
+    if (notificationSocket.active) {
+        LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+        notificationSocketReconnecting.flag = true
+    } else {
+        LayoutController.toast('error', "Can't connect with the server.")
+        console.error(`>>> notification connect_error due to ${err.message}`)
+    }
+})
+notificationSocket.on(ENotificationEvents.NOTIFY, async (notif) => {
+    NotificationsController.addNewNotif({ ...notif, isNew: true })
+})
 // controller
 class NotificationsController {
     static setNotifsData(notifsData) {
@@ -186,80 +147,70 @@ class NotificationsController {
                 break
         }
     }
-    static loadMoreNotifs() {
+    static async loadMoreNotifs() {
         var _a
-        return __awaiter(this, void 0, void 0, function* () {
-            const notifsList = this.notifsList_all
-            if (!notifsList) return
-            let apiResult = null
-            const htmlBefore =
-                ((_a = this.loadMoreBtn) === null || _a === void 0 ? void 0 : _a.innerHTML) || ''
-            this.setLoadMoreBtn('innerHtml', Materials.createHTMLLoading('border'))
-            try {
-                const { data } = yield getNotificationsAPI(
-                    pageData.noteId,
-                    this.notifsData[this.notifsData.length - 1],
-                )
-                apiResult = data
-            } catch (error) {
-                if (error instanceof Error) {
-                    this.setLoadMoreBtn('error', error.message)
-                    throw new BaseCustomError(error.message)
-                }
+        const notifsList = this.notifsList_all
+        if (!notifsList) return
+        let apiResult = null
+        const htmlBefore =
+            ((_a = this.loadMoreBtn) === null || _a === void 0 ? void 0 : _a.innerHTML) || ''
+        this.setLoadMoreBtn('innerHtml', Materials.createHTMLLoading('border'))
+        try {
+            const { data } = await getNotificationsAPI(
+                pageData.noteId,
+                this.notifsData[this.notifsData.length - 1],
+            )
+            apiResult = data
+        } catch (error) {
+            if (error instanceof Error) {
+                this.setLoadMoreBtn('error', error.message)
+                throw new BaseCustomError(error.message)
             }
-            this.setLoadMoreBtn('innerHtml', htmlBefore)
-            if (apiResult && apiResult.notifs && apiResult.notifs.length > 0) {
-                const notifs = apiResult.notifs.map((notif) =>
-                    Object.assign(Object.assign({}, notif), { isNew: false }),
-                )
-                this.addNotifsData(notifs)
-                for (const notif of notifs) {
-                    notifsList.appendChild(Materials.createElementNotif(notif))
-                }
-                this.setCounter('all', this.notifsData.length)
-                if (apiResult.isEnd) {
-                    this.setLoadMoreBtn('hide')
-                }
-            } else {
+        }
+        this.setLoadMoreBtn('innerHtml', htmlBefore)
+        if (apiResult && apiResult.notifs && apiResult.notifs.length > 0) {
+            const notifs = apiResult.notifs.map((notif) => ({ ...notif, isNew: false }))
+            this.addNotifsData(notifs)
+            for (const notif of notifs) {
+                notifsList.appendChild(Materials.createElementNotif(notif))
+            }
+            this.setCounter('all', this.notifsData.length)
+            if (apiResult.isEnd) {
                 this.setLoadMoreBtn('hide')
             }
-        })
+        } else {
+            this.setLoadMoreBtn('hide')
+        }
     }
-    static fetchNotifications() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const notifsList = this.notifsList_all
-            if (!notifsList) return
-            const htmlBefore = notifsList.innerHTML
-            notifsList.innerHTML = Materials.createHTMLLoading('border')
-            let apiSuccess = false
-            let apiResult = null
-            try {
-                const { data } = yield getNotificationsAPI(pageData.noteId)
-                apiResult = data
-                apiSuccess = true
-            } catch (error) {
-                if (error instanceof Error) {
-                    const err = HTTPErrorHandler.handleError(error)
-                    this.setNotifsMessage(err.message)
-                }
+    static async fetchNotifications() {
+        const notifsList = this.notifsList_all
+        if (!notifsList) return
+        const htmlBefore = notifsList.innerHTML
+        notifsList.innerHTML = Materials.createHTMLLoading('border')
+        let apiSuccess = false
+        let apiResult = null
+        try {
+            const { data } = await getNotificationsAPI(pageData.noteId)
+            apiResult = data
+            apiSuccess = true
+        } catch (error) {
+            if (error instanceof Error) {
+                const err = HTTPErrorHandler.handleError(error)
+                this.setNotifsMessage(err.message)
             }
-            if (apiSuccess) {
-                if (apiResult && apiResult.notifs.length > 0) {
-                    this.renderNotifs(
-                        apiResult.notifs.map((notif) =>
-                            Object.assign(Object.assign({}, notif), { isNew: false }),
-                        ),
-                    )
-                    if (apiResult.isEnd) {
-                        this.setLoadMoreBtn('hide')
-                    } else {
-                        this.setLoadMoreBtn('show')
-                    }
+        }
+        if (apiSuccess) {
+            if (apiResult && apiResult.notifs.length > 0) {
+                this.renderNotifs(apiResult.notifs.map((notif) => ({ ...notif, isNew: false })))
+                if (apiResult.isEnd) {
+                    this.setLoadMoreBtn('hide')
                 } else {
-                    notifsList.innerHTML = htmlBefore
+                    this.setLoadMoreBtn('show')
                 }
+            } else {
+                notifsList.innerHTML = htmlBefore
             }
-        })
+        }
     }
     static initCategorySwitcher() {
         const notificationsBoard = this.notificationsBoard

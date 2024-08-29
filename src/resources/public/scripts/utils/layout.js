@@ -8,6 +8,14 @@ const clientSocketConfig = {
     withCredentials: true,
 }
 class LayoutController {
+    static setAppProgress(type) {
+        const spinner = document.getElementById('app-spinner-section')
+        if (type === 'on') {
+            spinner.classList.add('active')
+        } else {
+            spinner.classList.remove('active')
+        }
+    }
     static notifyNoteEdited(type, noteForm) {
         let baseClasses = ['notify-note-edited', 'slither', 'blink']
         let notifyNoteEditedClass = ['notify-note-edited']

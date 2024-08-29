@@ -72,3 +72,5 @@ type TNotifData = TNotif & {
 }
 
 type TNavBarPos = 'sticky' | 'static'
+
+type TUnknownFunction = (...args: any) => void

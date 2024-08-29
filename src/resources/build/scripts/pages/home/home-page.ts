@@ -26,6 +26,7 @@ type TNoteContentHistory = {
 const noteContentHistory: TNoteContentHistory = { history: [''], index: 0 }
 const SCROLL_TO_TOP_THRESHOLD: number = 100
 const SCROLL_TO_BOTTOM_THRESHOLD: number = 100
+const NOTE_BROADCAST_DELAY: number = 1000
 
 const validateNoteContent = (noteContent: string): boolean => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
@@ -86,17 +87,17 @@ const setBoardUIOfNoteEditor = (
 const broadcastNoteContentTypingHanlder = debounce((noteContent: string): void => {
     LayoutController.notifyNoteEdited('off', { content: 'true' })
     NormalEditorController.broadcastNoteTyping({ content: noteContent })
-}, ENoteTyping.NOTE_BROADCAST_DELAY)
+}, NOTE_BROADCAST_DELAY)
 
 const broadcastNoteTitleTypingHanlder = debounce((target: HTMLInputElement): void => {
     LayoutController.notifyNoteEdited('off', { title: 'true' })
     NormalEditorController.broadcastNoteTyping({ title: target.value })
-}, ENoteTyping.NOTE_BROADCAST_DELAY)
+}, NOTE_BROADCAST_DELAY)
 
 const broadcastNoteAuthorTypingHanlder = debounce((target: HTMLInputElement): void => {
     LayoutController.notifyNoteEdited('off', { author: 'true' })
     NormalEditorController.broadcastNoteTyping({ author: target.value })
-}, ENoteTyping.NOTE_BROADCAST_DELAY)
+}, NOTE_BROADCAST_DELAY)
 
 const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> => {
     const noteContent = noteEditorTarget.value

@@ -90,8 +90,8 @@ const convertToCssFontFamily = (font) => {
             return "'Roboto', Times, serif"
     }
 }
-const convertStringToChunks = (inputString, sizeInKBPerChunk) => {
-    const chunkSize = sizeInKBPerChunk * 1024
+const convertStringToChunks = (inputString, sizePerChunk) => {
+    const chunkSize = sizePerChunk
     const blob = new Blob([inputString])
     const size = blob.size
     if (size <= chunkSize) {
@@ -110,4 +110,22 @@ const convertStringToChunks = (inputString, sizeInKBPerChunk) => {
 const initUserActions = () => {
     const noteUniqueName = getNoteUniqueNameFromURL()
     LocalStorageController.setYourNote(noteUniqueName)
+}
+function convertToBytes(input) {
+    const units = {
+        B: 1,
+        KB: 1024,
+        MB: 1024 ** 2,
+        GB: 1024 ** 3,
+        TB: 1024 ** 4,
+        PB: 1024 ** 5,
+    }
+    const regex = /^(\d+(\.\d+)?)\s*(B|KB|MB|GB|TB|PB)$/i
+    const match = input.match(regex)
+    if (!match) {
+        return null
+    }
+    const value = parseFloat(match[1])
+    const unit = match[3].toUpperCase()
+    return value * (units[unit] || 0)
 }

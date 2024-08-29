@@ -1,3 +1,5 @@
+import bytes from 'bytes'
+
 export enum EArticleChunk {
-    SIZE_IN_KiB_PER_CHUNK = 50,
+    SIZE_PER_CHUNK = bytes('1MB'),
 }

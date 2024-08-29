@@ -258,6 +258,8 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
 }
 
 #note-settings-modal {
+    z-index: z-indexes.$mmn-settings-modal-zidx;
+
     .modal-dialog {
         .modal-content {
             .modal-header {

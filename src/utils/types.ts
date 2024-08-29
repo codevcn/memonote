@@ -1,7 +1,7 @@
 import type { TApplicationInfo } from '@/utils/application/types'
 
 export type TSuccess = {
-    success: boolean // always true
+    success: boolean
 }
 
 export type THttpExceptionResBody = {

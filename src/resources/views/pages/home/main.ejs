@@ -13,13 +13,11 @@
             <input type="text" value="<%= note.title || '' %>"
                 placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>..."
                 oninput="broadcastNoteTitleTypingHanlder(this)" id="note-title" />
-            <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Title',i18nLang) %></div>
         </div>
         <div class="note-form-item note-author">
             <input type="text" value="<%= note.author || '' %>"
                 placeholder="<%= t('home-page.noteForm.Author_placeholder',i18nLang) %>..."
                 oninput="broadcastNoteAuthorTypingHanlder(this)" id="note-author" />
-            <div class="note-annotation"><%= t('home-page.noteForm.Note_annotation_Author',i18nLang) %></div>
         </div>
         <div class="note-form-item note-editor-board">
             <section class="note-editor-section normal-editor">
@@ -28,9 +26,6 @@
                         placeholder="<%= t('home-page.noteForm.Content_placeholder',i18nLang) %>..."
                         oninput="noteTyping(this)" onkeyup="catchBackspaceWhenTyping(this,event)"
                         data-replicated-value=""><%= note.content || '' %></textarea>
-                    <div class="note-annotation">
-                        <%= t('home-page.noteForm.Note_annotation_Content',i18nLang) %>
-                    </div>
                 </div>
                 <div class="letters-count">
                     <span></span>
@@ -57,7 +52,7 @@
                         <div class="input-container">
                             <input type="text"
                                 placeholder="<%= t('home-page.noteForm.richEditor.Enter_height',i18nLang) %>..."
-                                onkeydown="RichEditorController.setHeightOfEditor(event)" />
+                                id="set-editor-height-input" />
                             <span class="unit">px</span>
                         </div>
                         <div class="message"></div>
@@ -95,6 +90,10 @@
         </div>
     </section>
 </main>
+
+<section id="app-spinner-section">
+    <div class="progress-bar"></div>
+</section>
 
 <section id="bubble-btns">
     <button class="scroll-to-top-btn" onclick="scrollToTop()" title="<%= t('home-page.Scroll_to_top',i18nLang) %>">

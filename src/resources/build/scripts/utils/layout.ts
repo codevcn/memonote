@@ -19,6 +19,15 @@ class LayoutController {
         'general-app-status',
     ) as HTMLElement
 
+    static setAppProgress(type: 'on' | 'off'): void {
+        const spinner = document.getElementById('app-spinner-section') as HTMLElement
+        if (type === 'on') {
+            spinner.classList.add('active')
+        } else {
+            spinner.classList.remove('active')
+        }
+    }
+
     static notifyNoteEdited(type: 'on' | 'off', noteForm: TNoteForm): void {
         let baseClasses: string[] = ['notify-note-edited', 'slither', 'blink']
         let notifyNoteEditedClass: string[] = ['notify-note-edited']

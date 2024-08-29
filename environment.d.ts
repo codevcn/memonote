@@ -12,6 +12,9 @@ declare global {
             APPLICATION_DOMAIN_DEV: string
             APPLICATION_DOMAIN: string
             JWT_AUTH_COOKIE: string
+            CLOUDINARY_CLOUDNAME: string
+            CLOUDINARY_API_KEY: string
+            CLOUDINARY_API_SECRET: string
         }
     }
 }

@@ -73,9 +73,6 @@
         "Title_placeholder": "Add a title",
         "Author_placeholder": "Add an author",
         "Content_placeholder": "Write your note here",
-        "Note_annotation_Title": "Title",
-        "Note_annotation_Author": "Author",
-        "Note_annotation_Content": "Your Note",
         "richEditor": {
             "View_mode": "View Mode",
             "Edit_mode": "Edit Mode",

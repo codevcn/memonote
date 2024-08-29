@@ -3,7 +3,7 @@ var ENamespacesOfSocket
 ;(function (ENamespacesOfSocket) {
     ENamespacesOfSocket['NORMAL_EDITOR'] = 'normal-editor'
     ENamespacesOfSocket['NOTIFICATION'] = 'notification'
-    ENamespacesOfSocket['RICH_EDITOR'] = 'rich-editor'
+    ENamespacesOfSocket['ARTICLE'] = 'article'
 })(ENamespacesOfSocket || (ENamespacesOfSocket = {}))
 var EInitSocketEvents
 ;(function (EInitSocketEvents) {
@@ -53,10 +53,6 @@ var ENoteLengths
     ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_CONTENT'] = 50000)] = 'MAX_LENGTH_NOTE_CONTENT'
     ENoteLengths[(ENoteLengths['MAX_LENGTH_NOTE_HISTORY'] = 100)] = 'MAX_LENGTH_NOTE_HISTORY'
 })(ENoteLengths || (ENoteLengths = {}))
-var ENoteTyping
-;(function (ENoteTyping) {
-    ENoteTyping[(ENoteTyping['NOTE_BROADCAST_DELAY'] = 1000)] = 'NOTE_BROADCAST_DELAY'
-})(ENoteTyping || (ENoteTyping = {}))
 var EError
 ;(function (EError) {
     EError[(EError['MAX_LENGTH_OF_API_ERROR_MESSAGE'] = 100)] = 'MAX_LENGTH_OF_API_ERROR_MESSAGE'
@@ -67,7 +63,7 @@ var EBroadcastTimeouts
 })(EBroadcastTimeouts || (EBroadcastTimeouts = {}))
 var EArticleChunk
 ;(function (EArticleChunk) {
-    EArticleChunk[(EArticleChunk['SIZE_IN_KiB_PER_CHUNK'] = 50)] = 'SIZE_IN_KiB_PER_CHUNK'
+    EArticleChunk[(EArticleChunk['SIZE_PER_CHUNK'] = convertToBytes('1MB'))] = 'SIZE_PER_CHUNK'
 })(EArticleChunk || (EArticleChunk = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {

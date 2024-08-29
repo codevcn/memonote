@@ -8,6 +8,8 @@
 @use './settings.scss';
 
 $mmn-page-padding-bottom: 200px;
+$mmn-height-of-app-progress-bar: 5px;
+$mmn-color-of-app-progress-bar: #0064d5;
 
 :root {
     --mmn-quick-look-icon-initial-size: 30px;
@@ -49,6 +51,40 @@ $mmn-page-padding-bottom: 200px;
 
 #page-main {
     padding: 10px 0 $mmn-page-padding-bottom;
+}
+
+#app-spinner-section {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: z-indexes.$mmn-app-spinner-zidx;
+    width: 100vw;
+
+    &.active {
+        display: block;
+    }
+
+    .progress-bar {
+        width: 100%;
+        transform: translateX(-100%);
+        animation: app-progress-animation 3s ease infinite forwards;
+        height: $mmn-height-of-app-progress-bar;
+        background-color: $mmn-color-of-app-progress-bar;
+        border-radius: 30px;
+
+        @keyframes app-progress-animation {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(-20%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    }
 }
 
 #bubble-btns {

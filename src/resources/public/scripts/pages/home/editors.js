@@ -1,35 +1,4 @@
 'use strict'
-var __awaiter =
-    (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
-        function adopt(value) {
-            return value instanceof P
-                ? value
-                : new P(function (resolve) {
-                      resolve(value)
-                  })
-        }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) {
-                try {
-                    step(generator.next(value))
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            function rejected(value) {
-                try {
-                    step(generator['throw'](value))
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            function step(result) {
-                result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected)
-            }
-            step((generator = generator.apply(thisArg, _arguments || [])).next())
-        })
-    }
 class EditorsController {
     static setProgressOnSwitching(loading) {
         const editorsProgress = document.querySelector(
@@ -74,24 +43,22 @@ class EditorsController {
             publishArticleBtn.classList.remove('active')
         }
     }
-    static switchEditorsHandler(editor) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const noteUniqueName = getNoteUniqueNameFromURL()
-            let apiSuccess = false
-            this.setProgressOnSwitching(true)
-            try {
-                yield switchEditorAPI(noteUniqueName, editor)
-                apiSuccess = true
-            } catch (error) {
-                if (error instanceof Error) {
-                    LayoutController.toast('error', error.message)
-                }
+    static async switchEditorsHandler(editor) {
+        const noteUniqueName = getNoteUniqueNameFromURL()
+        let apiSuccess = false
+        this.setProgressOnSwitching(true)
+        try {
+            await switchEditorAPI(noteUniqueName, editor)
+            apiSuccess = true
+        } catch (error) {
+            if (error instanceof Error) {
+                LayoutController.toast('error', error.message)
             }
-            if (apiSuccess) {
-                this.setEditors(editor)
-            }
-            this.setProgressOnSwitching(false)
-        })
+        }
+        if (apiSuccess) {
+            this.setEditors(editor)
+        }
+        this.setProgressOnSwitching(false)
     }
 }
 EditorsController.switchedToRichEditor = false
@@ -110,5 +77,13 @@ const initEditors = () => {
             RichEditorController.switchEditorModes(actionBtn)
         })
     }
+    // setup set height of editor
+    const setHeightInput = document.getElementById('set-editor-height-input')
+    setHeightInput.addEventListener(
+        'input',
+        debounce(function (e) {
+            RichEditorController.setHeightOfEditor(e)
+        }, 300),
+    )
 }
 initEditors()

@@ -4,7 +4,7 @@ import { NoteService } from '@/note/note.service'
 import { ClientViewPages } from '@/utils/application/view-pages'
 import { AuthService } from '@/auth/auth.service'
 import type { Response, Request } from 'express'
-import { GetNoteOnHomePageParamsDTO } from './DTOs'
+import { GetNoteOnHomePageDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ApplicationService } from '@/utils/application/application.service'
 import { ViewRoutes } from '@/utils/routes'
@@ -30,7 +30,7 @@ export class HomeController implements IHomeController {
 
     @Get(':noteUniqueName')
     async homePage(
-        @Param() params: GetNoteOnHomePageParamsDTO,
+        @Param() params: GetNoteOnHomePageDTO,
         @Req() req: Request,
         @Res() res: Response,
     ) {

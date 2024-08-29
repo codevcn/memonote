@@ -15,8 +15,9 @@ import { EEventEmitterEvents, ENotificationEvents } from './enums'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import type { TNotificationDocument } from '../notification.model'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
+import { initGatewayMetadata } from '@/configs/config-gateways'
 
-@WebSocketGateway({ namespace: ESocketNamespaces.NOTIFICATION })
+@WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTIFICATION }))
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsExceptionsFilter())
 export class NotificationGateway

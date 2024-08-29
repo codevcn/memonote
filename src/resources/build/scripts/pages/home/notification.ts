@@ -19,7 +19,7 @@ notificationSocket.on(
             LayoutController.toast('success', 'Connected to server.', 2000)
             notificationSocketReconnecting.flag = false
         }
-        console.log('>>> Socket connected to server.')
+        console.log('>>> notification Socket connected to server.')
     },
 )
 
@@ -29,7 +29,7 @@ notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
         notificationSocketReconnecting.flag = true
     } else {
         LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> connect_error due to ${err.message}`)
+        console.error(`>>> notification connect_error due to ${err.message}`)
     }
 })
 

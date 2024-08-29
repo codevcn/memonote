@@ -18,8 +18,9 @@ import { ECommonStatuses } from '@/utils/enums'
 import { AuthService } from '@/auth/auth.service'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
+import { initGatewayMetadata } from '@/configs/config-gateways'
 
-@WebSocketGateway({ namespace: ESocketNamespaces.NORMAL_EDITOR })
+@WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NORMAL_EDITOR }))
 @UsePipes(new ValidationPipe())
 @UseFilters(new WsExceptionsFilter())
 export class NoteGateway

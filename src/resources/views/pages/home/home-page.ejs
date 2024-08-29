@@ -11,7 +11,7 @@
     <%- include('../../partials/nav-bar') %>
     <%- include('./main') %>
     <%- include('../../partials/page-bottom') %>
-    
+
     <script>
         const pageData = {
             noteId: "<%= note.noteId %>",
@@ -25,6 +25,8 @@
     <%- include('../../partials/doc-scripts') %>
     <script src="https://cdn.tiny.cloud/1/28ulk4q3r0e3qqim6plib7df84nr6o6x6p9e5tdtx41qmr38/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
+    <script src="https://upload-widget.cloudinary.com/latest/global/all.js" type="text/javascript" defer>
+    </script>
     <script src="/scripts/pages/home/home-page.js" defer></script>
     <script src="/scripts/pages/home/normal-editor.js" defer></script>
     <script src="/scripts/pages/home/rich-editor.js" defer></script>

@@ -1,7 +1,7 @@
 enum ENamespacesOfSocket {
     NORMAL_EDITOR = 'normal-editor',
     NOTIFICATION = 'notification',
-    RICH_EDITOR = 'rich-editor',
+    ARTICLE = 'article',
 }
 
 enum EInitSocketEvents {
@@ -52,10 +52,6 @@ enum ENoteLengths {
     MAX_LENGTH_NOTE_HISTORY = 100,
 }
 
-enum ENoteTyping {
-    NOTE_BROADCAST_DELAY = 1000,
-}
-
 enum EError {
     MAX_LENGTH_OF_API_ERROR_MESSAGE = 100,
 }
@@ -65,7 +61,7 @@ enum EBroadcastTimeouts {
 }
 
 enum EArticleChunk {
-    SIZE_IN_KiB_PER_CHUNK = 50,
+    SIZE_PER_CHUNK = convertToBytes('1MB')!,
 }
 
 enum EHttpStatuses {

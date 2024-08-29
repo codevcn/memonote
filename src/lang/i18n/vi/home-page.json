@@ -72,9 +72,6 @@
         "Title_placeholder": "Thêm tiêu đề",
         "Author_placeholder": "Thêm tác giả",
         "Content_placeholder": "Viết ghi chú của bạn ở đây",
-        "Note_annotation_Title": "Tiêu đề",
-        "Note_annotation_Author": "Tác giả",
-        "Note_annotation_Content": "Ghi chú",
         "richEditor": {
             "View_mode": "Chế độ xem",
             "Edit_mode": "Chế độ soạn thảo",

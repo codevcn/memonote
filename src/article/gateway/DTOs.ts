@@ -1,10 +1,16 @@
-import { ENoteLengths } from '@/note/enums'
 import { EValidationMessages } from '@/utils/validation/messages'
-import { IsMongoId, IsNotEmpty, MaxLength } from 'class-validator'
+import { IsMongoId, IsNotEmpty } from 'class-validator'
+import { ValidImage, ValidChunk } from './validation'
+import { Transform } from 'class-transformer'
+import { EArticleChunk } from '../enums'
+import { transformImageData } from './helpers'
+import { EFileSize } from './enums'
 
-export class PublishNotePayloadDTO {
+export class PublishArticlePayloadDTO {
     @IsNotEmpty()
-    @MaxLength(ENoteLengths.MAX_LENGTH_NOTE_CONTENT, { message: EValidationMessages.INVALID_INPUT })
+    @ValidChunk(EArticleChunk.SIZE_PER_CHUNK, {
+        message: EValidationMessages.INVALID_INPUT,
+    })
     articleChunk: string
 
     @IsNotEmpty()
@@ -19,4 +25,15 @@ export class PublishNotePayloadDTO {
 
     @IsNotEmpty()
     uploadId: string
+}
+
+export class UploadImageDTO {
+    @IsNotEmpty()
+    @Transform(({ value }) => transformImageData(value), { toClassOnly: true })
+    @ValidImage(EFileSize.MAX_IMAGE_SIZE)
+    image: ArrayBuffer
+
+    @IsMongoId()
+    @IsNotEmpty()
+    noteId: string
 }

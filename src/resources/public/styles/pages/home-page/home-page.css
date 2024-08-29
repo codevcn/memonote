@@ -120,7 +120,7 @@ bold - bold
     color: #fff;
 }
 #page-main .note-form {
-    padding: 0 130px;
+    padding: 0 100px;
     margin-top: 15px;
 }
 #page-main .note-form .note-form-item {
@@ -169,20 +169,6 @@ bold - bold
     animation-iteration-count: infinite;
     animation-direction: reverse;
 }
-#page-main .note-form .note-form-item .note-annotation {
-    position: absolute;
-    right: calc(100% + 10px);
-    top: 50%;
-    transform: translate(0, -50%);
-    border-right: 3px #a5a5a5 solid;
-    padding-right: 8px;
-    font-size: 0.9rem;
-    opacity: 0;
-    transition: opacity 0.15s;
-    width: max-content;
-    max-width: 100px;
-    text-align: right;
-}
 #page-main .note-form .note-form-item.note-title input {
     background-color: transparent;
     width: 100%;
@@ -197,9 +183,6 @@ bold - bold
 }
 #page-main .note-form .note-form-item.note-title input::placeholder {
     color: #909090;
-}
-#page-main .note-form .note-form-item.note-title input:focus ~ .note-annotation {
-    opacity: 1;
 }
 #page-main .note-form .note-form-item.note-author {
     margin-top: 5px;
@@ -219,9 +202,6 @@ bold - bold
 #page-main .note-form .note-form-item.note-author input::placeholder {
     color: #909090;
 }
-#page-main .note-form .note-form-item.note-author input:focus ~ .note-annotation {
-    opacity: 1;
-}
 #page-main .note-form .note-form-item.note-editor-board {
     margin-top: 15px;
 }
@@ -239,15 +219,6 @@ bold - bold
 #page-main .note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper {
     display: grid;
     overflow-y: auto;
-}
-#page-main
-    .note-form
-    .note-form-item.note-editor-board
-    .note-editor-section
-    .note-editor-wrapper
-    .note-annotation {
-    top: 5px;
-    transform: translate(0, 0);
 }
 #page-main
     .note-form
@@ -275,15 +246,6 @@ bold - bold
     resize: none;
     overflow: hidden;
     padding: 0;
-}
-#page-main
-    .note-form
-    .note-form-item.note-editor-board
-    .note-editor-section
-    .note-editor-wrapper
-    .note-editor:focus
-    ~ .note-annotation {
-    opacity: 1;
 }
 #page-main
     .note-form
@@ -341,9 +303,6 @@ bold - bold
     #page-main .note-form .note-form-item {
         font-size: 0.9rem;
     }
-    #page-main .note-form .note-form-item .note-annotation {
-        display: none;
-    }
 }
 
 #publish-article-submit-btn {
@@ -380,6 +339,7 @@ bold - bold
     column-gap: 30px;
     flex-wrap: wrap;
     margin-bottom: 10px;
+    row-gap: 10px;
 }
 #rich-editor-section .actions-section .actions {
     display: flex;
@@ -459,6 +419,7 @@ bold - bold
     border: 1px solid #ced4da;
     border-radius: 5px;
     padding: 15px;
+    overflow-y: auto;
 }
 
 @keyframes notify-blink-note-edited {
@@ -597,6 +558,9 @@ bold - bold
     width: 1.5rem;
 }
 
+#note-settings-modal {
+    z-index: 1400;
+}
 #note-settings-modal .modal-dialog .modal-content .modal-header {
     padding: 10px 20px;
 }
@@ -1603,6 +1567,37 @@ bold - bold
 
 #page-main {
     padding: 10px 0 200px;
+}
+
+#app-spinner-section {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1400;
+    width: 100vw;
+}
+#app-spinner-section.active {
+    display: block;
+}
+#app-spinner-section .progress-bar {
+    width: 100%;
+    transform: translateX(-100%);
+    animation: app-progress-animation 3s ease infinite forwards;
+    height: 5px;
+    background-color: #0064d5;
+    border-radius: 30px;
+}
+@keyframes app-progress-animation {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(-20%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 #bubble-btns {

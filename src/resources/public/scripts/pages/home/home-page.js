@@ -1,35 +1,4 @@
 'use strict'
-var __awaiter =
-    (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
-        function adopt(value) {
-            return value instanceof P
-                ? value
-                : new P(function (resolve) {
-                      resolve(value)
-                  })
-        }
-        return new (P || (P = Promise))(function (resolve, reject) {
-            function fulfilled(value) {
-                try {
-                    step(generator.next(value))
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            function rejected(value) {
-                try {
-                    step(generator['throw'](value))
-                } catch (e) {
-                    reject(e)
-                }
-            }
-            function step(result) {
-                result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected)
-            }
-            step((generator = generator.apply(thisArg, _arguments || [])).next())
-        })
-    }
 const homePage_pageMain = document.querySelector('#page-main')
 const realtimeModeDisplay = document.querySelector('#nav-bar .realtime-mode-display')
 const noteSettingsBoard = document.querySelector('#note-settings-modal .note-settings-board')
@@ -44,6 +13,7 @@ const scrollToBottomBtn = document.querySelector('#bubble-btns .scroll-to-bottom
 const noteContentHistory = { history: [''], index: 0 }
 const SCROLL_TO_TOP_THRESHOLD = 100
 const SCROLL_TO_BOTTOM_THRESHOLD = 100
+const NOTE_BROADCAST_DELAY = 1000
 const validateNoteContent = (noteContent) => {
     if (noteContent.length > ENoteLengths.MAX_LENGTH_NOTE_CONTENT) {
         return false
@@ -75,13 +45,12 @@ const countNoteLetters = (noteEditorTarget, noteContent) => {
         .querySelector('.letters-count .count').innerHTML =
         `${noteContent.length} / ${ENoteLengths.MAX_LENGTH_NOTE_CONTENT}`
 }
-const catchBackspaceWhenTyping = (noteEditorTarget, event) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (event.key === 'Backspace') {
-            const noteContent = noteEditorTarget.value
-            countNoteLetters(noteEditorTarget, noteContent)
-        }
-    })
+const catchBackspaceWhenTyping = async (noteEditorTarget, event) => {
+    if (event.key === 'Backspace') {
+        const noteContent = noteEditorTarget.value
+        countNoteLetters(noteEditorTarget, noteContent)
+    }
+}
 const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
     if (validateNoteContent(noteContent)) {
         // set height of editor
@@ -93,23 +62,22 @@ const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
 const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
     LayoutController.notifyNoteEdited('off', { content: 'true' })
     NormalEditorController.broadcastNoteTyping({ content: noteContent })
-}, ENoteTyping.NOTE_BROADCAST_DELAY)
+}, NOTE_BROADCAST_DELAY)
 const broadcastNoteTitleTypingHanlder = debounce((target) => {
     LayoutController.notifyNoteEdited('off', { title: 'true' })
     NormalEditorController.broadcastNoteTyping({ title: target.value })
-}, ENoteTyping.NOTE_BROADCAST_DELAY)
+}, NOTE_BROADCAST_DELAY)
 const broadcastNoteAuthorTypingHanlder = debounce((target) => {
     LayoutController.notifyNoteEdited('off', { author: 'true' })
     NormalEditorController.broadcastNoteTyping({ author: target.value })
-}, ENoteTyping.NOTE_BROADCAST_DELAY)
-const noteTyping = (noteEditorTarget) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const noteContent = noteEditorTarget.value
-        broadcastNoteContentTypingHanlder(noteContent)
-        countNoteLetters(noteEditorTarget, noteContent)
-        setNoteContentHistory(noteContent)
-        setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
-    })
+}, NOTE_BROADCAST_DELAY)
+const noteTyping = async (noteEditorTarget) => {
+    const noteContent = noteEditorTarget.value
+    broadcastNoteContentTypingHanlder(noteContent)
+    countNoteLetters(noteEditorTarget, noteContent)
+    setNoteContentHistory(noteContent)
+    setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
+}
 const setForNoteFormEdited = (noteForm) => {
     const { author, content, title } = noteForm
     const noteEditor = document.getElementById('note-editor')
@@ -137,12 +105,11 @@ const clearNoteContent = (noteEditorTarget) => {
 const copyAllNoteContent = (noteEditorTarget) => {
     navigator.clipboard.writeText(noteEditorTarget.value)
 }
-const pasteFromClipboard = (noteEditorTarget) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const text = yield navigator.clipboard.readText()
-        if (!validateNoteContent(text)) return
-        noteEditorTarget.value = text
-    })
+const pasteFromClipboard = async (noteEditorTarget) => {
+    const text = await navigator.clipboard.readText()
+    if (!validateNoteContent(text)) return
+    noteEditorTarget.value = text
+}
 const undoNoteContent = (noteEditorTarget) => {
     let historyIndex = noteContentHistory.index
     if (historyIndex > 0) {
@@ -151,31 +118,30 @@ const undoNoteContent = (noteEditorTarget) => {
     }
     noteContentHistory.index = historyIndex
 }
-const performUsefulActions = (target, type) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const noteEditor = target
-            .closest('.note-form')
-            .querySelector('.note-editor-board .note-editor-section .note-editor')
-        switch (type) {
-            case 'clipboardPaste':
-                yield pasteFromClipboard(noteEditor)
-                break
-            case 'copyAllNoteContent':
-                copyAllNoteContent(noteEditor)
-                return
-            case 'clearNoteContent':
-                clearNoteContent(noteEditor)
-                break
-            case 'undoNoteContent':
-                undoNoteContent(noteEditor)
-                setBoardUIOfNoteEditor(noteEditor, noteEditor.value)
-                return
-        }
-        const updatedNoteEditorValue = noteEditor.value
-        setNoteContentHistory(updatedNoteEditorValue)
-        setBoardUIOfNoteEditor(noteEditor, updatedNoteEditorValue)
-        countNoteLetters(noteEditor, updatedNoteEditorValue)
-    })
+const performUsefulActions = async (target, type) => {
+    const noteEditor = target
+        .closest('.note-form')
+        .querySelector('.note-editor-board .note-editor-section .note-editor')
+    switch (type) {
+        case 'clipboardPaste':
+            await pasteFromClipboard(noteEditor)
+            break
+        case 'copyAllNoteContent':
+            copyAllNoteContent(noteEditor)
+            return
+        case 'clearNoteContent':
+            clearNoteContent(noteEditor)
+            break
+        case 'undoNoteContent':
+            undoNoteContent(noteEditor)
+            setBoardUIOfNoteEditor(noteEditor, noteEditor.value)
+            return
+    }
+    const updatedNoteEditorValue = noteEditor.value
+    setNoteContentHistory(updatedNoteEditorValue)
+    setBoardUIOfNoteEditor(noteEditor, updatedNoteEditorValue)
+    countNoteLetters(noteEditor, updatedNoteEditorValue)
+}
 const hideShowPassword_homePage = (target, isShown) => {
     const inputWrapper = target.closest('.input-wrapper')
     const hiddenBtn = inputWrapper.querySelector('.input-actions .hidden')
@@ -220,13 +186,12 @@ const validatePassword = (password) => {
     }
     return is_valid
 }
-const setPasswordForNote = (password, logoutAll) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const noteUniqueName = getNoteUniqueNameFromURL()
-        if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-            yield setPasswordForNoteAPI(password, logoutAll, noteUniqueName)
-        }
-    })
+const setPasswordForNote = async (password, logoutAll) => {
+    const noteUniqueName = getNoteUniqueNameFromURL()
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
+        await setPasswordForNoteAPI(password, logoutAll, noteUniqueName)
+    }
+}
 const setUIOfSetPasswordForm = (type) => {
     let setPasswordLabel
     let showRemovePasswordForm
@@ -259,98 +224,93 @@ const setUIOfNoteQuickLook = (itemsShown = [], itemsHidden = []) => {
         }
     }
 }
-const saveSettingsSetPasswordForNote = (e) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        e.preventDefault()
-        const form = e.target
-        const formData = new FormData(form)
-        const password = formData.get('password')
-        const logoutAll = formData.get('logout-all')
-        if (validatePassword(password)) {
-            const submitBtn = form.querySelector('.form-submit-btn')
-            submitBtn.classList.add('on-progress')
-            const innerHTML_beforeUpdate = submitBtn.innerHTML
-            submitBtn.innerHTML = Materials.createHTMLLoading('border')
-            let apiSuccess = false
-            try {
-                yield setPasswordForNote(password, !!logoutAll)
-                apiSuccess = true
-            } catch (error) {
-                if (error instanceof Error) {
-                    const err = HTTPErrorHandler.handleError(error)
-                    setMessageOfSetPassword(err.message, 'warning')
-                }
-            }
-            if (apiSuccess) {
-                setUIOfLogoutBtn(true)
-                setUIOfSetPasswordForm('change')
-                setUIOfRemovePasswordForm(true)
-                setMessageOfSetPassword('Save password successfully!', 'success')
-                setStatusOfSettingsForm(form, 'saved')
-                setUIOfNoteQuickLook(['password-set'])
-            }
-            submitBtn.classList.remove('on-progress')
-            submitBtn.innerHTML = innerHTML_beforeUpdate
-        }
-    })
-const removePasswordOfNote = (noteUniqueName) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-            yield removePasswordForNoteAPI(noteUniqueName)
-        }
-    })
-const saveSettingsRemovePasswordOfNote = (e) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        e.preventDefault()
-        const submitBtn = e.target.querySelector('.form-submit-btn')
-        const innerHTML_beforeRemove = submitBtn.innerHTML
+const saveSettingsSetPasswordForNote = async (e) => {
+    e.preventDefault()
+    const form = e.target
+    const formData = new FormData(form)
+    const password = formData.get('password')
+    const logoutAll = formData.get('logout-all')
+    if (validatePassword(password)) {
+        const submitBtn = form.querySelector('.form-submit-btn')
+        submitBtn.classList.add('on-progress')
+        const innerHTML_beforeUpdate = submitBtn.innerHTML
         submitBtn.innerHTML = Materials.createHTMLLoading('border')
         let apiSuccess = false
         try {
-            yield removePasswordOfNote(getNoteUniqueNameFromURL())
+            await setPasswordForNote(password, !!logoutAll)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {
                 const err = HTTPErrorHandler.handleError(error)
-                LayoutController.toast('error', err.message)
+                setMessageOfSetPassword(err.message, 'warning')
             }
         }
         if (apiSuccess) {
-            setUIOfSetPasswordForm('add')
-            setUIOfRemovePasswordForm(false)
-            setUIOfLogoutBtn(false)
-            setUIOfNoteQuickLook([], ['password-set'])
+            setUIOfLogoutBtn(true)
+            setUIOfSetPasswordForm('change')
+            setUIOfRemovePasswordForm(true)
+            setMessageOfSetPassword('Save password successfully!', 'success')
+            setStatusOfSettingsForm(form, 'saved')
+            setUIOfNoteQuickLook(['password-set'])
         }
-        submitBtn.innerHTML = innerHTML_beforeRemove
-    })
-const logout = (noteUniqueName) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-            yield logoutAPI(noteUniqueName)
+        submitBtn.classList.remove('on-progress')
+        submitBtn.innerHTML = innerHTML_beforeUpdate
+    }
+}
+const removePasswordOfNote = async (noteUniqueName) => {
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
+        await removePasswordForNoteAPI(noteUniqueName)
+    }
+}
+const saveSettingsRemovePasswordOfNote = async (e) => {
+    e.preventDefault()
+    const submitBtn = e.target.querySelector('.form-submit-btn')
+    const innerHTML_beforeRemove = submitBtn.innerHTML
+    submitBtn.innerHTML = Materials.createHTMLLoading('border')
+    let apiSuccess = false
+    try {
+        await removePasswordOfNote(getNoteUniqueNameFromURL())
+        apiSuccess = true
+    } catch (error) {
+        if (error instanceof Error) {
+            const err = HTTPErrorHandler.handleError(error)
+            LayoutController.toast('error', err.message)
         }
-    })
-const logoutHandler = (target) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const innerHTML_beforeLogout = target.innerHTML
-        target.innerHTML = Materials.createHTMLLoading('border')
-        target.classList.add('on-progress')
-        let apiSuccess = false
-        try {
-            yield logout(getNoteUniqueNameFromURL())
-            apiSuccess = true
-        } catch (error) {
-            if (error instanceof Error) {
-                const err = HTTPErrorHandler.handleError(error)
-                LayoutController.toast('error', err.message)
-            }
+    }
+    if (apiSuccess) {
+        setUIOfSetPasswordForm('add')
+        setUIOfRemovePasswordForm(false)
+        setUIOfLogoutBtn(false)
+        setUIOfNoteQuickLook([], ['password-set'])
+    }
+    submitBtn.innerHTML = innerHTML_beforeRemove
+}
+const logout = async (noteUniqueName) => {
+    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
+        await logoutAPI(noteUniqueName)
+    }
+}
+const logoutHandler = async (target) => {
+    const innerHTML_beforeLogout = target.innerHTML
+    target.innerHTML = Materials.createHTMLLoading('border')
+    target.classList.add('on-progress')
+    let apiSuccess = false
+    try {
+        await logout(getNoteUniqueNameFromURL())
+        apiSuccess = true
+    } catch (error) {
+        if (error instanceof Error) {
+            const err = HTTPErrorHandler.handleError(error)
+            LayoutController.toast('error', err.message)
         }
-        if (apiSuccess) {
-            refreshPageAfterMs(500)
-            LayoutController.setUIOfGeneralAppStatus('success')
-        }
-        target.classList.remove('on-progress')
-        target.innerHTML = innerHTML_beforeLogout
-    })
+    }
+    if (apiSuccess) {
+        refreshPageAfterMs(500)
+        LayoutController.setUIOfGeneralAppStatus('success')
+    }
+    target.classList.remove('on-progress')
+    target.innerHTML = innerHTML_beforeLogout
+}
 const setStatusOfSettingsForm = (formTarget, type) => {
     const isSaved = type === 'saved'
     const formStatus = formTarget.querySelector('.form-title .status')
@@ -382,19 +342,18 @@ const setNightModeHandler = (status) => {
         LocalStorageController.setNightMode('off')
     }
 }
-const saveSettingsChangeModes = (e) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        e.preventDefault()
-        const form = e.target
-        const formData = new FormData(form)
-        const realtimeMode = formData.get('realtime-mode')
-        const notifyNoteEditedMode = formData.get('notify-note-edited')
-        const nightMode = formData.get('night-mode')
-        setRealtimeModeHandler(realtimeMode)
-        LocalStorageController.setNotifyNoteEditedMode(notifyNoteEditedMode ? 'on' : 'off')
-        setNightModeHandler(nightMode)
-        setStatusOfSettingsForm(form, 'saved')
-    })
+const saveSettingsChangeModes = async (e) => {
+    e.preventDefault()
+    const form = e.target
+    const formData = new FormData(form)
+    const realtimeMode = formData.get('realtime-mode')
+    const notifyNoteEditedMode = formData.get('notify-note-edited')
+    const nightMode = formData.get('night-mode')
+    setRealtimeModeHandler(realtimeMode)
+    LocalStorageController.setNotifyNoteEditedMode(notifyNoteEditedMode ? 'on' : 'off')
+    setNightModeHandler(nightMode)
+    setStatusOfSettingsForm(form, 'saved')
+}
 const changeNoteFormTextFontHandler = (font) => {
     const textFont = convertToCssFontFamily(font)
     LocalStorageController.writeCssVariable('--mmn-note-form-fonf', textFont)
@@ -411,25 +370,24 @@ const changeNavBarPosHandler = (pos) => {
         navBar.classList.add(posClasses[1])
     }
 }
-const saveSettingsUserInterface = (e) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        e.preventDefault()
-        const form = e.target
-        const formData = new FormData(form)
-        const editedNotifyStyle = formData.get('edited-notify-style')
-        const noteFormFont = formData.get('note-form-font')
-        const navBarPos = formData.get('nav-bar-pos')
-        if (editedNotifyStyle) {
-            LocalStorageController.setEditedNotifyStyle(editedNotifyStyle)
-        }
-        if (noteFormFont) {
-            changeNoteFormTextFontHandler(noteFormFont)
-        }
-        if (navBarPos) {
-            changeNavBarPosHandler(navBarPos)
-        }
-        setStatusOfSettingsForm(form, 'saved')
-    })
+const saveSettingsUserInterface = async (e) => {
+    e.preventDefault()
+    const form = e.target
+    const formData = new FormData(form)
+    const editedNotifyStyle = formData.get('edited-notify-style')
+    const noteFormFont = formData.get('note-form-font')
+    const navBarPos = formData.get('nav-bar-pos')
+    if (editedNotifyStyle) {
+        LocalStorageController.setEditedNotifyStyle(editedNotifyStyle)
+    }
+    if (noteFormFont) {
+        changeNoteFormTextFontHandler(noteFormFont)
+    }
+    if (navBarPos) {
+        changeNavBarPosHandler(navBarPos)
+    }
+    setStatusOfSettingsForm(form, 'saved')
+}
 const scrollToTop = () => {
     const threshold = 50
     if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
@@ -450,28 +408,27 @@ const scrollToBottom = () => {
         behavior: 'smooth',
     })
 }
-const onChangLanguageHandler = (e) =>
-    __awaiter(void 0, void 0, void 0, function* () {
-        const selectEle = e.target
-        const formSubmitBtn = selectEle.closest('.form-group').querySelector('.progress-container')
-        const htmlBefore = formSubmitBtn.innerHTML
-        formSubmitBtn.innerHTML = Materials.createHTMLLoading('border')
-        const lang = selectEle.value
-        let apiSuccess = false
-        try {
-            yield requestLangAPI(lang)
-            apiSuccess = true
-        } catch (error) {
-            if (error instanceof Error) {
-                const err = HTTPErrorHandler.handleError(error)
-                LayoutController.toast('error', err.message)
-            }
+const onChangLanguageHandler = async (e) => {
+    const selectEle = e.target
+    const formSubmitBtn = selectEle.closest('.form-group').querySelector('.progress-container')
+    const htmlBefore = formSubmitBtn.innerHTML
+    formSubmitBtn.innerHTML = Materials.createHTMLLoading('border')
+    const lang = selectEle.value
+    let apiSuccess = false
+    try {
+        await requestLangAPI(lang)
+        apiSuccess = true
+    } catch (error) {
+        if (error instanceof Error) {
+            const err = HTTPErrorHandler.handleError(error)
+            LayoutController.toast('error', err.message)
         }
-        if (apiSuccess) {
-            window.location.reload()
-        }
-        formSubmitBtn.innerHTML = htmlBefore
-    })
+    }
+    if (apiSuccess) {
+        window.location.reload()
+    }
+    formSubmitBtn.innerHTML = htmlBefore
+}
 const setupScrollToBottom = () => {
     const scrollPosition = window.innerHeight + window.scrollY
     const threshold = document.body.scrollHeight - SCROLL_TO_BOTTOM_THRESHOLD
@@ -569,17 +526,15 @@ const initHomePage = () => {
         })
     }
     // setup "scroll to"
-    window.addEventListener('scroll', function (e) {
-        return __awaiter(this, void 0, void 0, function* () {
-            // scroll to top
-            if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
-                scrollToTopBtn.classList.add('active')
-            } else {
-                scrollToTopBtn.classList.remove('active')
-            }
-            // scroll to bottom
-            setupScrollToBottom()
-        })
+    window.addEventListener('scroll', async function (e) {
+        // scroll to top
+        if (window.scrollY > SCROLL_TO_TOP_THRESHOLD) {
+            scrollToTopBtn.classList.add('active')
+        } else {
+            scrollToTopBtn.classList.remove('active')
+        }
+        // scroll to bottom
+        setupScrollToBottom()
     })
     // setup "night mode"
     const nightMode = LocalStorageController.getNightMode()

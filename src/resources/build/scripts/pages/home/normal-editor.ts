@@ -13,27 +13,27 @@ type TBroadcastNoteTypingRes = {
 const normalEditorSocket = io(`/${ENamespacesOfSocket.NORMAL_EDITOR}`, clientSocketConfig)
 
 // init vars
-const editNoteSocketReconnecting: TSocketReconnecting = { flag: false }
+const normalEditorSocketReconnecting: TSocketReconnecting = { flag: false }
 
 // listeners
 normalEditorSocket.on(
     EInitSocketEvents.CLIENT_CONNECTED,
     async (data: TClientConnectedEventPld) => {
-        if (editNoteSocketReconnecting.flag) {
+        if (normalEditorSocketReconnecting.flag) {
             LayoutController.toast('success', 'Connected to server.', 2000)
-            editNoteSocketReconnecting.flag = false
+            normalEditorSocketReconnecting.flag = false
         }
-        console.log('>>> Socket connected to server.')
+        console.log('>>> normal Editor Socket connected to server.')
     },
 )
 
 normalEditorSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
     if (normalEditorSocket.active) {
         LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-        editNoteSocketReconnecting.flag = true
+        normalEditorSocketReconnecting.flag = true
     } else {
         LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> connect_error due to ${err.message}`)
+        console.error(`>>> normal Editor connect_error due to ${err.message}`)
     }
 })
 

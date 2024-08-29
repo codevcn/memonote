@@ -10,7 +10,7 @@ export enum ECommonStatuses {
 export enum ESocketNamespaces {
     NORMAL_EDITOR = 'normal-editor',
     NOTIFICATION = 'notification',
-    RICH_EDITOR = 'rich-editor',
+    ARTICLE = 'article',
 }
 
 export enum EInitialSocketEvents {
