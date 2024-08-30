@@ -45,7 +45,7 @@ class LayoutController {
             }
         }
     }
-    static setUIOfGeneralAppStatus(status) {
+    static setGeneralAppStatus(status) {
         if (this.generalAppStatusTimer) {
             clearTimeout(this.generalAppStatusTimer)
         }

@@ -58,7 +58,7 @@ class LayoutController {
         }
     }
 
-    static setUIOfGeneralAppStatus(status: TCommonStatus): void {
+    static setGeneralAppStatus(status: TCommonStatus): void {
         if (this.generalAppStatusTimer) {
             clearTimeout(this.generalAppStatusTimer)
         }

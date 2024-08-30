@@ -8,7 +8,7 @@ import {
     ConnectedSocket,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { NoteService } from '../note.service'
+import { NoteService } from './note.service'
 import { EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
 import { ENoteEvents } from './enums'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'

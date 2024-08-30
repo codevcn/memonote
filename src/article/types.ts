@@ -1,4 +1,5 @@
 import type { UploadApiResponse } from 'cloudinary'
+import type { TSuccess } from '@/utils/types'
 
 export type TUploadIndentity = {
     uploadId: string
@@ -25,5 +26,13 @@ export type TWriteChunks = {
 
 export type TUploadedImage = {
     imgURL: string
-    imgPublicId: string
+}
+
+export type TPublishArticleReturn = TSuccess & {
+    message?: string
+}
+
+export type TUploadImageReturn = TSuccess & {
+    message?: string
+    imgInfo?: TUploadedImage
 }

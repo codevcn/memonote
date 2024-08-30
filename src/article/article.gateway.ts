@@ -13,12 +13,14 @@ import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import { AuthService } from '@/auth/auth.service'
 import { EArticleEvents } from './enums'
 import { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs'
-import { ArticleService } from '../article.service'
-import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
+import { ArticleService } from './article.service'
+import { UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { initGatewayMetadata } from '@/configs/config-gateways'
-import type { TUploadedImage } from '../types'
+import type { TUploadedImage } from './types'
+import { FileServerService } from './file-server.service'
+import { LoggingInterceptor } from '@/temp/logging.interceptor'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.ARTICLE }))
 @UsePipes(new ValidationPipe())
@@ -31,6 +33,7 @@ export class ArticleGateway
     constructor(
         private authService: AuthService,
         private articleService: ArticleService,
+        private fileServerService: FileServerService,
     ) {}
 
     afterInit(server: Server) {
@@ -56,16 +59,24 @@ export class ArticleGateway
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
     @SubscribeMessage(EArticleEvents.PUBLISH_ARTICLE)
-    async publishArticle(@MessageBody() data: PublishArticlePayloadDTO) {
-        const { articleChunk, totalChunks, noteUniqueName, noteId, uploadId } = data
+    @UseInterceptors(LoggingInterceptor)
+    async publishArticleInChunks(@MessageBody() data: PublishArticlePayloadDTO) {
+        console.log('>>> message body >>>', { data })
+        const { articleChunk, imgs, noteId } = data
         try {
-            await this.articleService.uploadArticleChunk(
-                articleChunk,
-                totalChunks,
-                noteUniqueName,
-                noteId,
-                uploadId,
-            )
+            if (imgs) {
+                await this.fileServerService.cleanupImages(imgs, noteId)
+            } else if (articleChunk) {
+                console.log('>>> count pub in chunks')
+                const { chunk, totalChunks, noteUniqueName, uploadId } = articleChunk
+                await this.articleService.uploadArticleChunk(
+                    chunk,
+                    totalChunks,
+                    noteUniqueName,
+                    noteId,
+                    uploadId,
+                )
+            }
         } catch (error) {
             if (error instanceof BaseCustomException) {
                 return { success: false, message: error.message }
@@ -76,11 +87,11 @@ export class ArticleGateway
     }
 
     @SubscribeMessage(EArticleEvents.UPLOAD_IMAGE)
-    async uploadImages(@MessageBody() data: UploadImageDTO) {
+    async uploadImage(@MessageBody() data: UploadImageDTO) {
         const { image, noteId } = data
         let uploadedImg: TUploadedImage
         try {
-            uploadedImg = await this.articleService.uploadImage(image, noteId)
+            uploadedImg = await this.fileServerService.uploadImage(image, noteId)
         } catch (error) {
             if (error instanceof BaseCustomException) {
                 return { success: false, message: error.message }

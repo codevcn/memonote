@@ -9,11 +9,11 @@ import {
 import { Server, Socket } from 'socket.io'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
 import { AuthService } from '@/auth/auth.service'
-import { BaseCustomEvent } from '@/note/gateway/events'
+import { BaseCustomEvent } from '@/note/events'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EEventEmitterEvents, ENotificationEvents } from './enums'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
-import type { TNotificationDocument } from '../notification.model'
+import type { TNotificationDocument } from './notification.model'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { initGatewayMetadata } from '@/configs/config-gateways'
 

@@ -51,18 +51,18 @@ class NormalEditorController {
     //     broadcastNoteTyping({ author: target.value })
     // }
     static async broadcastNoteTyping(note) {
-        LayoutController.setUIOfGeneralAppStatus('loading')
+        LayoutController.setGeneralAppStatus('loading')
         normalEditorSocket
             .timeout(EBroadcastTimeouts.EDIT_NOTE_TIMEOUT)
             .emit(ENoteEvents.NOTE_FORM_EDITED, note, (err, res) => {
                 if (err) {
-                    LayoutController.setUIOfGeneralAppStatus('error')
+                    LayoutController.setGeneralAppStatus('error')
                     console.log('>>> broadcast note err >>>', err)
                 } else {
                     if (res.success) {
-                        LayoutController.setUIOfGeneralAppStatus('success')
+                        LayoutController.setGeneralAppStatus('success')
                     } else {
-                        LayoutController.setUIOfGeneralAppStatus('error')
+                        LayoutController.setGeneralAppStatus('error')
                     }
                     console.log('>>> broadcast note res >>>', res)
                 }

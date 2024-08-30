@@ -4,15 +4,15 @@ import { EAuthMessages } from './messages'
 import { JWTService } from './jwt.service'
 import { NoteService } from '@/note/note.service'
 import type { TAuthSocketConnectionReturn, TJWTPayload } from './types'
-import { UserSessions } from '@/note/gateway/sessions'
+import { UserSessions } from '@/note/sessions'
 import { SignInPayloadDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { ENoteMessages } from '@/note/messages'
 import { Socket } from 'socket.io'
 import { EValidationMessages } from '@/utils/validation/messages'
-import type { TValidateIncommingSocketReturn } from '@/note/gateway/types'
+import type { TValidateIncommingSocketReturn } from '@/note/types'
 import { WsException } from '@nestjs/websockets'
-import { CustomWsException } from '@/note/gateway/ecxeptions'
+import { CustomWsException } from '@/note/ecxeptions'
 
 @Injectable()
 export class AuthService {

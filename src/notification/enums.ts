@@ -7,3 +7,11 @@ export enum ENotificationTypes {
 export enum EPagination {
     MAX_NOTIFS_PER_PAGE = 7,
 }
+
+export enum ENotificationEvents {
+    NOTIFY = 'notify',
+}
+
+export enum EEventEmitterEvents {
+    TRIGGER_NOTIFY = 'trigger_notify',
+}

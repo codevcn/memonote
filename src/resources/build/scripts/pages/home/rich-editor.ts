@@ -11,7 +11,6 @@ type TPublishArticleReturn = TSuccess & {
 type TPublishArticleInChunksPyld = {
     totalChunks: number
     noteUniqueName: string
-    noteId: string
     uploadId: string
 }
 
@@ -26,7 +25,6 @@ type TMetaOfPickImage = {
 
 type TUploadedImg = {
     imgURL: string
-    imgPublicId: string
 }
 
 type TUploadImageReturn = TSuccess & {
@@ -197,11 +195,10 @@ class RichEditorController {
                 LayoutController.setAppProgress('on')
                 RichEditorController.uploadImageHandler(image)
                     .then((uploadedImg) => {
-                        const { imgURL, imgPublicId } = uploadedImg
+                        const { imgURL } = uploadedImg
                         cb(imgURL, {
                             title: image.name,
                             alt: 'Article Image',
-                            dataMmn: 'oke',
                         })
                     })
                     .catch((err: BaseCustomError) => {
@@ -301,62 +298,99 @@ class RichEditorController {
             } else if (mode === EEditorModes.VIEW_MODE) {
                 viewModeSection.classList.add('active')
             }
-
-            const imgs = RichEditorController.getImgSrcList(content)
-            console.log('>>> imgs >>>', { imgs })
         })
     }
 
     private static validateNoteContent(articleContent: string): boolean {
-        let isValid: boolean = true
         if (!articleContent) {
-            isValid = false
             LayoutController.toast('error', 'Do not empty your note')
+            return false
         }
-        return isValid
+        return true
     }
 
     private static setEditorProgress(loading: boolean, delay: number = 0): void {
         this.getEditor().setProgressState(loading, delay)
     }
 
-    static async publishArticleHandler(): Promise<void> {
+    static publishArticleHandler(): void {
         this.setLoading(true)
-        this.getRichEditorContent().then(async (articleContent) => {
-            if (RichEditorController.validateNoteContent(articleContent)) {
-                const chunks = convertStringToChunks(articleContent, EArticleChunk.SIZE_PER_CHUNK)
-                const uploadId = crypto.randomUUID()
-                try {
-                    await this.publishArticleInChunks(chunks, {
-                        noteId: pageData.noteId,
-                        noteUniqueName: getNoteUniqueNameFromURL(),
-                        totalChunks: chunks.length,
-                        uploadId,
-                    })
-                } catch (error) {
-                    if (error instanceof Error) {
-                        LayoutController.toast('error', error.message)
-                    }
-                }
-            }
+        this.getRichEditorContent().then((articleContent) => {
+            if (!RichEditorController.validateNoteContent(articleContent)) return
+            const imgs = RichEditorController.getImgSrcList(articleContent)
+            console.log('>>> imgs >>>', { imgs })
+            const { noteId } = pageData
+            RichEditorController.updateImagesInArticle(imgs, noteId)
+                .then(() => {
+                    console.log('>>> upload article in chunks')
+                    const chunks = convertStringToChunks(
+                        articleContent,
+                        EArticleChunk.SIZE_PER_CHUNK,
+                    )
+                    const uploadId = crypto.randomUUID()
+                    RichEditorController.publishArticleInChunks(
+                        chunks,
+                        {
+                            noteUniqueName: getNoteUniqueNameFromURL(),
+                            totalChunks: chunks.length,
+                            uploadId,
+                        },
+                        noteId,
+                    )
+                        .then(() => {
+                            LayoutController.setGeneralAppStatus('success')
+                        })
+                        .catch((error: BaseCustomError) => {
+                            LayoutController.toast('error', error.message)
+                        })
+                })
+                .catch((error: BaseCustomError) => {
+                    LayoutController.toast('error', error.message)
+                })
             this.setLoading(false)
         })
+    }
+
+    static updateImagesInArticle(imgs: string[], noteId: string): Promise<boolean> {
+        if (imgs && imgs.length > 0) {
+            return new Promise((resolve, reject) => {
+                articleSocket.emit(
+                    EArticleEvents.PUBLISH_ARTICLE,
+                    { imgs, noteId },
+                    (res: TPublishArticleReturn) => {
+                        if (res.success) {
+                            resolve(true)
+                        } else {
+                            reject(new BaseCustomError(res.message || "Couldn't upload article"))
+                        }
+                    },
+                )
+            })
+        }
+        return Promise.resolve(true)
     }
 
     static publishArticleInChunks(
         chunks: string[],
         chunkPayload: TPublishArticleInChunksPyld,
+        noteId: string,
     ): Promise<boolean> {
         return new Promise((resolve, reject) => {
             const publishHandler = (
                 chunks: string[],
                 chunkPayload: TPublishArticleInChunksPyld,
             ) => {
+                const chunk = chunks[this.chunkIdx]
+                const blb = new Blob([chunk])
+                console.log('>>> size of chunk >>>', blb.size)
                 articleSocket.emit(
                     EArticleEvents.PUBLISH_ARTICLE,
                     {
-                        ...chunkPayload,
-                        articleChunk: chunks[this.chunkIdx],
+                        articleChunk: {
+                            ...chunkPayload,
+                            chunk,
+                        },
+                        noteId,
                     },
                     (res: TPublishArticleReturn) => {
                         if (res.success) {

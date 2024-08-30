@@ -2,6 +2,9 @@ import { NOTE_PASSWORD_REGEX, NOTE_UNIQUE_NAME_REGEX } from '@/note/regex'
 import { EValidationMessages } from '@/utils/validation/messages'
 import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, Matches } from 'class-validator'
 import { EEditors } from './enums'
+import { IsOptional, IsString, MaxLength } from 'class-validator'
+import type { TNoteForm } from './types'
+import { ENoteLengths } from './enums'
 
 export class NoteUniqueNameDTO {
     @IsNotEmpty()
@@ -38,4 +41,21 @@ export class SwitchEditorPayloadDTO {
     @IsNotEmpty()
     @IsEnum(EEditors)
     editor: EEditors
+}
+
+export class BroadcastNoteTypingDTO implements TNoteForm {
+    @IsString({ message: EValidationMessages.INVALID_INPUT })
+    @MaxLength(ENoteLengths.MAX_LENGTH_NOTE_CONTENT, {
+        message: EValidationMessages.MAX_LENGTH_INVALID,
+    })
+    @IsOptional()
+    content?: string
+
+    @IsString({ message: EValidationMessages.INVALID_INPUT })
+    @IsOptional()
+    title?: string
+
+    @IsString({ message: EValidationMessages.INVALID_INPUT })
+    @IsOptional()
+    author?: string
 }

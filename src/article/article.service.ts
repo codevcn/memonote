@@ -4,7 +4,6 @@ import dayjs from 'dayjs'
 import type {
     TArticleChunkStatus,
     TCreateDirOfArticleChunk,
-    TUploadedImage,
     TUploadIndentity,
     TWriteChunks,
 } from './types'
@@ -17,8 +16,8 @@ import { Types } from 'mongoose'
 import AppRoot from 'app-root-path'
 import { EArticleMessages } from './messages'
 import { EArticleChunk } from './enums'
-import { v2 as cloudinary, UploadApiOptions, UploadApiResponse } from 'cloudinary'
 import { WsException } from '@nestjs/websockets'
+import { FileServerService } from './file-server.service'
 
 @Injectable()
 export class ArticleService {
@@ -30,15 +29,11 @@ export class ArticleService {
     private readonly articleUnicode: NodeJS.BufferEncoding = 'utf-8'
     private readonly articleFiletype: string = 'txt'
     private readonly backupArticleSuffix: string = 'backup'
-    private readonly artilceImgsPath: string = '/memonote/articles'
 
-    constructor(@InjectModel(Article.name) private articleModel: TArticleModel) {
-        cloudinary.config({
-            cloud_name: process.env.CLOUDINARY_CLOUDNAME,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET,
-        })
-    }
+    constructor(
+        @InjectModel(Article.name) private articleModel: TArticleModel,
+        private fileServerService: FileServerService,
+    ) {}
 
     private async createNewArticle(
         noteUniqueName: string,
@@ -170,6 +165,7 @@ export class ArticleService {
         noteId: string,
         uploadId: string,
     ): Promise<void> {
+        console.log('>>> upload article chunk here')
         await this.checkMultipleUploads(noteUniqueName, uploadId)
 
         const { chunkFilePathBackup, docWasCreated } = await this.writeChunks(
@@ -252,34 +248,5 @@ export class ArticleService {
             disposition: `attachment; filename="${filenameWithExtension}"`,
             length: articleStat.size,
         })
-    }
-
-    private createImgPath(notedId: string): string {
-        return `${this.artilceImgsPath}/noteId-${notedId}`
-    }
-
-    async uploadImage(image: ArrayBuffer, notedId: string): Promise<TUploadedImage> {
-        const imgInfo: UploadApiOptions = {
-            use_filename: false,
-            resource_type: 'image',
-            folder: this.createImgPath(notedId),
-        }
-        const result = await new Promise<UploadApiResponse>((resolve, reject) => {
-            cloudinary.uploader
-                .upload_stream(imgInfo, (error, uploadResult) => {
-                    if (uploadResult) {
-                        return resolve(uploadResult)
-                    }
-                    if (error) {
-                        return reject(error)
-                    }
-                    reject(new WsException(EArticleMessages.UPLOAD_IMAGE_FAIL))
-                })
-                .end(image)
-        })
-        return {
-            imgURL: result.secure_url,
-            imgPublicId: result.public_id,
-        }
     }
 }

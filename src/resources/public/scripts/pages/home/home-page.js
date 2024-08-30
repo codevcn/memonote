@@ -306,7 +306,7 @@ const logoutHandler = async (target) => {
     }
     if (apiSuccess) {
         refreshPageAfterMs(500)
-        LayoutController.setUIOfGeneralAppStatus('success')
+        LayoutController.setGeneralAppStatus('success')
     }
     target.classList.remove('on-progress')
     target.innerHTML = innerHTML_beforeLogout

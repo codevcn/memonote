@@ -6,6 +6,10 @@ import type {
 } from './DTOs'
 import type { Response } from 'express'
 import type { ELangCodes } from '@/lang/enums'
+import type { Socket } from 'socket.io'
+import type { EInitialSocketEvents } from '@/utils/enums'
+import type { TBroadcastNoteTypingReturn, TClientConnectedEventPayload } from './types'
+import type { BroadcastNoteTypingDTO } from './DTOs'
 
 export interface INoteAPIController {
     setPasswordForNote(
@@ -16,4 +20,16 @@ export interface INoteAPIController {
     ): Promise<TSuccess>
     removePasswordForNote(params: NoteUniqueNameDTO, lang: ELangCodes): Promise<TSuccess>
     switchEditor(params: NoteUniqueNameDTO, payload: SwitchEditorPayloadDTO): Promise<TSuccess>
+}
+
+export interface IInitialSocketEventEmits {
+    [EInitialSocketEvents.CLIENT_CONNECTED](payload: TClientConnectedEventPayload): void
+}
+
+export interface IMessageSubcribers {
+    noteFormEdited: (
+        data: BroadcastNoteTypingDTO,
+        clientSocket: Socket,
+    ) => Promise<TBroadcastNoteTypingReturn>
+    fetchNoteForm: (clientSocket: Socket) => Promise<TBroadcastNoteTypingReturn>
 }

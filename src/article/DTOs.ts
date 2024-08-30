@@ -1,17 +1,17 @@
 import { EValidationMessages } from '@/utils/validation/messages'
-import { IsMongoId, IsNotEmpty } from 'class-validator'
+import { IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { ValidImage, ValidChunk } from './validation'
 import { Transform } from 'class-transformer'
-import { EArticleChunk } from '../enums'
+import { EArticleChunk } from './enums'
 import { transformImageData } from './helpers'
-import { EFileSize } from './enums'
+import { EArticleFiles } from './enums'
 
-export class PublishArticlePayloadDTO {
+export class ArticleChunkDTO {
     @IsNotEmpty()
     @ValidChunk(EArticleChunk.SIZE_PER_CHUNK, {
         message: EValidationMessages.INVALID_INPUT,
     })
-    articleChunk: string
+    chunk: string
 
     @IsNotEmpty()
     totalChunks: number
@@ -20,17 +20,27 @@ export class PublishArticlePayloadDTO {
     noteUniqueName: string
 
     @IsNotEmpty()
-    @IsMongoId()
-    noteId: string
+    uploadId: string
+}
+
+export class PublishArticlePayloadDTO {
+    @IsOptional()
+    @ValidateNested()
+    articleChunk?: ArticleChunkDTO
+
+    @IsOptional()
+    @IsString({ each: true })
+    imgs?: string[]
 
     @IsNotEmpty()
-    uploadId: string
+    @IsMongoId()
+    noteId: string
 }
 
 export class UploadImageDTO {
     @IsNotEmpty()
     @Transform(({ value }) => transformImageData(value), { toClassOnly: true })
-    @ValidImage(EFileSize.MAX_IMAGE_SIZE)
+    @ValidImage(EArticleFiles.MAX_IMAGE_SIZE)
     image: ArrayBuffer
 
     @IsMongoId()

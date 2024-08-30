@@ -1,4 +1,7 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator'
+import { EArticleFiles } from './enums'
+import { BaseCustomException } from '@/utils/exception/custom.exception'
+import { EArticleMessages } from './messages'
 
 export function ValidChunk(size: number, validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
@@ -10,7 +13,8 @@ export function ValidChunk(size: number, validationOptions?: ValidationOptions) 
             validator: {
                 validate(value: string, args: ValidationArguments) {
                     const stringSizeInBytes = Buffer.byteLength(value, 'utf8')
-                    return stringSizeInBytes <= size
+                    console.log('>>> string size in bytes >>>', { stringSizeInBytes, size })
+                    return stringSizeInBytes > 0 && stringSizeInBytes <= size
                 },
             },
         })
@@ -46,5 +50,15 @@ export function ValidImage(size: number, validationOptions?: ValidationOptions) 
                 },
             },
         })
+    }
+}
+
+export async function validateImgList(imgs: string[]): Promise<void> {
+    const lenOfList = imgs.length
+    if (lenOfList === 0) {
+        throw new BaseCustomException(EArticleMessages.EMPTY_IMAGES)
+    }
+    if (lenOfList > EArticleFiles.MAX_IMAGES_COUNT) {
+        throw new BaseCustomException(EArticleMessages.MAXIMUM_IMAGES_COUNT)
     }
 }

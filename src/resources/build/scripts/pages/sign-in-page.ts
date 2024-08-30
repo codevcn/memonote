@@ -98,7 +98,7 @@ const signInHandler = async (e: SubmitEvent): Promise<void> => {
 
         if (apiSuccess) {
             redirectAfterMs(300, `/${noteUniqueName}`)
-            LayoutController.setUIOfGeneralAppStatus('success')
+            LayoutController.setGeneralAppStatus('success')
         }
         submitBtn.classList.remove('on-progress')
         submitBtn.innerHTML = htmlBefore

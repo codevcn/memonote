@@ -3,7 +3,7 @@ import { NoteService } from './note.service'
 import { NoteAPIController } from './note-api.controller'
 import { JWTService } from '@/auth/jwt.service'
 import { AuthService } from '@/auth/auth.service'
-import { NoteGateway } from './gateway/note.gateway'
+import { NoteGateway } from './note.gateway'
 import { NotificationService } from '@/notification/notification.service'
 
 @Module({
