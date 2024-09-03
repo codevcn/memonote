@@ -9,8 +9,6 @@ declare global {
             JWT_SECRET: string
             JWT_MAX_AGE_IN_HOUR: string
             CLIENT_HOST: string
-            APPLICATION_DOMAIN_DEV: string
-            APPLICATION_DOMAIN: string
             JWT_AUTH_COOKIE: string
             CLOUDINARY_CLOUDNAME: string
             CLOUDINARY_API_KEY: string

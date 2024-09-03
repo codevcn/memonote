@@ -11,7 +11,7 @@ import { validationPipe } from './configs/config-validation'
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-    const { PORT, HOSTNAME } = process.env
+    const { PORT } = process.env
 
     // cookie
     app.use(cookieParser())
@@ -31,7 +31,7 @@ async function bootstrap() {
         new WsExceptionsFilter(),
     )
 
-    await app.listen(PORT || 8080, HOSTNAME)
-    console.log(`>>> Server is working on http://${HOSTNAME}:${PORT}`)
+    await app.listen(PORT || 8080)
+    console.log(`>>> Server is working on http://${'localhost'}:${PORT}`)
 }
 bootstrap()
