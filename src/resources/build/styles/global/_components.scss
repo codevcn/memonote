@@ -1,0 +1,42 @@
+@use './colors';
+@use './text-fonts';
+
+$mmn-cubic-bezier: cubic-bezier(0.65, 0, 0.076, 1);
+$mmn-box-shadow-on-input: 0 0 0 0.25rem colors.$mmn-regular-lightgray-cl;
+$mmn-height-of-nav-bar: 60px;
+$mmn-scrollbar-on-blur-cl: rgba(153, 153, 153, 0.333);
+$mmn-scrollbar-on-hover-cl: #999999;
+$mmn-nav-bar-padding-x: 50px;
+$mmn-nav-bar-padding-x-for-large-breakpoint: 15px;
+
+@mixin sharing-editor-view-styling {
+    font-family: text-fonts.$mmn-primary-fontf;
+    margin: 0;
+    line-height: 1.5;
+}
+
+@mixin regular-scrollbar-styling {
+    &::-webkit-scrollbar {
+        background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: $mmn-scrollbar-on-blur-cl;
+    }
+
+    &::-webkit-scrollbar {
+        width: 7px;
+        border-radius: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        height: 20px;
+        border-radius: 10px;
+    }
+
+    &:hover {
+        &::-webkit-scrollbar-thumb {
+            background-color: $mmn-scrollbar-on-hover-cl;
+        }
+    }
+}

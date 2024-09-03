@@ -1,0 +1,153 @@
+// import modules
+@use '../../global/colors';
+@use '../../global/z-indexes';
+@use '../../global/responsive';
+@use '../../global/components';
+// import scss files
+@use './notes.scss';
+@use './settings.scss';
+
+$mmn-page-padding-bottom: 200px;
+$mmn-height-of-app-progress-bar: 5px;
+$mmn-color-of-app-progress-bar: #0064d5;
+
+:root {
+    --mmn-quick-look-icon-initial-size: 30px;
+}
+
+@mixin scroll-to-styling {
+    background-color: colors.$mmn-primary-cl;
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer;
+    border: 2px colors.$mmn-primary-cl solid;
+    pointer-events: none;
+    transition:
+        transform 0.2s,
+        background-color 0.2s;
+    transform: scale(0);
+
+    &.active {
+        transform: scale(1);
+        cursor: pointer;
+        pointer-events: auto;
+    }
+
+    i {
+        font-size: 2rem;
+        transition: color 0.2s;
+        transform: translateY(-1px);
+        color: colors.$mmn-regular-white-cl;
+    }
+
+    &:hover {
+        background-color: colors.$mmn-regular-white-cl;
+
+        i {
+            color: colors.$mmn-primary-cl;
+        }
+    }
+}
+
+#page-main {
+    padding: 10px 0 $mmn-page-padding-bottom;
+}
+
+#app-spinner-section {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: z-indexes.$mmn-app-spinner-zidx;
+    width: 100vw;
+
+    &.active {
+        display: block;
+    }
+
+    .progress-bar {
+        width: 100%;
+        transform: translateX(-100%);
+        animation: app-progress-animation 3s ease infinite forwards;
+        height: $mmn-height-of-app-progress-bar;
+        background-color: $mmn-color-of-app-progress-bar;
+        border-radius: 30px;
+
+        @keyframes app-progress-animation {
+            0% {
+                transform: translateX(-100%);
+            }
+            50% {
+                transform: translateX(-20%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    }
+}
+
+#bubble-btns {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 10px;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: z-indexes.$mmn-base-zidx + 10;
+
+    .scroll-to-top-btn {
+        @include scroll-to-styling;
+    }
+
+    .scroll-to-bottom-btn {
+        @include scroll-to-styling;
+    }
+
+    .bubble-note-settings-btn {
+        background-color: colors.$mmn-primary-cl;
+        border-radius: 50%;
+        padding: 4px;
+        cursor: pointer;
+        border: 2px colors.$mmn-primary-cl solid;
+        transition:
+            background-color 0.2s,
+            transform 0.2s;
+
+        i {
+            font-size: 2rem;
+            color: colors.$mmn-regular-white-cl;
+            transition: color 0.2s;
+        }
+
+        &:hover {
+            background-color: colors.$mmn-regular-white-cl;
+            transform: rotate(180deg);
+
+            i {
+                color: colors.$mmn-primary-cl;
+            }
+        }
+    }
+
+    @media only screen and (max-width: #{responsive.$mmn-large-breakpoint}) {
+        .scroll-to-top-btn {
+            i {
+                font-size: 1.8rem;
+            }
+        }
+
+        .scroll-to-bottom-btn {
+            i {
+                font-size: 1.8rem;
+            }
+        }
+
+        .bubble-note-settings-btn {
+            i {
+                font-size: 1.8rem;
+            }
+        }
+    }
+}
