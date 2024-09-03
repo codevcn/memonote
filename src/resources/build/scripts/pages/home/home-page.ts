@@ -684,6 +684,7 @@ const initHomePage = (): void => {
         }
     }
 
+    // user actions
     initUserActions()
 }
 initHomePage()

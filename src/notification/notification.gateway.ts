@@ -1,5 +1,5 @@
 import { ECommonStatuses, EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
-import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
+import { UseFilters, UsePipes } from '@nestjs/common'
 import {
     WebSocketGateway,
     OnGatewayDisconnect,
@@ -16,9 +16,10 @@ import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import type { TNotificationDocument } from './notification.model'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { initGatewayMetadata } from '@/configs/config-gateways'
+import { validationPipe } from '@/configs/config-validation'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTIFICATION }))
-@UsePipes(new ValidationPipe())
+@UsePipes(validationPipe)
 @UseFilters(new WsExceptionsFilter())
 export class NotificationGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers

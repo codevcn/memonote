@@ -1,9 +1,8 @@
 import { EValidationMessages } from '@/utils/validation/messages'
 import { IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { ValidImage, ValidChunk } from './validation'
-import { Transform } from 'class-transformer'
+import { Type } from 'class-transformer'
 import { EArticleChunk } from './enums'
-import { transformImageData } from './helpers'
 import { EArticleFiles } from './enums'
 
 export class ArticleChunkDTO {
@@ -26,6 +25,7 @@ export class ArticleChunkDTO {
 export class PublishArticlePayloadDTO {
     @IsOptional()
     @ValidateNested()
+    @Type(() => ArticleChunkDTO)
     articleChunk?: ArticleChunkDTO
 
     @IsOptional()
@@ -39,9 +39,8 @@ export class PublishArticlePayloadDTO {
 
 export class UploadImageDTO {
     @IsNotEmpty()
-    @Transform(({ value }) => transformImageData(value), { toClassOnly: true })
     @ValidImage(EArticleFiles.MAX_IMAGE_SIZE)
-    image: ArrayBuffer
+    image: Buffer
 
     @IsMongoId()
     @IsNotEmpty()

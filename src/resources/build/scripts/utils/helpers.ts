@@ -1,9 +1,9 @@
-function debounce<T extends TUnknownFunction>(
-    func: T,
+function debounce<F extends TUnknownFunction<void>>(
+    func: F,
     wait: number,
-): (...args: Parameters<T>) => void {
+): (...args: Parameters<F>) => void {
     let timeout: ReturnType<typeof setTimeout> | null
-    return function (this: ThisParameterType<T>, ...args: Parameters<T>) {
+    return function (this: ThisParameterType<F>, ...args: Parameters<F>) {
         const context = this
         if (timeout !== null) {
             clearTimeout(timeout)
@@ -94,13 +94,28 @@ class LocalStorageController {
         return localStorage.getItem(ELocalStorageKeys.NAV_BAR_POS) as TNavBarPos
     }
 
-    static setYourNote(noteUniqueName: string): void {
+    static setCurrentNote(noteUniqueName: string): void {
         localStorage.setItem(ELocalStorageKeys.CURRENT_NOTE, noteUniqueName)
     }
 
-    static getYourNote(): string | null {
-        const noteUniqueName = localStorage.getItem(ELocalStorageKeys.CURRENT_NOTE) as string
-        return noteUniqueName || null
+    static getCurrentNote(): string | null {
+        return localStorage.getItem(ELocalStorageKeys.CURRENT_NOTE)
+    }
+
+    static setHeightOfRichEditor(height: number): void {
+        localStorage.setItem(ELocalStorageKeys.HEIGHT_OF_EDITOR, height.toString())
+    }
+
+    static getHeightOfRichEditor(): string | null {
+        return localStorage.getItem(ELocalStorageKeys.HEIGHT_OF_EDITOR)
+    }
+
+    static setCurrentEditor(editor: EEditors): void {
+        localStorage.setItem(ELocalStorageKeys.CURRENT_EDITOR, editor)
+    }
+
+    static getCurrentEditor(): string | null {
+        return localStorage.getItem(ELocalStorageKeys.CURRENT_EDITOR)
     }
 }
 
@@ -143,7 +158,7 @@ const convertStringToChunks = (inputString: string, sizePerChunk: number): strin
 
 const initUserActions = (): void => {
     const noteUniqueName = getNoteUniqueNameFromURL()
-    LocalStorageController.setYourNote(noteUniqueName)
+    LocalStorageController.setCurrentNote(noteUniqueName)
 }
 
 function convertToBytes(input: string): number | null {

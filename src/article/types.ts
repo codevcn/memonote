@@ -36,3 +36,7 @@ export type TUploadImageReturn = TSuccess & {
     message?: string
     imgInfo?: TUploadedImage
 }
+
+export type TNumberOfImagesQuery = {
+    numberOfImgs: number
+}

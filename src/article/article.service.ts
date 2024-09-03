@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import type {
     TArticleChunkStatus,
     TCreateDirOfArticleChunk,
+    TNumberOfImagesQuery,
     TUploadIndentity,
     TWriteChunks,
 } from './types'
@@ -15,9 +16,8 @@ import { InjectModel } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 import AppRoot from 'app-root-path'
 import { EArticleMessages } from './messages'
-import { EArticleChunk } from './enums'
-import { WsException } from '@nestjs/websockets'
-import { FileServerService } from './file-server.service'
+import { EArticleChunk, EArticleFiles } from './enums'
+import { BaseCustomException } from '@/utils/exception/custom.exception'
 
 @Injectable()
 export class ArticleService {
@@ -30,10 +30,7 @@ export class ArticleService {
     private readonly articleFiletype: string = 'txt'
     private readonly backupArticleSuffix: string = 'backup'
 
-    constructor(
-        @InjectModel(Article.name) private articleModel: TArticleModel,
-        private fileServerService: FileServerService,
-    ) {}
+    constructor(@InjectModel(Article.name) private articleModel: TArticleModel) {}
 
     private async createNewArticle(
         noteUniqueName: string,
@@ -116,7 +113,7 @@ export class ArticleService {
         const uploadIdentity = this.uploadsIndentity.get(noteUniqueName)
         if (uploadIdentity) {
             if (uploadIdentity.uploadId !== uploadId) {
-                throw new WsException(EArticleMessages.MULTIPLE_UPLOAD)
+                throw new BaseCustomException(EArticleMessages.MULTIPLE_UPLOAD)
             }
         } else {
             this.uploadsIndentity.set(noteUniqueName, { uploadId })
@@ -165,7 +162,6 @@ export class ArticleService {
         noteId: string,
         uploadId: string,
     ): Promise<void> {
-        console.log('>>> upload article chunk here')
         await this.checkMultipleUploads(noteUniqueName, uploadId)
 
         const { chunkFilePathBackup, docWasCreated } = await this.writeChunks(
@@ -248,5 +244,38 @@ export class ArticleService {
             disposition: `attachment; filename="${filenameWithExtension}"`,
             length: articleStat.size,
         })
+    }
+
+    async fetchNumberOfImages(notedId: string): Promise<number> {
+        const docs = await this.articleModel.aggregate<TNumberOfImagesQuery>([
+            {
+                $match: {
+                    note: new Types.ObjectId(notedId),
+                },
+            },
+            {
+                $project: {
+                    numberOfImgs: {
+                        $size: '$currentImages',
+                    },
+                },
+            },
+        ])
+        return docs[0].numberOfImgs
+    }
+
+    async addAnImageToDBHandler(publicId: string, notedId: string): Promise<void> {
+        const currentNumOfImgs = await this.fetchNumberOfImages(notedId)
+        if (currentNumOfImgs >= EArticleFiles.MAX_IMAGES_COUNT) {
+            throw new BaseCustomException(EArticleMessages.MAXIMUM_IMAGES_COUNT)
+        }
+        await this.articleModel.updateOne(
+            { note: new Types.ObjectId(notedId) },
+            {
+                $push: {
+                    currentImages: publicId,
+                },
+            },
+        )
     }
 }

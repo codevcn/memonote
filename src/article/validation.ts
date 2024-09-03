@@ -6,6 +6,7 @@ import { EArticleMessages } from './messages'
 export function ValidChunk(size: number, validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
+            name: 'ValidChunk',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
@@ -13,7 +14,6 @@ export function ValidChunk(size: number, validationOptions?: ValidationOptions) 
             validator: {
                 validate(value: string, args: ValidationArguments) {
                     const stringSizeInBytes = Buffer.byteLength(value, 'utf8')
-                    console.log('>>> string size in bytes >>>', { stringSizeInBytes, size })
                     return stringSizeInBytes > 0 && stringSizeInBytes <= size
                 },
             },
@@ -46,15 +46,15 @@ export function ValidImage(size: number, validationOptions?: ValidationOptions) 
             constraints: [],
             validator: {
                 validate(value: any, args: ValidationArguments) {
-                    return value instanceof ArrayBuffer && value.byteLength <= size
+                    return value instanceof Buffer && value.byteLength <= size
                 },
             },
         })
     }
 }
 
-export async function validateImgList(imgs: string[]): Promise<void> {
-    const lenOfList = imgs.length
+export async function validateInputImgList(imgURLs: string[]): Promise<void> {
+    const lenOfList = imgURLs.length
     if (lenOfList === 0) {
         throw new BaseCustomException(EArticleMessages.EMPTY_IMAGES)
     }

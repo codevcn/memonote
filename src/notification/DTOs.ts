@@ -10,5 +10,6 @@ export class LastNotificationDTO {
 
 export class GetNotifsBodyDTO {
     @ValidateNested()
+    @Type(() => LastNotificationDTO)
     lastNotif: LastNotificationDTO
 }

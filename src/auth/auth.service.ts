@@ -12,7 +12,7 @@ import { Socket } from 'socket.io'
 import { EValidationMessages } from '@/utils/validation/messages'
 import type { TValidateIncommingSocketReturn } from '@/note/types'
 import { WsException } from '@nestjs/websockets'
-import { CustomWsException } from '@/note/ecxeptions'
+import { CustomWsException } from '@/utils/exception/ecxeptions'
 
 @Injectable()
 export class AuthService {
@@ -125,7 +125,7 @@ export class AuthService {
         const noteHasPassword = UserSessions.checkNote(noteUniqueName)
         if (noteHasPassword) {
             if (!cookie) {
-                throw new WsException(EValidationMessages.INVALID_INPUT)
+                throw new CustomWsException(EValidationMessages.INVALID_INPUT, noteUniqueName)
             }
             const jwt = this.jwtService.extractJWTFromCookie(cookie)
             if (!jwt) {

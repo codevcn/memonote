@@ -555,6 +555,7 @@ const initHomePage = () => {
             navBarPosSelect.value = navBarPos
         }
     }
+    // user actions
     initUserActions()
 }
 initHomePage()

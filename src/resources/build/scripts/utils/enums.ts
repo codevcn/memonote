@@ -41,6 +41,8 @@ enum ELocalStorageKeys {
     NOTE_FORM_TEXT_FONT = 'note-form-text-font',
     NAV_BAR_POS = 'nav-bar-pos',
     CURRENT_NOTE = 'current-note',
+    HEIGHT_OF_EDITOR = 'height-of-editor',
+    CURRENT_EDITOR = 'current-editor',
 }
 
 enum ENoteLengths {

@@ -94,12 +94,12 @@ const initEditors = (): void => {
         })
     }
 
-    // setup set height of editor
+    // setup setting height of editor
     const setHeightInput = document.getElementById('set-editor-height-input') as HTMLInputElement
     setHeightInput.addEventListener(
         'input',
-        debounce(function (e) {
-            RichEditorController.setHeightOfEditor(e)
+        debounce((e: Event) => {
+            RichEditorController.setHeightOfEditor(setHeightInput)
         }, 300),
     )
 }

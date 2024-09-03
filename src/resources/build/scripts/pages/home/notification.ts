@@ -1,41 +1,62 @@
-// init types, enums, ...
 enum ENotificationEvents {
     NOTIFY = 'notify',
 }
-
 type TNotifCategory = 'all' | 'is-new'
 
-// init socket
-const notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSocketConfig)
+class NotificationSocket {
+    private socket: any
+    private readonly reconnecting: TSocketReconnecting = { flag: false }
 
-// init vars
-const notificationSocketReconnecting: TSocketReconnecting = { flag: false }
-
-// listeners
-notificationSocket.on(
-    EInitSocketEvents.CLIENT_CONNECTED,
-    async (data: TClientConnectedEventPld) => {
-        if (notificationSocketReconnecting.flag) {
-            LayoutController.toast('success', 'Connected to server.', 2000)
-            notificationSocketReconnecting.flag = false
-        }
-        console.log('>>> notification Socket connected to server.')
-    },
-)
-
-notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
-    if (notificationSocket.active) {
-        LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-        notificationSocketReconnecting.flag = true
-    } else {
-        LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> notification connect_error due to ${err.message}`)
+    constructor() {
+        this.socket = io(`/${ENamespacesOfSocket.NORMAL_EDITOR}`, clientSocketConfig)
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, this.listenConnected)
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, this.listenConnectionError)
+        this.socket.on(ENotificationEvents.NOTIFY, this.listenNotify)
     }
-})
 
-notificationSocket.on(ENotificationEvents.NOTIFY, async (notif: TNotifData) => {
-    NotificationsController.addNewNotif({ ...notif, isNew: true })
-})
+    private async listenConnected(data: TClientConnectedEventPld): Promise<void> {
+        if (this.reconnecting.flag) {
+            LayoutController.toast('success', 'Connected to server.', 2000)
+            this.reconnecting.flag = false
+        }
+        console.log('>>> normal Editor Socket connected to server.')
+    }
+
+    private async listenConnectionError(err: Error): Promise<void> {
+        if (this.socket.active) {
+            LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+            this.reconnecting.flag = true
+        } else {
+            LayoutController.toast('error', "Can't connect with the server.")
+            console.error(`>>> normal Editor connect_error due to ${err.message}`)
+        }
+    }
+
+    async handleNoteFormEdited(data: TNoteForm): Promise<void> {
+        const realtimeMode = LocalStorageController.getRealtimeMode()
+        if (realtimeMode && realtimeMode === 'sync') {
+            setForNoteFormEdited(data)
+        } else {
+            const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
+            if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
+                LayoutController.notifyNoteEdited('on', data)
+            }
+        }
+    }
+
+    emitWithoutTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>): void {
+        this.socket.emit(event, payload, cb)
+    }
+
+    emitWithTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>, timeout: number) {
+        this.socket.timeout(timeout).emit(event, payload, cb)
+    }
+
+    async listenNotify(notif: TNotifData): Promise<void> {
+        NotificationsController.addNewNotif({ ...notif, isNew: true })
+    }
+}
+const notificationSocket = new NotificationSocket()
 
 // controller
 class NotificationsController {

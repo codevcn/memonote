@@ -1,6 +1,6 @@
 'use strict'
 const goBackYourNote = () => {
-    const noteUniqueName = LocalStorageController.getYourNote()
+    const noteUniqueName = LocalStorageController.getCurrentNote()
     if (noteUniqueName) {
         window.location.assign(`/${noteUniqueName}`)
     } else {

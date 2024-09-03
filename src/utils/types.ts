@@ -1,5 +1,7 @@
 import type { TApplicationInfo } from '@/utils/application/types'
 
+export type TUnknownFunction<R> = (...args: any[]) => R
+
 export type TSuccess = {
     success: boolean
 }

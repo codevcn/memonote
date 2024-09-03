@@ -7,5 +7,5 @@ export enum EValidationMessages {
     MIN_LENGTH_INVALID = 'Minimum length is invalid',
     MAX_LENGTH_INVALID = 'Maximum length is invalid',
     INVALID_CREDENTIALS = 'Invalid credentials',
-    INVALID_INPUT = 'Invalid input',
+    INVALID_INPUT = 'Invalid chunk input',
 }

@@ -1,5 +1,5 @@
 const goBackYourNote = (): void => {
-    const noteUniqueName = LocalStorageController.getYourNote()
+    const noteUniqueName = LocalStorageController.getCurrentNote()
     if (noteUniqueName) {
         window.location.assign(`/${noteUniqueName}`)
     } else {

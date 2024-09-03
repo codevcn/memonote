@@ -14,16 +14,16 @@ import { AuthService } from '@/auth/auth.service'
 import { EArticleEvents } from './enums'
 import { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs'
 import { ArticleService } from './article.service'
-import { UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common'
+import { UseFilters, UsePipes } from '@nestjs/common'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { initGatewayMetadata } from '@/configs/config-gateways'
 import type { TUploadedImage } from './types'
 import { FileServerService } from './file-server.service'
-import { LoggingInterceptor } from '@/temp/logging.interceptor'
+import { validationPipe } from '@/configs/config-validation'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.ARTICLE }))
-@UsePipes(new ValidationPipe())
+@UsePipes(validationPipe)
 @UseFilters(new WsExceptionsFilter())
 export class ArticleGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
@@ -59,15 +59,12 @@ export class ArticleGateway
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
     @SubscribeMessage(EArticleEvents.PUBLISH_ARTICLE)
-    @UseInterceptors(LoggingInterceptor)
     async publishArticleInChunks(@MessageBody() data: PublishArticlePayloadDTO) {
-        console.log('>>> message body >>>', { data })
         const { articleChunk, imgs, noteId } = data
         try {
             if (imgs) {
                 await this.fileServerService.cleanupImages(imgs, noteId)
             } else if (articleChunk) {
-                console.log('>>> count pub in chunks')
                 const { chunk, totalChunks, noteUniqueName, uploadId } = articleChunk
                 await this.articleService.uploadArticleChunk(
                     chunk,

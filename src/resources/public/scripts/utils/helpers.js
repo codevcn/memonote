@@ -62,12 +62,23 @@ class LocalStorageController {
     static writeCssVariable(cssVarName, value) {
         document.documentElement.style.setProperty(cssVarName, value)
     }
-    static setYourNote(noteUniqueName) {
+    static setCurrentNote(noteUniqueName) {
         localStorage.setItem(ELocalStorageKeys.CURRENT_NOTE, noteUniqueName)
     }
-    static getYourNote() {
-        const noteUniqueName = localStorage.getItem(ELocalStorageKeys.CURRENT_NOTE)
-        return noteUniqueName || null
+    static getCurrentNote() {
+        return localStorage.getItem(ELocalStorageKeys.CURRENT_NOTE)
+    }
+    static setHeightOfRichEditor(height) {
+        localStorage.setItem(ELocalStorageKeys.HEIGHT_OF_EDITOR, height.toString())
+    }
+    static getHeightOfRichEditor() {
+        return localStorage.getItem(ELocalStorageKeys.HEIGHT_OF_EDITOR)
+    }
+    static setCurrentEditor(editor) {
+        localStorage.setItem(ELocalStorageKeys.CURRENT_EDITOR, editor)
+    }
+    static getCurrentEditor() {
+        return localStorage.getItem(ELocalStorageKeys.CURRENT_EDITOR)
     }
 }
 LocalStorageController.setNavBarPos = (pos) => {
@@ -109,7 +120,7 @@ const convertStringToChunks = (inputString, sizePerChunk) => {
 }
 const initUserActions = () => {
     const noteUniqueName = getNoteUniqueNameFromURL()
-    LocalStorageController.setYourNote(noteUniqueName)
+    LocalStorageController.setCurrentNote(noteUniqueName)
 }
 function convertToBytes(input) {
     const units = {

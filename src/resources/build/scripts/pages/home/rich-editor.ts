@@ -1,69 +1,85 @@
-// init types, enums, ...
 enum EArticleEvents {
     PUBLISH_ARTICLE = 'publish_article',
     UPLOAD_IMAGE = 'upload_image',
 }
-
 type TPublishArticleReturn = TSuccess & {
     message?: string
 }
-
-type TPublishArticleInChunksPyld = {
+type TArticleChunkPld = {
     totalChunks: number
     noteUniqueName: string
     uploadId: string
 }
-
 type TCssForSettingStyleOfEditor = Partial<{
     height: number
 }>
-
 type TMetaOfPickImage = {
     filetype: string
     [key: string]: any
 }
-
 type TUploadedImg = {
     imgURL: string
 }
-
 type TUploadImageReturn = TSuccess & {
     message?: string
     uploadedImg?: TUploadedImg
 }
-
 type TArticleWorkerMsgData = {
     imgPublicIds: string[]
 }
-
 type TArticleWorkerMsgID<T> = {
     [key: string]: T
 }
+type TUploadImageEventPld = {
+    image: Blob
+    noteId: string
+}
+type TPublishArticleAsImgs = {
+    imgs: string[]
+    noteId: string
+}
+type TPublishArticleAsChunk = {
+    articleChunk: TArticleChunkPld & { chunk: string }
+    noteId: string
+}
 
-// init socket
-const articleSocket = io(`/${ENamespacesOfSocket.ARTICLE}`, clientSocketConfig)
+class ArticleSocket {
+    private socket: any
+    private readonly reconnecting: TSocketReconnecting = { flag: false }
 
-// init vars
-const articleSocketReconnecting: TSocketReconnecting = { flag: false }
-
-// listeners
-articleSocket.on(EInitSocketEvents.CLIENT_CONNECTED, async (data: TClientConnectedEventPld) => {
-    if (notificationSocketReconnecting.flag) {
-        LayoutController.toast('success', 'Connected to server.', 2000)
-        notificationSocketReconnecting.flag = false
+    constructor() {
+        this.socket = io(`/${ENamespacesOfSocket.ARTICLE}`, clientSocketConfig)
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, this.listenConnected)
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, this.listenConnectionError)
     }
-    console.log('>>> article Socket connected to server.')
-})
 
-articleSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err: Error) => {
-    if (articleSocket.active) {
-        LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-        notificationSocketReconnecting.flag = true
-    } else {
-        LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> article Socket connect_error due to ${err.message}`)
+    private async listenConnected(data: TClientConnectedEventPld): Promise<void> {
+        if (this.reconnecting.flag) {
+            LayoutController.toast('success', 'Connected to server.', 2000)
+            this.reconnecting.flag = false
+        }
+        console.log('>>> article Socket connected to server.')
     }
-})
+
+    private async listenConnectionError(err: Error): Promise<void> {
+        if (this.socket.active) {
+            LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+            this.reconnecting.flag = true
+        } else {
+            LayoutController.toast('error', "Can't connect with the server.")
+            console.error(`>>> article Socket connect_error due to ${err.message}`)
+        }
+    }
+
+    emitWithoutTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>): void {
+        this.socket.emit(event, payload, cb)
+    }
+
+    emitWithTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>, timeout: number) {
+        this.socket.timeout(timeout).emit(event, payload, cb)
+    }
+}
+const articleSocket = new ArticleSocket()
 
 class RichEditorController {
     private static readonly richEditorId: string = 'mmn-rich-note-editor'
@@ -118,15 +134,26 @@ class RichEditorController {
             ...containerConfig,
             mobile: mobileResponsiveConfig,
             ...imageConfig,
-            setup: (editor: any) => {
-                editor.on('init', (e: Event) => {
-                    setupScrollToBottom()
-                    RichEditorController.fetchArticle()
-                })
-            },
+            setup: RichEditorController.setupAfterInit,
         }
 
         return config
+    }
+
+    private static setupAfterInit(editor: any): void {
+        editor.on('init', (e: Event) => {
+            setupScrollToBottom()
+            RichEditorController.fetchArticle()
+
+            const heightOfEditor = LocalStorageController.getHeightOfRichEditor()
+            if (heightOfEditor) {
+                const setHeightInput = document.getElementById(
+                    'set-editor-height-input',
+                ) as HTMLInputElement
+                setHeightInput.value = heightOfEditor
+                RichEditorController.setHeightOfEditor(setHeightInput)
+            }
+        })
     }
 
     private static getEditor(): any {
@@ -146,7 +173,7 @@ class RichEditorController {
 
     static uploadImageHandler(image: File): Promise<TUploadedImg> {
         return new Promise((resolve, reject) => {
-            articleSocket.emit(
+            articleSocket.emitWithoutTimeout<TUploadImageEventPld>(
                 EArticleEvents.UPLOAD_IMAGE,
                 {
                     image,
@@ -182,7 +209,7 @@ class RichEditorController {
     }
 
     private static async pickImageHandler(
-        cb: TUnknownFunction,
+        cb: TUnknownFunction<void>,
         value: any,
         meta: TMetaOfPickImage,
     ): Promise<void> {
@@ -218,10 +245,9 @@ class RichEditorController {
         if (height) container.style.height = `${style.height}px`
     }
 
-    static setHeightOfEditor(e: Event): void {
-        const input = e.target as HTMLInputElement
-        const inputValue = input.value
-        const messageEle = input
+    static setHeightOfEditor(target: HTMLInputElement): void {
+        const inputValue = target.value
+        const messageEle = target
             .closest('.set-editor-height')!
             .querySelector('.message') as HTMLElement
         if (inputValue) {
@@ -229,6 +255,7 @@ class RichEditorController {
             if (Number.isInteger(height) && height >= this.minHeightOfEditor) {
                 this.setStyleOfEditor({ height })
                 messageEle.classList.remove('active')
+                LocalStorageController.setHeightOfRichEditor(height)
             } else {
                 const message = `Enter an integer equal or greater than ${this.minHeightOfEditor}`
                 messageEle.classList.add('active')
@@ -318,11 +345,9 @@ class RichEditorController {
         this.getRichEditorContent().then((articleContent) => {
             if (!RichEditorController.validateNoteContent(articleContent)) return
             const imgs = RichEditorController.getImgSrcList(articleContent)
-            console.log('>>> imgs >>>', { imgs })
             const { noteId } = pageData
             RichEditorController.updateImagesInArticle(imgs, noteId)
                 .then(() => {
-                    console.log('>>> upload article in chunks')
                     const chunks = convertStringToChunks(
                         articleContent,
                         EArticleChunk.SIZE_PER_CHUNK,
@@ -354,7 +379,7 @@ class RichEditorController {
     static updateImagesInArticle(imgs: string[], noteId: string): Promise<boolean> {
         if (imgs && imgs.length > 0) {
             return new Promise((resolve, reject) => {
-                articleSocket.emit(
+                articleSocket.emitWithoutTimeout<TPublishArticleAsImgs>(
                     EArticleEvents.PUBLISH_ARTICLE,
                     { imgs, noteId },
                     (res: TPublishArticleReturn) => {
@@ -372,18 +397,13 @@ class RichEditorController {
 
     static publishArticleInChunks(
         chunks: string[],
-        chunkPayload: TPublishArticleInChunksPyld,
+        chunkPayload: TArticleChunkPld,
         noteId: string,
     ): Promise<boolean> {
         return new Promise((resolve, reject) => {
-            const publishHandler = (
-                chunks: string[],
-                chunkPayload: TPublishArticleInChunksPyld,
-            ) => {
+            const publishHandler = (chunks: string[], chunkPayload: TArticleChunkPld) => {
                 const chunk = chunks[this.chunkIdx]
-                const blb = new Blob([chunk])
-                console.log('>>> size of chunk >>>', blb.size)
-                articleSocket.emit(
+                articleSocket.emitWithoutTimeout<TPublishArticleAsChunk>(
                     EArticleEvents.PUBLISH_ARTICLE,
                     {
                         articleChunk: {

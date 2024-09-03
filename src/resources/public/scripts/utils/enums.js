@@ -43,6 +43,8 @@ var ELocalStorageKeys
     ELocalStorageKeys['NOTE_FORM_TEXT_FONT'] = 'note-form-text-font'
     ELocalStorageKeys['NAV_BAR_POS'] = 'nav-bar-pos'
     ELocalStorageKeys['CURRENT_NOTE'] = 'current-note'
+    ELocalStorageKeys['HEIGHT_OF_EDITOR'] = 'height-of-editor'
+    ELocalStorageKeys['CURRENT_EDITOR'] = 'current-editor'
 })(ELocalStorageKeys || (ELocalStorageKeys = {}))
 var ENoteLengths
 ;(function (ENoteLengths) {

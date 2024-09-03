@@ -13,15 +13,16 @@ import { EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
 import { ENoteEvents } from './enums'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
 import { BroadcastNoteTypingDTO } from './DTOs'
-import { UseFilters, UsePipes, ValidationPipe } from '@nestjs/common'
+import { UseFilters, UsePipes } from '@nestjs/common'
 import { ECommonStatuses } from '@/utils/enums'
 import { AuthService } from '@/auth/auth.service'
 import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { initGatewayMetadata } from '@/configs/config-gateways'
+import { validationPipe } from '@/configs/config-validation'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NORMAL_EDITOR }))
-@UsePipes(new ValidationPipe())
+@UsePipes(validationPipe)
 @UseFilters(new WsExceptionsFilter())
 export class NoteGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers

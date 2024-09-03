@@ -67,14 +67,21 @@ class RichEditorController {
             ...containerConfig,
             mobile: mobileResponsiveConfig,
             ...imageConfig,
-            setup: (editor) => {
-                editor.on('init', (e) => {
-                    setupScrollToBottom()
-                    RichEditorController.fetchArticle()
-                })
-            },
+            setup: RichEditorController.setupAfterInit,
         }
         return config
+    }
+    static setupAfterInit(editor) {
+        editor.on('init', (e) => {
+            setupScrollToBottom()
+            RichEditorController.fetchArticle()
+            const heightOfEditor = LocalStorageController.getHeightOfRichEditor()
+            if (heightOfEditor) {
+                const setHeightInput = document.getElementById('set-editor-height-input')
+                setHeightInput.value = heightOfEditor
+                RichEditorController.setHeightOfEditor(setHeightInput)
+            }
+        })
     }
     static getEditor() {
         return tinymce.activeEditor
@@ -153,15 +160,15 @@ class RichEditorController {
         const { height } = style
         if (height) container.style.height = `${style.height}px`
     }
-    static setHeightOfEditor(e) {
-        const input = e.target
-        const inputValue = input.value
-        const messageEle = input.closest('.set-editor-height').querySelector('.message')
+    static setHeightOfEditor(target) {
+        const inputValue = target.value
+        const messageEle = target.closest('.set-editor-height').querySelector('.message')
         if (inputValue) {
             const height = parseInt(inputValue)
             if (Number.isInteger(height) && height >= this.minHeightOfEditor) {
                 this.setStyleOfEditor({ height })
                 messageEle.classList.remove('active')
+                LocalStorageController.setHeightOfRichEditor(height)
             } else {
                 const message = `Enter an integer equal or greater than ${this.minHeightOfEditor}`
                 messageEle.classList.add('active')
@@ -238,11 +245,9 @@ class RichEditorController {
         this.getRichEditorContent().then((articleContent) => {
             if (!RichEditorController.validateNoteContent(articleContent)) return
             const imgs = RichEditorController.getImgSrcList(articleContent)
-            console.log('>>> imgs >>>', { imgs })
             const { noteId } = pageData
             RichEditorController.updateImagesInArticle(imgs, noteId)
                 .then(() => {
-                    console.log('>>> upload article in chunks')
                     const chunks = convertStringToChunks(
                         articleContent,
                         EArticleChunk.SIZE_PER_CHUNK,
@@ -288,8 +293,6 @@ class RichEditorController {
         return new Promise((resolve, reject) => {
             const publishHandler = (chunks, chunkPayload) => {
                 const chunk = chunks[this.chunkIdx]
-                const blb = new Blob([chunk])
-                console.log('>>> size of chunk >>>', blb.size)
                 articleSocket.emit(
                     EArticleEvents.PUBLISH_ARTICLE,
                     {
