@@ -31,7 +31,7 @@ async function bootstrap() {
         new WsExceptionsFilter(),
     )
 
-    await app.listen(PORT, HOSTNAME)
+    await app.listen(PORT || 8080, HOSTNAME)
     console.log(`>>> Server is working on http://${HOSTNAME}:${PORT}`)
 }
 bootstrap()
