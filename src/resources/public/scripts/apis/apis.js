@@ -4,21 +4,21 @@ const axiosClient = axios.create({
     baseURL: ServerAPIURL,
 })
 // note
-const setPasswordForNoteAPI = (password, logoutAll, noteUniqueName) =>
-    axiosClient.post('/note/set-password/' + noteUniqueName, { password, logoutAll })
-const removePasswordForNoteAPI = (noteUniqueName) =>
-    axiosClient.delete('/note/remove-password/' + noteUniqueName)
-const switchEditorAPI = (noteUniqueName, editor) =>
-    axiosClient.post('/note/switch-editor/' + noteUniqueName, { editor })
+const setPasswordForNoteAPI = (password, logoutAll) =>
+    axiosClient.post('/note/set-password/' + getNoteUniqueNameFromURL(), { password, logoutAll })
+const removePasswordForNoteAPI = () =>
+    axiosClient.delete('/note/remove-password/' + getNoteUniqueNameFromURL())
+const switchEditorAPI = (editor) =>
+    axiosClient.post('/note/switch-editor/' + getNoteUniqueNameFromURL(), { editor })
 // auth
-const logoutAPI = (noteUniqueName) => axiosClient.post('/auth/logout/' + noteUniqueName)
-const signInAPI = (password, noteUniqueName) =>
-    axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
+const logoutAPI = () => axiosClient.post('/auth/logout/' + getNoteUniqueNameFromURL())
+const signInAPI = (password) =>
+    axiosClient.post('/auth/sign-in/' + getNoteUniqueNameFromURL(), { password })
 // notification
-const getNotificationsAPI = (noteId, lastNotif) =>
-    axiosClient.post(`/notification/${noteId}`, { lastNotif: lastNotif || {} })
+const getNotificationsAPI = (lastNotif) =>
+    axiosClient.post(`/notification/${pageData.noteId}`, { lastNotif: lastNotif || {} })
 // lang
 const requestLangAPI = (langCode) => axiosClient.post(`/lang/request-lang`, { langCode })
 // article
-const fetchArticleAPI = (noteId) =>
-    axiosClient.get(`/article/fetch-article/${noteId}`, { responseType: 'blob' })
+const fetchArticleAPI = () =>
+    axiosClient.get(`/article/fetch-article/${pageData.noteId}`, { responseType: 'blob' })

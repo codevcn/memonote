@@ -3,7 +3,7 @@ import type { Request, Response } from 'express'
 import { EAuthMessages } from './messages'
 import { JWTService } from './jwt.service'
 import { NoteService } from '@/note/note.service'
-import type { TAuthSocketConnectionReturn, TJWTPayload } from './types'
+import type { TAuthSocketConnection, TJWTPayload } from './types'
 import { UserSessions } from '@/note/sessions'
 import { SignInPayloadDTO } from './DTOs'
 import { BaseCustomException } from '@/utils/exception/custom.exception'
@@ -11,8 +11,9 @@ import { ENoteMessages } from '@/note/messages'
 import { Socket } from 'socket.io'
 import { EValidationMessages } from '@/utils/validation/messages'
 import type { TValidateIncommingSocketReturn } from '@/note/types'
-import { WsException } from '@nestjs/websockets'
 import { CustomWsException } from '@/utils/exception/ecxeptions'
+import { validateJson } from '@/utils/helpers'
+import { NoteCredentialsDTO } from '@/note/DTOs'
 
 @Injectable()
 export class AuthService {
@@ -81,14 +82,13 @@ export class AuthService {
     /**
      * Handler for checking authentication of client socket when init connection
      * @param socket client socket for authentication
-     * @returns noteUniqueName, ...
      */
-    async authSocketConnection(socket: Socket): Promise<TAuthSocketConnectionReturn> {
-        const { referer } = socket.handshake.headers
-        if (!referer) {
+    async authSocketConnection(socket: Socket): Promise<TAuthSocketConnection> {
+        const noteInfo = NoteService.getNoteCredentials(socket)
+        if (!noteInfo) {
             throw new BaseCustomException(EAuthMessages.FAIL_TO_AUTH)
         }
-        const noteUniqueName = this.noteService.extractNoteUniqueNameFromURL(referer)
+        const { noteUniqueName } = await validateJson(noteInfo, NoteCredentialsDTO)
         const note = await this.noteService.findNote(noteUniqueName)
         if (!note) {
             throw new BaseCustomException(EAuthMessages.FAIL_TO_AUTH)
@@ -116,14 +116,13 @@ export class AuthService {
         return { noteUniqueName }
     }
 
-    async validateIncommingMessage(socket: Socket): Promise<TValidateIncommingSocketReturn> {
-        const { referer, cookie } = socket.handshake.headers
-        if (!referer) {
-            throw new WsException(EValidationMessages.INVALID_INPUT)
-        }
-        const noteUniqueName = this.noteService.extractNoteUniqueNameFromURL(referer)
-        const noteHasPassword = UserSessions.checkNote(noteUniqueName)
-        if (noteHasPassword) {
+    async validateIncommingMessage(
+        socket: Socket,
+        noteUniqueName: string,
+    ): Promise<TValidateIncommingSocketReturn> {
+        const { cookie } = socket.handshake.headers
+        const isWithPassword = UserSessions.checkNote(noteUniqueName)
+        if (isWithPassword) {
             if (!cookie) {
                 throw new CustomWsException(EValidationMessages.INVALID_INPUT, noteUniqueName)
             }

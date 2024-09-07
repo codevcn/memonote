@@ -1,5 +1,6 @@
 import type { TSuccess } from '@/utils/types'
 import type {
+    NoteCredentialsDTO,
     NoteUniqueNameDTO,
     SetPasswordForNotePayloadDTO,
     SwitchEditorPayloadDTO,
@@ -30,6 +31,10 @@ export interface IMessageSubcribers {
     noteFormEdited: (
         data: BroadcastNoteTypingDTO,
         clientSocket: Socket,
+        noteInfo: NoteCredentialsDTO,
     ) => Promise<TBroadcastNoteTypingReturn>
-    fetchNoteForm: (clientSocket: Socket) => Promise<TBroadcastNoteTypingReturn>
+    fetchNoteForm: (
+        clientSocket: Socket,
+        noteInfo: NoteCredentialsDTO,
+    ) => Promise<TBroadcastNoteTypingReturn>
 }

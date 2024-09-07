@@ -8,44 +8,61 @@ type TBroadcastNoteTypingRes = {
 }
 
 class NormalEditorSocket {
-    private socket: any
-    private readonly reconnecting: TSocketReconnecting = { flag: false }
+    private readonly socket: any
+    private readonly reconnecting: TSocketReconnecting
 
     constructor() {
-        this.socket = io(`/${ENamespacesOfSocket.NORMAL_EDITOR}`, clientSocketConfig)
-        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, this.listenConnected)
-        this.socket.on(EInitSocketEvents.CONNECT_ERROR, this.listenConnectionError)
-        this.socket.on(ENoteEvents.NOTE_FORM_EDITED, this.listenNoteFormEdited)
+        this.socket = io(
+            `/${ENamespacesOfSocket.NORMAL_EDITOR}`,
+            initClientSocketConfig(getNoteUniqueNameFromURL(), pageData.noteId),
+        )
+        this.reconnecting = { flag: false }
+        this.listenConnected()
+        this.listenConnectionError()
+        this.listenNoteFormEdited()
+
+        setTimeout(() => {
+            this.socket.emit('uuu', (res: any) => {
+                console.clear()
+                console.log('>>> da nhan 1 thong diep >>>', res)
+            })
+        }, 1000)
     }
 
-    private async listenConnected(data: TClientConnectedEventPld): Promise<void> {
-        if (this.reconnecting.flag) {
-            LayoutController.toast('success', 'Connected to server.', 2000)
-            this.reconnecting.flag = false
-        }
-        console.log('>>> normal Editor Socket connected to server.')
-    }
-
-    private async listenConnectionError(err: Error): Promise<void> {
-        if (this.socket.active) {
-            LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-            this.reconnecting.flag = true
-        } else {
-            LayoutController.toast('error', "Can't connect with the server.")
-            console.error(`>>> normal Editor connect_error due to ${err.message}`)
-        }
-    }
-
-    async listenNoteFormEdited(data: TNoteForm): Promise<void> {
-        const realtimeMode = LocalStorageController.getRealtimeMode()
-        if (realtimeMode && realtimeMode === 'sync') {
-            setForNoteFormEdited(data)
-        } else {
-            const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
-            if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
-                LayoutController.notifyNoteEdited('on', data)
+    private async listenConnected(): Promise<void> {
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data: TClientConnectedEventPld) => {
+            if (this.reconnecting.flag) {
+                LayoutController.toast('success', 'Connected to server.', 2000)
+                this.reconnecting.flag = false
             }
-        }
+            console.log('>>> normal Editor Socket connected to server.')
+        })
+    }
+
+    private async listenConnectionError(): Promise<void> {
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, (err: Error) => {
+            if (this.socket.active) {
+                LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                this.reconnecting.flag = true
+            } else {
+                LayoutController.toast('error', "Can't connect with the server.")
+                console.error(`>>> Normal Editor connect_error due to >>> ${err.message}`)
+            }
+        })
+    }
+
+    async listenNoteFormEdited(): Promise<void> {
+        this.socket.on(ENoteEvents.NOTE_FORM_EDITED, (data: TNoteForm) => {
+            const realtimeMode = LocalStorageController.getRealtimeMode()
+            if (realtimeMode && realtimeMode === 'sync') {
+                setForNoteFormEdited(data)
+            } else {
+                const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
+                if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
+                    NormalEditorController.notifyNoteEdited('on', data)
+                }
+            }
+        })
     }
 
     emitWithoutTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>): void {
@@ -96,12 +113,41 @@ class NormalEditorController {
         )
     }
 
+    static notifyNoteEdited(type: 'on' | 'off', noteForm: TNoteForm): void {
+        let baseClasses: string[] = ['notify-note-edited', 'slither', 'blink']
+        let notifyNoteEditedClass: string[] = ['notify-note-edited']
+        notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
+        let noteFormItem: HTMLElement
+        const { title, author, content } = noteForm
+        const noteFormEle = homePage_pageMain.querySelector('.note-form') as HTMLElement
+        if (title || title === '') {
+            noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
+            noteFormItem.classList.remove(...baseClasses)
+            if (type === 'on') {
+                noteFormItem.classList.add(...notifyNoteEditedClass)
+            }
+        }
+        if (author || author === '') {
+            noteFormItem = noteFormEle.querySelector('.note-author') as HTMLElement
+            noteFormItem.classList.remove(...baseClasses)
+            if (type === 'on') {
+                noteFormItem.classList.add(...notifyNoteEditedClass)
+            }
+        }
+        if (content || content === '') {
+            noteFormItem = noteFormEle.querySelector('.note-editor-board') as HTMLElement
+            noteFormItem.classList.remove(...baseClasses)
+            if (type === 'on') {
+                noteFormItem.classList.add(...notifyNoteEditedClass)
+            }
+        }
+    }
     static async fetchNoteContent(): Promise<void> {
         normalEditorSocket.emitWithTimeout<{}>(
             ENoteEvents.FETCH_NOTE_FORM,
             {},
             (err: Error, res: TBroadcastNoteTypingRes) => {
-                LayoutController.notifyNoteEdited('off', {
+                NormalEditorController.notifyNoteEdited('off', {
                     title: 'true',
                     author: 'true',
                     content: 'true',

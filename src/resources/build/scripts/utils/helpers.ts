@@ -161,7 +161,7 @@ const initUserActions = (): void => {
     LocalStorageController.setCurrentNote(noteUniqueName)
 }
 
-function convertToBytes(input: string): number | null {
+function convertToBytes(input: string): number {
     const units: { [key: string]: number } = {
         B: 1,
         KB: 1024,
@@ -172,11 +172,7 @@ function convertToBytes(input: string): number | null {
     }
 
     const regex = /^(\d+(\.\d+)?)\s*(B|KB|MB|GB|TB|PB)$/i
-    const match = input.match(regex)
-
-    if (!match) {
-        return null
-    }
+    const match = input.match(regex)!
 
     const value = parseFloat(match[1])
     const unit = match[3].toUpperCase()

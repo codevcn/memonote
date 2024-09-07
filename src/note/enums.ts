@@ -1,3 +1,5 @@
+import bytes from 'bytes'
+
 export enum ENoteLengths {
     MAX_LENGTH_NOTE_UNIQUE_NAME = 50,
     MIN_LENGTH_NOTE_UNIQUE_NAME = 1,
@@ -21,4 +23,8 @@ export enum EEditors {
 export enum ENoteEvents {
     NOTE_FORM_EDITED = 'note_form_edited',
     FETCH_NOTE_FORM = 'fetch_note_form',
+}
+
+export enum EAudioChunk {
+    SIZE_PER_CHUNK = bytes('3MB'),
 }

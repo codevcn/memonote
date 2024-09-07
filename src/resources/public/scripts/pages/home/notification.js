@@ -1,35 +1,54 @@
 'use strict'
 var _a, _b, _c, _d
 var _e
-// init types, enums, ...
 var ENotificationEvents
 ;(function (ENotificationEvents) {
     ENotificationEvents['NOTIFY'] = 'notify'
 })(ENotificationEvents || (ENotificationEvents = {}))
-// init socket
-const notificationSocket = io(`/${ENamespacesOfSocket.NOTIFICATION}`, clientSocketConfig)
-// init vars
-const notificationSocketReconnecting = { flag: false }
-// listeners
-notificationSocket.on(EInitSocketEvents.CLIENT_CONNECTED, async (data) => {
-    if (notificationSocketReconnecting.flag) {
-        LayoutController.toast('success', 'Connected to server.', 2000)
-        notificationSocketReconnecting.flag = false
+class NotificationSocket {
+    constructor() {
+        this.socket = io(
+            `/${ENamespacesOfSocket.NOTIFICATION}`,
+            initClientSocketConfig(getNoteUniqueNameFromURL(), pageData.noteId),
+        )
+        this.reconnecting = { flag: false }
+        this.listenConnected()
+        this.listenConnectionError()
+        this.listenNotify()
     }
-    console.log('>>> notification Socket connected to server.')
-})
-notificationSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err) => {
-    if (notificationSocket.active) {
-        LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-        notificationSocketReconnecting.flag = true
-    } else {
-        LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> notification connect_error due to ${err.message}`)
+    async listenConnected() {
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) => {
+            if (this.reconnecting.flag) {
+                LayoutController.toast('success', 'Connected to server.', 2000)
+                this.reconnecting.flag = false
+            }
+            console.log('>>> normal Editor Socket connected to server.')
+        })
     }
-})
-notificationSocket.on(ENotificationEvents.NOTIFY, async (notif) => {
-    NotificationsController.addNewNotif({ ...notif, isNew: true })
-})
+    async listenConnectionError() {
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, (err) => {
+            if (this.socket.active) {
+                LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                this.reconnecting.flag = true
+            } else {
+                LayoutController.toast('error', "Can't connect with the server.")
+                console.error(`>>> Notification connect_error due to >>> ${err.message}`)
+            }
+        })
+    }
+    emitWithoutTimeout(event, payload, cb) {
+        this.socket.emit(event, payload, cb)
+    }
+    emitWithTimeout(event, payload, cb, timeout) {
+        this.socket.timeout(timeout).emit(event, payload, cb)
+    }
+    async listenNotify() {
+        this.socket.on(ENotificationEvents.NOTIFY, (notif) => {
+            NotificationsController.addNewNotif({ ...notif, isNew: true })
+        })
+    }
+}
+const notificationSocket = new NotificationSocket()
 // controller
 class NotificationsController {
     static setNotifsData(notifsData) {
@@ -156,10 +175,7 @@ class NotificationsController {
             ((_a = this.loadMoreBtn) === null || _a === void 0 ? void 0 : _a.innerHTML) || ''
         this.setLoadMoreBtn('innerHtml', Materials.createHTMLLoading('border'))
         try {
-            const { data } = await getNotificationsAPI(
-                pageData.noteId,
-                this.notifsData[this.notifsData.length - 1],
-            )
+            const { data } = await getNotificationsAPI(this.notifsData[this.notifsData.length - 1])
             apiResult = data
         } catch (error) {
             if (error instanceof Error) {
@@ -190,7 +206,7 @@ class NotificationsController {
         let apiSuccess = false
         let apiResult = null
         try {
-            const { data } = await getNotificationsAPI(pageData.noteId)
+            const { data } = await getNotificationsAPI()
             apiResult = data
             apiSuccess = true
         } catch (error) {

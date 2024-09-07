@@ -1120,4 +1120,15 @@ bold - bold
     }
 }
 
+#settings-form-tools .form-content .tools-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+#settings-form-tools .form-content .tools-list .tool-item .tool-item-info {
+    display: flex;
+    column-gap: 5px;
+}
+
 /*# sourceMappingURL=settings.css.map */

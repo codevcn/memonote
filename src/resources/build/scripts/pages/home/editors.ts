@@ -58,11 +58,10 @@ class EditorsController {
     }
 
     static async switchEditorsHandler(editor: EEditors): Promise<void> {
-        const noteUniqueName = getNoteUniqueNameFromURL()
         let apiSuccess: boolean = false
         this.setProgressOnSwitching(true)
         try {
-            await switchEditorAPI(noteUniqueName, editor)
+            await switchEditorAPI(editor)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {

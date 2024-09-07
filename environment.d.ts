@@ -13,6 +13,7 @@ declare global {
             CLOUDINARY_CLOUDNAME: string
             CLOUDINARY_API_KEY: string
             CLOUDINARY_API_SECRET: string
+            DEEPGRAM_API_KEY: string
         }
     }
 }

@@ -12,19 +12,24 @@ import { NoteService } from './note.service'
 import { EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
 import { ENoteEvents } from './enums'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
-import { BroadcastNoteTypingDTO } from './DTOs'
-import { UseFilters, UsePipes } from '@nestjs/common'
+import { BroadcastNoteTypingDTO, TranscriptAudioDTO } from './DTOs'
+import { UseFilters, UseInterceptors, UsePipes } from '@nestjs/common'
 import { ECommonStatuses } from '@/utils/enums'
 import { AuthService } from '@/auth/auth.service'
-import type { TAuthSocketConnectionReturn } from '@/auth/types'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { initGatewayMetadata } from '@/configs/config-gateways'
-import { validationPipe } from '@/configs/config-validation'
+import { wsValidationPipe } from '@/configs/config-validation'
+import { TranscriptAudioService } from '@/tools/transcript-audio.service'
+import { BaseCustomException } from '@/utils/exception/custom.exception'
+import { NoteCredentialsDTO } from './DTOs'
+import { TAuthSocketConnection } from '@/auth/types'
+import { LoggingInterceptor } from '@/temp/logging.interceptor'
+import { WsNoteCredentials } from '@/utils/decorators/note.decorator'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NORMAL_EDITOR }))
-@UsePipes(validationPipe)
+@UsePipes(wsValidationPipe)
 @UseFilters(new WsExceptionsFilter())
-export class NoteGateway
+export class NormalEditorGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
 {
     private io: Server
@@ -32,17 +37,18 @@ export class NoteGateway
     constructor(
         private noteService: NoteService,
         private authService: AuthService,
+        private transcriptAudioService: TranscriptAudioService,
     ) {}
 
     afterInit(server: Server): void {
         server.use(async (socket, next) => {
-            let result: TAuthSocketConnectionReturn
+            let authResult: TAuthSocketConnection
             try {
-                result = await this.authService.authSocketConnection(socket)
+                authResult = await this.authService.authSocketConnection(socket)
             } catch (error) {
                 return next(error)
             }
-            socket.join(result.noteUniqueName)
+            socket.join(authResult.noteUniqueName)
             next()
         })
         this.io = server
@@ -60,11 +66,11 @@ export class NoteGateway
     async noteFormEdited(
         @MessageBody() data: BroadcastNoteTypingDTO,
         @ConnectedSocket() clientSocket: Socket,
+        @WsNoteCredentials() noteInfo: NoteCredentialsDTO,
     ) {
-        let noteUniqueName: string
+        const { noteUniqueName } = noteInfo
         try {
-            const result = await this.authService.validateIncommingMessage(clientSocket)
-            noteUniqueName = result.noteUniqueName
+            await this.authService.validateIncommingMessage(clientSocket, noteUniqueName)
         } catch (error) {
             return { data, success: false }
         }
@@ -74,11 +80,13 @@ export class NoteGateway
     }
 
     @SubscribeMessage(ENoteEvents.FETCH_NOTE_FORM)
-    async fetchNoteForm(@ConnectedSocket() clientSocket: Socket) {
-        let noteUniqueName: string
+    async fetchNoteForm(
+        @ConnectedSocket() clientSocket: Socket,
+        @WsNoteCredentials() noteInfo: NoteCredentialsDTO,
+    ) {
+        const { noteUniqueName } = noteInfo
         try {
-            const result = await this.authService.validateIncommingMessage(clientSocket)
-            noteUniqueName = result.noteUniqueName
+            await this.authService.validateIncommingMessage(clientSocket, noteUniqueName)
         } catch (error) {
             return { data: {}, success: false }
         }
@@ -94,5 +102,25 @@ export class NoteGateway
             },
             success: true,
         }
+    }
+
+    @SubscribeMessage('uuu')
+    @UseInterceptors(LoggingInterceptor)
+    async transcriptAudio(
+        @MessageBody() data: TranscriptAudioDTO,
+        @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
+    ) {
+        const { noteUniqueName } = noteCredentials
+        const { chunk, totalChunks, uploadId } = data
+        console.log('>>> payload >>>', { data })
+        // try {
+        //     await this.transcriptAudioService.transcriptAudioHandler(noteUniqueName)
+        // } catch (error) {
+        //     if (error instanceof BaseCustomException) {
+        //         return { success: false }
+        //     }
+        //     throw error
+        // }
+        return { success: true }
     }
 }

@@ -12,14 +12,14 @@ import { AuthService } from '@/auth/auth.service'
 import { BaseCustomEvent } from '@/note/events'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EEventEmitterEvents, ENotificationEvents } from './enums'
-import type { TAuthSocketConnectionReturn } from '@/auth/types'
+import type { TAuthSocketConnection } from '@/auth/types'
 import type { TNotificationDocument } from './notification.model'
 import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
 import { initGatewayMetadata } from '@/configs/config-gateways'
-import { validationPipe } from '@/configs/config-validation'
+import { wsValidationPipe } from '@/configs/config-validation'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTIFICATION }))
-@UsePipes(validationPipe)
+@UsePipes(wsValidationPipe)
 @UseFilters(new WsExceptionsFilter())
 export class NotificationGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
@@ -30,7 +30,7 @@ export class NotificationGateway
 
     afterInit(server: Server): void {
         server.use(async (socket, next) => {
-            let result: TAuthSocketConnectionReturn
+            let result: TAuthSocketConnection
             try {
                 result = await this.authService.authSocketConnection(socket)
             } catch (error) {

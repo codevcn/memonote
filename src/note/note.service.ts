@@ -17,6 +17,8 @@ import { NotificationService } from '@/notification/notification.service'
 import { I18nService } from 'nestjs-i18n'
 import type { IDataI18nTranslations } from '@/lang/i18n.generated'
 import { ELangCodes } from '@/lang/enums'
+import { TNoteCredentials } from '@/utils/decorators/types'
+import { Socket } from 'socket.io'
 
 @Injectable()
 export class NoteService {
@@ -76,10 +78,6 @@ export class NoteService {
             result += charset[randomIndex]
         }
         return result
-    }
-
-    extractNoteUniqueNameFromURL(url: string): string {
-        return path.basename(new URL(url).pathname)
     }
 
     async hashPassword(rawPassword: string): Promise<string> {
@@ -180,5 +178,9 @@ export class NoteService {
                 },
             },
         )
+    }
+
+    static getNoteCredentials(socket: Socket): TNoteCredentials | null {
+        return socket.handshake.auth.noteCredentials || null
     }
 }

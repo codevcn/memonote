@@ -1,4 +1,4 @@
-import type { NoteIdDTO } from '@/note/DTOs'
+import type { NoteCredentialsDTO, NoteIdDTO } from '@/note/DTOs'
 import type { StreamableFile } from '@nestjs/common'
 import type { TClientConnectedEventPayload } from '@/note/types'
 import type { EInitialSocketEvents } from '@/utils/enums'
@@ -14,6 +14,12 @@ export interface IInitialSocketEventEmits {
 }
 
 export interface IMessageSubcribers {
-    publishArticleInChunks: (data: PublishArticlePayloadDTO) => Promise<TPublishArticleReturn>
-    uploadImage: (data: UploadImageDTO) => Promise<TUploadImageReturn>
+    publishArticle: (
+        data: PublishArticlePayloadDTO,
+        noteCredentials: NoteCredentialsDTO,
+    ) => Promise<TPublishArticleReturn>
+    uploadImage: (
+        data: UploadImageDTO,
+        noteCredentials: NoteCredentialsDTO,
+    ) => Promise<TUploadImageReturn>
 }

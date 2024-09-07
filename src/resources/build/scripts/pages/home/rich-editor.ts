@@ -44,31 +44,39 @@ type TPublishArticleAsChunk = {
 }
 
 class ArticleSocket {
-    private socket: any
-    private readonly reconnecting: TSocketReconnecting = { flag: false }
+    private readonly socket: any
+    private readonly reconnecting: TSocketReconnecting
 
     constructor() {
-        this.socket = io(`/${ENamespacesOfSocket.ARTICLE}`, clientSocketConfig)
-        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, this.listenConnected)
-        this.socket.on(EInitSocketEvents.CONNECT_ERROR, this.listenConnectionError)
+        this.socket = io(
+            `/${ENamespacesOfSocket.ARTICLE}`,
+            initClientSocketConfig(getNoteUniqueNameFromURL(), pageData.noteId),
+        )
+        this.reconnecting = { flag: false }
+        this.listenConnected()
+        this.listenConnectionError()
     }
 
-    private async listenConnected(data: TClientConnectedEventPld): Promise<void> {
-        if (this.reconnecting.flag) {
-            LayoutController.toast('success', 'Connected to server.', 2000)
-            this.reconnecting.flag = false
-        }
-        console.log('>>> article Socket connected to server.')
+    private async listenConnected(): Promise<void> {
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data: TClientConnectedEventPld) => {
+            if (this.reconnecting.flag) {
+                LayoutController.toast('success', 'Connected to server.', 2000)
+                this.reconnecting.flag = false
+            }
+            console.log('>>> article Socket connected to server.')
+        })
     }
 
-    private async listenConnectionError(err: Error): Promise<void> {
-        if (this.socket.active) {
-            LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-            this.reconnecting.flag = true
-        } else {
-            LayoutController.toast('error', "Can't connect with the server.")
-            console.error(`>>> article Socket connect_error due to ${err.message}`)
-        }
+    private async listenConnectionError(): Promise<void> {
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, (err: Error) => {
+            if (this.socket.active) {
+                LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                this.reconnecting.flag = true
+            } else {
+                LayoutController.toast('error', "Can't connect with the server.")
+                console.error(`>>> Article Socket connect_error due to >>> ${err.message}`)
+            }
+        })
     }
 
     emitWithoutTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>): void {
@@ -87,7 +95,7 @@ class RichEditorController {
     private static htmlBefore: string = ''
     private static minHeightOfEditor: number = 300
     private static defaultHeightOfEditor: number = 400
-    private static readonly IMAGE_MAX_SIZE = convertToBytes('1MB')!
+    private static readonly IMAGE_MAX_SIZE = convertToBytes('4MB')
 
     private static initConfig(placeholder: string, language: string): object {
         const imageConfig = {
@@ -448,11 +456,10 @@ class RichEditorController {
     }
 
     static async fetchArticle(): Promise<void> {
-        const { noteId } = pageData
         let apiResult: Blob
         this.setLoading(true)
         try {
-            const { data } = await fetchArticleAPI(noteId)
+            const { data } = await fetchArticleAPI()
             apiResult = data
         } catch (error) {
             if (error instanceof Error) {

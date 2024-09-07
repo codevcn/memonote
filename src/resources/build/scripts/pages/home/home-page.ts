@@ -85,17 +85,17 @@ const setBoardUIOfNoteEditor = (
 }
 
 const broadcastNoteContentTypingHanlder = debounce((noteContent: string): void => {
-    LayoutController.notifyNoteEdited('off', { content: 'true' })
+    NormalEditorController.notifyNoteEdited('off', { content: 'true' })
     NormalEditorController.broadcastNoteTyping({ content: noteContent })
 }, NOTE_BROADCAST_DELAY)
 
 const broadcastNoteTitleTypingHanlder = debounce((target: HTMLInputElement): void => {
-    LayoutController.notifyNoteEdited('off', { title: 'true' })
+    NormalEditorController.notifyNoteEdited('off', { title: 'true' })
     NormalEditorController.broadcastNoteTyping({ title: target.value })
 }, NOTE_BROADCAST_DELAY)
 
 const broadcastNoteAuthorTypingHanlder = debounce((target: HTMLInputElement): void => {
-    LayoutController.notifyNoteEdited('off', { author: 'true' })
+    NormalEditorController.notifyNoteEdited('off', { author: 'true' })
     NormalEditorController.broadcastNoteTyping({ author: target.value })
 }, NOTE_BROADCAST_DELAY)
 
@@ -238,13 +238,6 @@ const validatePassword = (password: string): boolean => {
     return is_valid
 }
 
-const setPasswordForNote = async (password: string, logoutAll: boolean): Promise<void> => {
-    const noteUniqueName = getNoteUniqueNameFromURL()
-    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await setPasswordForNoteAPI(password, logoutAll, noteUniqueName)
-    }
-}
-
 type TSetPasswordType = 'add' | 'change'
 
 const setUIOfSetPasswordForm = (type: TSetPasswordType): void => {
@@ -305,7 +298,7 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
 
         let apiSuccess: boolean = false
         try {
-            await setPasswordForNote(password, !!logoutAll)
+            await setPasswordForNoteAPI(password, !!logoutAll)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {
@@ -328,12 +321,6 @@ const saveSettingsSetPasswordForNote = async (e: SubmitEvent): Promise<void> => 
     }
 }
 
-const removePasswordOfNote = async (noteUniqueName: string): Promise<void> => {
-    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await removePasswordForNoteAPI(noteUniqueName)
-    }
-}
-
 const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> => {
     e.preventDefault()
 
@@ -344,7 +331,7 @@ const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> =
     submitBtn.innerHTML = Materials.createHTMLLoading('border')
     let apiSuccess: boolean = false
     try {
-        await removePasswordOfNote(getNoteUniqueNameFromURL())
+        await removePasswordForNoteAPI()
         apiSuccess = true
     } catch (error) {
         if (error instanceof Error) {
@@ -361,19 +348,13 @@ const saveSettingsRemovePasswordOfNote = async (e: SubmitEvent): Promise<void> =
     submitBtn.innerHTML = innerHTML_beforeRemove
 }
 
-const logout = async (noteUniqueName: string): Promise<void> => {
-    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await logoutAPI(noteUniqueName)
-    }
-}
-
 const logoutHandler = async (target: HTMLButtonElement): Promise<void> => {
     const innerHTML_beforeLogout = target.innerHTML
     target.innerHTML = Materials.createHTMLLoading('border')
     target.classList.add('on-progress')
     let apiSuccess: boolean = false
     try {
-        await logout(getNoteUniqueNameFromURL())
+        await logoutAPI()
         apiSuccess = true
     } catch (error) {
         if (error instanceof Error) {

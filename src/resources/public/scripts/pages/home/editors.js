@@ -44,11 +44,10 @@ class EditorsController {
         }
     }
     static async switchEditorsHandler(editor) {
-        const noteUniqueName = getNoteUniqueNameFromURL()
         let apiSuccess = false
         this.setProgressOnSwitching(true)
         try {
-            await switchEditorAPI(noteUniqueName, editor)
+            await switchEditorAPI(editor)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {

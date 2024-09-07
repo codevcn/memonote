@@ -1,4 +1,4 @@
-<div class="note-settings-board tab-navigator">
+<section class="note-settings-board tab-navigator">
     <section class="note-settings-navigation">
         <div class="nav-tabs-list" data-mmn-destination-class="forms">
             <span data-mmn-tab-value="change-modes" class="nav-tab active">
@@ -20,6 +20,10 @@
             <span data-mmn-tab-value="editors" class="nav-tab">
                 <i class="bi bi-keyboard"></i>
                 <span><%= t('home-page.settings.editors.Editors',i18nLang) %></span>
+            </span>
+            <span data-mmn-tab-value="tools" class="nav-tab">
+                <i class="bi bi-tools"></i>
+                <span>Tools</span>
             </span>
         </div>
         <span onclick="logoutHandler(this)" class="nav-tab logout-btn" <%= note.passwordSet ? '' : 'hidden' %>>
@@ -367,4 +371,29 @@
             </div>
         </section>
     </div>
-</div>
+
+    <div class="forms tools nav-destination">
+        <section class="note-settings-form tools" id="settings-form-tools">
+            <div class="form-title">
+                <h2 class="content">
+                    Tools
+                </h2>
+            </div>
+            <div class="form-content">
+                <div class="tools-list">
+                    <div class="tool-item transcript-audio">
+                        <button data-bs-toggle="modal" data-bs-target="#note-settings-modal">trans</button>
+                        <!-- <i class="bi bi-vinyl-fill"></i>
+                        <div class="tool-item-info">
+                            <span>Transcript Audio</span>
+                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn picked-btn"
+                                title="Transcript a recorded audio to text. Click for more details!">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </span>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>

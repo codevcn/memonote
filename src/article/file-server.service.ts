@@ -1,17 +1,25 @@
 import { Injectable } from '@nestjs/common'
 import { v2 as cloudinary, UploadApiOptions, UploadApiResponse } from 'cloudinary'
-import type { TUploadedImage } from './types'
-import { EArticleMessages } from './messages'
+import type { TUploadedImage } from './types.ts'
+import { EArticleMessages, EFileServerMessages } from './messages.js'
 import { InjectModel } from '@nestjs/mongoose'
-import { Article, TArticleModel } from './article.model'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
+import { Article, TArticleModel } from './article.model.js'
+import { BaseCustomException } from '@/utils/exception/custom.exception.js'
 import { Types } from 'mongoose'
-import { validateInputImgList } from './validation'
 import { ArticleService } from './article.service'
+import { fileTypeFromBuffer } from 'file-type'
+import { EArticleFiles } from './enums'
 
 @Injectable()
 export class FileServerService {
     private readonly artilceImgsPath: string = 'memonote/articles'
+    static readonly supportedImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'image/webp',
+        'image/bmp',
+    ]
 
     constructor(
         @InjectModel(Article.name) private articleModel: TArticleModel,
@@ -60,7 +68,6 @@ export class FileServerService {
     }
 
     async cleanupImages(currentURLList: string[], notedId: string): Promise<void> {
-        await validateInputImgList(currentURLList)
         const objectId = new Types.ObjectId(notedId)
         const article = await this.articleModel.findOne({ note: objectId }, { currentImages: true })
         if (!article) {
@@ -82,5 +89,31 @@ export class FileServerService {
                 )
             }
         }
+    }
+
+    static async isValidImage(buffer: Buffer): Promise<boolean> {
+        if (buffer.byteLength > EArticleFiles.MAX_IMAGE_SIZE) {
+            throw new BaseCustomException(EFileServerMessages.UNABLE_HANDLED_FILE_INPUT)
+        }
+        const fileType = await fileTypeFromBuffer(buffer)
+        if (!fileType) {
+            throw new BaseCustomException(EFileServerMessages.UNABLE_HANDLED_FILE_INPUT)
+        }
+        const isValid = this.supportedImageTypes.includes(fileType.mime)
+        if (!isValid) {
+            throw new BaseCustomException(EFileServerMessages.UNSUPPORTED_FILE_TYPE)
+        }
+        return true
+    }
+
+    static async validateImgSrcList(imgURLs: string[]): Promise<boolean> {
+        const lenOfList = imgURLs.length
+        if (lenOfList === 0) {
+            throw new BaseCustomException(EArticleMessages.EMPTY_IMAGES)
+        }
+        if (lenOfList > EArticleFiles.MAX_IMAGES_COUNT) {
+            throw new BaseCustomException(EArticleMessages.MAXIMUM_IMAGES_COUNT)
+        }
+        return true
     }
 }

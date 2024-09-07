@@ -29,12 +29,6 @@ const handleOnFocusTypePasswordInput = (target: HTMLInputElement): void => {
     target.parentElement!.querySelector('.input-placeholder')!.innerHTML = ''
 }
 
-const signIn = async (password: string, noteUniqueName: string): Promise<void> => {
-    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await signInAPI(password, noteUniqueName)
-    }
-}
-
 const setSignInMessage = (message: string | null): void => {
     signInMessage.innerHTML = message
         ? `
@@ -87,7 +81,7 @@ const signInHandler = async (e: SubmitEvent): Promise<void> => {
 
         let apiSuccess: boolean = false
         try {
-            await signIn(password, noteUniqueName)
+            await signInAPI(password)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {

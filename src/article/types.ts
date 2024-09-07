@@ -1,4 +1,3 @@
-import type { UploadApiResponse } from 'cloudinary'
 import type { TSuccess } from '@/utils/types'
 
 export type TUploadIndentity = {

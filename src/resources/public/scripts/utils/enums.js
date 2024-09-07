@@ -65,7 +65,7 @@ var EBroadcastTimeouts
 })(EBroadcastTimeouts || (EBroadcastTimeouts = {}))
 var EArticleChunk
 ;(function (EArticleChunk) {
-    EArticleChunk[(EArticleChunk['SIZE_PER_CHUNK'] = convertToBytes('1MB'))] = 'SIZE_PER_CHUNK'
+    EArticleChunk[(EArticleChunk['SIZE_PER_CHUNK'] = convertToBytes('3MB'))] = 'SIZE_PER_CHUNK'
 })(EArticleChunk || (EArticleChunk = {}))
 var EHttpStatuses
 ;(function (EHttpStatuses) {

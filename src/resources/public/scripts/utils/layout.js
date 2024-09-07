@@ -3,46 +3,23 @@ const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-tog
 const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
-const clientSocketConfig = {
+const initClientSocketConfig = (noteUniqueName, noteId) => ({
     autoConnect: true,
     withCredentials: true,
-}
+    auth: {
+        noteCredentials: {
+            noteUniqueName,
+            noteId,
+        },
+    },
+})
 class LayoutController {
     static setAppProgress(type) {
-        const spinner = document.getElementById('app-spinner-section')
+        const spinner = document.getElementById('app-progress-section')
         if (type === 'on') {
             spinner.classList.add('active')
         } else {
             spinner.classList.remove('active')
-        }
-    }
-    static notifyNoteEdited(type, noteForm) {
-        let baseClasses = ['notify-note-edited', 'slither', 'blink']
-        let notifyNoteEditedClass = ['notify-note-edited']
-        notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
-        let noteFormItem
-        const { title, author, content } = noteForm
-        const noteFormEle = homePage_pageMain.querySelector('.note-form')
-        if (title || title === '') {
-            noteFormItem = noteFormEle.querySelector('.note-title')
-            noteFormItem.classList.remove(...baseClasses)
-            if (type === 'on') {
-                noteFormItem.classList.add(...notifyNoteEditedClass)
-            }
-        }
-        if (author || author === '') {
-            noteFormItem = noteFormEle.querySelector('.note-author')
-            noteFormItem.classList.remove(...baseClasses)
-            if (type === 'on') {
-                noteFormItem.classList.add(...notifyNoteEditedClass)
-            }
-        }
-        if (content || content === '') {
-            noteFormItem = noteFormEle.querySelector('.note-editor-board')
-            noteFormItem.classList.remove(...baseClasses)
-            if (type === 'on') {
-                noteFormItem.classList.add(...notifyNoteEditedClass)
-            }
         }
     }
     static setGeneralAppStatus(status) {

@@ -3,10 +3,16 @@ const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
 })
 
-const clientSocketConfig = {
+const initClientSocketConfig = (noteUniqueName: string, noteId: string) => ({
     autoConnect: true,
     withCredentials: true,
-}
+    auth: {
+        noteCredentials: {
+            noteUniqueName,
+            noteId,
+        },
+    },
+})
 
 class LayoutController {
     private static readonly NOTIFICATION_TIMEOUT: number = 3000
@@ -20,41 +26,11 @@ class LayoutController {
     ) as HTMLElement
 
     static setAppProgress(type: 'on' | 'off'): void {
-        const spinner = document.getElementById('app-spinner-section') as HTMLElement
+        const spinner = document.getElementById('app-progress-section') as HTMLElement
         if (type === 'on') {
             spinner.classList.add('active')
         } else {
             spinner.classList.remove('active')
-        }
-    }
-
-    static notifyNoteEdited(type: 'on' | 'off', noteForm: TNoteForm): void {
-        let baseClasses: string[] = ['notify-note-edited', 'slither', 'blink']
-        let notifyNoteEditedClass: string[] = ['notify-note-edited']
-        notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
-        let noteFormItem: HTMLElement
-        const { title, author, content } = noteForm
-        const noteFormEle = homePage_pageMain.querySelector('.note-form') as HTMLElement
-        if (title || title === '') {
-            noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
-            noteFormItem.classList.remove(...baseClasses)
-            if (type === 'on') {
-                noteFormItem.classList.add(...notifyNoteEditedClass)
-            }
-        }
-        if (author || author === '') {
-            noteFormItem = noteFormEle.querySelector('.note-author') as HTMLElement
-            noteFormItem.classList.remove(...baseClasses)
-            if (type === 'on') {
-                noteFormItem.classList.add(...notifyNoteEditedClass)
-            }
-        }
-        if (content || content === '') {
-            noteFormItem = noteFormEle.querySelector('.note-editor-board') as HTMLElement
-            noteFormItem.classList.remove(...baseClasses)
-            if (type === 'on') {
-                noteFormItem.classList.add(...notifyNoteEditedClass)
-            }
         }
     }
 

@@ -24,7 +24,12 @@ export class ArticleService {
     private readonly uploadsIndentity = new Map<string, TUploadIndentity>()
     private readonly articleChunksStatus = new Map<string, TArticleChunkStatus>()
     private readonly articlesDirname: string = 'articles'
-    private readonly articlesDirPath = join(AppRoot.path, 'src', 'article', this.articlesDirname)
+    private readonly articlesDirPath: string = join(
+        AppRoot.path,
+        'src',
+        'article',
+        this.articlesDirname,
+    )
     private readonly chunkStatusTimeout: number = ms('60s')
     private readonly articleUnicode: NodeJS.BufferEncoding = 'utf-8'
     private readonly articleFiletype: string = 'txt'
@@ -120,7 +125,7 @@ export class ArticleService {
         }
     }
 
-    private async writeChunks(
+    private async writeChunk(
         chunk: string,
         totalChunks: number,
         noteUniqueName: string,
@@ -164,7 +169,7 @@ export class ArticleService {
     ): Promise<void> {
         await this.checkMultipleUploads(noteUniqueName, uploadId)
 
-        const { chunkFilePathBackup, docWasCreated } = await this.writeChunks(
+        const { chunkFilePathBackup, docWasCreated } = await this.writeChunk(
             chunk,
             totalChunks,
             noteUniqueName,

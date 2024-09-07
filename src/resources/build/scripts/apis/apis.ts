@@ -10,37 +10,30 @@ type TGetNotifications = {
 }
 
 // note
-const setPasswordForNoteAPI = (
-    password: string,
-    logoutAll: boolean,
-    noteUniqueName: string,
-): Promise<TSuccess> =>
-    axiosClient.post('/note/set-password/' + noteUniqueName, { password, logoutAll })
+const setPasswordForNoteAPI = (password: string, logoutAll: boolean): Promise<TSuccess> =>
+    axiosClient.post('/note/set-password/' + getNoteUniqueNameFromURL(), { password, logoutAll })
 
-const removePasswordForNoteAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TSuccess>> =>
-    axiosClient.delete('/note/remove-password/' + noteUniqueName)
+const removePasswordForNoteAPI = (): Promise<TAxiosHTTPRes<TSuccess>> =>
+    axiosClient.delete('/note/remove-password/' + getNoteUniqueNameFromURL())
 
-const switchEditorAPI = (noteUniqueName: string, editor: EEditors) =>
-    axiosClient.post('/note/switch-editor/' + noteUniqueName, { editor })
+const switchEditorAPI = (editor: EEditors) =>
+    axiosClient.post('/note/switch-editor/' + getNoteUniqueNameFromURL(), { editor })
 
 // auth
-const logoutAPI = (noteUniqueName: string): Promise<TAxiosHTTPRes<TSuccess>> =>
-    axiosClient.post('/auth/logout/' + noteUniqueName)
+const logoutAPI = (): Promise<TAxiosHTTPRes<TSuccess>> =>
+    axiosClient.post('/auth/logout/' + getNoteUniqueNameFromURL())
 
-const signInAPI = (password: string, noteUniqueName: string): Promise<TAxiosHTTPRes<TSuccess>> =>
-    axiosClient.post('/auth/sign-in/' + noteUniqueName, { password })
+const signInAPI = (password: string): Promise<TAxiosHTTPRes<TSuccess>> =>
+    axiosClient.post('/auth/sign-in/' + getNoteUniqueNameFromURL(), { password })
 
 // notification
-const getNotificationsAPI = (
-    noteId: string,
-    lastNotif?: TNotif,
-): Promise<TAxiosHTTPRes<TGetNotifications>> =>
-    axiosClient.post(`/notification/${noteId}`, { lastNotif: lastNotif || {} })
+const getNotificationsAPI = (lastNotif?: TNotif): Promise<TAxiosHTTPRes<TGetNotifications>> =>
+    axiosClient.post(`/notification/${pageData.noteId}`, { lastNotif: lastNotif || {} })
 
 // lang
 const requestLangAPI = (langCode: string): Promise<TAxiosHTTPRes<TSuccess>> =>
     axiosClient.post(`/lang/request-lang`, { langCode })
 
 // article
-const fetchArticleAPI = (noteId: string): Promise<TAxiosHTTPRes<Blob>> =>
-    axiosClient.get(`/article/fetch-article/${noteId}`, { responseType: 'blob' })
+const fetchArticleAPI = (): Promise<TAxiosHTTPRes<Blob>> =>
+    axiosClient.get(`/article/fetch-article/${pageData.noteId}`, { responseType: 'blob' })

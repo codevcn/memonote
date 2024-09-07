@@ -1,7 +1,7 @@
 import bytes from 'bytes'
 
 export enum EArticleChunk {
-    SIZE_PER_CHUNK = bytes('1MB'),
+    SIZE_PER_CHUNK = bytes('3MB'),
 }
 
 export enum EArticleEvents {
@@ -10,6 +10,6 @@ export enum EArticleEvents {
 }
 
 export enum EArticleFiles {
-    MAX_IMAGE_SIZE = bytes('1MB'),
+    MAX_IMAGE_SIZE = bytes('3MB'),
     MAX_IMAGES_COUNT = 10,
 }

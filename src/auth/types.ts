@@ -17,6 +17,6 @@ export type TJwtCookieOptions = {
     sameSite: boolean
 }
 
-export type TAuthSocketConnectionReturn = {
+export type TAuthSocketConnection = {
     noteUniqueName: string
 }

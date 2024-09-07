@@ -7,3 +7,8 @@ export enum EArticleMessages {
     MAXIMUM_IMAGES_COUNT = `Maximum number of images is ${EArticleFiles.MAX_IMAGES_COUNT}`,
     EMPTY_IMAGES = 'Image list could not be empty',
 }
+
+export enum EFileServerMessages {
+    UNABLE_HANDLED_FILE_INPUT = 'Unable handled file input',
+    UNSUPPORTED_FILE_TYPE = 'Unsupported file type',
+}

@@ -1561,6 +1561,17 @@ bold - bold
     }
 }
 
+#settings-form-tools .form-content .tools-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+#settings-form-tools .form-content .tools-list .tool-item .tool-item-info {
+    display: flex;
+    column-gap: 5px;
+}
+
 :root {
     --mmn-quick-look-icon-initial-size: 30px;
 }
@@ -1569,7 +1580,7 @@ bold - bold
     padding: 10px 0 200px;
 }
 
-#app-spinner-section {
+#app-progress-section {
     display: none;
     position: fixed;
     top: 0;
@@ -1577,10 +1588,10 @@ bold - bold
     z-index: 1400;
     width: 100vw;
 }
-#app-spinner-section.active {
+#app-progress-section.active {
     display: block;
 }
-#app-spinner-section .progress-bar {
+#app-progress-section .progress-bar {
     width: 100%;
     transform: translateX(-100%);
     animation: app-progress-animation 3s ease infinite forwards;

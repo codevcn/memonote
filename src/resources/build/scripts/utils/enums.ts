@@ -63,7 +63,7 @@ enum EBroadcastTimeouts {
 }
 
 enum EArticleChunk {
-    SIZE_PER_CHUNK = convertToBytes('1MB')!,
+    SIZE_PER_CHUNK = convertToBytes('3MB'),
 }
 
 enum EHttpStatuses {

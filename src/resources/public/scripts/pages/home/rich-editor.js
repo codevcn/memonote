@@ -1,31 +1,47 @@
 'use strict'
-// init types, enums, ...
 var EArticleEvents
 ;(function (EArticleEvents) {
     EArticleEvents['PUBLISH_ARTICLE'] = 'publish_article'
     EArticleEvents['UPLOAD_IMAGE'] = 'upload_image'
 })(EArticleEvents || (EArticleEvents = {}))
-// init socket
-const articleSocket = io(`/${ENamespacesOfSocket.ARTICLE}`, clientSocketConfig)
-// init vars
-const articleSocketReconnecting = { flag: false }
-// listeners
-articleSocket.on(EInitSocketEvents.CLIENT_CONNECTED, async (data) => {
-    if (notificationSocketReconnecting.flag) {
-        LayoutController.toast('success', 'Connected to server.', 2000)
-        notificationSocketReconnecting.flag = false
+class ArticleSocket {
+    constructor() {
+        this.socket = io(
+            `/${ENamespacesOfSocket.ARTICLE}`,
+            initClientSocketConfig(getNoteUniqueNameFromURL(), pageData.noteId),
+        )
+        this.reconnecting = { flag: false }
+        this.listenConnected()
+        this.listenConnectionError()
     }
-    console.log('>>> article Socket connected to server.')
-})
-articleSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err) => {
-    if (articleSocket.active) {
-        LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-        notificationSocketReconnecting.flag = true
-    } else {
-        LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> article Socket connect_error due to ${err.message}`)
+    async listenConnected() {
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) => {
+            if (this.reconnecting.flag) {
+                LayoutController.toast('success', 'Connected to server.', 2000)
+                this.reconnecting.flag = false
+            }
+            console.log('>>> article Socket connected to server.')
+        })
     }
-})
+    async listenConnectionError() {
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, (err) => {
+            if (this.socket.active) {
+                LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                this.reconnecting.flag = true
+            } else {
+                LayoutController.toast('error', "Can't connect with the server.")
+                console.error(`>>> Article Socket connect_error due to >>> ${err.message}`)
+            }
+        })
+    }
+    emitWithoutTimeout(event, payload, cb) {
+        this.socket.emit(event, payload, cb)
+    }
+    emitWithTimeout(event, payload, cb, timeout) {
+        this.socket.timeout(timeout).emit(event, payload, cb)
+    }
+}
+const articleSocket = new ArticleSocket()
 class RichEditorController {
     static initConfig(placeholder, language) {
         const imageConfig = {
@@ -96,7 +112,7 @@ class RichEditorController {
     }
     static uploadImageHandler(image) {
         return new Promise((resolve, reject) => {
-            articleSocket.emit(
+            articleSocket.emitWithoutTimeout(
                 EArticleEvents.UPLOAD_IMAGE,
                 {
                     image,
@@ -278,13 +294,17 @@ class RichEditorController {
     static updateImagesInArticle(imgs, noteId) {
         if (imgs && imgs.length > 0) {
             return new Promise((resolve, reject) => {
-                articleSocket.emit(EArticleEvents.PUBLISH_ARTICLE, { imgs, noteId }, (res) => {
-                    if (res.success) {
-                        resolve(true)
-                    } else {
-                        reject(new BaseCustomError(res.message || "Couldn't upload article"))
-                    }
-                })
+                articleSocket.emitWithoutTimeout(
+                    EArticleEvents.PUBLISH_ARTICLE,
+                    { imgs, noteId },
+                    (res) => {
+                        if (res.success) {
+                            resolve(true)
+                        } else {
+                            reject(new BaseCustomError(res.message || "Couldn't upload article"))
+                        }
+                    },
+                )
             })
         }
         return Promise.resolve(true)
@@ -293,7 +313,7 @@ class RichEditorController {
         return new Promise((resolve, reject) => {
             const publishHandler = (chunks, chunkPayload) => {
                 const chunk = chunks[this.chunkIdx]
-                articleSocket.emit(
+                articleSocket.emitWithoutTimeout(
                     EArticleEvents.PUBLISH_ARTICLE,
                     {
                         articleChunk: {
@@ -336,11 +356,10 @@ class RichEditorController {
         }
     }
     static async fetchArticle() {
-        const { noteId } = pageData
         let apiResult
         this.setLoading(true)
         try {
-            const { data } = await fetchArticleAPI(noteId)
+            const { data } = await fetchArticleAPI()
             apiResult = data
         } catch (error) {
             if (error instanceof Error) {
@@ -365,4 +384,4 @@ RichEditorController.chunkIdx = 0
 RichEditorController.htmlBefore = ''
 RichEditorController.minHeightOfEditor = 300
 RichEditorController.defaultHeightOfEditor = 400
-RichEditorController.IMAGE_MAX_SIZE = convertToBytes('1MB')
+RichEditorController.IMAGE_MAX_SIZE = convertToBytes('4MB')

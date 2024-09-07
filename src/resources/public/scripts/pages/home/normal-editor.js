@@ -1,42 +1,67 @@
 'use strict'
-// init types, enums, ...
 var ENoteEvents
 ;(function (ENoteEvents) {
     ENoteEvents['NOTE_FORM_EDITED'] = 'note_form_edited'
     ENoteEvents['FETCH_NOTE_FORM'] = 'fetch_note_form'
 })(ENoteEvents || (ENoteEvents = {}))
-// init socket
-const normalEditorSocket = io(`/${ENamespacesOfSocket.NORMAL_EDITOR}`, clientSocketConfig)
-// init vars
-const normalEditorSocketReconnecting = { flag: false }
-// listeners
-normalEditorSocket.on(EInitSocketEvents.CLIENT_CONNECTED, async (data) => {
-    if (normalEditorSocketReconnecting.flag) {
-        LayoutController.toast('success', 'Connected to server.', 2000)
-        normalEditorSocketReconnecting.flag = false
+class NormalEditorSocket {
+    constructor() {
+        this.socket = io(
+            `/${ENamespacesOfSocket.NORMAL_EDITOR}`,
+            initClientSocketConfig(getNoteUniqueNameFromURL(), pageData.noteId),
+        )
+        this.reconnecting = { flag: false }
+        this.listenConnected()
+        this.listenConnectionError()
+        this.listenNoteFormEdited()
+        setTimeout(() => {
+            this.socket.emit('uuu', (res) => {
+                console.clear()
+                console.log('>>> da nhan 1 thong diep >>>', res)
+            })
+        }, 1000)
     }
-    console.log('>>> normal Editor Socket connected to server.')
-})
-normalEditorSocket.on(EInitSocketEvents.CONNECT_ERROR, async (err) => {
-    if (normalEditorSocket.active) {
-        LayoutController.toast('info', 'Trying to connect with the server.', 2000)
-        normalEditorSocketReconnecting.flag = true
-    } else {
-        LayoutController.toast('error', "Can't connect with the server.")
-        console.error(`>>> normal Editor connect_error due to ${err.message}`)
+    async listenConnected() {
+        this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) => {
+            if (this.reconnecting.flag) {
+                LayoutController.toast('success', 'Connected to server.', 2000)
+                this.reconnecting.flag = false
+            }
+            console.log('>>> normal Editor Socket connected to server.')
+        })
     }
-})
-normalEditorSocket.on(ENoteEvents.NOTE_FORM_EDITED, async (data) => {
-    const realtimeMode = LocalStorageController.getRealtimeMode()
-    if (realtimeMode && realtimeMode === 'sync') {
-        setForNoteFormEdited(data)
-    } else {
-        const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
-        if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
-            LayoutController.notifyNoteEdited('on', data)
-        }
+    async listenConnectionError() {
+        this.socket.on(EInitSocketEvents.CONNECT_ERROR, (err) => {
+            if (this.socket.active) {
+                LayoutController.toast('info', 'Trying to connect with the server.', 2000)
+                this.reconnecting.flag = true
+            } else {
+                LayoutController.toast('error', "Can't connect with the server.")
+                console.error(`>>> Normal Editor connect_error due to >>> ${err.message}`)
+            }
+        })
     }
-})
+    async listenNoteFormEdited() {
+        this.socket.on(ENoteEvents.NOTE_FORM_EDITED, (data) => {
+            const realtimeMode = LocalStorageController.getRealtimeMode()
+            if (realtimeMode && realtimeMode === 'sync') {
+                setForNoteFormEdited(data)
+            } else {
+                const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
+                if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
+                    NormalEditorController.notifyNoteEdited('on', data)
+                }
+            }
+        })
+    }
+    emitWithoutTimeout(event, payload, cb) {
+        this.socket.emit(event, payload, cb)
+    }
+    emitWithTimeout(event, payload, cb, timeout) {
+        this.socket.timeout(timeout).emit(event, payload, cb)
+    }
+}
+const normalEditorSocket = new NormalEditorSocket()
 class NormalEditorController {
     // static broadcastNoteContentTypingHanlder(noteContent: string): void {
     //     LayoutController.notifyNoteEdited('off', { content: 'true' })
@@ -52,9 +77,10 @@ class NormalEditorController {
     // }
     static async broadcastNoteTyping(note) {
         LayoutController.setGeneralAppStatus('loading')
-        normalEditorSocket
-            .timeout(EBroadcastTimeouts.EDIT_NOTE_TIMEOUT)
-            .emit(ENoteEvents.NOTE_FORM_EDITED, note, (err, res) => {
+        normalEditorSocket.emitWithTimeout(
+            ENoteEvents.NOTE_FORM_EDITED,
+            note,
+            (err, res) => {
                 if (err) {
                     LayoutController.setGeneralAppStatus('error')
                     console.log('>>> broadcast note err >>>', err)
@@ -66,13 +92,45 @@ class NormalEditorController {
                     }
                     console.log('>>> broadcast note res >>>', res)
                 }
-            })
+            },
+            EBroadcastTimeouts.EDIT_NOTE_TIMEOUT,
+        )
+    }
+    static notifyNoteEdited(type, noteForm) {
+        let baseClasses = ['notify-note-edited', 'slither', 'blink']
+        let notifyNoteEditedClass = ['notify-note-edited']
+        notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
+        let noteFormItem
+        const { title, author, content } = noteForm
+        const noteFormEle = homePage_pageMain.querySelector('.note-form')
+        if (title || title === '') {
+            noteFormItem = noteFormEle.querySelector('.note-title')
+            noteFormItem.classList.remove(...baseClasses)
+            if (type === 'on') {
+                noteFormItem.classList.add(...notifyNoteEditedClass)
+            }
+        }
+        if (author || author === '') {
+            noteFormItem = noteFormEle.querySelector('.note-author')
+            noteFormItem.classList.remove(...baseClasses)
+            if (type === 'on') {
+                noteFormItem.classList.add(...notifyNoteEditedClass)
+            }
+        }
+        if (content || content === '') {
+            noteFormItem = noteFormEle.querySelector('.note-editor-board')
+            noteFormItem.classList.remove(...baseClasses)
+            if (type === 'on') {
+                noteFormItem.classList.add(...notifyNoteEditedClass)
+            }
+        }
     }
     static async fetchNoteContent() {
-        normalEditorSocket
-            .timeout(EBroadcastTimeouts.EDIT_NOTE_TIMEOUT)
-            .emit(ENoteEvents.FETCH_NOTE_FORM, (err, res) => {
-                LayoutController.notifyNoteEdited('off', {
+        normalEditorSocket.emitWithTimeout(
+            ENoteEvents.FETCH_NOTE_FORM,
+            {},
+            (err, res) => {
+                NormalEditorController.notifyNoteEdited('off', {
                     title: 'true',
                     author: 'true',
                     content: 'true',
@@ -80,7 +138,9 @@ class NormalEditorController {
                 if (res.success) {
                     setForNoteFormEdited(res.data)
                 }
-            })
+            },
+            EBroadcastTimeouts.EDIT_NOTE_TIMEOUT,
+        )
     }
 }
 // NormalEditorController.broadcastNoteContentTypingHanlder = debounce(

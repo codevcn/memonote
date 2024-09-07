@@ -24,11 +24,6 @@ const handleOnBlurTypePasswordInput = (target) => {
 const handleOnFocusTypePasswordInput = (target) => {
     target.parentElement.querySelector('.input-placeholder').innerHTML = ''
 }
-const signIn = async (password, noteUniqueName) => {
-    if (NOTE_UNIQUE_NAME_REGEX.test(noteUniqueName)) {
-        await signInAPI(password, noteUniqueName)
-    }
-}
 const setSignInMessage = (message) => {
     signInMessage.innerHTML = message
         ? `
@@ -70,7 +65,7 @@ const signInHandler = async (e) => {
         const noteUniqueName = getNoteUniqueNameFromURL()
         let apiSuccess = false
         try {
-            await signIn(password, noteUniqueName)
+            await signInAPI(password)
             apiSuccess = true
         } catch (error) {
             if (error instanceof Error) {

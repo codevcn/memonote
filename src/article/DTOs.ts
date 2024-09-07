@@ -1,24 +1,23 @@
 import { EValidationMessages } from '@/utils/validation/messages'
-import { IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { ValidImage, ValidChunk } from './validation'
 import { Type } from 'class-transformer'
 import { EArticleChunk } from './enums'
-import { EArticleFiles } from './enums'
 
 export class ArticleChunkDTO {
     @IsNotEmpty()
     @ValidChunk(EArticleChunk.SIZE_PER_CHUNK, {
         message: EValidationMessages.INVALID_INPUT,
     })
+    @IsString()
     chunk: string
 
     @IsNotEmpty()
+    @IsNumber()
     totalChunks: number
 
     @IsNotEmpty()
-    noteUniqueName: string
-
-    @IsNotEmpty()
+    @IsString()
     uploadId: string
 }
 
@@ -31,18 +30,10 @@ export class PublishArticlePayloadDTO {
     @IsOptional()
     @IsString({ each: true })
     imgs?: string[]
-
-    @IsNotEmpty()
-    @IsMongoId()
-    noteId: string
 }
 
 export class UploadImageDTO {
     @IsNotEmpty()
-    @ValidImage(EArticleFiles.MAX_IMAGE_SIZE)
+    @ValidImage()
     image: Buffer
-
-    @IsMongoId()
-    @IsNotEmpty()
-    noteId: string
 }

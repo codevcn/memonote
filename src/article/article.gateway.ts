@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
-import type { TAuthSocketConnectionReturn } from '@/auth/types'
+import type { TAuthSocketConnection } from '@/auth/types'
 import { AuthService } from '@/auth/auth.service'
 import { EArticleEvents } from './enums'
 import { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs'
@@ -20,10 +20,12 @@ import { BaseCustomException } from '@/utils/exception/custom.exception'
 import { initGatewayMetadata } from '@/configs/config-gateways'
 import type { TUploadedImage } from './types'
 import { FileServerService } from './file-server.service'
-import { validationPipe } from '@/configs/config-validation'
+import { wsValidationPipe } from '@/configs/config-validation'
+import { WsNoteCredentials } from '@/utils/decorators/note.decorator'
+import { NoteCredentialsDTO } from '@/note/DTOs'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.ARTICLE }))
-@UsePipes(validationPipe)
+@UsePipes(wsValidationPipe)
 @UseFilters(new WsExceptionsFilter())
 export class ArticleGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
@@ -38,7 +40,7 @@ export class ArticleGateway
 
     afterInit(server: Server) {
         server.use(async (socket, next) => {
-            let result: TAuthSocketConnectionReturn
+            let result: TAuthSocketConnection
             try {
                 result = await this.authService.authSocketConnection(socket)
             } catch (error) {
@@ -59,13 +61,17 @@ export class ArticleGateway
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
     @SubscribeMessage(EArticleEvents.PUBLISH_ARTICLE)
-    async publishArticleInChunks(@MessageBody() data: PublishArticlePayloadDTO) {
-        const { articleChunk, imgs, noteId } = data
+    async publishArticle(
+        @MessageBody() data: PublishArticlePayloadDTO,
+        @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
+    ) {
+        const { noteId, noteUniqueName } = noteCredentials
+        const { articleChunk, imgs } = data
         try {
             if (imgs) {
                 await this.fileServerService.cleanupImages(imgs, noteId)
             } else if (articleChunk) {
-                const { chunk, totalChunks, noteUniqueName, uploadId } = articleChunk
+                const { chunk, totalChunks, uploadId } = articleChunk
                 await this.articleService.uploadArticleChunk(
                     chunk,
                     totalChunks,
@@ -84,8 +90,12 @@ export class ArticleGateway
     }
 
     @SubscribeMessage(EArticleEvents.UPLOAD_IMAGE)
-    async uploadImage(@MessageBody() data: UploadImageDTO) {
-        const { image, noteId } = data
+    async uploadImage(
+        @MessageBody() data: UploadImageDTO,
+        @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
+    ) {
+        const { image } = data
+        const { noteId } = noteCredentials
         let uploadedImg: TUploadedImage
         try {
             uploadedImg = await this.fileServerService.uploadImage(image, noteId)
