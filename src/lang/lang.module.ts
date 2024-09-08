@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
-import { LangController } from './lang-api.controller'
-import { LangService } from './lang.service'
+import { LangController } from './lang-api.controller.js'
+import { LangService } from './lang.service.js'
 
 @Module({
     controllers: [LangController],

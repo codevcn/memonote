@@ -23,6 +23,7 @@ export enum EEditors {
 export enum ENoteEvents {
     NOTE_FORM_EDITED = 'note_form_edited',
     FETCH_NOTE_FORM = 'fetch_note_form',
+    TRANSCRIBE_AUDIO = 'transcript_auido',
 }
 
 export enum EAudioChunk {

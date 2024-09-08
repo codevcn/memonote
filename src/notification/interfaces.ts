@@ -1,10 +1,10 @@
-import type { NoteIdDTO } from '@/note/DTOs'
-import type { GetNotifsBodyDTO } from './DTOs'
-import type { TGetNotifsReturn } from './types'
-import type { BaseCustomEvent } from '@/note/events'
-import type { TClientConnectedEventPayload } from '@/note/types'
-import type { EInitialSocketEvents } from '@/utils/enums'
-import type { TNotificationDocument } from './notification.model'
+import type { NoteIdDTO } from '../note/DTOs.js'
+import type { GetNotifsBodyDTO } from './DTOs.js'
+import type { TGetNotifsReturn } from './types.js'
+import type { BaseCustomEvent } from '../note/events.js'
+import type { TClientConnectedEventPayload } from '../note/types.js'
+import type { EInitialSocketEvents } from '../utils/constants.js'
+import type { TNotificationDocument } from './notification.model.js'
 
 export interface INotificationAPIController {
     getNotifications: (

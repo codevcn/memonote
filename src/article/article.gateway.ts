@@ -1,4 +1,4 @@
-import { ECommonStatuses, EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
+import { ECommonStatuses, EInitialSocketEvents, ESocketNamespaces } from '../utils/constants.js'
 import {
     MessageBody,
     OnGatewayConnection,
@@ -8,21 +8,21 @@ import {
     WebSocketGateway,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
-import type { TAuthSocketConnection } from '@/auth/types'
-import { AuthService } from '@/auth/auth.service'
-import { EArticleEvents } from './enums'
-import { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs'
-import { ArticleService } from './article.service'
+import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces.js'
+import type { TAuthSocketConnection } from '../auth/types.js'
+import { AuthService } from '../auth/auth.service.js'
+import { EArticleEvents } from './constants.js'
+import { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs.js'
+import { ArticleService } from './article.service.js'
 import { UseFilters, UsePipes } from '@nestjs/common'
-import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { initGatewayMetadata } from '@/configs/config-gateways'
-import type { TUploadedImage } from './types'
-import { FileServerService } from './file-server.service'
-import { wsValidationPipe } from '@/configs/config-validation'
-import { WsNoteCredentials } from '@/utils/decorators/note.decorator'
-import { NoteCredentialsDTO } from '@/note/DTOs'
+import { WsExceptionsFilter } from '../utils/exception/gateway.filter.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
+import { initGatewayMetadata } from '../configs/config-gateways.js'
+import type { TUploadedImage } from './types.js'
+import { FileServerService } from './file-server.service.js'
+import { wsValidationPipe } from '../configs/config-validation.js'
+import { WsNoteCredentials } from '../utils/decorators/note.decorator.js'
+import { NoteCredentialsDTO } from '../note/DTOs.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.ARTICLE }))
 @UsePipes(wsValidationPipe)

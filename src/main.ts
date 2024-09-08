@@ -1,12 +1,15 @@
+// require('module-alias/register')
+
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
+import { AppModule } from './app.module.js'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { join } from 'path'
-import { HttpExceptionFilter } from './utils/exception/http-exception.filter'
-import { HttpExceptionValidation } from './utils/validation/http-exception.validation'
+import { HttpExceptionFilter } from './utils/exception/http-exception.filter.js'
+import { HttpExceptionValidation } from './utils/validation/http-exception.validation.js'
 import cookieParser from 'cookie-parser'
-import { WsExceptionsFilter } from './utils/exception/gateway.filter'
-import { apiValidationPipe } from './configs/config-validation'
+import { WsExceptionsFilter } from './utils/exception/gateway.filter.js'
+import { apiValidationPipe } from './configs/config-validation.js'
+import AppRootPath from 'app-root-path'
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule)
@@ -17,9 +20,9 @@ async function bootstrap() {
     app.use(cookieParser())
 
     // ejs
-    const resourcesFolder = 'resources'
-    app.useStaticAssets(join(__dirname, `../src/${resourcesFolder}/public`))
-    app.setBaseViewsDir(join(__dirname, `../src/${resourcesFolder}/views`))
+    const resourcesDir = 'resources'
+    app.useStaticAssets(join(AppRootPath.path, `/src/${resourcesDir}/public`))
+    app.setBaseViewsDir(join(AppRootPath.path, `/src/${resourcesDir}/views`))
     app.setViewEngine('ejs')
 
     // validation

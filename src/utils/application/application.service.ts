@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import * as yaml from 'js-yaml'
 import { readFile } from 'fs/promises'
-import { TApplication, TApplicationInfo } from './types'
+import { TApplication, TApplicationInfo } from './types.js'
 
 @Injectable()
 export class ApplicationService {

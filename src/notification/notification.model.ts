@@ -1,7 +1,7 @@
 import { type HydratedDocument, type Model, Types } from 'mongoose'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
-import { Note } from '@/note/note.model'
-import { ENotificationTypes } from '@/notification/enums'
+import { Note } from '../note/note.model.js'
+import { ENotificationTypes } from './constants.js'
 
 export type TNotificationDocument = HydratedDocument<Notification>
 export type TNotificationModel = Model<Notification>

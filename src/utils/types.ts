@@ -1,4 +1,4 @@
-import type { TApplicationInfo } from '@/utils/application/types'
+import type { TApplicationInfo } from '../utils/application/types.js'
 
 export type TUnknownFunction<R> = (...args: any[]) => R
 

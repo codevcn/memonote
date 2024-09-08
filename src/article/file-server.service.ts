@@ -1,25 +1,19 @@
 import { Injectable } from '@nestjs/common'
 import { v2 as cloudinary, UploadApiOptions, UploadApiResponse } from 'cloudinary'
-import type { TUploadedImage } from './types.ts'
+import type { TUploadedImage } from './types.js'
 import { EArticleMessages, EFileServerMessages } from './messages.js'
 import { InjectModel } from '@nestjs/mongoose'
 import { Article, TArticleModel } from './article.model.js'
-import { BaseCustomException } from '@/utils/exception/custom.exception.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { Types } from 'mongoose'
-import { ArticleService } from './article.service'
+import { ArticleService } from './article.service.js'
 import { fileTypeFromBuffer } from 'file-type'
-import { EArticleFiles } from './enums'
+import { EArticleFiles } from './constants.js'
 
 @Injectable()
 export class FileServerService {
     private readonly artilceImgsPath: string = 'memonote/articles'
-    static readonly supportedImageTypes = [
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'image/webp',
-        'image/bmp',
-    ]
+    static readonly supportedImageTypes = ['jpeg', 'png', 'gif', 'webp']
 
     constructor(
         @InjectModel(Article.name) private articleModel: TArticleModel,
@@ -91,7 +85,7 @@ export class FileServerService {
         }
     }
 
-    static async isValidImage(buffer: Buffer): Promise<boolean> {
+    static async isValidImage(buffer: Buffer): Promise<void> {
         if (buffer.byteLength > EArticleFiles.MAX_IMAGE_SIZE) {
             throw new BaseCustomException(EFileServerMessages.UNABLE_HANDLED_FILE_INPUT)
         }
@@ -99,14 +93,14 @@ export class FileServerService {
         if (!fileType) {
             throw new BaseCustomException(EFileServerMessages.UNABLE_HANDLED_FILE_INPUT)
         }
-        const isValid = this.supportedImageTypes.includes(fileType.mime)
+        const isValid = this.supportedImageTypes.includes(fileType.mime.split('image/')[1])
         if (!isValid) {
             throw new BaseCustomException(EFileServerMessages.UNSUPPORTED_FILE_TYPE)
         }
-        return true
+        console.log('>>> run this is valid image file server')
     }
 
-    static async validateImgSrcList(imgURLs: string[]): Promise<boolean> {
+    static async validateImgSrcList(imgURLs: string[]): Promise<void> {
         const lenOfList = imgURLs.length
         if (lenOfList === 0) {
             throw new BaseCustomException(EArticleMessages.EMPTY_IMAGES)
@@ -114,6 +108,6 @@ export class FileServerService {
         if (lenOfList > EArticleFiles.MAX_IMAGES_COUNT) {
             throw new BaseCustomException(EArticleMessages.MAXIMUM_IMAGES_COUNT)
         }
-        return true
+        console.log('>>> run this is valid image list server')
     }
 }

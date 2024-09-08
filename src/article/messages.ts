@@ -1,4 +1,4 @@
-import { EArticleFiles } from './enums'
+import { EArticleFiles } from './constants.js'
 
 export enum EArticleMessages {
     ARTICLE_NOT_FOUND = 'Article was not found',

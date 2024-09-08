@@ -1,6 +1,7 @@
 enum ENoteEvents {
     NOTE_FORM_EDITED = 'note_form_edited',
     FETCH_NOTE_FORM = 'fetch_note_form',
+    TRANSCRIBE_AUDIO = 'transcript_auido',
 }
 type TBroadcastNoteTypingRes = {
     data: TNoteForm
@@ -20,13 +21,6 @@ class NormalEditorSocket {
         this.listenConnected()
         this.listenConnectionError()
         this.listenNoteFormEdited()
-
-        setTimeout(() => {
-            this.socket.emit('uuu', (res: any) => {
-                console.clear()
-                console.log('>>> da nhan 1 thong diep >>>', res)
-            })
-        }, 1000)
     }
 
     private async listenConnected(): Promise<void> {
@@ -65,11 +59,16 @@ class NormalEditorSocket {
         })
     }
 
-    emitWithoutTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>): void {
+    emitWithoutTimeout<T>(event: ENoteEvents, payload: T, cb: TUnknownFunction<void>): void {
         this.socket.emit(event, payload, cb)
     }
 
-    emitWithTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>, timeout: number) {
+    emitWithTimeout<T>(
+        event: ENoteEvents,
+        payload: T,
+        cb: TUnknownFunction<void>,
+        timeout: number,
+    ) {
         this.socket.timeout(timeout).emit(event, payload, cb)
     }
 }

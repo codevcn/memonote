@@ -5,19 +5,19 @@ import {
     Notification,
     TNotificationDocument,
     TNotificationModel,
-} from '@/notification/notification.model'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
+} from '../notification/notification.model.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { BaseCustomEvent } from '@/note/events'
-import { EEventEmitterEvents } from './enums'
-import type { TGetNotifsReturn, TNotifTranslation, TNewNotif, TNotifWithTrans } from './types'
-import { EDBMessages, ESystemMessages } from '@/utils/messages'
-import { ENotificationTypes, EPagination } from './enums'
-import type { LastNotificationDTO } from './DTOs'
-import { ELangCodes } from '@/lang/enums'
+import { BaseCustomEvent } from '../note/events.js'
+import { EEventEmitterEvents } from './constants.js'
+import type { TGetNotifsReturn, TNotifTranslation, TNewNotif, TNotifWithTrans } from './types.js'
+import { EDBMessages, ESystemMessages } from '../utils/messages.js'
+import { ENotificationTypes, EPagination } from './constants.js'
+import type { LastNotificationDTO } from './DTOs.js'
+import { ELangCodes } from '../lang/constants.js'
 import dayjs from 'dayjs'
 import { I18nService } from 'nestjs-i18n'
-import type { IDataI18nTranslations } from '@/lang/i18n.generated'
+import type { IDataI18nTranslations } from '../lang/i18n.generated.js'
 
 @Injectable()
 export class NotificationService {

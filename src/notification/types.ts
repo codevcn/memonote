@@ -1,5 +1,5 @@
-import type { ENotificationTypes } from './enums'
-import type { Notification } from './notification.model'
+import type { ENotificationTypes } from './constants.js'
+import type { Notification } from './notification.model.js'
 
 export type TNewNotif = {
     message: string

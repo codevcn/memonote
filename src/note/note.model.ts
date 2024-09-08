@@ -1,4 +1,4 @@
-import { EEditors, ENoteLengths } from '@/note/enums'
+import { EEditors, ENoteLengths } from './constants.js'
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import type { HydratedDocument, Model } from 'mongoose'
 

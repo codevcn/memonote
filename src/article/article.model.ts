@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 import { HydratedDocument, Model, Types } from 'mongoose'
-import { Note } from '@/note/note.model'
+import { Note } from '../note/note.model.js'
 
 export type TArticleDocument = HydratedDocument<Article>
 export type TArticleModel = Model<Article>

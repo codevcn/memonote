@@ -1,16 +1,16 @@
-import type { TSuccess } from '@/utils/types'
+import type { TSuccess } from '../utils/types.js'
 import type {
     NoteCredentialsDTO,
     NoteUniqueNameDTO,
     SetPasswordForNotePayloadDTO,
     SwitchEditorPayloadDTO,
-} from './DTOs'
+} from './DTOs.js'
 import type { Response } from 'express'
-import type { ELangCodes } from '@/lang/enums'
+import type { ELangCodes } from '../lang/constants.js'
 import type { Socket } from 'socket.io'
-import type { EInitialSocketEvents } from '@/utils/enums'
-import type { TBroadcastNoteTypingReturn, TClientConnectedEventPayload } from './types'
-import type { BroadcastNoteTypingDTO } from './DTOs'
+import type { EInitialSocketEvents } from '../utils/constants.js'
+import type { TBroadcastNoteTypingReturn, TClientConnectedEventPayload } from './types.js'
+import type { BroadcastNoteTypingDTO } from './DTOs.js'
 
 export interface INoteAPIController {
     setPasswordForNote(

@@ -4,9 +4,12 @@ import {
     ValidationPipe,
     ValidationPipeOptions,
 } from '@nestjs/common'
+import { performAsync } from '../temp/helpers.js'
 
 const exceptionFactory = (errors: ValidationError[]) => {
-    console.error('>>> print errors DTO validation >>>', errors)
+    performAsync(async () => {
+        console.error('>>> print errors DTO validation >>>', errors)
+    })
     return new BadRequestException(
         errors.map(({ constraints }) => constraints && constraints.matches),
     )

@@ -1,8 +1,8 @@
-import { EValidationMessages } from '@/utils/validation/messages'
+import { EValidationMessages } from '../utils/validation/messages.js'
 import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
-import { ValidImage, ValidChunk } from './validation'
+import { ValidImage, ValidChunk } from './validation.js'
 import { Type } from 'class-transformer'
-import { EArticleChunk } from './enums'
+import { EArticleChunk } from './constants.js'
 
 export class ArticleChunkDTO {
     @IsNotEmpty()

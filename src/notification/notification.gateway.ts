@@ -1,4 +1,4 @@
-import { ECommonStatuses, EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
+import { ECommonStatuses, EInitialSocketEvents, ESocketNamespaces } from '../utils/constants.js'
 import { UseFilters, UsePipes } from '@nestjs/common'
 import {
     WebSocketGateway,
@@ -7,16 +7,16 @@ import {
     OnGatewayInit,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
-import { AuthService } from '@/auth/auth.service'
-import { BaseCustomEvent } from '@/note/events'
+import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces.js'
+import { AuthService } from '../auth/auth.service.js'
+import { BaseCustomEvent } from '../note/events.js'
 import { OnEvent } from '@nestjs/event-emitter'
-import { EEventEmitterEvents, ENotificationEvents } from './enums'
-import type { TAuthSocketConnection } from '@/auth/types'
-import type { TNotificationDocument } from './notification.model'
-import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
-import { initGatewayMetadata } from '@/configs/config-gateways'
-import { wsValidationPipe } from '@/configs/config-validation'
+import { EEventEmitterEvents, ENotificationEvents } from './constants.js'
+import type { TAuthSocketConnection } from '../auth/types.js'
+import type { TNotificationDocument } from './notification.model.js'
+import { WsExceptionsFilter } from '../utils/exception/gateway.filter.js'
+import { initGatewayMetadata } from '../configs/config-gateways.js'
+import { wsValidationPipe } from '../configs/config-validation.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTIFICATION }))
 @UsePipes(wsValidationPipe)

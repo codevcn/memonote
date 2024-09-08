@@ -1,9 +1,9 @@
-import type { NoteCredentialsDTO, NoteIdDTO } from '@/note/DTOs'
+import type { NoteCredentialsDTO, NoteIdDTO } from '../note/DTOs.js'
 import type { StreamableFile } from '@nestjs/common'
-import type { TClientConnectedEventPayload } from '@/note/types'
-import type { EInitialSocketEvents } from '@/utils/enums'
-import type { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs'
-import type { TPublishArticleReturn, TUploadImageReturn } from './types'
+import type { TClientConnectedEventPayload } from '../note/types.js'
+import type { EInitialSocketEvents } from '../utils/constants.js'
+import type { PublishArticlePayloadDTO, UploadImageDTO } from './DTOs.js'
+import type { TPublishArticleReturn, TUploadImageReturn } from './types.js'
 
 export interface IArticleAPIController {
     fetchArticle: (params: NoteIdDTO) => Promise<StreamableFile | null>

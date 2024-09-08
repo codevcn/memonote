@@ -1,11 +1,11 @@
 import { Body, Controller, Param, Post } from '@nestjs/common'
-import type { INotificationAPIController } from './interfaces'
-import { NotificationService } from './notification.service'
-import { APIRoutes } from '@/utils/routes'
-import { GetNotifsBodyDTO } from './DTOs'
-import { ELangCodes } from '@/lang/enums'
-import { Lang } from '@/lang/lang.decorator'
-import { NoteIdDTO } from '@/note/DTOs'
+import type { INotificationAPIController } from './interfaces.js'
+import { NotificationService } from './notification.service.js'
+import { APIRoutes } from '../utils/routes.js'
+import { GetNotifsBodyDTO } from './DTOs.js'
+import { ELangCodes } from '../lang/constants.js'
+import { Lang } from '../lang/lang.decorator.js'
+import { NoteIdDTO } from '../note/DTOs.js'
 
 @Controller(APIRoutes.notification)
 export class NotificationAPIController implements INotificationAPIController {

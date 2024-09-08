@@ -1,7 +1,7 @@
 import type { Response, Request } from 'express'
-import type { TSuccess } from '@/utils/types'
-import type { NoteUniqueNameDTO } from '@/note/DTOs'
-import type { SignInPayloadDTO } from './DTOs'
+import type { TSuccess } from '../utils/types.js'
+import type { NoteUniqueNameDTO } from '../note/DTOs.js'
+import type { SignInPayloadDTO } from './DTOs.js'
 
 export interface IAuthAPIController {
     signIn(

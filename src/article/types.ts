@@ -1,4 +1,4 @@
-import type { TSuccess } from '@/utils/types'
+import type { TSuccess } from '../utils/types.js'
 
 export type TUploadIndentity = {
     uploadId: string

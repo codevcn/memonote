@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { EServerStatuses } from './enums'
-import type { THealthcheckRes } from './types'
+import { EServerStatuses } from './constants.js'
+import type { THealthcheckRes } from './types.js'
 
 @Injectable()
 export class HealthcheckService {

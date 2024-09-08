@@ -8,23 +8,23 @@ import {
     ConnectedSocket,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
-import { NoteService } from './note.service'
-import { EInitialSocketEvents, ESocketNamespaces } from '@/utils/enums'
-import { ENoteEvents } from './enums'
-import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces'
-import { BroadcastNoteTypingDTO, TranscriptAudioDTO } from './DTOs'
+import { NoteService } from './note.service.js'
+import { EInitialSocketEvents, ESocketNamespaces } from '../utils/constants.js'
+import { ENoteEvents } from './constants.js'
+import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces.js'
+import { BroadcastNoteTypingDTO, TranscribeAudioDTO } from './DTOs.js'
 import { UseFilters, UseInterceptors, UsePipes } from '@nestjs/common'
-import { ECommonStatuses } from '@/utils/enums'
-import { AuthService } from '@/auth/auth.service'
-import { WsExceptionsFilter } from '@/utils/exception/gateway.filter'
-import { initGatewayMetadata } from '@/configs/config-gateways'
-import { wsValidationPipe } from '@/configs/config-validation'
-import { TranscriptAudioService } from '@/tools/transcript-audio.service'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { NoteCredentialsDTO } from './DTOs'
-import { TAuthSocketConnection } from '@/auth/types'
-import { LoggingInterceptor } from '@/temp/logging.interceptor'
-import { WsNoteCredentials } from '@/utils/decorators/note.decorator'
+import { ECommonStatuses } from '../utils/constants.js'
+import { AuthService } from '../auth/auth.service.js'
+import { WsExceptionsFilter } from '../utils/exception/gateway.filter.js'
+import { initGatewayMetadata } from '../configs/config-gateways.js'
+import { wsValidationPipe } from '../configs/config-validation.js'
+import { TranscriptAudioService } from '../tools/transcript-audio.service.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
+import { NoteCredentialsDTO } from './DTOs.js'
+import { TAuthSocketConnection } from '../auth/types.js'
+import { LoggingInterceptor } from '../temp/logging.interceptor.js'
+import { WsNoteCredentials } from '../utils/decorators/note.decorator.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NORMAL_EDITOR }))
 @UsePipes(wsValidationPipe)
@@ -104,23 +104,23 @@ export class NormalEditorGateway
         }
     }
 
-    @SubscribeMessage('uuu')
+    @SubscribeMessage(ENoteEvents.TRANSCRIBE_AUDIO)
     @UseInterceptors(LoggingInterceptor)
-    async transcriptAudio(
-        @MessageBody() data: TranscriptAudioDTO,
+    async transcribeAudio(
+        @MessageBody() data: TranscribeAudioDTO,
         @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
     ) {
-        const { noteUniqueName } = noteCredentials
+        const { noteUniqueName, noteId } = noteCredentials
         const { chunk, totalChunks, uploadId } = data
-        console.log('>>> payload >>>', { data })
-        // try {
-        //     await this.transcriptAudioService.transcriptAudioHandler(noteUniqueName)
-        // } catch (error) {
-        //     if (error instanceof BaseCustomException) {
-        //         return { success: false }
-        //     }
-        //     throw error
-        // }
-        return { success: true }
+        let transcription: string | null
+        try {
+            transcription = await this.transcriptAudioService.transcribeAudioHandler(chunk)
+        } catch (error) {
+            if (error instanceof BaseCustomException) {
+                return { success: false, message: error.message }
+            }
+            throw error
+        }
+        return { success: true, transcription }
     }
 }

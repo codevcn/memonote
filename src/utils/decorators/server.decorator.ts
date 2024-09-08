@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 import type { Request } from 'express'
-import type { TServerEndpoint } from './types'
+import type { TServerEndpoint } from './types.js'
 
 export const ServerEndpoint = createParamDecorator<unknown, ExecutionContext, TServerEndpoint>(
     (data: unknown, ctx: ExecutionContext) => {

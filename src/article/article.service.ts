@@ -7,17 +7,17 @@ import type {
     TNumberOfImagesQuery,
     TUploadIndentity,
     TWriteChunks,
-} from './types'
+} from './types.js'
 import { join } from 'path'
 import ms from 'ms'
 import { Injectable, StreamableFile } from '@nestjs/common'
-import { Article, TArticleDocument, TArticleModel } from './article.model'
+import { Article, TArticleDocument, TArticleModel } from './article.model.js'
 import { InjectModel } from '@nestjs/mongoose'
 import { Types } from 'mongoose'
 import AppRoot from 'app-root-path'
-import { EArticleMessages } from './messages'
-import { EArticleChunk, EArticleFiles } from './enums'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
+import { EArticleMessages } from './messages.js'
+import { EArticleChunk, EArticleFiles } from './constants.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
 
 @Injectable()
 export class ArticleService {
@@ -93,7 +93,7 @@ export class ArticleService {
         noteUniqueName: string,
         noteId: string,
     ): Promise<TCreateDirOfArticleChunk> {
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
         if (chunkStatus) {
             return {
                 relativePath: chunkStatus.relativePath,
@@ -151,7 +151,7 @@ export class ArticleService {
             absoluteDirPath,
             this.formatArticleFilenameBackup(noteUniqueName),
         )
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
         if (chunkStatus.chunksReceived === 0 && existsSync(chunkFilePath)) {
             await copyFile(chunkFilePath, chunkFilePathBackup)
             await truncate(chunkFilePath, 0)
@@ -176,7 +176,7 @@ export class ArticleService {
             noteId,
         )
 
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
         chunkStatus.chunksReceived++
         if (chunkStatus.timeoutId) {
             clearTimeout(chunkStatus.timeoutId)
@@ -206,7 +206,7 @@ export class ArticleService {
     }
 
     private async cleanupWhenUploadFail(noteUniqueName: string): Promise<void> {
-        const chunkStatus = this.articleChunksStatus.get(noteUniqueName) as TArticleChunkStatus
+        const chunkStatus = this.articleChunksStatus.get(noteUniqueName)!
         if (chunkStatus.docWasCreated) {
             const articleDirPath = join(this.articlesDirPath, chunkStatus.relativePath)
             const articleFileBackupPath = join(

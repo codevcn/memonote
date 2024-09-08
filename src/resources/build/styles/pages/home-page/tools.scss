@@ -1,0 +1,117 @@
+@use '../../global/colors';
+
+.transcribe-audio-container {
+    display: flex;
+    column-gap: 20px;
+    align-items: center;
+}
+
+#transcribe-audio {
+    $color_1: #555;
+    $color_2: #696969;
+    $font-family_1: Arial, sans-serif;
+    $background-color_1: #f4f4f4;
+    $background-color_2: #fff;
+    $background-color_3: #f0f0f0;
+    $background-color_4: #e0e0e0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 45%;
+    margin: 0;
+    background-color: colors.$mmn-regular-white-cl;
+    font-family: Arial, sans-serif;
+    padding: 10px 10px 20px;
+    border-radius: 8px;
+
+    .header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        h2 {
+            margin: 0;
+            padding-left: 10px;
+            font-size: 1rem;
+        }
+    }
+
+    .upload-box {
+        text-align: center;
+        padding: 20px 40px;
+        background-color: #f1f1f1;
+        width: 100%;
+        border-radius: 5px;
+        margin-top: 5px;
+
+        .upload {
+            border: 2px dashed gray;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            color: $color_1;
+
+            p {
+                margin: 0;
+                margin-bottom: 3px;
+                font-weight: bold;
+                font-size: 16px;
+            }
+
+            .supported {
+                display: block;
+                margin-top: 5px;
+                font-size: 14px;
+                color: $color_2;
+            }
+        }
+
+        .OR {
+            margin-bottom: 3px;
+        }
+
+        .browse-btn {
+            background-color: $background-color_3;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+
+            &:hover {
+                background-color: $background-color_4;
+            }
+        }
+    }
+
+    .language-select-container {
+        margin-top: 20px;
+        width: 100%;
+
+        label {
+            padding-left: 10px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 5px;
+            outline: none;
+            cursor: pointer;
+
+            &:hover {
+                outline: 1px colors.$mmn-regular-gray-cl solid;
+            }
+        }
+    }
+}
+
+#transcription-result {
+    width: 55%;
+}

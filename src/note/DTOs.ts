@@ -1,29 +1,30 @@
-import { NOTE_PASSWORD_REGEX, NOTE_UNIQUE_NAME_REGEX } from '@/note/regex'
-import { EValidationMessages } from '@/utils/validation/messages'
-import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, Matches } from 'class-validator'
-import { EEditors, EAudioChunk } from './enums'
+import { NOTE_PASSWORD_REGEX, NOTE_UNIQUE_NAME_REGEX } from '../note/regex.js'
+import { EValidationMessages } from '../utils/validation/messages.js'
+import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, IsNumber, Matches } from 'class-validator'
+import { EEditors, EAudioChunk } from './constants.js'
 import { IsOptional, IsString, MaxLength } from 'class-validator'
-import type { TNoteForm } from './types'
-import { ENoteLengths } from './enums'
-import { ValidChunk } from '@/article/validation'
+import type { TNoteForm } from './types.js'
+import { ENoteLengths } from './constants.js'
+import { ValidChunk } from '../article/validation.js'
 
-export class TranscriptAudioDTO {
+export class TranscribeAudioDTO {
     @IsNotEmpty()
-    @ValidChunk(EAudioChunk.SIZE_PER_CHUNK, {
-        message: EValidationMessages.INVALID_INPUT,
-    })
-    chunk: string
+    // @ValidAudio(EAudioChunk.SIZE_PER_CHUNK, {
+    //     message: EValidationMessages.INVALID_INPUT,
+    // })
+    chunk: Buffer
 
     @IsNotEmpty()
+    @IsNumber()
     totalChunks: number
 
     @IsNotEmpty()
+    @IsString()
     uploadId: string
 }
 
 export class NoteCredentialsDTO {
     @IsNotEmpty()
-    @IsString()
     @Matches(NOTE_UNIQUE_NAME_REGEX, { message: EValidationMessages.INVALID_NOTE_UNIQUE_NAME })
     noteUniqueName: string
 
@@ -60,18 +61,18 @@ export class SwitchEditorPayloadDTO {
 }
 
 export class BroadcastNoteTypingDTO implements TNoteForm {
-    @IsString({ message: EValidationMessages.INVALID_INPUT })
+    @IsString()
     @MaxLength(ENoteLengths.MAX_LENGTH_NOTE_CONTENT, {
         message: EValidationMessages.MAX_LENGTH_INVALID,
     })
     @IsOptional()
     content?: string
 
-    @IsString({ message: EValidationMessages.INVALID_INPUT })
+    @IsString()
     @IsOptional()
     title?: string
 
-    @IsString({ message: EValidationMessages.INVALID_INPUT })
+    @IsString()
     @IsOptional()
     author?: string
 }

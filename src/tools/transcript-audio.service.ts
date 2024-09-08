@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common'
 import AppRoot from 'app-root-path'
 import { join } from 'path'
 import { createClient, DeepgramClient, SyncPrerecordedResponse } from '@deepgram/sdk'
-import fs, { existsSync, ReadStream } from 'fs'
-import { appendFile, copyFile, mkdir, truncate, unlink } from 'fs/promises'
-import type { TAudioChunkStatus, TCreateDirOfAudioChunk, TUploadIndentity } from './types'
-import { BaseCustomException } from '@/utils/exception/custom.exception'
-import { EAudioMessages } from './messages'
+import { createReadStream, ReadStream } from 'fs'
+import { mkdir, rm, writeFile } from 'fs/promises'
+import type { TAudioChunkStatus, TCreateDirOfAudioChunk, TUploadIndentity } from './types.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
+import { EAudioMessages } from './messages.js'
 import ms from 'ms'
 
 @Injectable()
@@ -17,8 +17,8 @@ export class TranscriptAudioService {
     private readonly uploadsIndentity = new Map<string, TUploadIndentity>()
     private readonly audioChunksStatus = new Map<string, TAudioChunkStatus>()
     private readonly chunkStatusTimeout: number = ms('60s')
-
-    constructor() {}
+    private readonly audioUnicode: NodeJS.BufferEncoding = 'utf-8'
+    static readonly supportedAudiotypes = ['mp3', 'mp4', 'm4a', 'wav', 'webm']
 
     private async checkMultipleUploads(noteUniqueName: string, uploadId: string): Promise<void> {
         const uploadIdentity = this.uploadsIndentity.get(noteUniqueName)
@@ -31,9 +31,7 @@ export class TranscriptAudioService {
         }
     }
 
-    private async createDirOfAudioChunkHandler(
-        noteUniqueName: string,
-    ): Promise<TCreateDirOfAudioChunk> {
+    private async createDirOfAudioChunks(noteUniqueName: string): Promise<TCreateDirOfAudioChunk> {
         const chunkStatus = this.audioChunksStatus.get(noteUniqueName) as TAudioChunkStatus
         if (chunkStatus) {
             return {
@@ -41,47 +39,53 @@ export class TranscriptAudioService {
                 isFirstChunk: false,
             }
         }
-        const relativePath = await this.createDirOfAudioChunks(noteUniqueName)
-        return { relativePath, isFirstChunk: true }
-    }
-
-    private async createDirOfAudioChunks(noteUniqueName: string): Promise<string> {
         const relativePath = join(this.audiosDirPath, noteUniqueName)
         await mkdir(relativePath, { recursive: true })
-        return relativePath
+        return { relativePath, isFirstChunk: true }
     }
 
     private formatAbsoluteDirPathOfAudio(relativePath: string): string {
         return join(this.audiosDirPath, relativePath)
     }
 
-    private async writeChunk(
-        chunk: string,
-        totalChunks: number,
+    private formatAudioChunkFilename(
         noteUniqueName: string,
-        audioFilename: string, // with file extension
-    ): Promise<void> {
-        // const { isFirstChunk, relativePath } =
-        //     await this.createDirOfAudioChunkHandler(noteUniqueName)
-        // if (isFirstChunk) {
-        //     this.audioChunksStatus.set(noteUniqueName, {
-        //         chunksReceived: 0,
-        //         totalChunks,
-        //         timeoutId: setTimeout(async () => {
-        //             await this.cleanupWhenUploadFail(noteUniqueName)
-        //         }, this.chunkStatusTimeout),
-        //         relativePath,
-        //     })
-        // }
-        // const absoluteDirPath = this.formatAbsoluteDirPathOfAudio(relativePath)
-        // const chunkFilePath = join(absoluteDirPath, audioFilename)
-        // await appendFile(chunkFilePath, chunk, this.audioUnicode)
-        // return { chunkFilePathBackup, docWasCreated }
+        filetype: string,
+        orderOfChunk: number,
+    ): string {
+        return `o${orderOfChunk}-${noteUniqueName}.${filetype}`
     }
 
-    private async transcriptAudio(fileReadStream: ReadStream): Promise<SyncPrerecordedResponse> {
+    private async writeChunk(
+        chunk: Buffer,
+        totalChunks: number,
+        noteUniqueName: string,
+        filetype: string,
+    ): Promise<void> {
+        const { isFirstChunk, relativePath } = await this.createDirOfAudioChunks(noteUniqueName)
+        if (isFirstChunk) {
+            this.audioChunksStatus.set(noteUniqueName, {
+                chunksReceived: 0,
+                totalChunks,
+                timeoutId: setTimeout(async () => {
+                    await this.cleanupWhenUploadFail(noteUniqueName)
+                }, this.chunkStatusTimeout),
+                relativePath,
+            })
+        }
+        const absoluteDirPath = this.formatAbsoluteDirPathOfAudio(relativePath)
+        const chunkStatus = this.audioChunksStatus.get(noteUniqueName)!
+        const chunkFilePath = join(
+            absoluteDirPath,
+            this.formatAudioChunkFilename(noteUniqueName, filetype, chunkStatus.chunksReceived + 1),
+        )
+        await writeFile(chunkFilePath, chunk, this.audioUnicode)
+    }
+
+    private async transcribeAudio(fileSource: string): Promise<SyncPrerecordedResponse> {
+        const readable = createReadStream(join(this.audiosDirPath, noteUniqueName))
         const { result, error } = await this.deepgramClient.listen.prerecorded.transcribeFile(
-            fileReadStream,
+            fileSource,
             {
                 model: 'nova-2',
                 smart_format: true,
@@ -96,72 +100,46 @@ export class TranscriptAudioService {
         return result
     }
 
-    async transcriptAudioHandler(
+    async transcribeAudioHandler(
         chunk: Buffer,
+        filetype: string,
         totalChunks: number,
         noteUniqueName: string,
-        noteId: string,
         uploadId: string,
-    ): Promise<string> {
-        // await this.checkMultipleUploads(noteUniqueName, uploadId)
+    ): Promise<string | null> {
+        await this.checkMultipleUploads(noteUniqueName, uploadId)
 
-        // await this.writeChunk(chunk, totalChunks, noteUniqueName, noteId)
+        await this.writeChunk(chunk, totalChunks, noteUniqueName, filetype)
 
-        // const chunkStatus = this.audioChunksStatus.get(noteUniqueName) as TAudioChunkStatus
-        // chunkStatus.chunksReceived++
-        // if (chunkStatus.timeoutId) {
-        //     clearTimeout(chunkStatus.timeoutId)
-        // }
+        const chunkStatus = this.audioChunksStatus.get(noteUniqueName)!
+        chunkStatus.chunksReceived++
+        if (chunkStatus.timeoutId) {
+            clearTimeout(chunkStatus.timeoutId)
+        }
 
-        // if (chunkStatus.chunksReceived === totalChunks) {
-        //     await this.cleanUpWhenUploadSuccess(noteUniqueName, chunkFilePathBackup)
-        //     if (!docWasCreated) {
-        //         await this.createNewAudio(noteUniqueName, noteId, chunkStatus.relativePath)
-        //     }
-        // } else {
-        //     chunkStatus.timeoutId = setTimeout(async () => {
-        //         await this.cleanupWhenUploadFail(noteUniqueName)
-        //     }, this.chunkStatusTimeout)
-        // }
+        let transcription: string | null = null
+        if (chunkStatus.chunksReceived === totalChunks) {
+            await this.cleanUpWhenUploadSuccess(noteUniqueName)
+            transcription = await this.transcribeAudio('')
+        } else {
+            chunkStatus.timeoutId = setTimeout(async () => {
+                await this.cleanupWhenUploadFail(noteUniqueName)
+            }, this.chunkStatusTimeout)
+        }
 
-        // const readable = fs.createReadStream(join(this.audiosDirPath, noteUniqueName))
-        // const transcriptResult = await this.transcriptAudio(readable)
-        // const transcription = transcriptResult.results.channels[0].alternatives[0].transcript
-        // return transcription
-        return 'oke'
+        return transcription
     }
 
-    private async cleanUpWhenUploadSuccess(
-        noteUniqueName: string,
-        chunkFilePathBackup: string,
-    ): Promise<void> {
-        if (existsSync(chunkFilePathBackup)) {
-            this.audioChunksStatus.delete(noteUniqueName)
-            this.uploadsIndentity.delete(noteUniqueName)
-            await unlink(chunkFilePathBackup)
-        }
+    private async cleanUpWhenUploadSuccess(noteUniqueName: string): Promise<void> {
+        this.audioChunksStatus.delete(noteUniqueName)
+        this.uploadsIndentity.delete(noteUniqueName)
     }
 
     private async cleanupWhenUploadFail(noteUniqueName: string): Promise<void> {
-        // const chunkStatus = this.audioChunksStatus.get(noteUniqueName) as TAudioChunkStatus
-        // if (chunkStatus.docWasCreated) {
-        //     const audioDirPath = join(this.audiosDirPath, chunkStatus.relativePath)
-        //     const audioFileBackupPath = join(
-        //         audioDirPath,
-        //         this.formatAudioFilenameBackup(noteUniqueName),
-        //     )
-        //     const audioFilePath = join(audioDirPath, this.formatAudioFilename(noteUniqueName))
-        //     await copyFile(audioFileBackupPath, audioFilePath)
-        //     await unlink(audioFileBackupPath)
-        // } else {
-        //     const audioFilePath = join(
-        //         this.audiosDirPath,
-        //         chunkStatus.relativePath,
-        //         this.formatAudioFilename(noteUniqueName),
-        //     )
-        //     await unlink(audioFilePath)
-        // }
-        // this.audioChunksStatus.delete(noteUniqueName)
-        // this.uploadsIndentity.delete(noteUniqueName)
+        const chunkStatus = this.audioChunksStatus.get(noteUniqueName) as TAudioChunkStatus
+        const audiosDirPath = join(this.audiosDirPath, chunkStatus.relativePath)
+        await rm(audiosDirPath, { recursive: true, force: true })
+        this.audioChunksStatus.delete(noteUniqueName)
+        this.uploadsIndentity.delete(noteUniqueName)
     }
 }

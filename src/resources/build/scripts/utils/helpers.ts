@@ -179,3 +179,7 @@ function convertToBytes(input: string): number {
 
     return value * (units[unit] || 0)
 }
+
+const generateUploadId = (): string => {
+    return crypto.randomUUID()
+}

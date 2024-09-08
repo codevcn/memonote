@@ -137,3 +137,6 @@ function convertToBytes(input) {
     const unit = match[3].toUpperCase()
     return value * (units[unit] || 0)
 }
+const generateUploadId = () => {
+    return crypto.randomUUID()
+}

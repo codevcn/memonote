@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { I18nContext } from 'nestjs-i18n'
-import { ECookies, ELangCodes } from './enums'
+import { ECookies, ELangCodes } from './constants.js'
 import type { Response } from 'express'
-import { TLangCookieOptions } from './types'
+import { TLangCookieOptions } from './types.js'
 import ms from 'ms'
 
 @Injectable()

@@ -1,5 +1,5 @@
-import type { EEditors } from '@/note/enums'
-import type { TCommonPageData } from '@/utils/types'
+import type { EEditors } from '../note/constants.js'
+import type { TCommonPageData } from '../utils/types.js'
 
 export type TRedirectHomePage = {
     url: string

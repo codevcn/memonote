@@ -1,5 +1,5 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator'
-import { FileServerService } from './file-server.service'
+import { FileServerService } from './file-server.service.js'
 
 export function ValidChunk(size: number, validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
@@ -45,10 +45,18 @@ export function ValidImage(validationOptions?: ValidationOptions) {
             async: true,
             validator: {
                 validate(value: unknown, args: ValidationArguments) {
-                    if (value instanceof Buffer) {
-                        return FileServerService.isValidImage(value)
-                    }
-                    return Promise.resolve(false)
+                    return new Promise<boolean>((resolve, reject) => {
+                        if (value instanceof Buffer) {
+                            FileServerService.isValidImage(value)
+                                .then(() => {
+                                    resolve(true)
+                                })
+                                .catch(() => {
+                                    resolve(false)
+                                })
+                        }
+                        resolve(false)
+                    })
                 },
             },
         })
@@ -65,7 +73,15 @@ export function ValidImageSrcList(validationOptions?: ValidationOptions) {
             async: true,
             validator: {
                 validate(value: string[], args: ValidationArguments) {
-                    return FileServerService.validateImgSrcList(value)
+                    return new Promise((resolve, reject) => {
+                        FileServerService.validateImgSrcList(value)
+                            .then(() => {
+                                resolve(true)
+                            })
+                            .catch(() => {
+                                resolve(false)
+                            })
+                    })
                 },
             },
         })

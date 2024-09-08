@@ -1,4 +1,4 @@
-import type { EServerStatuses } from './enums'
+import type { EServerStatuses } from './constants.js'
 
 export type THealthcheckRes = {
     status: EServerStatuses

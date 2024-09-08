@@ -1,13 +1,13 @@
-import { APIRoutes } from '@/utils/routes'
+import { APIRoutes } from '../utils/routes.js'
 import { Controller, Post, Param, Body, Delete, Res, UseGuards } from '@nestjs/common'
-import { SetPasswordForNotePayloadDTO, NoteUniqueNameDTO, SwitchEditorPayloadDTO } from './DTOs'
-import { NoteService } from './note.service'
-import type { INoteAPIController } from './interfaces'
+import { SetPasswordForNotePayloadDTO, NoteUniqueNameDTO, SwitchEditorPayloadDTO } from './DTOs.js'
+import { NoteService } from './note.service.js'
+import type { INoteAPIController } from './interfaces.js'
 import type { Response } from 'express'
-import { APIAuthGuard } from '@/auth/auth.guard'
-import type { TSuccess } from '@/utils/types'
-import { Lang } from '@/lang/lang.decorator'
-import { ELangCodes } from '@/lang/enums'
+import { APIAuthGuard } from '../auth/auth.guard.js'
+import type { TSuccess } from '../utils/types.js'
+import { Lang } from '../lang/lang.decorator.js'
+import { ELangCodes } from '../lang/constants.js'
 
 @Controller(APIRoutes.note)
 export class NoteAPIController implements INoteAPIController {

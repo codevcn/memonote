@@ -1,4 +1,4 @@
-import type { BroadcastNoteTypingDTO } from './DTOs'
+import type { BroadcastNoteTypingDTO } from './DTOs.js'
 
 export type TGetHomePageData = {
     noteContent: string | null

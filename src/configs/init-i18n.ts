@@ -1,5 +1,6 @@
 import * as path from 'path'
 import { AcceptLanguageResolver, CookieResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n'
+import { __dirname } from '../utils/constants.js'
 
 export const configI18n = () => {
     return I18nModule.forRoot({

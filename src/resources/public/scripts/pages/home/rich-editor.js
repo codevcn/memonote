@@ -268,13 +268,12 @@ class RichEditorController {
                         articleContent,
                         EArticleChunk.SIZE_PER_CHUNK,
                     )
-                    const uploadId = crypto.randomUUID()
                     RichEditorController.publishArticleInChunks(
                         chunks,
                         {
                             noteUniqueName: getNoteUniqueNameFromURL(),
                             totalChunks: chunks.length,
-                            uploadId,
+                            uploadId: generateUploadId(),
                         },
                         noteId,
                     )

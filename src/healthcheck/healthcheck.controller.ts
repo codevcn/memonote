@@ -1,7 +1,7 @@
-import { APIRoutes } from '@/utils/routes'
+import { APIRoutes } from '../utils/routes.js'
 import { Controller, Get } from '@nestjs/common'
-import { IHealthcheckController } from './interfaces'
-import { HealthcheckService } from './healthcheck.service'
+import { IHealthcheckController } from './interfaces.js'
+import { HealthcheckService } from './healthcheck.service.js'
 
 @Controller(APIRoutes.healthcheck)
 export class HealthcheckController implements IHealthcheckController {

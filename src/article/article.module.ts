@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
-import { ArticleService } from './article.service'
-import { ArticleGateway } from './article.gateway'
-import { AuthModule } from '@/auth/auth.module'
-import { ArticleController } from './article-api.controller'
-import { FileServerService } from './file-server.service'
+import { ArticleService } from './article.service.js'
+import { ArticleGateway } from './article.gateway.js'
+import { AuthModule } from '../auth/auth.module.js'
+import { ArticleController } from './article-api.controller.js'
+import { FileServerService } from './file-server.service.js'
 
 @Module({
     imports: [AuthModule],

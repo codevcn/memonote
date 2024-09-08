@@ -1,11 +1,12 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common'
 import type { Request, Response } from 'express'
-import { HttpExceptionValidation } from '../validation/http-exception.validation'
-import type { TCommonPageData, THttpExceptionResBody } from '../types'
-import { ClientViewPages } from '../application/view-pages'
+import { HttpExceptionValidation } from '../validation/http-exception.validation.js'
+import type { TCommonPageData, THttpExceptionResBody } from '../types.js'
+import { ClientViewPages } from '../application/view-pages.js'
 import { I18nContext } from 'nestjs-i18n'
-import { createClientPageData } from '../helpers'
-import { ApplicationService } from '../application/application.service'
+import { createClientPageData } from '../helpers.js'
+import { ApplicationService } from '../application/application.service.js'
+import { performAsync } from '../../temp/helpers.js'
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
@@ -16,7 +17,9 @@ export class HttpExceptionFilter implements ExceptionFilter<HttpException> {
     }
 
     async catch(exception: HttpException, host: ArgumentsHost) {
-        console.error('\n>>> http error >>>', exception)
+        performAsync(async () => {
+            console.error('\n>>> http error >>>', exception)
+        })
 
         const ctx = host.switchToHttp()
         const response = ctx.getResponse<Response<THttpExceptionResBody>>()

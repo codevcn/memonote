@@ -3,6 +3,7 @@ var ENoteEvents
 ;(function (ENoteEvents) {
     ENoteEvents['NOTE_FORM_EDITED'] = 'note_form_edited'
     ENoteEvents['FETCH_NOTE_FORM'] = 'fetch_note_form'
+    ENoteEvents['TRANSCRIBE_AUDIO'] = 'transcript_auido'
 })(ENoteEvents || (ENoteEvents = {}))
 class NormalEditorSocket {
     constructor() {
@@ -14,12 +15,6 @@ class NormalEditorSocket {
         this.listenConnected()
         this.listenConnectionError()
         this.listenNoteFormEdited()
-        setTimeout(() => {
-            this.socket.emit('uuu', (res) => {
-                console.clear()
-                console.log('>>> da nhan 1 thong diep >>>', res)
-            })
-        }, 1000)
     }
     async listenConnected() {
         this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) => {

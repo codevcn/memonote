@@ -40,11 +40,20 @@ class NotificationSocket {
         })
     }
 
-    emitWithoutTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>): void {
+    emitWithoutTimeout<T>(
+        event: ENotificationEvents,
+        payload: T,
+        cb: TUnknownFunction<void>,
+    ): void {
         this.socket.emit(event, payload, cb)
     }
 
-    emitWithTimeout<T>(event: string, payload: T, cb: TUnknownFunction<void>, timeout: number) {
+    emitWithTimeout<T>(
+        event: ENotificationEvents,
+        payload: T,
+        cb: TUnknownFunction<void>,
+        timeout: number,
+    ) {
         this.socket.timeout(timeout).emit(event, payload, cb)
     }
 

@@ -1,11 +1,11 @@
 import { Body, Controller, Param, Post, Req, Res, UseGuards } from '@nestjs/common'
-import { AuthService } from './auth.service'
+import { AuthService } from './auth.service.js'
 import type { Response, Request } from 'express'
-import { APIRoutes } from '@/utils/routes'
-import type { IAuthAPIController } from './interfaces'
-import { APIAuthGuard } from '@/auth/auth.guard'
-import { NoteUniqueNameDTO } from '@/note/DTOs'
-import { SignInPayloadDTO } from './DTOs'
+import { APIRoutes } from '../utils/routes.js'
+import type { IAuthAPIController } from './interfaces.js'
+import { APIAuthGuard } from '../auth/auth.guard.js'
+import { NoteUniqueNameDTO } from '../note/DTOs.js'
+import { SignInPayloadDTO } from './DTOs.js'
 
 @Controller(APIRoutes.auth)
 export class AuthAPIController implements IAuthAPIController {

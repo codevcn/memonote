@@ -1,6 +1,6 @@
-import { Article, ArticleSchema } from '@/article/article.model'
-import { Note, NoteSchema } from '@/note/note.model'
-import { Notification, NotificationSchema } from '@/notification/notification.model'
+import { Article, ArticleSchema } from '../article/article.model.js'
+import { Note, NoteSchema } from '../note/note.model.js'
+import { Notification, NotificationSchema } from '../notification/notification.model.js'
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { MongooseModule } from '@nestjs/mongoose'
 

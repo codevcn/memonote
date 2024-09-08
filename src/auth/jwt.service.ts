@@ -1,4 +1,4 @@
-import type { TJwtCookieOptions, TJWTPayload, TSendJWTParamOptions } from './types'
+import type { TJwtCookieOptions, TJWTPayload, TSendJWTParamOptions } from './types.js'
 import { JwtService } from '@nestjs/jwt'
 import { Injectable } from '@nestjs/common'
 import ms from 'ms'

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { AuthService } from './auth.service'
-import { JWTService } from './jwt.service'
-import { NoteModule } from '@/note/note.module'
-import { AuthAPIController } from './auth-api.controller'
+import { AuthService } from './auth.service.js'
+import { JWTService } from './jwt.service.js'
+import { NoteModule } from '../note/note.module.js'
+import { AuthAPIController } from './auth-api.controller.js'
 
 @Module({
     imports: [NoteModule],

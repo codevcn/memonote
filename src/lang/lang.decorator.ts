@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 import type { Request } from 'express'
-import { ECookies, ELangCodes } from './enums'
+import { ECookies, ELangCodes } from './constants.js'
 import { I18nContext } from 'nestjs-i18n'
 
 export const Lang = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
