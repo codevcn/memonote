@@ -12,4 +12,5 @@ export class APIRoutes {
     static readonly healthcheck: string = `${this.apiRootPath}/healthcheck`
     static readonly lang: string = `${this.apiRootPath}/lang`
     static readonly article: string = `${this.apiRootPath}/article`
+    static readonly tools: string = `${this.apiRootPath}/tools`
 }

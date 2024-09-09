@@ -11,6 +11,7 @@ import { HealthcheckModule } from './healthcheck/healthcheck.module.js'
 import { configI18n } from './configs/init-i18n.js'
 import { LangModule } from './lang/lang.module.js'
 import { ArticleModule } from './article/article.module.js'
+import { ToolsModule } from './tools/tools.module.js'
 
 @Module({
     imports: [
@@ -27,6 +28,7 @@ import { ArticleModule } from './article/article.module.js'
         LangModule,
         HealthcheckModule,
         ArticleModule,
+        ToolsModule,
     ],
 })
 export class AppModule {}

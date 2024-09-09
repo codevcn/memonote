@@ -14,7 +14,7 @@ export enum ECommonStatuses {
 }
 
 export enum ESocketNamespaces {
-    NORMAL_EDITOR = 'normal-editor',
+    NOTE = 'note',
     NOTIFICATION = 'notification',
     ARTICLE = 'article',
 }

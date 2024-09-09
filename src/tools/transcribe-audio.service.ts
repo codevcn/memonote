@@ -8,9 +8,11 @@ import type { TAudioChunkStatus, TCreateDirOfAudioChunk, TUploadIndentity } from
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EAudioMessages } from './messages.js'
 import ms from 'ms'
+import { ETransribeFiles } from './constants.js'
+import { fileTypeFromBuffer } from 'file-type'
 
 @Injectable()
-export class TranscriptAudioService {
+export class TranscribeAudioService {
     private readonly audiosDirname: string = 'temp-audios'
     private readonly audiosDirPath: string = join(AppRoot.path, 'src', 'tools', this.audiosDirname)
     private readonly deepgramClient: DeepgramClient = createClient(process.env.DEEPGRAM_API_KEY)
@@ -18,7 +20,7 @@ export class TranscriptAudioService {
     private readonly audioChunksStatus = new Map<string, TAudioChunkStatus>()
     private readonly chunkStatusTimeout: number = ms('60s')
     private readonly audioUnicode: NodeJS.BufferEncoding = 'utf-8'
-    static readonly supportedAudiotypes = ['mp3', 'mp4', 'm4a', 'wav', 'webm']
+    static readonly supportedAudiotypes = ['audio/mpeg', 'audio/wav', 'audio/mp4']
 
     private async checkMultipleUploads(noteUniqueName: string, uploadId: string): Promise<void> {
         const uploadIdentity = this.uploadsIndentity.get(noteUniqueName)
@@ -39,13 +41,13 @@ export class TranscriptAudioService {
                 isFirstChunk: false,
             }
         }
-        const relativePath = join(this.audiosDirPath, noteUniqueName)
+        const relativePath = this.formatAbsoluteDirPathOfAudio(noteUniqueName)
         await mkdir(relativePath, { recursive: true })
         return { relativePath, isFirstChunk: true }
     }
 
-    private formatAbsoluteDirPathOfAudio(relativePath: string): string {
-        return join(this.audiosDirPath, relativePath)
+    private formatAbsoluteDirPathOfAudio(noteUniqueName: string): string {
+        return join(this.audiosDirPath, noteUniqueName)
     }
 
     private formatAudioChunkFilename(
@@ -60,7 +62,6 @@ export class TranscriptAudioService {
         chunk: Buffer,
         totalChunks: number,
         noteUniqueName: string,
-        filetype: string,
     ): Promise<void> {
         const { isFirstChunk, relativePath } = await this.createDirOfAudioChunks(noteUniqueName)
         if (isFirstChunk) {
@@ -75,17 +76,26 @@ export class TranscriptAudioService {
         }
         const absoluteDirPath = this.formatAbsoluteDirPathOfAudio(relativePath)
         const chunkStatus = this.audioChunksStatus.get(noteUniqueName)!
+        const fileType = await fileTypeFromBuffer(chunk)
+        if (!fileType) {
+            throw new BaseCustomException(EAudioMessages.UNABLE_HANDLED_FILE_INPUT)
+        }
         const chunkFilePath = join(
             absoluteDirPath,
-            this.formatAudioChunkFilename(noteUniqueName, filetype, chunkStatus.chunksReceived + 1),
+            this.formatAudioChunkFilename(
+                noteUniqueName,
+                fileType.ext,
+                chunkStatus.chunksReceived + 1,
+            ),
         )
         await writeFile(chunkFilePath, chunk, this.audioUnicode)
     }
 
-    private async transcribeAudio(fileSource: string): Promise<SyncPrerecordedResponse> {
-        const readable = createReadStream(join(this.audiosDirPath, noteUniqueName))
+    private async transcribeAudio(noteUniqueName: string): Promise<string> {
+        const filePath = await this.mergeChunks(noteUniqueName)
+        const readable = createReadStream(filePath)
         const { result, error } = await this.deepgramClient.listen.prerecorded.transcribeFile(
-            fileSource,
+            readable,
             {
                 model: 'nova-2',
                 smart_format: true,
@@ -97,19 +107,23 @@ export class TranscriptAudioService {
         if (error) {
             throw error
         }
-        return result
+        const transcription = result.results.channels[0].alternatives[0].transcript
+        return transcription
+    }
+
+    private async mergeChunks(noteUniqueName: string): Promise<string> {
+        const fileDir = join(this.audiosDirPath, noteUniqueName)
     }
 
     async transcribeAudioHandler(
         chunk: Buffer,
-        filetype: string,
         totalChunks: number,
         noteUniqueName: string,
         uploadId: string,
     ): Promise<string | null> {
         await this.checkMultipleUploads(noteUniqueName, uploadId)
 
-        await this.writeChunk(chunk, totalChunks, noteUniqueName, filetype)
+        await this.writeChunk(chunk, totalChunks, noteUniqueName)
 
         const chunkStatus = this.audioChunksStatus.get(noteUniqueName)!
         chunkStatus.chunksReceived++
@@ -120,7 +134,7 @@ export class TranscriptAudioService {
         let transcription: string | null = null
         if (chunkStatus.chunksReceived === totalChunks) {
             await this.cleanUpWhenUploadSuccess(noteUniqueName)
-            transcription = await this.transcribeAudio('')
+            transcription = await this.transcribeAudio(noteUniqueName)
         } else {
             chunkStatus.timeoutId = setTimeout(async () => {
                 await this.cleanupWhenUploadFail(noteUniqueName)
@@ -141,5 +155,19 @@ export class TranscriptAudioService {
         await rm(audiosDirPath, { recursive: true, force: true })
         this.audioChunksStatus.delete(noteUniqueName)
         this.uploadsIndentity.delete(noteUniqueName)
+    }
+
+    static async isValidAudio(buffer: Buffer): Promise<void> {
+        if (buffer.byteLength > ETransribeFiles.SIZE_PER_CHUNK) {
+            throw new BaseCustomException(EAudioMessages.UNABLE_HANDLED_FILE_INPUT)
+        }
+        const fileType = await fileTypeFromBuffer(buffer)
+        if (!fileType) {
+            throw new BaseCustomException(EAudioMessages.UNABLE_HANDLED_FILE_INPUT)
+        }
+        const isValid = this.supportedAudiotypes.includes(fileType.mime)
+        if (!isValid) {
+            throw new BaseCustomException(EAudioMessages.UNSUPPORTED_FILE_TYPE)
+        }
     }
 }

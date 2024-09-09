@@ -25,7 +25,3 @@ export enum ENoteEvents {
     FETCH_NOTE_FORM = 'fetch_note_form',
     TRANSCRIBE_AUDIO = 'transcript_auido',
 }
-
-export enum EAudioChunk {
-    SIZE_PER_CHUNK = bytes('3MB'),
-}

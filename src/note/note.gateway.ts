@@ -19,17 +19,17 @@ import { AuthService } from '../auth/auth.service.js'
 import { WsExceptionsFilter } from '../utils/exception/gateway.filter.js'
 import { initGatewayMetadata } from '../configs/config-gateways.js'
 import { wsValidationPipe } from '../configs/config-validation.js'
-import { TranscriptAudioService } from '../tools/transcript-audio.service.js'
+import { TranscribeAudioService } from '../tools/transcribe-audio.service.js'
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { NoteCredentialsDTO } from './DTOs.js'
 import { TAuthSocketConnection } from '../auth/types.js'
 import { LoggingInterceptor } from '../temp/logging.interceptor.js'
 import { WsNoteCredentials } from '../utils/decorators/note.decorator.js'
 
-@WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NORMAL_EDITOR }))
+@WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTE }))
 @UsePipes(wsValidationPipe)
 @UseFilters(new WsExceptionsFilter())
-export class NormalEditorGateway
+export class NoteGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
 {
     private io: Server
@@ -37,7 +37,7 @@ export class NormalEditorGateway
     constructor(
         private noteService: NoteService,
         private authService: AuthService,
-        private transcriptAudioService: TranscriptAudioService,
+        private transcriptAudioService: TranscribeAudioService,
     ) {}
 
     afterInit(server: Server): void {
@@ -110,11 +110,16 @@ export class NormalEditorGateway
         @MessageBody() data: TranscribeAudioDTO,
         @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
     ) {
-        const { noteUniqueName, noteId } = noteCredentials
+        const { noteUniqueName } = noteCredentials
         const { chunk, totalChunks, uploadId } = data
         let transcription: string | null
         try {
-            transcription = await this.transcriptAudioService.transcribeAudioHandler(chunk)
+            transcription = await this.transcriptAudioService.transcribeAudioHandler(
+                chunk,
+                totalChunks,
+                noteUniqueName,
+                uploadId,
+            )
         } catch (error) {
             if (error instanceof BaseCustomException) {
                 return { success: false, message: error.message }

@@ -1,10 +1,10 @@
 import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator'
 import { FileServerService } from './file-server.service.js'
+import { EArticleChunk } from './constants.js'
 
-export function ValidChunk(size: number, validationOptions?: ValidationOptions) {
+export function ValidChunk(validationOptions?: ValidationOptions) {
     return function (object: Object, propertyName: string) {
         registerDecorator({
-            name: 'ValidChunk',
             target: object.constructor,
             propertyName: propertyName,
             options: validationOptions,
@@ -12,7 +12,9 @@ export function ValidChunk(size: number, validationOptions?: ValidationOptions) 
             validator: {
                 validate(value: string, args: ValidationArguments) {
                     const stringSizeInBytes = Buffer.byteLength(value, 'utf8')
-                    return stringSizeInBytes > 0 && stringSizeInBytes <= size
+                    return (
+                        stringSizeInBytes > 0 && stringSizeInBytes <= EArticleChunk.SIZE_PER_CHUNK
+                    )
                 },
             },
         })

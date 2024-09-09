@@ -2,11 +2,10 @@ import { EValidationMessages } from '../utils/validation/messages.js'
 import { IsNotEmpty, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { ValidImage, ValidChunk } from './validation.js'
 import { Type } from 'class-transformer'
-import { EArticleChunk } from './constants.js'
 
 export class ArticleChunkDTO {
     @IsNotEmpty()
-    @ValidChunk(EArticleChunk.SIZE_PER_CHUNK, {
+    @ValidChunk({
         message: EValidationMessages.INVALID_INPUT,
     })
     @IsString()

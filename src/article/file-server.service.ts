@@ -13,7 +13,7 @@ import { EArticleFiles } from './constants.js'
 @Injectable()
 export class FileServerService {
     private readonly artilceImgsPath: string = 'memonote/articles'
-    static readonly supportedImageTypes = ['jpeg', 'png', 'gif', 'webp']
+    static readonly supportedImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
     constructor(
         @InjectModel(Article.name) private articleModel: TArticleModel,
@@ -93,11 +93,10 @@ export class FileServerService {
         if (!fileType) {
             throw new BaseCustomException(EFileServerMessages.UNABLE_HANDLED_FILE_INPUT)
         }
-        const isValid = this.supportedImageTypes.includes(fileType.mime.split('image/')[1])
+        const isValid = this.supportedImageTypes.includes(fileType.mime)
         if (!isValid) {
             throw new BaseCustomException(EFileServerMessages.UNSUPPORTED_FILE_TYPE)
         }
-        console.log('>>> run this is valid image file server')
     }
 
     static async validateImgSrcList(imgURLs: string[]): Promise<void> {
@@ -108,6 +107,5 @@ export class FileServerService {
         if (lenOfList > EArticleFiles.MAX_IMAGES_COUNT) {
             throw new BaseCustomException(EArticleMessages.MAXIMUM_IMAGES_COUNT)
         }
-        console.log('>>> run this is valid image list server')
     }
 }

@@ -1,17 +1,17 @@
 import { NOTE_PASSWORD_REGEX, NOTE_UNIQUE_NAME_REGEX } from '../note/regex.js'
 import { EValidationMessages } from '../utils/validation/messages.js'
 import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, IsNumber, Matches } from 'class-validator'
-import { EEditors, EAudioChunk } from './constants.js'
+import { EEditors } from './constants.js'
 import { IsOptional, IsString, MaxLength } from 'class-validator'
 import type { TNoteForm } from './types.js'
 import { ENoteLengths } from './constants.js'
-import { ValidChunk } from '../article/validation.js'
+import { ValidAudio } from '../tools/validation.js'
 
 export class TranscribeAudioDTO {
     @IsNotEmpty()
-    // @ValidAudio(EAudioChunk.SIZE_PER_CHUNK, {
-    //     message: EValidationMessages.INVALID_INPUT,
-    // })
+    @ValidAudio({
+        message: EValidationMessages.INVALID_INPUT,
+    })
     chunk: Buffer
 
     @IsNotEmpty()
