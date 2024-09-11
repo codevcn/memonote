@@ -5,7 +5,7 @@ import { JWTService } from '../auth/jwt.service.js'
 import { AuthService } from '../auth/auth.service.js'
 import { NoteGateway } from './note.gateway.js'
 import { NotificationService } from '../notification/notification.service.js'
-import { TranscriptAudioService } from '../tools/transcribe-audio.service.js'
+import { TranscribeAudioService } from '../tools/transcribe-audio.service.js'
 
 @Module({
     controllers: [NoteAPIController],
@@ -15,7 +15,7 @@ import { TranscriptAudioService } from '../tools/transcribe-audio.service.js'
         AuthService,
         NoteGateway,
         NotificationService,
-        TranscriptAudioService,
+        TranscribeAudioService,
     ],
     exports: [NoteService],
 })

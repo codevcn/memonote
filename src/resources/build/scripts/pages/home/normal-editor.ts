@@ -14,7 +14,7 @@ class NormalEditorSocket {
 
     constructor() {
         this.socket = io(
-            `/${ENamespacesOfSocket.NORMAL_EDITOR}`,
+            `/${ENamespacesOfSocket.NOTE}`,
             initClientSocketConfig(getNoteUniqueNameFromURL(), pageData.noteId),
         )
         this.reconnecting = { flag: false }

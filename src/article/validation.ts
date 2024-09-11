@@ -46,19 +46,16 @@ export function ValidImage(validationOptions?: ValidationOptions) {
             constraints: [],
             async: true,
             validator: {
-                validate(value: unknown, args: ValidationArguments) {
-                    return new Promise<boolean>((resolve, reject) => {
-                        if (value instanceof Buffer) {
-                            FileServerService.isValidImage(value)
-                                .then(() => {
-                                    resolve(true)
-                                })
-                                .catch(() => {
-                                    resolve(false)
-                                })
+                async validate(value: unknown, args: ValidationArguments) {
+                    if (value instanceof Buffer) {
+                        try {
+                            await FileServerService.isValidImage(value)
+                        } catch (error) {
+                            return false
                         }
-                        resolve(false)
-                    })
+                        return true
+                    }
+                    return false
                 },
             },
         })
@@ -74,16 +71,13 @@ export function ValidImageSrcList(validationOptions?: ValidationOptions) {
             constraints: [],
             async: true,
             validator: {
-                validate(value: string[], args: ValidationArguments) {
-                    return new Promise((resolve, reject) => {
-                        FileServerService.validateImgSrcList(value)
-                            .then(() => {
-                                resolve(true)
-                            })
-                            .catch(() => {
-                                resolve(false)
-                            })
-                    })
+                async validate(value: string[], args: ValidationArguments) {
+                    try {
+                        await FileServerService.validateImgSrcList(value)
+                    } catch (error) {
+                        return false
+                    }
+                    return true
                 },
             },
         })

@@ -12,7 +12,7 @@ import { NoteService } from './note.service.js'
 import { EInitialSocketEvents, ESocketNamespaces } from '../utils/constants.js'
 import { ENoteEvents } from './constants.js'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces.js'
-import { BroadcastNoteTypingDTO, TranscribeAudioDTO } from './DTOs.js'
+import { BroadcastNoteTypingDTO } from './DTOs.js'
 import { UseFilters, UseInterceptors, UsePipes } from '@nestjs/common'
 import { ECommonStatuses } from '../utils/constants.js'
 import { AuthService } from '../auth/auth.service.js'
@@ -24,7 +24,7 @@ import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { NoteCredentialsDTO } from './DTOs.js'
 import { TAuthSocketConnection } from '../auth/types.js'
 import { LoggingInterceptor } from '../temp/logging.interceptor.js'
-import { WsNoteCredentials } from '../utils/decorators/note.decorator.js'
+import { WsNoteCredentials } from './note.decorator.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTE }))
 @UsePipes(wsValidationPipe)
@@ -104,28 +104,28 @@ export class NoteGateway
         }
     }
 
-    @SubscribeMessage(ENoteEvents.TRANSCRIBE_AUDIO)
-    @UseInterceptors(LoggingInterceptor)
-    async transcribeAudio(
-        @MessageBody() data: TranscribeAudioDTO,
-        @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
-    ) {
-        const { noteUniqueName } = noteCredentials
-        const { chunk, totalChunks, uploadId } = data
-        let transcription: string | null
-        try {
-            transcription = await this.transcriptAudioService.transcribeAudioHandler(
-                chunk,
-                totalChunks,
-                noteUniqueName,
-                uploadId,
-            )
-        } catch (error) {
-            if (error instanceof BaseCustomException) {
-                return { success: false, message: error.message }
-            }
-            throw error
-        }
-        return { success: true, transcription }
-    }
+    // @SubscribeMessage(ENoteEvents.TRANSCRIBE_AUDIO)
+    // @UseInterceptors(LoggingInterceptor)
+    // async transcribeAudio(
+    //     @MessageBody() data: TranscribeAudioDTO,
+    //     @WsNoteCredentials() noteCredentials: NoteCredentialsDTO,
+    // ) {
+    //     const { noteUniqueName } = noteCredentials
+    //     const { chunk, totalChunks, uploadId } = data
+    //     let transcription: string | null
+    //     try {
+    //         transcription = await this.transcriptAudioService.transcribeAudioHandler(
+    //             chunk,
+    //             totalChunks,
+    //             noteUniqueName,
+    //             uploadId,
+    //         )
+    //     } catch (error) {
+    //         if (error instanceof BaseCustomException) {
+    //             return { success: false, message: error.message }
+    //         }
+    //         throw error
+    //     }
+    //     return { success: true, transcription }
+    // }
 }

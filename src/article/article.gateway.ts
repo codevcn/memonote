@@ -21,7 +21,7 @@ import { initGatewayMetadata } from '../configs/config-gateways.js'
 import type { TUploadedImage } from './types.js'
 import { FileServerService } from './file-server.service.js'
 import { wsValidationPipe } from '../configs/config-validation.js'
-import { WsNoteCredentials } from '../utils/decorators/note.decorator.js'
+import { WsNoteCredentials } from '../note/note.decorator.js'
 import { NoteCredentialsDTO } from '../note/DTOs.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.ARTICLE }))

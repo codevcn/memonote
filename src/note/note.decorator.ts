@@ -1,7 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 import type { Socket } from 'socket.io'
-import { TNoteCredentials } from './types.js'
-import { NoteService } from '../../note/note.service.js'
+import { TNoteCredentials } from '../utils/server/types.js'
+import { NoteService } from './note.service.js'
+import { Request } from 'express'
 
 export const WsNoteCredentials = createParamDecorator<unknown, ExecutionContext, TNoteCredentials>(
     (data: unknown, ctx: ExecutionContext) => {

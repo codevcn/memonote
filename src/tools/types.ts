@@ -1,15 +1,7 @@
-export type TUploadIndentity = {
-    uploadId: string
-}
+export type TMulterFile = Express.Multer.File
 
-export type TAudioChunkStatus = {
-    chunksReceived: number
-    totalChunks: number
-    relativePath: string
-    timeoutId: NodeJS.Timeout | null
-}
+export type TTranscribeAudioFile = Omit<TMulterFile, 'buffer'>
 
-export type TCreateDirOfAudioChunk = {
-    relativePath: string
-    isFirstChunk: boolean
+export type TTranscribeAudioRes = {
+    transcription: string | null
 }

@@ -7,31 +7,45 @@
             </div>
             <div class="modal-body">
                 <section class="transcribe-audio-container">
-                    <section id="transcribe-audio">
+                    <form id="transcribe-audio-form">
                         <div class="header">
                             <h2>Audio / Video File</h2>
                         </div>
                         <div class="upload-box">
                             <div class="upload">
                                 <p>Drag & Drop</p>
-                                <span class="supported">MP3, MP4, M4A, WAV, WebM</span>
+                                <span class="supported">MP3, WAV</span>
                             </div>
                             <p class="OR">— OR —</p>
                             <label class="browse-btn" for="audio-file-input">BROWSE FILES</label>
-                            <input type="file" id="audio-file-input"
-                                onchange="TranscriptAudioController.transcriptAudioHandler(this)" hidden
-                                accept=".mp3, .mp4, .m4a, .wav, .webm" />
+                            <input type="file" id="audio-file-input" name="audio-file"
+                                onchange="TranscriptAudioController.transcriptAudioHandler()" hidden
+                                accept=".mp3, .wav" />
                         </div>
                         <div class="language-select-container">
-                            <label for="audio-language">Audio Language</label>
-                            <select id="audio-language">
-                                <option value="vietnamese">Vietnamese</option>
-                                <option value="english" selected>English</option>
+                            <label for="audio-language-select">Audio Language</label>
+                            <select id="audio-language-select" name="audio-language">
+                                <option value="vi">Vietnamese</option>
+                                <option value="en" selected>English</option>
+                                <option value="en-us" selected>English (US)</option>
                             </select>
                         </div>
-                    </section>
+                    </form>
                     <section id="transcription-result">
-                        <div class="text"></div>
+                        <div class="text-box">
+                            Your transcription would be here...
+                        </div>
+                        <div class="message">Your audio is wrong!!!</div>
+                        <div class="actions">
+                            <button class="action write">
+                                <i class="bi bi-pencil-square"></i>
+                                <span>Write to note</span>
+                            </button>
+                            <button class="action copy">
+                                <i class="bi bi-clipboard-check-fill"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
                     </section>
                 </section>
             </div>

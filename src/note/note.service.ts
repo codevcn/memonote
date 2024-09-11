@@ -16,7 +16,7 @@ import { NotificationService } from '../notification/notification.service.js'
 import { I18nService } from 'nestjs-i18n'
 import type { IDataI18nTranslations } from '../lang/i18n.generated.js'
 import { ELangCodes } from '../lang/constants.js'
-import { TNoteCredentials } from '../utils/decorators/types.js'
+import { TNoteCredentials } from '../utils/server/types.js'
 import { Socket } from 'socket.io'
 
 @Injectable()

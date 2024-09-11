@@ -74,3 +74,5 @@ type TNotifData = TNotif & {
 type TNavBarPos = 'sticky' | 'static'
 
 type TUnknownFunction<R> = (...args: any[]) => R
+
+type TAudioLangs = 'en' | 'vi' | 'en-us'

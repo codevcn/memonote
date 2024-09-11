@@ -5,23 +5,6 @@ import { EEditors } from './constants.js'
 import { IsOptional, IsString, MaxLength } from 'class-validator'
 import type { TNoteForm } from './types.js'
 import { ENoteLengths } from './constants.js'
-import { ValidAudio } from '../tools/validation.js'
-
-export class TranscribeAudioDTO {
-    @IsNotEmpty()
-    @ValidAudio({
-        message: EValidationMessages.INVALID_INPUT,
-    })
-    chunk: Buffer
-
-    @IsNotEmpty()
-    @IsNumber()
-    totalChunks: number
-
-    @IsNotEmpty()
-    @IsString()
-    uploadId: string
-}
 
 export class NoteCredentialsDTO {
     @IsNotEmpty()

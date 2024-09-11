@@ -22,3 +22,6 @@ const requestLangAPI = (langCode) => axiosClient.post(`/lang/request-lang`, { la
 // article
 const fetchArticleAPI = () =>
     axiosClient.get(`/article/fetch-article/${pageData.noteId}`, { responseType: 'blob' })
+// tools
+const transcribeAudioAPI = (formDataWithFile) =>
+    axiosClient.post('/tools/transcribe-audio/' + getNoteUniqueNameFromURL(), formDataWithFile)

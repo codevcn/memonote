@@ -1,160 +1,123 @@
 import { Injectable } from '@nestjs/common'
 import AppRoot from 'app-root-path'
-import { join } from 'path'
+import path, { join } from 'path'
 import { createClient, DeepgramClient, SyncPrerecordedResponse } from '@deepgram/sdk'
 import { createReadStream, ReadStream } from 'fs'
-import { mkdir, rm, writeFile } from 'fs/promises'
-import type { TAudioChunkStatus, TCreateDirOfAudioChunk, TUploadIndentity } from './types.js'
+import { unlink } from 'fs/promises'
+import type { TTranscribeAudioFile } from './types.js'
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EAudioMessages } from './messages.js'
-import ms from 'ms'
-import { ETransribeFiles } from './constants.js'
+import { EAudioFiles, EAudioLangs, ETransribeFiles } from './constants.js'
 import { fileTypeFromBuffer } from 'file-type'
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface.js'
+import multer from 'multer'
+import { Request } from 'express'
+import { NoteUniqueNameDTO } from '../note/DTOs.js'
+import { validateJson } from '../utils/helpers.js'
 
 @Injectable()
 export class TranscribeAudioService {
-    private readonly audiosDirname: string = 'temp-audios'
-    private readonly audiosDirPath: string = join(AppRoot.path, 'src', 'tools', this.audiosDirname)
+    static readonly audiosDirname: string = 'temp-audios'
+    static readonly audiosDirPath: string = join(
+        AppRoot.path,
+        'src',
+        'tools',
+        TranscribeAudioService.audiosDirname,
+    )
+    static readonly supportedAudiotypes = ['audio/mpeg', 'audio/wav']
     private readonly deepgramClient: DeepgramClient = createClient(process.env.DEEPGRAM_API_KEY)
-    private readonly uploadsIndentity = new Map<string, TUploadIndentity>()
-    private readonly audioChunksStatus = new Map<string, TAudioChunkStatus>()
-    private readonly chunkStatusTimeout: number = ms('60s')
-    private readonly audioUnicode: NodeJS.BufferEncoding = 'utf-8'
-    static readonly supportedAudiotypes = ['audio/mpeg', 'audio/wav', 'audio/mp4']
+    private readonly inTranscribing = new Set<string>()
+    private readonly deepGramModelForTranscribe: string = 'nova-2'
 
-    private async checkMultipleUploads(noteUniqueName: string, uploadId: string): Promise<void> {
-        const uploadIdentity = this.uploadsIndentity.get(noteUniqueName)
+    static initTranscribeAudioSaver = (): MulterOptions => {
+        return {
+            storage: multer.diskStorage({
+                destination: function (req, file, cb) {
+                    cb(null, TranscribeAudioService.audiosDirPath)
+                },
+                filename: function (req, file, cb) {
+                    const { noteUniqueName } = req.params
+                    cb(null, `${noteUniqueName}-${Date.now()}-${path.extname(file.originalname)}`)
+                },
+            }),
+            limits: {
+                fileSize: EAudioFiles.MAX_FILE_SIZE,
+                fieldNameSize: EAudioFiles.MAX_FILENAME_SIZE,
+            },
+            fileFilter: function (req: Request, file: any, cb) {
+                const { params } = req
+                validateJson(params, NoteUniqueNameDTO)
+                    .then(() => {
+                        cb(null, true)
+                    })
+                    .catch(() => {
+                        cb(new Error(EAudioMessages.UNABLE_HANDLED_FILE_INPUT), false)
+                    })
+            },
+        }
+    }
+
+    private async checkMultipleUploads(noteUniqueName: string): Promise<void> {
+        const uploadIdentity = this.inTranscribing.has(noteUniqueName)
         if (uploadIdentity) {
-            if (uploadIdentity.uploadId !== uploadId) {
-                throw new BaseCustomException(EAudioMessages.MULTIPLE_UPLOAD)
-            }
+            throw new BaseCustomException(EAudioMessages.MULTIPLE_UPLOAD)
         } else {
-            this.uploadsIndentity.set(noteUniqueName, { uploadId })
+            this.inTranscribing.add(noteUniqueName)
         }
     }
 
-    private async createDirOfAudioChunks(noteUniqueName: string): Promise<TCreateDirOfAudioChunk> {
-        const chunkStatus = this.audioChunksStatus.get(noteUniqueName) as TAudioChunkStatus
-        if (chunkStatus) {
-            return {
-                relativePath: chunkStatus.relativePath,
-                isFirstChunk: false,
-            }
-        }
-        const relativePath = this.formatAbsoluteDirPathOfAudio(noteUniqueName)
-        await mkdir(relativePath, { recursive: true })
-        return { relativePath, isFirstChunk: true }
+    private getTranscriptionFromResult(result: SyncPrerecordedResponse): string {
+        return result.results.channels[0].alternatives[0].transcript
     }
 
-    private formatAbsoluteDirPathOfAudio(noteUniqueName: string): string {
-        return join(this.audiosDirPath, noteUniqueName)
-    }
-
-    private formatAudioChunkFilename(
-        noteUniqueName: string,
-        filetype: string,
-        orderOfChunk: number,
-    ): string {
-        return `o${orderOfChunk}-${noteUniqueName}.${filetype}`
-    }
-
-    private async writeChunk(
-        chunk: Buffer,
-        totalChunks: number,
-        noteUniqueName: string,
-    ): Promise<void> {
-        const { isFirstChunk, relativePath } = await this.createDirOfAudioChunks(noteUniqueName)
-        if (isFirstChunk) {
-            this.audioChunksStatus.set(noteUniqueName, {
-                chunksReceived: 0,
-                totalChunks,
-                timeoutId: setTimeout(async () => {
-                    await this.cleanupWhenUploadFail(noteUniqueName)
-                }, this.chunkStatusTimeout),
-                relativePath,
-            })
-        }
-        const absoluteDirPath = this.formatAbsoluteDirPathOfAudio(relativePath)
-        const chunkStatus = this.audioChunksStatus.get(noteUniqueName)!
-        const fileType = await fileTypeFromBuffer(chunk)
-        if (!fileType) {
-            throw new BaseCustomException(EAudioMessages.UNABLE_HANDLED_FILE_INPUT)
-        }
-        const chunkFilePath = join(
-            absoluteDirPath,
-            this.formatAudioChunkFilename(
-                noteUniqueName,
-                fileType.ext,
-                chunkStatus.chunksReceived + 1,
-            ),
-        )
-        await writeFile(chunkFilePath, chunk, this.audioUnicode)
-    }
-
-    private async transcribeAudio(noteUniqueName: string): Promise<string> {
-        const filePath = await this.mergeChunks(noteUniqueName)
-        const readable = createReadStream(filePath)
+    private async transcribeAudio(
+        fileStream: ReadStream,
+        audioLang: EAudioLangs,
+    ): Promise<SyncPrerecordedResponse> {
         const { result, error } = await this.deepgramClient.listen.prerecorded.transcribeFile(
-            readable,
+            fileStream,
             {
-                model: 'nova-2',
+                model: this.deepGramModelForTranscribe,
                 smart_format: true,
                 punctuate: true,
                 paragraphs: true,
-                language: 'vi',
+                language: audioLang,
             },
         )
         if (error) {
             throw error
         }
-        const transcription = result.results.channels[0].alternatives[0].transcript
-        return transcription
-    }
-
-    private async mergeChunks(noteUniqueName: string): Promise<string> {
-        const fileDir = join(this.audiosDirPath, noteUniqueName)
+        return result
     }
 
     async transcribeAudioHandler(
-        chunk: Buffer,
-        totalChunks: number,
         noteUniqueName: string,
-        uploadId: string,
+        audioFile: TTranscribeAudioFile,
+        audioLang: EAudioLangs,
     ): Promise<string | null> {
-        await this.checkMultipleUploads(noteUniqueName, uploadId)
+        await this.checkMultipleUploads(noteUniqueName)
 
-        await this.writeChunk(chunk, totalChunks, noteUniqueName)
-
-        const chunkStatus = this.audioChunksStatus.get(noteUniqueName)!
-        chunkStatus.chunksReceived++
-        if (chunkStatus.timeoutId) {
-            clearTimeout(chunkStatus.timeoutId)
+        let transcription: string
+        const readable = createReadStream(audioFile.path)
+        try {
+            const result = await this.transcribeAudio(readable, audioLang)
+            transcription = this.getTranscriptionFromResult(result)
+        } catch (error) {
+            await this.cleanUpWhenTranscribeDone(noteUniqueName, audioFile)
+            throw error
         }
 
-        let transcription: string | null = null
-        if (chunkStatus.chunksReceived === totalChunks) {
-            await this.cleanUpWhenUploadSuccess(noteUniqueName)
-            transcription = await this.transcribeAudio(noteUniqueName)
-        } else {
-            chunkStatus.timeoutId = setTimeout(async () => {
-                await this.cleanupWhenUploadFail(noteUniqueName)
-            }, this.chunkStatusTimeout)
-        }
+        await this.cleanUpWhenTranscribeDone(noteUniqueName, audioFile)
 
         return transcription
     }
 
-    private async cleanUpWhenUploadSuccess(noteUniqueName: string): Promise<void> {
-        this.audioChunksStatus.delete(noteUniqueName)
-        this.uploadsIndentity.delete(noteUniqueName)
-    }
-
-    private async cleanupWhenUploadFail(noteUniqueName: string): Promise<void> {
-        const chunkStatus = this.audioChunksStatus.get(noteUniqueName) as TAudioChunkStatus
-        const audiosDirPath = join(this.audiosDirPath, chunkStatus.relativePath)
-        await rm(audiosDirPath, { recursive: true, force: true })
-        this.audioChunksStatus.delete(noteUniqueName)
-        this.uploadsIndentity.delete(noteUniqueName)
+    private async cleanUpWhenTranscribeDone(
+        noteUniqueName: string,
+        audioFile: TTranscribeAudioFile,
+    ): Promise<void> {
+        this.inTranscribing.delete(noteUniqueName)
+        await unlink(audioFile.path)
     }
 
     static async isValidAudio(buffer: Buffer): Promise<void> {

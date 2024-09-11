@@ -1,7 +1,7 @@
 'use strict'
 var ENamespacesOfSocket
 ;(function (ENamespacesOfSocket) {
-    ENamespacesOfSocket['NORMAL_EDITOR'] = 'normal-editor'
+    ENamespacesOfSocket['NOTE'] = 'note'
     ENamespacesOfSocket['NOTIFICATION'] = 'notification'
     ENamespacesOfSocket['ARTICLE'] = 'article'
 })(ENamespacesOfSocket || (ENamespacesOfSocket = {}))

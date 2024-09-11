@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
-import { ToolsController } from './tools-api.controller.js'
-import { TranscriptAudioService } from './transcribe-audio.service.js'
+import { ToolsAPIController } from './tools-api.controller.js'
+import { TranscribeAudioService } from './transcribe-audio.service.js'
 
 @Module({
-    controllers: [ToolsController],
-    providers: [TranscriptAudioService],
+    controllers: [ToolsAPIController],
+    providers: [TranscribeAudioService],
 })
 export class ToolsModule {}
