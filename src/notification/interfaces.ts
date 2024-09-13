@@ -1,10 +1,9 @@
 import type { NoteIdDTO } from '../note/DTOs.js'
 import type { GetNotifsBodyDTO } from './DTOs.js'
-import type { TGetNotifsReturn } from './types.js'
-import type { BaseCustomEvent } from '../note/events.js'
+import type { TGetNotifsReturn, TNotifWithTrans } from './types.js'
 import type { TClientConnectedEventPayload } from '../note/types.js'
 import type { EInitialSocketEvents } from '../utils/constants.js'
-import type { TNotificationDocument } from './notification.model.js'
+import type { BaseCustomEmittedEvent } from '../utils/custom.events.js'
 
 export interface INotificationAPIController {
     getNotifications: (
@@ -19,5 +18,5 @@ export interface IInitialSocketEventEmits {
 }
 
 export interface IMessageSubcribers {
-    notify: (event: BaseCustomEvent<TNotificationDocument>) => void
+    notify: (event: BaseCustomEmittedEvent<TNotifWithTrans>) => void
 }

@@ -134,11 +134,15 @@ const convertToCssFontFamily = (font: TNoteFormTextFonts) => {
     }
 }
 
+const countBytesOfString = (inputString: string): number => {
+    const blob = new Blob([inputString])
+    return blob.size
+}
+
 const convertStringToChunks = (inputString: string, sizePerChunk: number): string[] => {
     const chunkSize = sizePerChunk
 
-    const blob = new Blob([inputString])
-    const size = blob.size
+    const size = countBytesOfString(inputString)
 
     if (size <= chunkSize) {
         return [inputString]
@@ -171,7 +175,7 @@ function convertToBytes(input: string): number {
         PB: 1024 ** 5,
     }
 
-    const regex = /^(\d+(\.\d+)?)\s*(B|KB|MB|GB|TB|PB)$/i
+    const regex = /^(\d+(\.\d+)?)\s*(B|KB|MB)$/i
     const match = input.match(regex)!
 
     const value = parseFloat(match[1])

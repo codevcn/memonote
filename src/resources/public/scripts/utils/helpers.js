@@ -101,10 +101,13 @@ const convertToCssFontFamily = (font) => {
             return "'Roboto', Times, serif"
     }
 }
+const countBytesOfString = (inputString) => {
+    const blob = new Blob([inputString])
+    return blob.size
+}
 const convertStringToChunks = (inputString, sizePerChunk) => {
     const chunkSize = sizePerChunk
-    const blob = new Blob([inputString])
-    const size = blob.size
+    const size = countBytesOfString(inputString)
     if (size <= chunkSize) {
         return [inputString]
     }
@@ -131,7 +134,7 @@ function convertToBytes(input) {
         TB: 1024 ** 4,
         PB: 1024 ** 5,
     }
-    const regex = /^(\d+(\.\d+)?)\s*(B|KB|MB|GB|TB|PB)$/i
+    const regex = /^(\d+(\.\d+)?)\s*(B|KB|MB)$/i
     const match = input.match(regex)
     const value = parseFloat(match[1])
     const unit = match[3].toUpperCase()

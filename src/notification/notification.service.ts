@@ -8,7 +8,6 @@ import {
 } from '../notification/notification.model.js'
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { BaseCustomEvent } from '../note/events.js'
 import { EEventEmitterEvents } from './constants.js'
 import type { TGetNotifsReturn, TNotifTranslation, TNewNotif, TNotifWithTrans } from './types.js'
 import { EDBMessages, ESystemMessages } from '../utils/messages.js'
@@ -18,6 +17,7 @@ import { ELangCodes } from '../lang/constants.js'
 import dayjs from 'dayjs'
 import { I18nService } from 'nestjs-i18n'
 import type { IDataI18nTranslations } from '../lang/i18n.generated.js'
+import { BaseCustomEmittedEvent } from '../utils/custom.events.js'
 
 @Injectable()
 export class NotificationService {
@@ -59,7 +59,11 @@ export class NotificationService {
         const translation = this.translateNotif(newNotif, lang)
         this.eventEmitter.emit(
             EEventEmitterEvents.TRIGGER_NOTIFY,
-            new BaseCustomEvent<TNotifWithTrans>({ ...newNotif, translation }, noteUniqueName),
+            new BaseCustomEmittedEvent<TNotifWithTrans>({
+                ...newNotif,
+                translation,
+                noteUniqueName,
+            }),
         )
     }
 

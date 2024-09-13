@@ -122,3 +122,8 @@ var EHttpStatuses
     EHttpStatuses[(EHttpStatuses['HTTP_VERSION_NOT_SUPPORTED'] = 505)] =
         'HTTP_VERSION_NOT_SUPPORTED'
 })(EHttpStatuses || (EHttpStatuses = {}))
+var EAudioFiles
+;(function (EAudioFiles) {
+    EAudioFiles[(EAudioFiles['MAX_FILE_SIZE'] = convertToBytes('10MB'))] = 'MAX_FILE_SIZE'
+    EAudioFiles[(EAudioFiles['MAX_FILENAME_SIZE'] = convertToBytes('100B'))] = 'MAX_FILENAME_SIZE'
+})(EAudioFiles || (EAudioFiles = {}))

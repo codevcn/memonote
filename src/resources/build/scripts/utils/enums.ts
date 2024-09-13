@@ -116,3 +116,8 @@ enum EHttpStatuses {
     GATEWAY_TIMEOUT = 504,
     HTTP_VERSION_NOT_SUPPORTED = 505,
 }
+
+enum EAudioFiles {
+    MAX_FILE_SIZE = convertToBytes('10MB'),
+    MAX_FILENAME_SIZE = convertToBytes('100B'),
+}

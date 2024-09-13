@@ -1,7 +1,28 @@
-.transcribe-audio-container {
+#transcribe-audio-message {
+    display: none;
+    color: #ff2424;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    column-gap: 5px;
+    line-height: 1rem;
+    padding: 5px 15px;
+    background-color: #ffdddd;
+    border-radius: 5px;
+}
+#transcribe-audio-message i {
+    color: inherit;
+    font-size: inherit;
+}
+#transcribe-audio-message.active {
+    display: flex;
+}
+
+#transcribe-audio-container {
     display: flex;
     column-gap: 50px;
     align-items: center;
+    position: relative;
 }
 
 #transcribe-audio-form {
@@ -13,7 +34,6 @@
     margin: 0;
     background-color: #fff;
     font-family: Arial, sans-serif;
-    padding: 10px 10px 20px;
     border-radius: 8px;
 }
 #transcribe-audio-form .header {
@@ -34,29 +54,36 @@
     border-radius: 5px;
     margin-top: 5px;
 }
-#transcribe-audio-form .upload-box .upload {
+#transcribe-audio-form .upload-box .upload-file {
+    display: none;
+    width: 100%;
+}
+#transcribe-audio-form .upload-box .upload-file.active {
+    display: block;
+}
+#transcribe-audio-form .upload-box .upload-file .upload {
     border: 2px dashed gray;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 10px;
     color: #555;
 }
-#transcribe-audio-form .upload-box .upload p {
+#transcribe-audio-form .upload-box .upload-file .upload p {
     margin: 0;
     margin-bottom: 3px;
     font-weight: bold;
     font-size: 16px;
 }
-#transcribe-audio-form .upload-box .upload .supported {
+#transcribe-audio-form .upload-box .upload-file .upload .supported {
     display: block;
     margin-top: 5px;
     font-size: 14px;
     color: #696969;
 }
-#transcribe-audio-form .upload-box .OR {
+#transcribe-audio-form .upload-box .upload-file .OR {
     margin-bottom: 3px;
 }
-#transcribe-audio-form .upload-box .browse-btn {
+#transcribe-audio-form .upload-box .upload-file .browse-btn {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -65,8 +92,33 @@
     cursor: pointer;
     font-weight: 500;
 }
-#transcribe-audio-form .upload-box .browse-btn:hover {
+#transcribe-audio-form .upload-box .upload-file .browse-btn:hover {
     background-color: #e0e0e0;
+}
+#transcribe-audio-form .upload-box .picked-audio-file {
+    display: none;
+    width: 100%;
+}
+#transcribe-audio-form .upload-box .picked-audio-file.active {
+    display: block;
+}
+#transcribe-audio-form .upload-box .picked-audio-file .filename-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+#transcribe-audio-form .upload-box .picked-audio-file .filename-box .filename {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#transcribe-audio-form .upload-box .picked-audio-file .filename-box .cancel-btn {
+    position: absolute;
+    top: -10px;
+    left: -10px;
 }
 #transcribe-audio-form .language-select-container {
     margin-top: 20px;
@@ -88,6 +140,25 @@
 #transcribe-audio-form .language-select-container select:hover {
     outline: 1px #909090 solid;
 }
+#transcribe-audio-form .submit-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    width: 100%;
+    padding: 5px 20px;
+    background-color: #333;
+    border-radius: 5px;
+    border: 2px #333 solid;
+    color: #fff;
+}
+#transcribe-audio-form .submit-btn .spinner {
+    height: 24px;
+    width: 24px;
+}
+#transcribe-audio-form .submit-btn:hover {
+    background-color: #fff;
+    color: #333;
+}
 
 #transcription-result {
     width: 55%;
@@ -95,19 +166,17 @@
 #transcription-result .text-box {
     border: 1px lightgray solid;
     border-radius: 5px;
-    min-height: 50px;
     max-height: 1000px;
     overflow-y: auto;
     padding: 10px;
 }
-#transcription-result .message {
-    display: none;
-    color: #ff2424;
-    margin: 5px 0;
-    font-size: 0.85rem;
+#transcription-result .text-box .spinner {
+    height: 24px;
+    width: 24px;
 }
-#transcription-result .message.active {
-    display: block;
+#transcription-result .text-box.loading {
+    display: flex;
+    justify-content: center;
 }
 #transcription-result .actions {
     display: flex;
@@ -120,6 +189,7 @@
     align-items: center;
     border-radius: 5px;
     padding: 3px 10px;
+    font-size: 0.9rem;
     background-color: #333;
     color: #fff;
 }

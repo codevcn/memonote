@@ -1,11 +1,35 @@
 @use '../../global/colors';
 
 $mmn-audio-file-input-n-result-gap: 50px;
+$mmn-float-loading-bgcl: rgb(255 255 255 / 38%);
 
-.transcribe-audio-container {
+#transcribe-audio-message {
+    display: none;
+    color: colors.$mmn-regular-red-cl;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    column-gap: 5px;
+    line-height: 1rem;
+    padding: 5px 15px;
+    background-color: colors.$mmn-regular-warning-bgcl;
+    border-radius: 5px;
+
+    i {
+        color: inherit;
+        font-size: inherit;
+    }
+
+    &.active {
+        display: flex;
+    }
+}
+
+#transcribe-audio-container {
     display: flex;
     column-gap: $mmn-audio-file-input-n-result-gap;
     align-items: center;
+    position: relative;
 }
 
 #transcribe-audio-form {
@@ -25,7 +49,6 @@ $mmn-audio-file-input-n-result-gap: 50px;
     margin: 0;
     background-color: colors.$mmn-regular-white-cl;
     font-family: Arial, sans-serif;
-    padding: 10px 10px 20px;
     border-radius: 8px;
 
     .header {
@@ -48,43 +71,82 @@ $mmn-audio-file-input-n-result-gap: 50px;
         border-radius: 5px;
         margin-top: 5px;
 
-        .upload {
-            border: 2px dashed gray;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            color: $color_1;
+        .upload-file {
+            display: none;
+            width: 100%;
 
-            p {
-                margin: 0;
-                margin-bottom: 3px;
-                font-weight: bold;
-                font-size: 16px;
-            }
-
-            .supported {
+            &.active {
                 display: block;
-                margin-top: 5px;
+            }
+
+            .upload {
+                border: 2px dashed gray;
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                color: $color_1;
+
+                p {
+                    margin: 0;
+                    margin-bottom: 3px;
+                    font-weight: bold;
+                    font-size: 16px;
+                }
+
+                .supported {
+                    display: block;
+                    margin-top: 5px;
+                    font-size: 14px;
+                    color: $color_2;
+                }
+            }
+
+            .OR {
+                margin-bottom: 3px;
+            }
+
+            .browse-btn {
+                background-color: colors.$mmn-regular-white-cl;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                padding: 10px 20px;
                 font-size: 14px;
-                color: $color_2;
+                cursor: pointer;
+                font-weight: 500;
+
+                &:hover {
+                    background-color: $background-color_4;
+                }
             }
         }
 
-        .OR {
-            margin-bottom: 3px;
-        }
+        .picked-audio-file {
+            display: none;
+            width: 100%;
 
-        .browse-btn {
-            background-color: colors.$mmn-regular-white-cl;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-size: 14px;
-            cursor: pointer;
-            font-weight: 500;
+            &.active {
+                display: block;
+            }
 
-            &:hover {
-                background-color: $background-color_4;
+            .filename-box {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                position: relative;
+
+                .filename {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .cancel-btn {
+                    position: absolute;
+                    top: -10px;
+                    left: -10px;
+                }
             }
         }
     }
@@ -112,6 +174,28 @@ $mmn-audio-file-input-n-result-gap: 50px;
             }
         }
     }
+
+    .submit-btn {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        width: 100%;
+        padding: 5px 20px;
+        background-color: colors.$mmn-regular-black-cl;
+        border-radius: 5px;
+        border: 2px colors.$mmn-regular-black-cl solid;
+        color: colors.$mmn-regular-white-cl;
+
+        .spinner {
+            height: 24px;
+            width: 24px;
+        }
+
+        &:hover {
+            background-color: colors.$mmn-regular-white-cl;
+            color: colors.$mmn-regular-black-cl;
+        }
+    }
 }
 
 #transcription-result {
@@ -120,20 +204,18 @@ $mmn-audio-file-input-n-result-gap: 50px;
     .text-box {
         border: 1px colors.$mmn-regular-lightgray-cl solid;
         border-radius: 5px;
-        min-height: 50px;
         max-height: 1000px;
         overflow-y: auto;
         padding: 10px;
-    }
 
-    .message {
-        display: none;
-        color: colors.$mmn-regular-red-cl;
-        margin: 5px 0;
-        font-size: 0.85rem;
+        .spinner {
+            height: 24px;
+            width: 24px;
+        }
 
-        &.active {
-            display: block;
+        &.loading {
+            display: flex;
+            justify-content: center;
         }
     }
 
@@ -148,6 +230,7 @@ $mmn-audio-file-input-n-result-gap: 50px;
             align-items: center;
             border-radius: 5px;
             padding: 3px 10px;
+            font-size: 0.9rem;
             background-color: colors.$mmn-regular-black-cl;
             color: colors.$mmn-regular-white-cl;
 

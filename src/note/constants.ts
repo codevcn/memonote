@@ -1,5 +1,3 @@
-import bytes from 'bytes'
-
 export enum ENoteLengths {
     MAX_LENGTH_NOTE_UNIQUE_NAME = 50,
     MIN_LENGTH_NOTE_UNIQUE_NAME = 1,
@@ -24,4 +22,9 @@ export enum ENoteEvents {
     NOTE_FORM_EDITED = 'note_form_edited',
     FETCH_NOTE_FORM = 'fetch_note_form',
     TRANSCRIBE_AUDIO = 'transcript_auido',
+    TRANSCRIBE_AUDIO_STATE = 'transcribe_audio_state',
+}
+
+export enum EEventEmitterEvents {
+    TRANSCRIBE_AUIDO_STATE = 'transcribe_audio_state',
 }

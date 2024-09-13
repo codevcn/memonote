@@ -40,8 +40,8 @@ $mmn-app-toaster-max-height: 150px;
     }
 }
 
-@mixin progress-bar-running-keyframes($type) {
-    @keyframes progress-bar-running-#{$type} {
+@mixin toaster-progress-bar-running-keyframes($type) {
+    @keyframes toaster-progress-bar-running-#{$type} {
         from {
             width: 100%;
         }
@@ -362,10 +362,10 @@ a {
             animation-timing-function: linear;
 
             &.running-a {
-                animation-name: progress-bar-running-a;
+                animation-name: toaster-progress-bar-running-a;
             }
             &.running-b {
-                animation-name: progress-bar-running-b;
+                animation-name: toaster-progress-bar-running-b;
             }
         }
     }
@@ -439,8 +439,8 @@ a {
 @include slide-app-toaster-keyframes('a');
 @include slide-app-toaster-keyframes('b');
 
-@include progress-bar-running-keyframes('a');
-@include progress-bar-running-keyframes('b');
+@include toaster-progress-bar-running-keyframes('a');
+@include toaster-progress-bar-running-keyframes('b');
 
 @include ring-notification-keyframes('a');
 @include ring-notification-keyframes('b');

@@ -7,6 +7,8 @@ import { NoteUniqueNameDTO } from '../note/DTOs.js'
 import { EAudioFields } from './constants.js'
 import { TranscribeAudioPayloadDTO } from './DTOs.js'
 import { IToolsAPIController } from './interfaces.js'
+import { BaseCustomException } from '../utils/exception/custom.exception.js'
+import { EAudioMessages } from './messages.js'
 
 @Controller(APIRoutes.tools)
 export class ToolsAPIController implements IToolsAPIController {
@@ -20,15 +22,18 @@ export class ToolsAPIController implements IToolsAPIController {
         ),
     )
     async transcribeAudio(
-        @UploadedFile() file: TTranscribeAudioFile,
         @Param() params: NoteUniqueNameDTO,
         @Body() payload: TranscribeAudioPayloadDTO,
+        @UploadedFile() file?: TTranscribeAudioFile,
     ) {
-        const { audioLang } = payload
+        if (!file) throw new BaseCustomException(EAudioMessages.EMPTY_FILE_INPUT)
+        await this.transribeAudioService.validateMulterStoredFile(file)
+        const { audioLang, clientSocketId } = payload
         const transcription = await this.transribeAudioService.transcribeAudioHandler(
             params.noteUniqueName,
             file,
             audioLang,
+            clientSocketId,
         )
         return { transcription }
     }

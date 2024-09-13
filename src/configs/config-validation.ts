@@ -1,26 +1,26 @@
-import {
-    BadRequestException,
-    ValidationError,
-    ValidationPipe,
-    ValidationPipeOptions,
-} from '@nestjs/common'
+import { BadRequestException, ValidationError, ValidationPipe } from '@nestjs/common'
 import { performAsync } from '../temp/helpers.js'
 
-const exceptionFactory = (errors: ValidationError[]) => {
-    performAsync(async () => {
-        console.error('>>> print errors DTO validation >>>', errors)
-    })
-    return new BadRequestException(
-        errors.map(({ constraints }) => constraints && constraints.matches),
-    )
+enum EValidationPipeMessages {
+    INVALID_INPUT = 'Invalid input',
 }
 
-const validatePipeOptions: ValidationPipeOptions = {
+export const apiValidationPipe = new ValidationPipe({
     transform: true,
-    exceptionFactory,
-    validateCustomDecorators: true,
-}
+    exceptionFactory: (errors: ValidationError[]) => {
+        performAsync(async () => {
+            console.error('>>> print errors DTO validation >>>', errors)
+        })
+        return new BadRequestException(EValidationPipeMessages.INVALID_INPUT)
+    },
+})
 
-export const apiValidationPipe = new ValidationPipe({ ...validatePipeOptions })
-
-export const wsValidationPipe = new ValidationPipe({ ...validatePipeOptions })
+export const wsValidationPipe = new ValidationPipe({
+    transform: true,
+    exceptionFactory: (errors: ValidationError[]) => {
+        performAsync(async () => {
+            console.error('>>> print errors DTO validation >>>', errors)
+        })
+        return new BadRequestException(EValidationPipeMessages.INVALID_INPUT)
+    },
+})

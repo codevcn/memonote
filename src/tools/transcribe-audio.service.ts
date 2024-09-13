@@ -3,8 +3,8 @@ import AppRoot from 'app-root-path'
 import path, { join } from 'path'
 import { createClient, DeepgramClient, SyncPrerecordedResponse } from '@deepgram/sdk'
 import { createReadStream, ReadStream } from 'fs'
-import { unlink } from 'fs/promises'
-import type { TTranscribeAudioFile } from './types.js'
+import { readFile, unlink } from 'fs/promises'
+import type { TTranscribeAudioFile, TTranscribeAudioState } from './types.js'
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EAudioMessages } from './messages.js'
 import { EAudioFiles, EAudioLangs, ETransribeFiles } from './constants.js'
@@ -14,6 +14,9 @@ import multer from 'multer'
 import { Request } from 'express'
 import { NoteUniqueNameDTO } from '../note/DTOs.js'
 import { validateJson } from '../utils/helpers.js'
+import { EventEmitter2 } from '@nestjs/event-emitter'
+import { EEventEmitterEvents } from '../note/constants.js'
+import { BaseCustomEmittedEvent } from '../utils/custom.events.js'
 
 @Injectable()
 export class TranscribeAudioService {
@@ -29,6 +32,8 @@ export class TranscribeAudioService {
     private readonly inTranscribing = new Set<string>()
     private readonly deepGramModelForTranscribe: string = 'nova-2'
 
+    constructor(private eventEmitter: EventEmitter2) {}
+
     static initTranscribeAudioSaver = (): MulterOptions => {
         return {
             storage: multer.diskStorage({
@@ -37,7 +42,7 @@ export class TranscribeAudioService {
                 },
                 filename: function (req, file, cb) {
                     const { noteUniqueName } = req.params
-                    cb(null, `${noteUniqueName}-${Date.now()}-${path.extname(file.originalname)}`)
+                    cb(null, `${noteUniqueName}-${Date.now()}${path.extname(file.originalname)}`)
                 },
             }),
             limits: {
@@ -46,13 +51,17 @@ export class TranscribeAudioService {
             },
             fileFilter: function (req: Request, file: any, cb) {
                 const { params } = req
-                validateJson(params, NoteUniqueNameDTO)
-                    .then(() => {
-                        cb(null, true)
-                    })
-                    .catch(() => {
-                        cb(new Error(EAudioMessages.UNABLE_HANDLED_FILE_INPUT), false)
-                    })
+                if (!file) {
+                    cb(new Error(EAudioMessages.EMPTY_FILE_INPUT), false)
+                } else {
+                    validateJson(params, NoteUniqueNameDTO)
+                        .then(() => {
+                            cb(null, true)
+                        })
+                        .catch(() => {
+                            cb(new Error(EAudioMessages.UNABLE_HANDLED_FILE_INPUT), false)
+                        })
+                }
             },
         }
     }
@@ -94,12 +103,20 @@ export class TranscribeAudioService {
         noteUniqueName: string,
         audioFile: TTranscribeAudioFile,
         audioLang: EAudioLangs,
+        clientSocketId: string,
     ): Promise<string | null> {
         await this.checkMultipleUploads(noteUniqueName)
 
         let transcription: string
         const readable = createReadStream(audioFile.path)
         try {
+            this.eventEmitter.emit(
+                EEventEmitterEvents.TRANSCRIBE_AUIDO_STATE,
+                new BaseCustomEmittedEvent<TTranscribeAudioState>({
+                    clientSocketId,
+                    state: 'transcribing',
+                }),
+            )
             const result = await this.transcribeAudio(readable, audioLang)
             transcription = this.getTranscriptionFromResult(result)
         } catch (error) {
@@ -132,5 +149,10 @@ export class TranscribeAudioService {
         if (!isValid) {
             throw new BaseCustomException(EAudioMessages.UNSUPPORTED_FILE_TYPE)
         }
+    }
+
+    async validateMulterStoredFile(file: TTranscribeAudioFile): Promise<void> {
+        const buffer = await readFile(file.path)
+        await TranscribeAudioService.isValidAudio(buffer)
     }
 }

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus } from '@nestjs/common'
 
 export class BaseCustomException extends HttpException {
-    type: string
+    type: string = 'unknown'
 
     constructor(
         message: string,

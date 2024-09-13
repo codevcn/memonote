@@ -30,7 +30,7 @@ import { NoteCredentialsDTO } from '../note/DTOs.js'
 export class ArticleGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
 {
-    private io: Server
+    private server: Server
 
     constructor(
         private authService: AuthService,
@@ -49,7 +49,7 @@ export class ArticleGateway
             socket.join(result.noteUniqueName)
             next()
         })
-        this.io = server
+        this.server = server
     }
 
     handleConnection(socket: Socket<IInitialSocketEventEmits>): void {

@@ -226,7 +226,7 @@ class NotificationsController {
         const notifsList = this.notifsList_all
         if (!notifsList) return
 
-        let apiResult: TGetNotifications | null = null
+        let apiResult: TGetNotificationsResAPI | null = null
         const htmlBefore = this.loadMoreBtn?.innerHTML || ''
         this.setLoadMoreBtn('innerHtml', Materials.createHTMLLoading('border'))
         try {
@@ -262,7 +262,7 @@ class NotificationsController {
         notifsList.innerHTML = Materials.createHTMLLoading('border')
 
         let apiSuccess: boolean = false
-        let apiResult: TGetNotifications | null = null
+        let apiResult: TGetNotificationsResAPI | null = null
         try {
             const { data } = await getNotificationsAPI()
             apiResult = data

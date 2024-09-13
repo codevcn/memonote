@@ -618,10 +618,10 @@ a {
     animation-timing-function: linear;
 }
 #app-toaster .progress-container .progress-bar.running-a {
-    animation-name: progress-bar-running-a;
+    animation-name: toaster-progress-bar-running-a;
 }
 #app-toaster .progress-container .progress-bar.running-b {
-    animation-name: progress-bar-running-b;
+    animation-name: toaster-progress-bar-running-b;
 }
 #app-toaster .icon-type i.success-icon {
     color: #13a765;
@@ -697,7 +697,7 @@ a {
         transform: translateX(calc(-100% - 20px - 5px));
     }
 }
-@keyframes progress-bar-running-a {
+@keyframes toaster-progress-bar-running-a {
     from {
         width: 100%;
     }
@@ -705,7 +705,7 @@ a {
         width: 0;
     }
 }
-@keyframes progress-bar-running-b {
+@keyframes toaster-progress-bar-running-b {
     from {
         width: 100%;
     }

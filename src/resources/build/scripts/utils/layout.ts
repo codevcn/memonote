@@ -57,43 +57,47 @@ class LayoutController {
         type: 'success' | 'error' | 'info',
         message: string,
         durationInMs: number = this.NOTIFICATION_TIMEOUT,
-    ): void {
-        if (this.toasterTimer) {
-            clearTimeout(this.toasterTimer)
-        }
+    ): Promise<void> {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (this.toasterTimer) {
+                    clearTimeout(this.toasterTimer)
+                }
 
-        const notification = document.getElementById('app-toaster') as HTMLElement
-        notification.querySelector('.text-content')!.textContent = message
-        notification.className = ''
+                const notification = document.getElementById('app-toaster') as HTMLElement
+                notification.querySelector('.text-content')!.textContent = message
+                notification.className = ''
 
-        const icon = notification.querySelector('.icon-type') as HTMLElement
-        if (type === 'success') {
-            notification.classList.add('success')
-            icon.innerHTML = '<i class="success-icon bi bi-check-circle-fill"></i>'
-        } else if (type === 'error') {
-            notification.classList.add('error')
-            icon.innerHTML = '<i class="error-icon bi bi-x-circle-fill"></i>'
-        } else {
-            icon.innerHTML = '<i class="info-icon bi bi-question-circle-fill"></i>'
-        }
+                const icon = notification.querySelector('.icon-type') as HTMLElement
+                if (type === 'success') {
+                    notification.classList.add('success')
+                    icon.innerHTML = '<i class="success-icon bi bi-check-circle-fill"></i>'
+                } else if (type === 'error') {
+                    notification.classList.add('error')
+                    icon.innerHTML = '<i class="error-icon bi bi-x-circle-fill"></i>'
+                } else {
+                    icon.innerHTML = '<i class="info-icon bi bi-question-circle-fill"></i>'
+                }
 
-        const progressBar = notification.querySelector('.progress-bar') as HTMLElement
-        progressBar.classList.remove('running-a', 'running-b')
-        progressBar.style.animationDuration = `${durationInMs / 1000}s`
-        notification.style.animationDuration = `${durationInMs / 1000}.4s`
-        if (this.toasterAnimationFlag) {
-            notification.classList.add('show-a')
-            progressBar.classList.add('running-a')
-            this.toasterAnimationFlag = false
-        } else {
-            notification.classList.add('show-b')
-            progressBar.classList.add('running-b')
-            this.toasterAnimationFlag = true
-        }
+                const progressBar = notification.querySelector('.progress-bar') as HTMLElement
+                progressBar.classList.remove('running-a', 'running-b')
+                progressBar.style.animationDuration = `${durationInMs / 1000}s`
+                notification.style.animationDuration = `${durationInMs / 1000}.4s`
+                if (this.toasterAnimationFlag) {
+                    notification.classList.add('show-a')
+                    progressBar.classList.add('running-a')
+                    this.toasterAnimationFlag = false
+                } else {
+                    notification.classList.add('show-b')
+                    progressBar.classList.add('running-b')
+                    this.toasterAnimationFlag = true
+                }
 
-        this.toasterTimer = setTimeout(() => {
-            progressBar.classList.remove('running-a', 'running-b')
-        }, durationInMs)
+                this.toasterTimer = setTimeout(() => {
+                    progressBar.classList.remove('running-a', 'running-b')
+                }, durationInMs)
+            }, 0)
+        })
     }
 
     static closeAppToaster(target: HTMLElement): void {

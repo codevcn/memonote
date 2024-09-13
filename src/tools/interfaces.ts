@@ -4,8 +4,8 @@ import type { TTranscribeAudioFile, TTranscribeAudioRes } from './types.js'
 
 export interface IToolsAPIController {
     transcribeAudio(
-        file: TTranscribeAudioFile,
         params: NoteUniqueNameDTO,
         payload: TranscribeAudioPayloadDTO,
+        file?: TTranscribeAudioFile,
     ): Promise<TTranscribeAudioRes>
 }

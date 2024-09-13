@@ -27,5 +27,6 @@ export type TNotifTranslation = {
 }
 
 export type TNotifWithTrans = Notification & {
+    noteUniqueName: string
     translation: TNotifTranslation
 }

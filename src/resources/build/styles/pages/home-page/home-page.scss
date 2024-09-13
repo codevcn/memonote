@@ -73,18 +73,6 @@ $mmn-color-of-app-progress-bar: #0064d5;
         height: $mmn-height-of-app-progress-bar;
         background-color: $mmn-color-of-app-progress-bar;
         border-radius: 30px;
-
-        @keyframes app-progress-animation {
-            0% {
-                transform: translateX(-100%);
-            }
-            50% {
-                transform: translateX(-20%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
-        }
     }
 }
 
@@ -150,5 +138,17 @@ $mmn-color-of-app-progress-bar: #0064d5;
                 font-size: 1.8rem;
             }
         }
+    }
+}
+
+@keyframes app-progress-animation {
+    0% {
+        transform: translateX(-100%);
+    }
+    50% {
+        transform: translateX(-20%);
+    }
+    100% {
+        transform: translateX(100%);
     }
 }

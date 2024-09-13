@@ -1,9 +1,8 @@
 import { NOTE_PASSWORD_REGEX, NOTE_UNIQUE_NAME_REGEX } from '../note/regex.js'
 import { EValidationMessages } from '../utils/validation/messages.js'
-import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, IsNumber, Matches } from 'class-validator'
+import { IsBoolean, IsEnum, IsMongoId, IsNotEmpty, Matches } from 'class-validator'
 import { EEditors } from './constants.js'
 import { IsOptional, IsString, MaxLength } from 'class-validator'
-import type { TNoteForm } from './types.js'
 import { ENoteLengths } from './constants.js'
 
 export class NoteCredentialsDTO {
@@ -43,7 +42,7 @@ export class SwitchEditorPayloadDTO {
     editor: EEditors
 }
 
-export class BroadcastNoteTypingDTO implements TNoteForm {
+export class BroadcastNoteTypingDTO {
     @IsString()
     @MaxLength(ENoteLengths.MAX_LENGTH_NOTE_CONTENT, {
         message: EValidationMessages.MAX_LENGTH_INVALID,

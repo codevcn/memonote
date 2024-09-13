@@ -6,22 +6,39 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <section class="transcribe-audio-container">
-                    <form id="transcribe-audio-form">
+                <div id="transcribe-audio-message">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>tau la jdjj</span>
+                </div>
+
+                <section id="transcribe-audio-container">
+                    <form id="transcribe-audio-form" action="#"
+                        onsubmit="TranscriptAudioController.transcriptAudioHandler(event)">
                         <div class="header">
                             <h2>Audio / Video File</h2>
                         </div>
+
                         <div class="upload-box">
-                            <div class="upload">
-                                <p>Drag & Drop</p>
-                                <span class="supported">MP3, WAV</span>
+                            <div class="upload-file">
+                                <div class="upload">
+                                    <p>Drag & Drop</p>
+                                    <span class="supported">MP3, WAV</span>
+                                </div>
+                                <p class="OR">— OR —</p>
+                                <label class="browse-btn" for="audio-file-input">BROWSE FILES</label>
+                                <input type="file" id="audio-file-input" name="audio-file" hidden accept=".mp3, .wav" />
                             </div>
-                            <p class="OR">— OR —</p>
-                            <label class="browse-btn" for="audio-file-input">BROWSE FILES</label>
-                            <input type="file" id="audio-file-input" name="audio-file"
-                                onchange="TranscriptAudioController.transcriptAudioHandler()" hidden
-                                accept=".mp3, .wav" />
+                            <div class="picked-audio-file active">
+                                <div class="filename">
+                                    snap-2131313131.mp3
+                                </div>
+                                <button class="change-file">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    <span>Change file</span>
+                                </button>
+                            </div>
                         </div>
+
                         <div class="language-select-container">
                             <label for="audio-language-select">Audio Language</label>
                             <select id="audio-language-select" name="audio-language">
@@ -30,12 +47,16 @@
                                 <option value="en-us" selected>English (US)</option>
                             </select>
                         </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span>Transcribe</span>
+                        </button>
                     </form>
+
                     <section id="transcription-result">
-                        <div class="text-box">
+                        <div class="text-box" contenteditable>
                             Your transcription would be here...
                         </div>
-                        <div class="message">Your audio is wrong!!!</div>
                         <div class="actions">
                             <button class="action write">
                                 <i class="bi bi-pencil-square"></i>

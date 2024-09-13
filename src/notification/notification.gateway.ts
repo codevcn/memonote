@@ -9,14 +9,14 @@ import {
 import { Server, Socket } from 'socket.io'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces.js'
 import { AuthService } from '../auth/auth.service.js'
-import { BaseCustomEvent } from '../note/events.js'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EEventEmitterEvents, ENotificationEvents } from './constants.js'
 import type { TAuthSocketConnection } from '../auth/types.js'
-import type { TNotificationDocument } from './notification.model.js'
 import { WsExceptionsFilter } from '../utils/exception/gateway.filter.js'
 import { initGatewayMetadata } from '../configs/config-gateways.js'
 import { wsValidationPipe } from '../configs/config-validation.js'
+import { BaseCustomEmittedEvent } from '../utils/custom.events.js'
+import { TNotifWithTrans } from './types.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTIFICATION }))
 @UsePipes(wsValidationPipe)
@@ -24,7 +24,7 @@ import { wsValidationPipe } from '../configs/config-validation.js'
 export class NotificationGateway
     implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit<Server>, IMessageSubcribers
 {
-    private io: Server
+    private server: Server
 
     constructor(private authService: AuthService) {}
 
@@ -39,7 +39,7 @@ export class NotificationGateway
             socket.join(result.noteUniqueName)
             next()
         })
-        this.io = server
+        this.server = server
     }
 
     handleConnection(socket: Socket<IInitialSocketEventEmits>): void {
@@ -51,8 +51,8 @@ export class NotificationGateway
     handleDisconnect(socket: Socket<IInitialSocketEventEmits>): void {}
 
     @OnEvent(EEventEmitterEvents.TRIGGER_NOTIFY)
-    notify(event: BaseCustomEvent<TNotificationDocument>) {
-        const { payload, noteUniqueName } = event
-        this.io.to(noteUniqueName).emit(ENotificationEvents.NOTIFY, payload)
+    notify(event: BaseCustomEmittedEvent<TNotifWithTrans>) {
+        const { noteUniqueName, translation } = event.payload
+        this.server.to(noteUniqueName).emit(ENotificationEvents.NOTIFY, { translation })
     }
 }

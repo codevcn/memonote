@@ -5,18 +5,10 @@ import { JWTService } from '../auth/jwt.service.js'
 import { AuthService } from '../auth/auth.service.js'
 import { NoteGateway } from './note.gateway.js'
 import { NotificationService } from '../notification/notification.service.js'
-import { TranscribeAudioService } from '../tools/transcribe-audio.service.js'
 
 @Module({
     controllers: [NoteAPIController],
-    providers: [
-        NoteService,
-        JWTService,
-        AuthService,
-        NoteGateway,
-        NotificationService,
-        TranscribeAudioService,
-    ],
+    providers: [NoteService, JWTService, AuthService, NoteGateway, NotificationService],
     exports: [NoteService],
 })
 export class NoteModule {}
