@@ -1,4 +1,4 @@
-<div class="modal" id="transcript-audio-modal" tabindex="-2">
+<div class="modal" id="image-recognition-modal" tabindex="-2">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -6,42 +6,46 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="transcribe-audio-message">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span>tau la jdjj</span>
+                <div id="image-recognition-message">
+                    <i class="bi bi-check-circle-fill icon-success"></i>
+                    <i class="bi bi-exclamation-triangle-fill icon-error"></i>
+                    <span class="message"></span>
                 </div>
 
-                <section id="transcribe-audio-container">
-                    <form id="transcribe-audio-form" action="#"
-                        onsubmit="TranscriptAudioController.transcriptAudioHandler(event)">
+                <section id="image-recognition-container">
+                    <form id="image-recognition-form" action="#"
+                        onsubmit="ImageRecognitionController.transcriptAudioHandler(event)">
                         <div class="header">
                             <h2>Audio / Video File</h2>
                         </div>
 
                         <div class="upload-box">
-                            <div class="upload-file">
+                            <div class="upload-file active">
                                 <div class="upload">
                                     <p>Drag & Drop</p>
                                     <span class="supported">MP3, WAV</span>
                                 </div>
                                 <p class="OR">— OR —</p>
-                                <label class="browse-btn" for="audio-file-input">BROWSE FILES</label>
-                                <input type="file" id="audio-file-input" name="audio-file" hidden accept=".mp3, .wav" />
+                                <label class="browse-btn" for="image-file-input">
+                                    <i class="bi bi-folder-plus"></i>
+                                    <span>BROWSE FILES</span>
+                                </label>
+                                <input type="file" id="image-file-input" name="image-file" hidden
+                                    accept=".bmp, .jpg, .png, .pbm, .webp"
+                                    onchange="ImageRecognitionController.pickFile(this)" />
                             </div>
-                            <div class="picked-audio-file active">
-                                <div class="filename">
-                                    snap-2131313131.mp3
-                                </div>
-                                <button class="change-file">
+                            <div class="picked-image-file">
+                                <div class="filename"></div>
+                                <label class="change-file" for="image-file-input">
                                     <i class="bi bi-arrow-repeat"></i>
                                     <span>Change file</span>
-                                </button>
+                                </label>
                             </div>
                         </div>
 
                         <div class="language-select-container">
-                            <label for="audio-language-select">Audio Language</label>
-                            <select id="audio-language-select" name="audio-language">
+                            <label for="image-language-select">Audio Language</label>
+                            <select id="image-language-select" name="image-language">
                                 <option value="vi">Vietnamese</option>
                                 <option value="en" selected>English</option>
                                 <option value="en-us" selected>English (US)</option>
@@ -49,6 +53,7 @@
                         </div>
 
                         <button type="submit" class="submit-btn">
+                            <i class="bi bi-cloud-upload"></i>
                             <span>Transcribe</span>
                         </button>
                     </form>
@@ -58,11 +63,13 @@
                             Your transcription would be here...
                         </div>
                         <div class="actions">
-                            <button class="action write">
+                            <button class="action write"
+                                onclick="ImageRecognitionController.handleTranscriptionActions('write')">
                                 <i class="bi bi-pencil-square"></i>
                                 <span>Write to note</span>
                             </button>
-                            <button class="action copy">
+                            <button class="action copy"
+                                onclick="ImageRecognitionController.handleTranscriptionActions('copy')">
                                 <i class="bi bi-clipboard-check-fill"></i>
                                 <span>Copy</span>
                             </button>

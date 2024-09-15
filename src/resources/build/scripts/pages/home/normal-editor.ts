@@ -25,6 +25,7 @@ class NormalEditorSocket {
         this.listenConnected()
         this.listenConnectionError()
         this.listenNoteFormEdited()
+        this.listenTranscribeAudioState()
     }
 
     private async listenConnected(): Promise<void> {
@@ -49,11 +50,11 @@ class NormalEditorSocket {
         })
     }
 
-    async listenNoteFormEdited(): Promise<void> {
+    private async listenNoteFormEdited(): Promise<void> {
         this.socket.on(ENoteEvents.NOTE_FORM_EDITED, (data: TNoteForm) => {
             const realtimeMode = LocalStorageController.getRealtimeMode()
             if (realtimeMode && realtimeMode === 'sync') {
-                setForNoteFormEdited(data)
+                setContentNoteFormEdited(data)
             } else {
                 const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
                 if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
@@ -63,11 +64,11 @@ class NormalEditorSocket {
         })
     }
 
-    async listenTranscribeAudioState(): Promise<void> {
+    private async listenTranscribeAudioState(): Promise<void> {
         this.socket.on(ENoteEvents.TRANSCRIBE_AUDIO_STATE, (data: TTranscribeAudioData) => {
             const { state } = data
             if (state === 'transcribing') {
-                TranscriptAudioController.setTranscribeLoading(true)
+                TranscribeAudioController.setTranscribeLoading(true)
             }
         })
     }
@@ -135,7 +136,7 @@ class NormalEditorController {
         notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
         let noteFormItem: HTMLElement
         const { title, author, content } = noteForm
-        const noteFormEle = homePage_pageMain.querySelector('.note-form') as HTMLElement
+        const noteFormEle = homePage_pageMain.querySelector('#note-form') as HTMLElement
         if (title || title === '') {
             noteFormItem = noteFormEle.querySelector('.note-title') as HTMLElement
             noteFormItem.classList.remove(...baseClasses)
@@ -158,6 +159,7 @@ class NormalEditorController {
             }
         }
     }
+
     static async fetchNoteContent(): Promise<void> {
         normalEditorSocket.emitWithTimeout<{}>(
             ENoteEvents.FETCH_NOTE_FORM,
@@ -169,7 +171,7 @@ class NormalEditorController {
                     content: 'true',
                 })
                 if (res.success) {
-                    setForNoteFormEdited(res.data)
+                    setContentNoteFormEdited(res.data)
                 }
             },
             EBroadcastTimeouts.EDIT_NOTE_TIMEOUT,

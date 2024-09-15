@@ -1,0 +1,88 @@
+<div class="modal" id="transcribe-audio-modal" tabindex="-2">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title fs-5">Transcribe Audio</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="transcribe-audio-message">
+                    <i class="bi bi-check-circle-fill icon-success"></i>
+                    <i class="bi bi-exclamation-triangle-fill icon-error"></i>
+                    <span class="message"></span>
+                </div>
+
+                <section id="transcribe-audio-container">
+                    <form id="transcribe-audio-form" action="#"
+                        onsubmit="TranscribeAudioController.transcriptAudioHandler(event)">
+                        <div class="header">
+                            <h2>Audio / Video Files</h2>
+                        </div>
+
+                        <div class="upload-box">
+                            <div class="upload-file active">
+                                <div class="upload">
+                                    <p>Drag & Drop</p>
+                                    <span class="supported">MP3, WAV</span>
+                                </div>
+                                <p class="OR">— OR —</p>
+                                <label class="browse-btn" for="audio-files-input">
+                                    <i class="bi bi-folder-plus"></i>
+                                    <span>BROWSE FILES</span>
+                                </label>
+                                <input type="file" id="audio-files-input" name="audio-files" hidden accept=".mp3, .wav"
+                                    multiple onchange="TranscribeAudioController.pickFiles(this)" />
+                            </div>
+                            <div class="picked-audio-files">
+                                <div class="files-list"></div>
+                                <label class="change-files" for="audio-files-input">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    <span>Change files</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="language-select-container">
+                            <label for="audio-language-select">Audios Language</label>
+                            <select id="audio-language-select" name="audio-language">
+                                <option value="vi">Vietnamese</option>
+                                <option value="en" selected>English</option>
+                                <option value="en-us" selected>English (US)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="bi bi-cloud-upload"></i>
+                            <span>Transcribe</span>
+                        </button>
+                    </form>
+
+                    <section id="transcription-result">
+                        <select class="transcribed-files" onchange="TranscribeAudioController.switchTranscriptions()">
+                        </select>
+                        <div class="text-box" contenteditable>
+                            Your transcription would be here...
+                        </div>
+                        <div class="actions">
+                            <button class="action write"
+                                onclick="TranscribeAudioController.handleTranscriptionActions('write')">
+                                <i class="bi bi-pencil-square"></i>
+                                <span>Write to note</span>
+                            </button>
+                            <button class="action copy"
+                                onclick="TranscribeAudioController.handleTranscriptionActions('copy')">
+                                <i class="bi bi-clipboard-check-fill"></i>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                    </section>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-close-btn" data-bs-dismiss="modal">
+                    <%= t('home-page.settings.Close',i18nLang) %>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

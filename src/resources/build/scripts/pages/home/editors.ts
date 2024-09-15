@@ -2,7 +2,7 @@ class EditorsController {
     private static switchedToRichEditor: boolean = false
 
     private static readonly noteEditorBoard = homePage_pageMain.querySelector(
-        '.note-form .note-editor-board',
+        '#note-form .note-editor-board',
     ) as HTMLElement
 
     static setProgressOnSwitching(loading: boolean): void {

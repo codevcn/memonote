@@ -143,3 +143,9 @@ function convertToBytes(input) {
 const generateUploadId = () => {
     return crypto.randomUUID()
 }
+const copyToClipboard = (value) => {
+    navigator.clipboard.writeText(value)
+}
+const getFromClipboard = async () => {
+    return await navigator.clipboard.readText()
+}

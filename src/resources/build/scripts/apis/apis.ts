@@ -1,7 +1,7 @@
-const ServerAPIURL: string = '/v1/api'
+const serverAPIBaseURL: string = '/v1/api'
 
 const axiosClient = axios.create({
-    baseURL: ServerAPIURL,
+    baseURL: serverAPIBaseURL,
 })
 
 // note
@@ -37,7 +37,39 @@ const fetchArticleAPI = (): Promise<TAxiosHTTPRes<Blob>> =>
     axiosClient.get(`/article/fetch-article/${pageData.noteId}`, { responseType: 'blob' })
 
 // tools
-const transcribeAudioAPI = (
+const transcribeAudiosAPI = (
     formDataWithFile: FormData,
-): Promise<TAxiosHTTPRes<TTranscribeAudioResAPI>> =>
-    axiosClient.post('/tools/transcribe-audio/' + getNoteUniqueNameFromURL(), formDataWithFile)
+    callback: (transcription: TTranscribeAudiosResAPI) => void,
+): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open(
+            'POST',
+            serverAPIBaseURL + '/tools/transcribe-audio/' + getNoteUniqueNameFromURL(),
+            true,
+        )
+
+        let receivedLength: number = 0
+        xhr.onprogress = function () {
+            const response = xhr.responseText
+            const transcriptionChunk = response.substring(receivedLength)
+            receivedLength = response.length
+            const transcription = JSON.parse(transcriptionChunk) as TTranscribeAudiosResAPI
+            callback(transcription)
+        }
+
+        xhr.onloadend = function () {
+            resolve()
+        }
+
+        xhr.onerror = function (error) {
+            reject(error)
+        }
+
+        xhr.ontimeout = function (e) {
+            reject(new BaseCustomError('Request timeout!'))
+        }
+
+        xhr.send(formDataWithFile)
+    })
+}

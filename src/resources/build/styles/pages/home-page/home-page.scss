@@ -6,7 +6,8 @@
 // import scss files
 @use './notes.scss';
 @use './settings.scss';
-@use './tools.scss';
+@use './transcribe-audio.scss';
+@use './image-regconition.scss';
 
 $mmn-page-padding-bottom: 200px;
 $mmn-height-of-app-progress-bar: 5px;

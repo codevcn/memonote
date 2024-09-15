@@ -61,7 +61,7 @@ class EditorsController {
     }
 }
 EditorsController.switchedToRichEditor = false
-EditorsController.noteEditorBoard = homePage_pageMain.querySelector('.note-form .note-editor-board')
+EditorsController.noteEditorBoard = homePage_pageMain.querySelector('#note-form .note-editor-board')
 const initEditors = () => {
     const { editor } = pageData
     if (editor) {

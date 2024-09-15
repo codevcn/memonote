@@ -8,7 +8,7 @@
         </div>
     </section>
 
-    <section class="note-form">
+    <section id="note-form">
         <div class="note-form-item note-title">
             <input type="text" value="<%= note.title || '' %>"
                 placeholder="<%= t('home-page.noteForm.Title_placeholder',i18nLang) %>..."
@@ -70,19 +70,19 @@
                 </div>
             </section>
             <!-- <div class="useful-note-actions">
-                    <button class="action" onclick="performUsefulActions(this,'clipboardPaste')">
+                    <button class="action" onclick="performUsefulActions('clipboardPaste')">
                         <i class="bi bi-clipboard"></i>
                         <span>Clipboard Paste</span>
                     </button>
-                    <button class="action" onclick="performUsefulActions(this,'copyAllNoteContent')">
+                    <button class="action" onclick="performUsefulActions('copyAllNoteContent')">
                         <i class="bi bi-c-circle"></i>
                         <span>Copy All</span>
                     </button>
-                    <button class="action" onclick="performUsefulActions(this,'undoNoteContent')">
+                    <button class="action" onclick="performUsefulActions('undoNoteContent')">
                         <i class="bi bi-arrow-counterclockwise"></i>
                         <span>Undo</span>
                     </button>
-                    <button class="action" onclick="performUsefulActions(this,'clearNoteContent')">
+                    <button class="action" onclick="performUsefulActions('clearNoteContent')">
                         <i class="bi bi-x-lg"></i>
                         <span>Clear</span>
                     </button>
@@ -132,4 +132,5 @@
     </div>
 </div>
 
-<%- include('./transcript-audio-modal') %>
+<%- include('./transcribe-audio-modal') %>
+<%- include('./image-recognition-modal') %>

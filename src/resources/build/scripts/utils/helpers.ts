@@ -187,3 +187,11 @@ function convertToBytes(input: string): number {
 const generateUploadId = (): string => {
     return crypto.randomUUID()
 }
+
+const copyToClipboard = (value: string): void => {
+    navigator.clipboard.writeText(value)
+}
+
+const getFromClipboard = async (): Promise<string> => {
+    return await navigator.clipboard.readText()
+}

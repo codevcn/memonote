@@ -1,14 +1,15 @@
-import { Body, Controller, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common'
 import { APIRoutes } from '../utils/routes.js'
 import { TranscribeAudioService } from './transcribe-audio.service.js'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { FilesInterceptor } from '@nestjs/platform-express'
 import { TTranscribeAudioFile } from './types.js'
 import { NoteUniqueNameDTO } from '../note/DTOs.js'
-import { EAudioFields } from './constants.js'
+import { EAudioFields, EAudioFiles } from './constants.js'
 import { TranscribeAudioPayloadDTO } from './DTOs.js'
 import { IToolsAPIController } from './interfaces.js'
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EAudioMessages } from './messages.js'
+import { Response } from 'express'
 
 @Controller(APIRoutes.tools)
 export class ToolsAPIController implements IToolsAPIController {
@@ -16,25 +17,39 @@ export class ToolsAPIController implements IToolsAPIController {
 
     @Post('transcribe-audio/:noteUniqueName')
     @UseInterceptors(
-        FileInterceptor(
+        FilesInterceptor(
             EAudioFields.TRANSCRIBE_AUDIO,
+            EAudioFiles.MAX_FILES_COUNT,
             TranscribeAudioService.initTranscribeAudioSaver(),
         ),
     )
     async transcribeAudio(
         @Param() params: NoteUniqueNameDTO,
         @Body() payload: TranscribeAudioPayloadDTO,
-        @UploadedFile() file?: TTranscribeAudioFile,
+        @Res() res: Response,
+        @UploadedFiles() files?: Array<TTranscribeAudioFile>,
     ) {
-        if (!file) throw new BaseCustomException(EAudioMessages.EMPTY_FILE_INPUT)
-        await this.transribeAudioService.validateMulterStoredFile(file)
+        const { noteUniqueName } = params
         const { audioLang, clientSocketId } = payload
-        const transcription = await this.transribeAudioService.transcribeAudioHandler(
-            params.noteUniqueName,
-            file,
-            audioLang,
-            clientSocketId,
-        )
-        return { transcription }
+        res.setHeader('Content-Type', 'application/json')
+        try {
+            if (files && files.length > 0) {
+                await this.transribeAudioService.validateMulterStoredFiles(files)
+                await this.transribeAudioService.transcribeAudiosHandler(
+                    noteUniqueName,
+                    files,
+                    audioLang,
+                    clientSocketId,
+                    res,
+                )
+            } else {
+                throw new BaseCustomException(EAudioMessages.EMPTY_FILE_INPUT)
+            }
+        } catch (error) {
+            throw error
+        } finally {
+            await this.transribeAudioService.cleanUpWhenTranscribeDone(noteUniqueName)
+        }
+        res.end()
     }
 }

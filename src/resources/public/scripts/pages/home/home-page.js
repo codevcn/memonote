@@ -10,7 +10,6 @@ const removePasswordForm = document.getElementById('settings-form-remove-passwor
 const noteQuickLook = homePage_pageMain.querySelector('.note-quick-look .quick-look-items')
 const scrollToTopBtn = document.querySelector('#bubble-btns .scroll-to-top-btn')
 const scrollToBottomBtn = document.querySelector('#bubble-btns .scroll-to-bottom-btn')
-const noteContentHistory = { history: [''], index: 0 }
 const SCROLL_TO_TOP_THRESHOLD = 100
 const SCROLL_TO_BOTTOM_THRESHOLD = 100
 const NOTE_BROADCAST_DELAY = 1000
@@ -19,24 +18,6 @@ const validateNoteContent = (noteContent) => {
         return false
     }
     return true
-}
-const setNoteContentHistory = (noteContent) => {
-    if (!validateNoteContent(noteContent)) return
-    let currentHistoryIndex = noteContentHistory.index
-    let currentNoteContentHistory = noteContentHistory.history
-    if (currentNoteContentHistory[currentHistoryIndex] !== noteContent) {
-        if (currentHistoryIndex < currentNoteContentHistory.length - 1) {
-            currentNoteContentHistory = currentNoteContentHistory.slice(0, currentHistoryIndex + 1)
-        }
-        noteContentHistory.history.push(noteContent)
-        if (currentNoteContentHistory.length > ENoteLengths.MAX_LENGTH_NOTE_HISTORY) {
-            currentNoteContentHistory.shift()
-        } else {
-            currentHistoryIndex++
-        }
-    }
-    noteContentHistory.history = currentNoteContentHistory
-    noteContentHistory.index = currentHistoryIndex
 }
 const countNoteLetters = (noteEditorTarget, noteContent) => {
     if (!validateNoteContent(noteContent)) return
@@ -55,8 +36,6 @@ const setBoardUIOfNoteEditor = (noteEditorTarget, noteContent) => {
     if (validateNoteContent(noteContent)) {
         // set height of editor
         noteEditorTarget.parentElement.setAttribute('data-replicated-value', noteContent)
-    } else {
-        noteEditorTarget.value = noteContentHistory.history[noteContentHistory.history.length - 1]
     }
 }
 const broadcastNoteContentTypingHanlder = debounce((noteContent) => {
@@ -75,72 +54,33 @@ const noteTyping = async (noteEditorTarget) => {
     const noteContent = noteEditorTarget.value
     broadcastNoteContentTypingHanlder(noteContent)
     countNoteLetters(noteEditorTarget, noteContent)
-    setNoteContentHistory(noteContent)
     setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
 }
-const setForNoteFormEdited = (noteForm) => {
+const setContentNoteFormEdited = (noteForm) => {
     const { author, content, title } = noteForm
-    const noteEditor = document.getElementById('note-editor')
-    const noteFormEle = noteEditor.closest('.note-form')
+    const noteFormEle = document.getElementById('note-form')
     if (title || title === '') {
         noteFormEle.querySelector('.note-title input').value = title
     }
     if (author || author === '') {
         noteFormEle.querySelector('.note-author input').value = author
     }
+    const noteEditor = document.getElementById('note-form')
     if (content || content === '') {
-        setNoteEditor(noteEditor, content)
+        setNoteEditorContent(content)
         setBoardUIOfNoteEditor(noteEditor, content)
     }
     countNoteLetters(noteEditor, content || '')
 }
-const setNoteEditor = (noteEditorTarget, noteContent) => {
-    noteEditorTarget.value = noteContent
+const setNoteEditorContent = (noteContent) => {
+    document.getElementById('note-editor').value = noteContent
 }
-const clearNoteContent = (noteEditorTarget) => {
-    setNoteEditor(noteEditorTarget, '')
-    countNoteLetters(noteEditorTarget, '')
-    setBoardUIOfNoteEditor(noteEditorTarget, '')
-}
-const copyAllNoteContent = (noteEditorTarget) => {
-    navigator.clipboard.writeText(noteEditorTarget.value)
-}
-const pasteFromClipboard = async (noteEditorTarget) => {
-    const text = await navigator.clipboard.readText()
-    if (!validateNoteContent(text)) return
-    noteEditorTarget.value = text
-}
-const undoNoteContent = (noteEditorTarget) => {
-    let historyIndex = noteContentHistory.index
-    if (historyIndex > 0) {
-        historyIndex--
-        noteEditorTarget.value = noteContentHistory.history[historyIndex]
-    }
-    noteContentHistory.index = historyIndex
-}
-const performUsefulActions = async (target, type) => {
-    const noteEditor = target
-        .closest('.note-form')
-        .querySelector('.note-editor-board .note-editor-section .note-editor')
-    switch (type) {
-        case 'clipboardPaste':
-            await pasteFromClipboard(noteEditor)
-            break
-        case 'copyAllNoteContent':
-            copyAllNoteContent(noteEditor)
-            return
-        case 'clearNoteContent':
-            clearNoteContent(noteEditor)
-            break
-        case 'undoNoteContent':
-            undoNoteContent(noteEditor)
-            setBoardUIOfNoteEditor(noteEditor, noteEditor.value)
-            return
-    }
-    const updatedNoteEditorValue = noteEditor.value
-    setNoteContentHistory(updatedNoteEditorValue)
-    setBoardUIOfNoteEditor(noteEditor, updatedNoteEditorValue)
-    countNoteLetters(noteEditor, updatedNoteEditorValue)
+const addNewContentToNoteEditor = (newContent) => {
+    const noteEditor = document.getElementById('note-editor')
+    noteEditor.value += newContent
+    const noteContent = noteEditor.value
+    setBoardUIOfNoteEditor(noteEditor, noteContent)
+    broadcastNoteContentTypingHanlder(noteContent)
 }
 const hideShowPassword_homePage = (target, isShown) => {
     const inputWrapper = target.closest('.input-wrapper')

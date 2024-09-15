@@ -16,6 +16,7 @@ class NormalEditorSocket {
         this.listenConnected()
         this.listenConnectionError()
         this.listenNoteFormEdited()
+        this.listenTranscribeAudioState()
     }
     async listenConnected() {
         this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) => {
@@ -41,7 +42,7 @@ class NormalEditorSocket {
         this.socket.on(ENoteEvents.NOTE_FORM_EDITED, (data) => {
             const realtimeMode = LocalStorageController.getRealtimeMode()
             if (realtimeMode && realtimeMode === 'sync') {
-                setForNoteFormEdited(data)
+                setContentNoteFormEdited(data)
             } else {
                 const notifyNoteEditedMode = LocalStorageController.getNotifyNoteEditedMode()
                 if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
@@ -54,7 +55,7 @@ class NormalEditorSocket {
         this.socket.on(ENoteEvents.TRANSCRIBE_AUDIO_STATE, (data) => {
             const { state } = data
             if (state === 'transcribing') {
-                TranscriptAudioController.setTranscribeLoading(true)
+                TranscribeAudioController.setTranscribeLoading(true)
             }
         })
     }
@@ -109,7 +110,7 @@ class NormalEditorController {
         notifyNoteEditedClass.push(LocalStorageController.getEditedNotifyStyle() || 'blink')
         let noteFormItem
         const { title, author, content } = noteForm
-        const noteFormEle = homePage_pageMain.querySelector('.note-form')
+        const noteFormEle = homePage_pageMain.querySelector('#note-form')
         if (title || title === '') {
             noteFormItem = noteFormEle.querySelector('.note-title')
             noteFormItem.classList.remove(...baseClasses)
@@ -143,7 +144,7 @@ class NormalEditorController {
                     content: 'true',
                 })
                 if (res.success) {
-                    setForNoteFormEdited(res.data)
+                    setContentNoteFormEdited(res.data)
                 }
             },
             EBroadcastTimeouts.EDIT_NOTE_TIMEOUT,

@@ -1,7 +1,7 @@
 import bytes from 'bytes'
 
 export enum EArticleChunk {
-    SIZE_PER_CHUNK = bytes('3MB'),
+    SIZE_PER_CHUNK = bytes('5MB'),
 }
 
 export enum EArticleEvents {

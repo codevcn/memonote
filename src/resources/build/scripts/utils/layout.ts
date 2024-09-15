@@ -146,4 +146,16 @@ class LayoutController {
             }
         }
     }
+
+    static transitionBackwards(
+        target: HTMLElement,
+        newContent: string,
+        delay: number = 1500,
+    ): void {
+        const oldContent = target.innerHTML
+        target.innerHTML = newContent
+        setTimeout(() => {
+            target.innerHTML = oldContent
+        }, delay)
+    }
 }

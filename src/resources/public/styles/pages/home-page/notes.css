@@ -119,16 +119,28 @@ bold - bold
 #page-main .note-quick-look .quick-look-items .quick-look-item.password-set i {
     color: #fff;
 }
-#page-main .note-form {
+@media only screen and (max-width: 700px) {
+    #page-main .note-quick-look {
+        padding: 0 15px;
+    }
+    #page-main #note-form {
+        padding: 0 5px;
+    }
+    #page-main #note-form .note-form-item {
+        font-size: 0.9rem;
+    }
+}
+
+#note-form {
     padding: 0 100px;
     margin-top: 15px;
 }
-#page-main .note-form .note-form-item {
+#note-form .note-form-item {
     font-size: 1rem;
     position: relative;
 }
-#page-main .note-form .note-form-item::before,
-#page-main .note-form .note-form-item::after {
+#note-form .note-form-item::before,
+#note-form .note-form-item::after {
     content: '';
     display: block;
     height: 0;
@@ -136,32 +148,32 @@ bold - bold
     position: absolute;
     z-index: 2;
 }
-#page-main .note-form .note-form-item::before {
+#note-form .note-form-item::before {
     border-right: 1px #909090 solid;
     border-bottom: 1px #909090 solid;
     top: 0;
     right: 0;
 }
-#page-main .note-form .note-form-item::after {
+#note-form .note-form-item::after {
     border-top: 1px #909090 solid;
     border-left: 1px #909090 solid;
     bottom: 0;
     left: 0;
 }
-#page-main .note-form .note-form-item.notify-note-edited.slither::before,
-#page-main .note-form .note-form-item.notify-note-edited.slither::after {
+#note-form .note-form-item.notify-note-edited.slither::before,
+#note-form .note-form-item.notify-note-edited.slither::after {
     animation-duration: 6s;
     animation-timing-function: ease-in;
     animation-iteration-count: infinite;
     animation-fill-mode: backwards;
 }
-#page-main .note-form .note-form-item.notify-note-edited.slither::before {
+#note-form .note-form-item.notify-note-edited.slither::before {
     animation-name: notify-slither-note-edited-before;
 }
-#page-main .note-form .note-form-item.notify-note-edited.slither::after {
+#note-form .note-form-item.notify-note-edited.slither::after {
     animation-name: notify-slither-note-edited-after;
 }
-#page-main .note-form .note-form-item.notify-note-edited.blink {
+#note-form .note-form-item.notify-note-edited.blink {
     outline: 1px #909090 solid;
     animation-name: notify-blink-note-edited;
     animation-duration: 1s;
@@ -169,7 +181,7 @@ bold - bold
     animation-iteration-count: infinite;
     animation-direction: reverse;
 }
-#page-main .note-form .note-form-item.note-title input {
+#note-form .note-form-item.note-title input {
     background-color: transparent;
     width: 100%;
     padding: 0 10px;
@@ -181,13 +193,13 @@ bold - bold
     line-height: 1rem;
     font-family: var(--mmn-note-form-fonf);
 }
-#page-main .note-form .note-form-item.note-title input::placeholder {
+#note-form .note-form-item.note-title input::placeholder {
     color: #909090;
 }
-#page-main .note-form .note-form-item.note-author {
+#note-form .note-form-item.note-author {
     margin-top: 5px;
 }
-#page-main .note-form .note-form-item.note-author input {
+#note-form .note-form-item.note-author input {
     background-color: transparent;
     width: 100%;
     padding: 5px 10px;
@@ -199,13 +211,13 @@ bold - bold
     line-height: 1rem;
     font-family: var(--mmn-note-form-fonf);
 }
-#page-main .note-form .note-form-item.note-author input::placeholder {
+#note-form .note-form-item.note-author input::placeholder {
     color: #909090;
 }
-#page-main .note-form .note-form-item.note-editor-board {
+#note-form .note-form-item.note-editor-board {
     margin-top: 15px;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-section {
+#note-form .note-form-item.note-editor-board .note-editor-section {
     display: none;
     height: 100%;
     width: 100%;
@@ -213,20 +225,15 @@ bold - bold
     z-index: 3;
     padding: 5px 10px;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-section.active {
+#note-form .note-form-item.note-editor-board .note-editor-section.active {
     display: block;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper {
+#note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper {
     display: grid;
     overflow-y: auto;
 }
-#page-main
-    .note-form
-    .note-form-item.note-editor-board
-    .note-editor-section
-    .note-editor-wrapper::after,
-#page-main
-    .note-form
+#note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper::after,
+#note-form
     .note-form-item.note-editor-board
     .note-editor-section
     .note-editor-wrapper
@@ -236,8 +243,7 @@ bold - bold
     font-family: var(--mmn-note-form-fonf);
     font-size: 1.05em;
 }
-#page-main
-    .note-form
+#note-form
     .note-form-item.note-editor-board
     .note-editor-section
     .note-editor-wrapper
@@ -247,16 +253,12 @@ bold - bold
     overflow: hidden;
     padding: 0;
 }
-#page-main
-    .note-form
-    .note-form-item.note-editor-board
-    .note-editor-section
-    .note-editor-wrapper::after {
+#note-form .note-form-item.note-editor-board .note-editor-section .note-editor-wrapper::after {
     content: attr(data-replicated-value) ' ';
     white-space: pre-wrap;
     visibility: hidden;
 }
-#page-main .note-form .note-form-item.note-editor-board .note-editor-section .letters-count {
+#note-form .note-form-item.note-editor-board .note-editor-section .letters-count {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
@@ -266,19 +268,19 @@ bold - bold
     margin-bottom: 5px;
     margin-top: 25px;
 }
-#page-main .note-form .note-form-item.note-editor-board .under-section {
+#note-form .note-form-item.note-editor-board .under-section {
     display: flex;
     justify-content: space-between;
     top: 15px;
     margin-top: 15px;
 }
-#page-main .note-form .note-form-item.note-editor-board .useful-note-actions {
+#note-form .note-form-item.note-editor-board .useful-note-actions {
     display: flex;
     column-gap: 5px;
     width: 100%;
     margin-top: 15px;
 }
-#page-main .note-form .note-form-item.note-editor-board .useful-note-actions .action {
+#note-form .note-form-item.note-editor-board .useful-note-actions .action {
     display: flex;
     align-items: center;
     column-gap: 5px;
@@ -289,20 +291,9 @@ bold - bold
     color: #fff;
     border: 2px #18181b solid;
 }
-#page-main .note-form .note-form-item.note-editor-board .useful-note-actions .action i {
+#note-form .note-form-item.note-editor-board .useful-note-actions .action i {
     font-size: 0.9rem;
     color: inherit;
-}
-@media only screen and (max-width: 700px) {
-    #page-main .note-quick-look {
-        padding: 0 15px;
-    }
-    #page-main .note-form {
-        padding: 0 5px;
-    }
-    #page-main .note-form .note-form-item {
-        font-size: 0.9rem;
-    }
 }
 
 #publish-article-submit-btn {

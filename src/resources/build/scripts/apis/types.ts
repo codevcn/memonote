@@ -3,6 +3,8 @@ type TGetNotificationsResAPI = {
     isEnd: boolean
 }
 
-type TTranscribeAudioResAPI = {
+type TTranscribeAudiosResAPI = {
+    audioId: string
+    audioFilename: string
     transcription: string | null
 }

@@ -18,12 +18,6 @@ const scrollToBottomBtn = document.querySelector(
     '#bubble-btns .scroll-to-bottom-btn',
 ) as HTMLElement
 
-type TNoteContentHistory = {
-    history: string[]
-    index: number
-}
-
-const noteContentHistory: TNoteContentHistory = { history: [''], index: 0 }
 const SCROLL_TO_TOP_THRESHOLD: number = 100
 const SCROLL_TO_BOTTOM_THRESHOLD: number = 100
 const NOTE_BROADCAST_DELAY: number = 1000
@@ -33,25 +27,6 @@ const validateNoteContent = (noteContent: string): boolean => {
         return false
     }
     return true
-}
-
-const setNoteContentHistory = (noteContent: string) => {
-    if (!validateNoteContent(noteContent)) return
-    let currentHistoryIndex = noteContentHistory.index
-    let currentNoteContentHistory = noteContentHistory.history
-    if (currentNoteContentHistory[currentHistoryIndex] !== noteContent) {
-        if (currentHistoryIndex < currentNoteContentHistory.length - 1) {
-            currentNoteContentHistory = currentNoteContentHistory.slice(0, currentHistoryIndex + 1)
-        }
-        noteContentHistory.history.push(noteContent)
-        if (currentNoteContentHistory.length > ENoteLengths.MAX_LENGTH_NOTE_HISTORY) {
-            currentNoteContentHistory.shift()
-        } else {
-            currentHistoryIndex++
-        }
-    }
-    noteContentHistory.history = currentNoteContentHistory
-    noteContentHistory.index = currentHistoryIndex
 }
 
 const countNoteLetters = (noteEditorTarget: HTMLTextAreaElement, noteContent: string): void => {
@@ -79,8 +54,6 @@ const setBoardUIOfNoteEditor = (
     if (validateNoteContent(noteContent)) {
         // set height of editor
         noteEditorTarget.parentElement!.setAttribute('data-replicated-value', noteContent)
-    } else {
-        noteEditorTarget.value = noteContentHistory.history[noteContentHistory.history.length - 1]
     }
 }
 
@@ -103,88 +76,36 @@ const noteTyping = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> 
     const noteContent = noteEditorTarget.value
     broadcastNoteContentTypingHanlder(noteContent)
     countNoteLetters(noteEditorTarget, noteContent)
-    setNoteContentHistory(noteContent)
     setBoardUIOfNoteEditor(noteEditorTarget, noteContent)
 }
 
-const setForNoteFormEdited = (noteForm: TNoteForm) => {
+const setContentNoteFormEdited = (noteForm: TNoteForm) => {
     const { author, content, title } = noteForm
-    const noteEditor = document.getElementById('note-editor') as HTMLTextAreaElement
-    const noteFormEle = noteEditor.closest('.note-form') as HTMLElement
+    const noteFormEle = document.getElementById('note-form') as HTMLElement
     if (title || title === '') {
         ;(noteFormEle.querySelector('.note-title input') as HTMLInputElement).value = title
     }
     if (author || author === '') {
         ;(noteFormEle.querySelector('.note-author input') as HTMLInputElement).value = author
     }
+    const noteEditor = document.getElementById('note-form') as HTMLTextAreaElement
     if (content || content === '') {
-        setNoteEditor(noteEditor, content)
+        setNoteEditorContent(content)
         setBoardUIOfNoteEditor(noteEditor, content)
     }
     countNoteLetters(noteEditor, content || '')
 }
 
-const setNoteEditor = (noteEditorTarget: HTMLTextAreaElement, noteContent: string): void => {
-    noteEditorTarget.value = noteContent
+const setNoteEditorContent = (noteContent: string): void => {
+    ;(document.getElementById('note-editor') as HTMLTextAreaElement).value = noteContent
 }
 
-const clearNoteContent = (noteEditorTarget: HTMLTextAreaElement): void => {
-    setNoteEditor(noteEditorTarget, '')
-    countNoteLetters(noteEditorTarget, '')
-    setBoardUIOfNoteEditor(noteEditorTarget, '')
-}
-
-const copyAllNoteContent = (noteEditorTarget: HTMLTextAreaElement): void => {
-    navigator.clipboard.writeText(noteEditorTarget.value)
-}
-
-const pasteFromClipboard = async (noteEditorTarget: HTMLTextAreaElement): Promise<void> => {
-    const text = await navigator.clipboard.readText()
-    if (!validateNoteContent(text)) return
-    noteEditorTarget.value = text
-}
-
-const undoNoteContent = (noteEditorTarget: HTMLTextAreaElement): void => {
-    let historyIndex = noteContentHistory.index
-    if (historyIndex > 0) {
-        historyIndex--
-        noteEditorTarget.value = noteContentHistory.history[historyIndex]
-    }
-    noteContentHistory.index = historyIndex
-}
-
-type TUsefulActions =
-    | 'clipboardPaste'
-    | 'copyAllNoteContent'
-    | 'clearNoteContent'
-    | 'undoNoteContent'
-    | 'redoNoteContent'
-
-const performUsefulActions = async (target: HTMLElement, type: TUsefulActions): Promise<void> => {
-    const noteEditor = target
-        .closest('.note-form')!
-        .querySelector(
-            '.note-editor-board .note-editor-section .note-editor',
-        ) as HTMLTextAreaElement
-    switch (type) {
-        case 'clipboardPaste':
-            await pasteFromClipboard(noteEditor)
-            break
-        case 'copyAllNoteContent':
-            copyAllNoteContent(noteEditor)
-            return
-        case 'clearNoteContent':
-            clearNoteContent(noteEditor)
-            break
-        case 'undoNoteContent':
-            undoNoteContent(noteEditor)
-            setBoardUIOfNoteEditor(noteEditor, noteEditor.value)
-            return
-    }
-    const updatedNoteEditorValue = noteEditor.value
-    setNoteContentHistory(updatedNoteEditorValue)
-    setBoardUIOfNoteEditor(noteEditor, updatedNoteEditorValue)
-    countNoteLetters(noteEditor, updatedNoteEditorValue)
+const addNewContentToNoteEditor = (newContent: string): void => {
+    const noteEditor = document.getElementById('note-editor') as HTMLTextAreaElement
+    noteEditor.value += newContent
+    const noteContent = noteEditor.value
+    setBoardUIOfNoteEditor(noteEditor, noteContent)
+    broadcastNoteContentTypingHanlder(noteContent)
 }
 
 const hideShowPassword_homePage = (target: HTMLElement, isShown: boolean): void => {

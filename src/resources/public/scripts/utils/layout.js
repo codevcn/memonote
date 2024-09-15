@@ -113,6 +113,13 @@ class LayoutController {
             }
         }
     }
+    static transitionBackwards(target, newContent, delay = 1500) {
+        const oldContent = target.innerHTML
+        target.innerHTML = newContent
+        setTimeout(() => {
+            target.innerHTML = oldContent
+        }, delay)
+    }
 }
 LayoutController.NOTIFICATION_TIMEOUT = 3000
 LayoutController.GENERAL_STATUS_TIMEOUT = 3000
