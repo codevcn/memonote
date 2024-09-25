@@ -10,7 +10,7 @@ import {
 import { Server, Socket } from 'socket.io'
 import { NoteService } from './note.service.js'
 import { EInitialSocketEvents, ESocketNamespaces } from '../utils/constants.js'
-import { EEventEmitterEvents, ENoteEvents } from './constants.js'
+import { ENoteEvents } from './constants.js'
 import type { IInitialSocketEventEmits, IMessageSubcribers } from './interfaces.js'
 import { BroadcastNoteTypingDTO } from './DTOs.js'
 import { UseFilters, UsePipes } from '@nestjs/common'
@@ -22,9 +22,6 @@ import { wsValidationPipe } from '../configs/config-validation.js'
 import { NoteCredentialsDTO } from './DTOs.js'
 import { TAuthSocketConnection } from '../auth/types.js'
 import { WsNoteCredentials } from './note.decorator.js'
-import { OnEvent } from '@nestjs/event-emitter'
-import { BaseCustomEmittedEvent } from '../utils/custom.events.js'
-import { TTranscribeAudioState } from '../tools/types.js'
 
 @WebSocketGateway(initGatewayMetadata({ namespace: ESocketNamespaces.NOTE }))
 @UsePipes(wsValidationPipe)
@@ -101,11 +98,5 @@ export class NoteGateway
             },
             success: true,
         }
-    }
-
-    @OnEvent(EEventEmitterEvents.TRANSCRIBE_AUIDO_STATE)
-    transcribeAudioState(event: BaseCustomEmittedEvent<TTranscribeAudioState>) {
-        const { clientSocketId, state } = event.payload
-        this.server.to(clientSocketId).emit(ENoteEvents.TRANSCRIBE_AUDIO_STATE, { state })
     }
 }

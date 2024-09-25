@@ -4,7 +4,6 @@ type TGetNotificationsResAPI = {
 }
 
 type TTranscribeAudiosResAPI = {
-    audioId: string
-    audioFilename: string
     transcription: string | null
+    confidence: number
 }

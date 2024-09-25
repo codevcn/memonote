@@ -149,3 +149,6 @@ const copyToClipboard = (value) => {
 const getFromClipboard = async () => {
     return await navigator.clipboard.readText()
 }
+function parseStringToObjects(str) {
+    return str.split(/(?<=})/).map((jsonStr) => JSON.parse(jsonStr))
+}

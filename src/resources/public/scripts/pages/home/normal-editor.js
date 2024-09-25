@@ -4,7 +4,6 @@ var ENoteEvents
     ENoteEvents['NOTE_FORM_EDITED'] = 'note_form_edited'
     ENoteEvents['FETCH_NOTE_FORM'] = 'fetch_note_form'
     ENoteEvents['TRANSCRIBE_AUDIO'] = 'transcript_auido'
-    ENoteEvents['TRANSCRIBE_AUDIO_STATE'] = 'transcribe_audio_state'
 })(ENoteEvents || (ENoteEvents = {}))
 class NormalEditorSocket {
     constructor() {
@@ -16,7 +15,6 @@ class NormalEditorSocket {
         this.listenConnected()
         this.listenConnectionError()
         this.listenNoteFormEdited()
-        this.listenTranscribeAudioState()
     }
     async listenConnected() {
         this.socket.on(EInitSocketEvents.CLIENT_CONNECTED, (data) => {
@@ -48,14 +46,6 @@ class NormalEditorSocket {
                 if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
                     NormalEditorController.notifyNoteEdited('on', data)
                 }
-            }
-        })
-    }
-    async listenTranscribeAudioState() {
-        this.socket.on(ENoteEvents.TRANSCRIBE_AUDIO_STATE, (data) => {
-            const { state } = data
-            if (state === 'transcribing') {
-                TranscribeAudioController.setTranscribeLoading(true)
             }
         })
     }

@@ -37,39 +37,7 @@ const fetchArticleAPI = (): Promise<TAxiosHTTPRes<Blob>> =>
     axiosClient.get(`/article/fetch-article/${pageData.noteId}`, { responseType: 'blob' })
 
 // tools
-const transcribeAudiosAPI = (
+const transcribeAudioAPI = (
     formDataWithFile: FormData,
-    callback: (transcription: TTranscribeAudiosResAPI) => void,
-): Promise<void> => {
-    return new Promise((resolve, reject) => {
-        const xhr = new XMLHttpRequest()
-        xhr.open(
-            'POST',
-            serverAPIBaseURL + '/tools/transcribe-audio/' + getNoteUniqueNameFromURL(),
-            true,
-        )
-
-        let receivedLength: number = 0
-        xhr.onprogress = function () {
-            const response = xhr.responseText
-            const transcriptionChunk = response.substring(receivedLength)
-            receivedLength = response.length
-            const transcription = JSON.parse(transcriptionChunk) as TTranscribeAudiosResAPI
-            callback(transcription)
-        }
-
-        xhr.onloadend = function () {
-            resolve()
-        }
-
-        xhr.onerror = function (error) {
-            reject(error)
-        }
-
-        xhr.ontimeout = function (e) {
-            reject(new BaseCustomError('Request timeout!'))
-        }
-
-        xhr.send(formDataWithFile)
-    })
-}
+): Promise<TAxiosHTTPRes<TTranscribeAudiosResAPI>> =>
+    axiosClient.post('/tools/transcribe-audio/' + getNoteUniqueNameFromURL(), formDataWithFile)

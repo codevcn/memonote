@@ -2,13 +2,12 @@ enum ENoteEvents {
     NOTE_FORM_EDITED = 'note_form_edited',
     FETCH_NOTE_FORM = 'fetch_note_form',
     TRANSCRIBE_AUDIO = 'transcript_auido',
-    TRANSCRIBE_AUDIO_STATE = 'transcribe_audio_state',
 }
 type TBroadcastNoteTypingRes = {
     data: TNoteForm
     success: boolean
 }
-type TTranscribeAudioData = {
+type TTranscribeAudioState = {
     state: 'transcribing'
 }
 
@@ -25,7 +24,6 @@ class NormalEditorSocket {
         this.listenConnected()
         this.listenConnectionError()
         this.listenNoteFormEdited()
-        this.listenTranscribeAudioState()
     }
 
     private async listenConnected(): Promise<void> {
@@ -60,15 +58,6 @@ class NormalEditorSocket {
                 if (notifyNoteEditedMode && notifyNoteEditedMode === 'on') {
                     NormalEditorController.notifyNoteEdited('on', data)
                 }
-            }
-        })
-    }
-
-    private async listenTranscribeAudioState(): Promise<void> {
-        this.socket.on(ENoteEvents.TRANSCRIBE_AUDIO_STATE, (data: TTranscribeAudioData) => {
-            const { state } = data
-            if (state === 'transcribing') {
-                TranscribeAudioController.setTranscribeLoading(true)
             }
         })
     }

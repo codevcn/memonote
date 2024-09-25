@@ -1686,6 +1686,7 @@ bold - bold
 #transcribe-audio-form .upload-box .picked-audio-files .files-list {
     width: 100%;
     overflow-x: auto;
+    padding-left: 1px;
 }
 #transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item {
     display: flex;
@@ -1695,6 +1696,46 @@ bold - bold
 }
 #transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item i {
     font-size: inherit;
+}
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item .spinner-border {
+    height: 16px;
+    width: 16px;
+    min-width: 16px;
+}
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item .icon-info,
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item .icon-success,
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item .icon-error,
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item .spinner-border {
+    display: none;
+    color: inherit;
+}
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item.info .icon-info {
+    display: initial;
+}
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item.success {
+    color: #13a765;
+}
+#transcribe-audio-form
+    .upload-box
+    .picked-audio-files
+    .files-list
+    .file-item.success
+    .icon-success {
+    display: initial;
+}
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item.error {
+    color: #ff2424;
+}
+#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item.error .icon-error {
+    display: initial;
+}
+#transcribe-audio-form
+    .upload-box
+    .picked-audio-files
+    .files-list
+    .file-item.loading
+    .spinner-border {
+    display: initial;
 }
 #transcribe-audio-form .upload-box .picked-audio-files .change-files {
     display: flex;

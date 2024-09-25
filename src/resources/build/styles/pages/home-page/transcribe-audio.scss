@@ -2,6 +2,26 @@
 
 $mmn-upload-files-n-result-gap: 50px;
 
+@mixin transcribing-status($status) {
+    &.#{$status} {
+        @if $status == 'loading' {
+            .spinner-border {
+                display: initial;
+            }
+        } @else {
+            .icon-#{$status} {
+                display: initial;
+            }
+
+            @if $status == 'success' {
+                color: colors.$mmn-regular-green-cl;
+            } @else if $status == 'error' {
+                color: colors.$mmn-regular-red-cl;
+            }
+        }
+    }
+}
+
 #transcribe-audio-message {
     display: none;
     margin-bottom: 15px;
@@ -148,6 +168,7 @@ $mmn-upload-files-n-result-gap: 50px;
             .files-list {
                 width: 100%;
                 overflow-x: auto;
+                padding-left: 1px;
 
                 .file-item {
                     display: flex;
@@ -158,6 +179,25 @@ $mmn-upload-files-n-result-gap: 50px;
                     i {
                         font-size: inherit;
                     }
+
+                    .spinner-border {
+                        height: 16px;
+                        width: 16px;
+                        min-width: 16px;
+                    }
+
+                    .icon-info,
+                    .icon-success,
+                    .icon-error,
+                    .spinner-border {
+                        display: none;
+                        color: inherit;
+                    }
+
+                    @include transcribing-status('info');
+                    @include transcribing-status('success');
+                    @include transcribing-status('error');
+                    @include transcribing-status('loading');
                 }
             }
 

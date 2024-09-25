@@ -7,7 +7,8 @@ export enum EAudioFiles {
 }
 
 export enum EAudioFields {
-    TRANSCRIBE_AUDIO = 'audioFiles',
+    TRANSCRIBE_AUDIO = 'audioFile',
+    TRANSCRIBE_AUDIOS = 'audioFiles',
 }
 
 export enum EAudioLangs {

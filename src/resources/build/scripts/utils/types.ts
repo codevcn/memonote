@@ -1,12 +1,18 @@
+type TUnknownObject<T = any> = {
+    [key: string]: T
+}
+
+type TUnknownFunction<R> = (...args: any[]) => R
+
 type TSocketReconnecting = {
     flag: boolean
 }
+
 type TClientConnectedEventPld = {
     connectionStatus: string
 }
 
-type TAxiosHTTPRes<T> = {
-    [key: string]: any
+type TAxiosHTTPRes<T> = TUnknownObject & {
     data: T
 }
 
@@ -22,9 +28,7 @@ type TResBodyHttpException = {
     status: number
 }
 
-type TOriginalAPIError = {
-    [key: string]: any
-}
+type TOriginalAPIError = TUnknownObject
 
 type TAPIError = {
     httpStatus: number
@@ -72,7 +76,5 @@ type TNotifData = TNotif & {
 }
 
 type TNavBarPos = 'sticky' | 'static'
-
-type TUnknownFunction<R> = (...args: any[]) => R
 
 type TAudioLangs = 'en' | 'vi' | 'en-us'

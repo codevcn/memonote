@@ -18,17 +18,15 @@ class TranscribeAudioController {
                 <span>Transcribe</span>`
         }
     }
-    static setTranscribeLoading(loading) {
-        const textBox = document.querySelector('#transcription-result .text-box')
-        if (loading) {
-            textBox.classList.add('loading')
-            textBox.innerHTML = Materials.createHTMLLoading('border')
-        } else {
-            textBox.classList.remove('loading')
-            textBox.innerHTML = 'Your transcription would be here...'
-        }
+    static setTranscribeAudioStatus(audioId, status) {
+        const pickedFile = document.querySelector(
+            `#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item[data-audio-id="${audioId}"]`,
+        )
+        pickedFile.classList.remove('loading', 'success', 'error', 'info')
+        pickedFile.classList.add(status)
     }
-    static validateAudioFile(files) {
+    static validateAudioFile() {
+        const files = this.pickedAudioFiles.map((file) => file.audioFile)
         for (const file of files) {
             const fileSize = file.size
             if (!file || fileSize === 0) {
@@ -48,47 +46,54 @@ class TranscribeAudioController {
         }
         return true
     }
-    static createFormData(audioFiles, lang) {
+    static createFormData(audioFile, lang) {
         const formData = new FormData()
-        for (const audioFile of audioFiles) {
-            formData.append('audioFiles', audioFile)
-        }
+        formData.set('audioFile', audioFile)
         formData.set('audioLang', lang)
         formData.set('clientSocketId', normalEditorSocket.getSocketId())
         return formData
     }
-    static async transcriptAudioHandler(e) {
+    static async transcribeAudioHandler(e) {
         e.preventDefault()
         const form = document.getElementById('transcribe-audio-form')
         const formData = new FormData(form)
-        const audioFiles = formData.getAll('audio-files')
         const lang = formData.get('audio-language')
-        if (this.validateAudioFile(audioFiles)) {
+        if (this.validateAudioFile()) {
             this.setMessage(null)
             this.setSubmitLoading(true)
-            const formDataWithFile = this.createFormData(audioFiles, lang)
-            this.setTranscriptionsData([])
-            try {
-                await transcribeAudiosAPI(formDataWithFile, (data) => {
-                    console.log('>>> data of api >>>', data)
-                    this.addTranscriptionsData(data)
-                })
-            } catch (error) {
-                console.log('>>> transcribe api error >>>', error)
-                if (error instanceof Error) {
-                    const err = HTTPErrorHandler.handleError(error)
-                    const errMessage = err.message
-                    LayoutController.toast('error', errMessage)
-                    this.setMessage(errMessage)
-                }
+            this.resetDataAndUI()
+            const audios = this.pickedAudioFiles
+            let transcribedCount = 0
+            for (const audio of audios) {
+                const audioId = audio.audioId
+                this.setTranscribeAudioStatus(audioId, 'loading')
+                transcribeAudioAPI(this.createFormData(audio.audioFile, lang))
+                    .then(({ data }) => {
+                        const { transcription } = data
+                        if (transcription && transcription.length > 0) {
+                            this.setTranscribeAudioStatus(audioId, 'success')
+                            const transcriptionData = {
+                                audioId,
+                                audioFilename: audio.audioFile.name,
+                                transcription,
+                            }
+                            this.addTranscriptionsData(transcriptionData)
+                            this.addTranscriptions(transcriptionData)
+                        } else {
+                            this.setTranscribeAudioStatus(audioId, 'error')
+                        }
+                    })
+                    .catch((error) => {
+                        this.setTranscribeAudioStatus(audioId, 'error')
+                    })
+                    .finally(() => {
+                        transcribedCount++
+                        if (transcribedCount === audios.length) {
+                            this.setSubmitLoading(false)
+                            this.setMessage('All the audios are transcribed!', true)
+                        }
+                    })
             }
-            this.setTranscribeLoading(false)
-            const transcriptions = this.transcriptionsData
-            if (transcriptions && transcriptions.length > 0) {
-                this.setTranscriptionsResult(transcriptions)
-                this.setMessage('Transcribed!', true)
-            }
-            this.setSubmitLoading(false)
         }
     }
     static setMessage(message, success) {
@@ -110,97 +115,112 @@ class TranscribeAudioController {
             }
         }
     }
-    static setTranscription(transcription) {
+    static setTranscription(transcription, index) {
+        this.focusedTranscriptionIndex = index
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const textBox = document.querySelector('#transcription-result .text-box')
-                textBox.textContent = transcription || 'Transcription is empty...'
-                resolve(true)
+                textBox.textContent = transcription || ''
+                resolve()
             }, 0)
         })
     }
-    static setTranscriptionsResult(transcriptions) {
-        const transcribedFiles = document.querySelector('#transcription-result .transcribed-files')
-        let transcriptionText = null
-        for (const transcription of transcriptions) {
-            const option = document.createElement('option')
-            option.value = transcription.audioId
-            option.textContent = transcription.audioFilename
-            transcribedFiles.appendChild(option)
-            const transcriptionData = transcription.transcription
-            if (transcriptionText === null && transcriptionData && transcriptionData.length > 0) {
-                transcriptionText = transcriptionData
-                option.selected = true
-            }
+    static resetDataAndUI() {
+        this.setTranscriptionsData([])
+        this.transcribedFilesEle.innerHTML = ''
+        this.setTranscription(null, 0)
+    }
+    static addTranscriptions(transcription) {
+        const transcribedFilesEle = this.transcribedFilesEle
+        const option = document.createElement('option')
+        option.value = transcription.audioId
+        option.textContent = transcription.audioFilename
+        transcribedFilesEle.appendChild(option)
+        const transcriptionData = transcription.transcription
+        if (transcriptionData && transcriptionData.length > 0) {
+            option.selected = true
+            this.setTranscription(transcriptionData, this.transcriptionsData.length - 1)
         }
-        this.setTranscription(transcriptionText)
     }
     static pickFiles(target) {
         const files = target.files
         if (files && files.length > 0) {
-            this.setUIForPickedFiles(files)
+            const audios = Array.from(files).map((file) => ({
+                audioId: `audio-id-${generateUploadId()}`,
+                audioFile: file,
+            }))
+            this.pickedAudioFiles = audios
+            this.setUIForPickedFiles(audios)
         }
     }
     static setUIForPickedFiles(files) {
         const uploadFile = document.querySelector('#transcribe-audio-form .upload-box .upload-file')
         uploadFile.classList.remove('active')
-        const pickedFile = document.querySelector(
+        const pickedFiles = document.querySelector(
             '#transcribe-audio-form .upload-box .picked-audio-files',
         )
-        pickedFile.classList.add('active')
-        const filesList = pickedFile.querySelector('.files-list')
+        pickedFiles.classList.add('active')
+        const filesList = pickedFiles.querySelector('.files-list')
         filesList.innerHTML = ''
         for (const file of files) {
-            const filename = file.name
+            const filename = file.audioFile.name
             const fileEle = document.createElement('div')
-            fileEle.className = 'file-item'
+            fileEle.setAttribute('data-audio-id', file.audioId)
+            fileEle.className = 'file-item info'
             fileEle.innerHTML = `
-                <i class="bi bi-file-earmark-music"></i>
-                ${filename}`
+                <i class="bi bi-file-earmark-music icon-info"></i>
+                <i class="bi bi-check-circle-fill icon-success"></i>
+                <i class="bi bi-x-circle-fill icon-error"></i>
+                ${Materials.createHTMLLoading('border')}
+                <span>${filename}</span>`
             fileEle.title = filename
             filesList.appendChild(fileEle)
         }
     }
     static handleTranscriptionActions(type) {
-        const transcriptions = this.transcriptionsData
-        // if (transcription && transcription.length > 0) {
-        //     const resultActions = document.querySelector(
-        //         '#transcription-result .actions',
-        //     ) as HTMLElement
-        //     if (type === 'write') {
-        //         addNewContentToNoteEditor(`\n${transcription}`)
-        //         const writeToNoteAction = resultActions.querySelector('.write') as HTMLElement
-        //         LayoutController.transitionBackwards(
-        //             writeToNoteAction,
-        //             `<i class="bi bi-check-all"></i>
-        //             <span>Wrote</span>`,
-        //         )
-        //     } else {
-        //         copyToClipboard(transcription)
-        //         const copyAction = resultActions.querySelector('.copy') as HTMLElement
-        //         LayoutController.transitionBackwards(
-        //             copyAction,
-        //             `<i class="bi bi-check-all"></i>
-        //             <span>Copied</span>`,
-        //         )
-        //     }
-        // } else {
-        //     this.setMessage('No transcription found!')
-        // }
+        const focusedTranscriptionIndex = this.focusedTranscriptionIndex
+        if (focusedTranscriptionIndex < 0) return
+        const transcription = this.transcriptionsData[focusedTranscriptionIndex].transcription
+        if (transcription && transcription.length > 0) {
+            const resultActions = document.querySelector('#transcription-result .actions')
+            if (type === 'write') {
+                addNewContentToNoteEditor(`\n${transcription}`)
+                const writeToNoteAction = resultActions.querySelector('.write')
+                LayoutController.transitionBackwards(
+                    writeToNoteAction,
+                    `<i class="bi bi-check-all"></i>
+                    <span>Wrote</span>`,
+                )
+            } else {
+                copyToClipboard(transcription)
+                const copyAction = resultActions.querySelector('.copy')
+                LayoutController.transitionBackwards(
+                    copyAction,
+                    `<i class="bi bi-check-all"></i>
+                    <span>Copied</span>`,
+                )
+            }
+        } else {
+            this.setMessage('No transcription found!')
+        }
     }
     static switchTranscriptions() {
         const transcriptions = this.transcriptionsData
         if (transcriptions && transcriptions.length > 0) {
-            const transcribedFilesEle = document.querySelector(
-                '#transcription-result .transcribed-files',
-            )
+            const transcribedFilesEle = this.transcribedFilesEle
             const audioId = transcribedFilesEle.value
-            const { transcription } = transcriptions.find(
+            const index = transcriptions.findIndex(
                 (transcription) => transcription.audioId === audioId,
             )
-            this.setTranscription(transcription)
+            this.setTranscription(transcriptions[index].transcription, index)
         }
     }
 }
+TranscribeAudioController.transcriptionsData = []
+TranscribeAudioController.focusedTranscriptionIndex = -1
+TranscribeAudioController.pickedAudioFiles = []
+TranscribeAudioController.transcribedFilesEle = document.querySelector(
+    '#transcription-result .transcribed-files',
+)
 class ImageRecognitionController {}
 ImageRecognitionController.transcription = null

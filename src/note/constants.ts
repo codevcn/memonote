@@ -24,7 +24,3 @@ export enum ENoteEvents {
     TRANSCRIBE_AUDIO = 'transcript_auido',
     TRANSCRIBE_AUDIO_STATE = 'transcribe_audio_state',
 }
-
-export enum EEventEmitterEvents {
-    TRANSCRIBE_AUIDO_STATE = 'transcribe_audio_state',
-}
