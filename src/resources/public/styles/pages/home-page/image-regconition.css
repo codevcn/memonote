@@ -28,13 +28,64 @@
     display: flex;
     column-gap: 50px;
     position: relative;
+    flex-direction: column;
+    align-items: center;
+}
+#image-recognition-container .transcription-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 30px;
+}
+#image-recognition-container .transcription-result .text-box {
+    border: 1px lightgray solid;
+    border-radius: 5px;
+    max-height: 1000px;
+    overflow-y: auto;
+    padding: 10px;
+    width: 100%;
+    min-height: 200px;
+}
+#image-recognition-container .transcription-result .text-box .spinner {
+    height: 24px;
+    width: 24px;
+}
+#image-recognition-container .transcription-result .text-box.loading {
+    display: flex;
+    justify-content: center;
+}
+#image-recognition-container .transcription-result .actions {
+    display: flex;
+    column-gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+#image-recognition-container .transcription-result .actions .action {
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+    border-radius: 5px;
+    padding: 2px 10px;
+    font-size: 0.9rem;
+    background-color: #333;
+    color: #fff;
+    border: 2px #333 solid;
+}
+#image-recognition-container .transcription-result .actions .action i {
+    color: inherit;
+}
+#image-recognition-container .transcription-result .actions .action:hover {
+    background-color: #fff;
+    color: #333;
 }
 
 #image-recognition-form {
     display: flex;
     align-items: center;
     flex-direction: column;
-    width: 45%;
+    width: 100%;
     margin: 0;
     background-color: #fff;
     font-family: Arial, sans-serif;
@@ -49,14 +100,23 @@
     margin: 0;
     padding-left: 10px;
     font-size: 1rem;
+    font-weight: bold;
 }
 #image-recognition-form .upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     padding: 20px 30px;
     background-color: #f1f1f1;
     width: 100%;
     border-radius: 5px;
     margin-top: 5px;
+}
+#image-recognition-form .upload-box .spinner {
+    height: 25px;
+    width: 25px;
 }
 #image-recognition-form .upload-box .upload-file {
     display: none;
@@ -111,20 +171,20 @@
     background-color: #fff;
     color: #333;
 }
-#image-recognition-form .upload-box .picked-image-file {
+#image-recognition-form .upload-box .picked-image-files {
     display: none;
     width: 100%;
 }
-#image-recognition-form .upload-box .picked-image-file.active {
+#image-recognition-form .upload-box .picked-image-files.active {
     display: block;
 }
-#image-recognition-form .upload-box .picked-image-file .filename {
+#image-recognition-form .upload-box .picked-image-files .images-preview {
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-#image-recognition-form .upload-box .picked-image-file .change-file {
+#image-recognition-form .upload-box .picked-image-files .change-file {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -134,35 +194,40 @@
     background-color: #333;
     border: 2px #333 solid;
     color: #fff;
-    margin-top: 10px;
+    margin-top: 20px;
     cursor: pointer;
 }
-#image-recognition-form .upload-box .picked-image-file .change-file i {
+#image-recognition-form .upload-box .picked-image-files .change-file i {
     color: inherit;
 }
-#image-recognition-form .upload-box .picked-image-file .change-file:hover {
+#image-recognition-form .upload-box .picked-image-files .change-file:hover {
     background-color: #fff;
     color: #333;
 }
-#image-recognition-form .language-select-container {
+#image-recognition-form .langs-select-container {
     margin-top: 20px;
     width: 100%;
 }
-#image-recognition-form .language-select-container label {
+#image-recognition-form .langs-select-container .langs-title {
+    font-weight: bold;
+    font-size: 1rem;
     padding-left: 10px;
 }
-#image-recognition-form .language-select-container select {
-    width: 100%;
+#image-recognition-form .langs-select-container .langs {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 30px;
+    row-gap: 10px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    margin-top: 5px;
-    outline: none;
-    cursor: pointer;
 }
-#image-recognition-form .language-select-container select:hover {
-    outline: 1px #909090 solid;
+#image-recognition-form .langs-select-container .langs .form-check .form-check-input {
+    border-color: #333;
+}
+#image-recognition-form .langs-select-container .langs .form-check .form-check-input:checked {
+    background-color: #333;
+}
+#image-recognition-form .langs-select-container .langs .form-check .form-check-label {
+    padding-left: 0;
 }
 #image-recognition-form .submit-btn {
     display: flex;
@@ -190,52 +255,42 @@
     color: #333;
 }
 
-#transcription-result {
+#images-preview-slider .slide-images .carousel-item {
+    overflow: auto;
+}
+#images-preview-slider .slide-images .carousel-item .slide-title {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 55%;
-}
-#transcription-result .text-box {
-    border: 1px lightgray solid;
-    border-radius: 5px;
-    max-height: 1000px;
-    overflow-y: auto;
-    padding: 10px;
-    width: 100%;
-}
-#transcription-result .text-box .spinner {
-    height: 24px;
-    width: 24px;
-}
-#transcription-result .text-box.loading {
-    display: flex;
-    justify-content: center;
-}
-#transcription-result .actions {
-    display: flex;
-    column-gap: 10px;
-    margin-top: 10px;
-    width: 100%;
-}
-#transcription-result .actions .action {
-    display: flex;
     column-gap: 5px;
-    align-items: center;
-    border-radius: 5px;
-    padding: 2px 10px;
+    width: 100%;
     font-size: 0.9rem;
-    background-color: #333;
-    color: #fff;
-    border: 2px #333 solid;
+    font-weight: 500;
+    line-height: 1rem;
+    margin-bottom: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-#transcription-result .actions .action i {
-    color: inherit;
+#images-preview-slider .slide-images .carousel-item .slide-title i {
+    font-size: inherit;
 }
-#transcription-result .actions .action:hover {
-    background-color: #fff;
-    color: #333;
+#images-preview-slider .slide-images .carousel-item img {
+    width: auto;
+    height: 300px;
+}
+#images-preview-slider .control-icon {
+    font-size: 2.5rem;
+}
+#images-preview-slider .carousel-control-prev,
+#images-preview-slider .carousel-control-next {
+    width: initial;
+}
+#images-preview-slider .carousel-control-prev .carousel-control-prev-icon {
+    background: none;
+}
+#images-preview-slider .carousel-control-next .carousel-control-next-icon {
+    background: none;
 }
 
 /*# sourceMappingURL=image-regconition.css.map */

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import AppRoot from 'app-root-path'
 import path, { join } from 'path'
-import { createClient, DeepgramClient, SyncPrerecordedResponse } from '@deepgram/sdk'
+import { createClient, DeepgramClient } from '@deepgram/sdk'
 import { createReadStream, ReadStream } from 'fs'
 import { readFile, unlink } from 'fs/promises'
 import type { TTranscribeAudioFile, TTranscribeAudio } from './types.js'

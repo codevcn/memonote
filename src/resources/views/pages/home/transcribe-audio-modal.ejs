@@ -14,7 +14,7 @@
 
                 <section id="transcribe-audio-container">
                     <form id="transcribe-audio-form" action="#"
-                        onsubmit="TranscribeAudioController.transcribeAudioHandler(event)">
+                        onsubmit="TranscribeAudioController.transcribeAudiosHandler(event)">
                         <div class="header">
                             <h2>Audio / Video Files</h2>
                         </div>
@@ -31,7 +31,7 @@
                                     <span>BROWSE FILES</span>
                                 </label>
                                 <input type="file" id="audio-files-input" name="audio-files" hidden accept=".mp3, .wav"
-                                    multiple onchange="TranscribeAudioController.pickFiles(this)" />
+                                    multiple onchange="TranscribeAudioController.pickAudios(this)" />
                             </div>
                             <div class="picked-audio-files">
                                 <div class="files-list"></div>
@@ -42,12 +42,12 @@
                             </div>
                         </div>
 
-                        <div class="language-select-container">
-                            <label for="audio-language-select">Audios Language</label>
-                            <select id="audio-language-select" name="audio-language">
-                                <option value="vi">Vietnamese</option>
+                        <div class="langs-select-container">
+                            <label for="audios-language-select" class="langs-title">Audios Language</label>
+                            <select id="audios-language-select" class="form-select" name="audios-language">
                                 <option value="en" selected>English</option>
-                                <option value="en-us" selected>English (US)</option>
+                                <option value="vi">Vietnamese</option>
+                                <option value="en-us">English (US)</option>
                             </select>
                         </div>
 
@@ -57,7 +57,7 @@
                         </button>
                     </form>
 
-                    <section id="transcription-result">
+                    <section class="transcription-result">
                         <select class="transcribed-files" onchange="TranscribeAudioController.switchTranscriptions()">
                         </select>
                         <div class="text-box" contenteditable>

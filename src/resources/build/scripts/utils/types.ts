@@ -1,9 +1,3 @@
-type TUnknownObject<T = any> = {
-    [key: string]: T
-}
-
-type TUnknownFunction<R> = (...args: any[]) => R
-
 type TSocketReconnecting = {
     flag: boolean
 }
@@ -78,3 +72,5 @@ type TNotifData = TNotif & {
 type TNavBarPos = 'sticky' | 'static'
 
 type TAudioLangs = 'en' | 'vi' | 'en-us'
+
+type TImageLangs = 'eng' | 'vie' | 'jpn' | 'chi_sim' | 'kor' | 'tha'

@@ -16,6 +16,12 @@ declare global {
             DEEPGRAM_API_KEY: string
         }
     }
+
+    type TUnknownFunction<R> = (...args: any[]) => R
+
+    type TUnknownObject<P = number | string> = {
+        [key: P]: any
+    }
 }
 
 export {}
