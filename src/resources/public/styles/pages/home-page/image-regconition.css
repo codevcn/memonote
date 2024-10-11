@@ -38,6 +38,7 @@
     justify-content: center;
     width: 100%;
     margin-top: 30px;
+    white-space: pre;
 }
 #image-recognition-container .transcription-result .text-box {
     border: 1px lightgray solid;
@@ -278,6 +279,14 @@
 #images-preview-slider .slide-images .carousel-item img {
     width: auto;
     height: 300px;
+}
+#images-preview-slider .slide-images .carousel-item .recognition-progress {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+}
+#images-preview-slider .slide-images .carousel-item .recognition-progress.active {
+    display: block;
 }
 #images-preview-slider .control-icon {
     font-size: 2.5rem;

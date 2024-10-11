@@ -45,6 +45,7 @@ $mmn-image-file-input-n-result-gap: 50px;
         justify-content: center;
         width: 100%;
         margin-top: 30px;
+        white-space: pre;
 
         .text-box {
             border: 1px colors.$mmn-regular-lightgray-cl solid;
@@ -336,6 +337,16 @@ $mmn-image-file-input-n-result-gap: 50px;
             img {
                 width: auto;
                 height: 300px;
+            }
+
+            .recognition-progress {
+                display: none;
+                width: 100%;
+                margin-top: 10px;
+
+                &.active {
+                    display: block;
+                }
             }
         }
     }

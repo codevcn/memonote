@@ -30,6 +30,10 @@ type TRecognitionWorker = {
     worker: TUnknownObject
 }
 
+type TRecognitionImageData = {
+    transcription: string
+}
+
 class TranscribeAudioController {
     private static transcriptionsData: TTranscribeAudioData[] = []
     private static focusedTranscriptionIndex: number = -1
@@ -303,7 +307,7 @@ class TranscribeAudioController {
 }
 
 class ImageRecognitionController {
-    private static transcriptionsData: TTranscribeAudioData[] = []
+    private static transcriptionsData: TRecognitionImageData[] = []
     private static focusedTranscriptionIndex: number = -1
     private static pickedImageFiles: TPickedImageFile[] = []
     private static readonly imageAllowedExts: TImageAllowedExt[] = [
@@ -315,12 +319,20 @@ class ImageRecognitionController {
         '#image-recognition-container .transcription-result',
     ) as HTMLElement
     private static workers: TRecognitionWorker[] = []
-    private static scheduler: object | null = null
+    private static scheduler: TUnknownObject | null = null
     private static readonly maxImgsCount: number = 5
+
+    static setTranscriptionsData(transcriptions: TRecognitionImageData[]): void {
+        this.transcriptionsData = transcriptions
+    }
+
+    static addTranscriptionsData(...transcription: TRecognitionImageData[]): void {
+        this.transcriptionsData.push(...transcription)
+    }
 
     private static async createWorker(
         imageLangs: TImageLangs[],
-        logger: (status: string, progress: number) => void,
+        logger: (status: string, progress: string) => void,
         errorHandler: (error: any) => void,
     ): Promise<TUnknownObject> {
         const workers = this.workers
@@ -417,7 +429,7 @@ class ImageRecognitionController {
         for (const image of images) {
             const imageName = image.imageFile.name
             const carouselItem = document.createElement('div')
-            carouselItem.className = 'carousel-item'
+            carouselItem.className = `carousel-item carousel-index-${i}`
             const slideTitle = document.createElement('h2')
             slideTitle.className = 'slide-title'
             slideTitle.title = `Image: ${imageName}`
@@ -429,6 +441,10 @@ class ImageRecognitionController {
             slideImg.alt = `Picked Image - ${imageName}`
             carouselItem.appendChild(slideTitle)
             carouselItem.appendChild(slideImg)
+            carouselItem.insertAdjacentHTML(
+                'beforeend',
+                Materials.createHTMLProgress('success', 0, 'recognition-progress'),
+            )
             slideImgs.appendChild(carouselItem)
             carouselIndicators.innerHTML += `
                 <button type="button" data-bs-target="#images-preview-slider" data-bs-slide-to="${i}" class="active"></button>`
@@ -441,19 +457,81 @@ class ImageRecognitionController {
     private static async recognitionSingleImage(
         image: File,
         langs: TImageLangs[],
-    ): Promise<string> {
+        successHandler: (transcription: string) => Promise<void>,
+    ): Promise<void> {
         const worker = await this.createWorker(
             langs,
-            (status, progress) => {},
+            (status, progress) => {
+                if (status === 'recognizing text') {
+                    this.setRecognitionProgress(0, Number((Number(progress) * 100).toFixed(2)))
+                }
+            },
             (error) => {},
         )
-        const result = await worker.recognize(image)
-        console.log('>>> trans >>>', result.data.text)
-        await worker.terminate()
-        return result.data.text
+        const transcription = (await worker.recognize(image)).data.text
+        await successHandler(transcription)
     }
 
-    // private static async recognitionImages(images: File[], lang: TImageLangs): Promise<string> {}
+    private static setRecognitionProgress(imgIndex: number, percent: number): void {
+        const progress = document.querySelector(
+            `#image-recognition-form .carousel-index-${imgIndex} .recognition-progress`,
+        ) as HTMLElement
+        progress.classList.add('active')
+        const progressBar = progress.querySelector('.progress-bar') as HTMLElement
+        progressBar.style.width = `${percent}%`
+        progressBar.textContent = `${percent}%`
+        if (percent === 100) {
+            progressBar.classList.remove('progress-bar-animated')
+        }
+    }
+
+    private static async recognitionImages(
+        images: File[],
+        langs: TImageLangs[],
+        successHandler: (transcription: string) => Promise<void>,
+    ): Promise<void> {
+        if (!this.scheduler) {
+            this.scheduler = Tesseract.createScheduler()
+        }
+        await Promise.all(
+            Array(Math.floor(images.length / 2))
+                .fill(0)
+                .map(() => {
+                    return (async () => {
+                        this.scheduler!.addWorker(
+                            await this.createWorker(
+                                langs,
+                                () => {},
+                                () => {},
+                            ),
+                        )
+                    })()
+                }),
+        )
+        await new Promise<boolean>((resolve, reject) => {
+            console.log('>>> add job schedule >>>', this.scheduler!.addJob)
+            let count: number = 0
+            for (const img of images) {
+                this.scheduler!.addJob('recognize', img)
+                    .then((res: any) => {
+                        successHandler(res.data.text)
+                    })
+                    .catch((error: any) => {})
+                    .finally(() => {
+                        count++
+                        if (count === images.length) {
+                            this.scheduler!.terminate()
+                                .then(() => {
+                                    resolve(true)
+                                })
+                                .catch((error: any) => {
+                                    reject(new BaseCustomError(error.message))
+                                })
+                        }
+                    })
+            }
+        })
+    }
 
     static async recognizeImagesHandler(e: SubmitEvent): Promise<void> {
         e.preventDefault()
@@ -462,14 +540,43 @@ class ImageRecognitionController {
             document.getElementById('image-recognition-form') as HTMLFormElement,
         )
         const imageLangs = formData.getAll('image-lang') as TImageLangs[]
-        console.log('>>> this picked images >>>', this.pickedImageFiles)
+        const submitBtn = document.querySelector(
+            '#image-recognition-form .submit-btn',
+        ) as HTMLElement
+        submitBtn.innerHTML = Materials.createHTMLLoading('border')
         if (pickedImageFiles.length > 1) {
-            // const transcription = await this.recognitionImages(pickedImageFiles, imagesLang)
-            // this.setTranscription(transcription, 0)
+            this.setTranscriptionsData([])
+            let transcriptionDataIndex: number = -1
+            try {
+                await this.recognitionImages(
+                    pickedImageFiles,
+                    imageLangs,
+                    async (transcription) => {
+                        transcriptionDataIndex++
+                        this.addTranscriptionsData({ transcription })
+                        if (transcriptionDataIndex === 0) {
+                            this.setTranscription(transcription, transcriptionDataIndex)
+                        }
+                    },
+                )
+            } catch (error) {
+                this.setMessage('Fail to recognize the images')
+            }
         } else {
-            const transcription = await this.recognitionSingleImage(pickedImageFiles[0], imageLangs)
-            this.setTranscription(transcription, 0)
+            try {
+                await this.recognitionSingleImage(
+                    pickedImageFiles[0],
+                    imageLangs,
+                    async (transcription) => {
+                        this.setTranscriptionsData([{ transcription }])
+                        this.setTranscription(transcription, 0)
+                    },
+                )
+            } catch (error) {
+                this.setMessage('Fail to recognize the image')
+            }
         }
+        submitBtn.innerHTML = 'Recognize'
     }
 
     private static setTranscription(transcription: string | null, index: number): Promise<void> {

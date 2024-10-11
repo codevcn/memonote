@@ -29,4 +29,19 @@ class Materials {
             </div>`
         return notif
     }
+    static createHTMLProgress(type, percent, containerClass = '') {
+        let statusClass
+        if (type === 'success') {
+            statusClass = 'bg-success'
+        } else if (type === 'warning') {
+            statusClass = 'bg-warning'
+        } else {
+            statusClass = 'bg-info'
+        }
+        return `
+            <div class="progress ${containerClass}" role="progressbar">
+                <div class="progress-bar ${statusClass} progress-bar-striped progress-bar-animated"
+                    style="width: ${percent}%">${percent}%</div>
+            </div>`
+    }
 }
