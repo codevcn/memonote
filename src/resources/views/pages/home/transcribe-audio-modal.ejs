@@ -15,9 +15,7 @@
                 <section id="transcribe-audio-container">
                     <form id="transcribe-audio-form" action="#"
                         onsubmit="TranscribeAudioController.transcribeAudiosHandler(event)">
-                        <div class="header">
-                            <h2>Audio / Video Files</h2>
-                        </div>
+                        <h2 class="title">Audio / Video Files</h2>
 
                         <div class="upload-box">
                             <div class="upload-file active">
@@ -43,7 +41,7 @@
                         </div>
 
                         <div class="langs-select-container">
-                            <label for="audios-language-select" class="langs-title">Audios Language</label>
+                            <h2 class="title">Audio / Video Files</h2>
                             <select id="audios-language-select" class="form-select" name="audios-language">
                                 <option value="en" selected>English</option>
                                 <option value="vi">Vietnamese</option>
@@ -58,8 +56,9 @@
                     </form>
 
                     <section class="transcription-result">
-                        <select class="transcribed-files" onchange="TranscribeAudioController.switchTranscriptions()">
-                        </select>
+                        <h2 class="title">Transcription result</h2>
+                        <select class="transcribed-files"
+                            onchange="TranscribeAudioController.switchTranscriptions()"></select>
                         <div class="text-box" contenteditable>
                             Your transcription would be here...
                         </div>

@@ -138,7 +138,6 @@ $mmn-settings-switch-editor-progress-bgcl: rgba(235, 235, 235, 0.75);
         &:focus,
         &:hover {
             box-shadow: components.$mmn-box-shadow-on-input;
-            border-color: colors.$mmn-regular-gray-cl;
         }
 
         &:checked {

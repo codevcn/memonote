@@ -36,6 +36,14 @@
     justify-content: center;
     width: 55%;
 }
+#transcribe-audio-container .transcription-result .title {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding-left: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+}
 #transcribe-audio-container .transcription-result .transcribed-files {
     width: 100%;
     padding: 10px;
@@ -101,15 +109,13 @@
     font-family: Arial, sans-serif;
     border-radius: 8px;
 }
-#transcribe-audio-form .header {
-    display: flex;
-    align-items: center;
+#transcribe-audio-form .title {
+    display: inline-block;
     width: 100%;
-}
-#transcribe-audio-form .header h2 {
     margin: 0;
     padding-left: 10px;
     font-size: 1rem;
+    font-weight: bold;
 }
 #transcribe-audio-form .upload-box {
     text-align: center;
@@ -257,8 +263,13 @@
     margin-top: 20px;
     width: 100%;
 }
-#transcribe-audio-form .langs-select-container .langs-title {
+#transcribe-audio-form .langs-select-container .title {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
     padding-left: 10px;
+    font-size: 1rem;
+    font-weight: bold;
 }
 #transcribe-audio-form .langs-select-container select {
     width: 100%;

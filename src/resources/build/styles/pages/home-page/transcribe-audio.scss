@@ -22,6 +22,15 @@ $mmn-upload-files-n-result-gap: 50px;
     }
 }
 
+@mixin regular-title {
+    display: inline-block;
+    width: 100%;
+    margin: 0;
+    padding-left: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
 #transcribe-audio-message {
     display: none;
     margin-bottom: 15px;
@@ -62,6 +71,10 @@ $mmn-upload-files-n-result-gap: 50px;
         align-items: center;
         justify-content: center;
         width: 55%;
+
+        .title {
+            @include regular-title;
+        }
 
         .transcribed-files {
             width: 100%;
@@ -146,16 +159,8 @@ $mmn-upload-files-n-result-gap: 50px;
     font-family: Arial, sans-serif;
     border-radius: 8px;
 
-    .header {
-        display: flex;
-        align-items: center;
-        width: 100%;
-
-        h2 {
-            margin: 0;
-            padding-left: 10px;
-            font-size: 1rem;
-        }
+    .title {
+        @include regular-title;
     }
 
     .upload-box {
@@ -301,8 +306,8 @@ $mmn-upload-files-n-result-gap: 50px;
         margin-top: 20px;
         width: 100%;
 
-        .langs-title {
-            padding-left: 10px;
+        .title {
+            @include regular-title;
         }
 
         select {

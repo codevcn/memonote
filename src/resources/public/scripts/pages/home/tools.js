@@ -239,11 +239,8 @@ TranscribeAudioController.transcriptionResultEle = document.querySelector(
 TranscribeAudioController.transcribedFilesEle =
     _a.transcriptionResultEle.querySelector('.transcribed-files')
 class ImageRecognitionController {
-    static setTranscriptionsData(transcriptions) {
-        this.transcriptionsData = transcriptions
-    }
-    static addTranscriptionsData(...transcription) {
-        this.transcriptionsData.push(...transcription)
+    static setTranscriptionsData(transcription) {
+        this.transcriptionsData = transcription
     }
     static async createWorker(imageLangs, logger, errorHandler) {
         var _b
@@ -283,12 +280,15 @@ class ImageRecognitionController {
             }
             uploadBox.innerHTML = beforeHTML
             if (isValid) {
-                const images = files.map((file) => ({
-                    imageFile: file,
-                    imgURL: URL.createObjectURL(file),
-                }))
-                this.pickedImageFiles = images
-                this.setUIForPickedFiles(images)
+                if (this.pickedImageFile) {
+                    URL.revokeObjectURL(this.pickedImageFile.imgURL)
+                }
+                const imageFile = filesList[0]
+                this.pickedImageFile = {
+                    imageFile,
+                    imgURL: URL.createObjectURL(imageFile),
+                }
+                this.setUIForPickedFile(this.pickedImageFile)
             }
             return
         }
@@ -319,64 +319,41 @@ class ImageRecognitionController {
         }
         await Promise.all(files.map((file) => ImageRecognitionController.isValidImgType(file)))
     }
-    static setUIForPickedFiles(images) {
-        document
-            .querySelector('#image-recognition-form .upload-box .upload-file')
-            .classList.remove('active')
-        document
-            .querySelector('#image-recognition-form .upload-box .picked-image-files')
-            .classList.add('active')
-        const slideImgs = document.querySelector('#images-preview-slider .slide-images')
-        slideImgs.innerHTML = ''
-        const carouselIndicators = document.querySelector(
-            '#images-preview-slider .carousel-indicators',
+    static setUIForPickedFile(image) {
+        const imgName = image.imageFile.name
+        this.imageRecognitionForm
+            .querySelector('.upload-box')
+            .classList.replace('active-upload-file', 'active-picked-image-file')
+        const pickedImageEle = this.imageRecognitionForm.querySelector(
+            '.upload-box .picked-image-file',
         )
-        carouselIndicators.innerHTML = ''
-        let i = 0
-        for (const image of images) {
-            const imageName = image.imageFile.name
-            const carouselItem = document.createElement('div')
-            carouselItem.className = `carousel-item carousel-index-${i}`
-            const slideTitle = document.createElement('h2')
-            slideTitle.className = 'slide-title'
-            slideTitle.title = `Image: ${imageName}`
-            slideTitle.innerHTML = `
-                <i class="bi bi-file-earmark-image"></i>
-                <span>${imageName}</span>`
-            const slideImg = document.createElement('img')
-            slideImg.src = image.imgURL
-            slideImg.alt = `Picked Image - ${imageName}`
-            carouselItem.appendChild(slideTitle)
-            carouselItem.appendChild(slideImg)
-            carouselItem.insertAdjacentHTML(
-                'beforeend',
-                Materials.createHTMLProgress('success', 0, 'recognition-progress'),
-            )
-            slideImgs.appendChild(carouselItem)
-            carouselIndicators.innerHTML += `
-                <button type="button" data-bs-target="#images-preview-slider" data-bs-slide-to="${i}" class="active"></button>`
-            i++
-        }
-        slideImgs.querySelector('.carousel-item').classList.add('active')
-        carouselIndicators.querySelector('button').classList.add('active')
+        pickedImageEle.classList.replace(`active-${this.stageId}`, 'active-pre-recognition-img')
+        const imgTitle = pickedImageEle.querySelector('.image-title .text')
+        imgTitle.textContent = imgName
+        imgTitle.title = imgName
+        pickedImageEle.querySelector('.progress').outerHTML = Materials.createHTMLProgress(
+            'success',
+            0,
+            'w-100 mt-3',
+        )
+        this.setRecognitionSwitchButton(false)
+        document.getElementById('pre-recognition-img').innerHTML =
+            `<img src="${image.imgURL}" alt="${imgName}" />`
     }
-    static async recognitionSingleImage(image, langs, successHandler) {
+    static async recognitionSingleImage(image, langs) {
         const worker = await this.createWorker(
             langs,
             (status, progress) => {
                 if (status === 'recognizing text') {
-                    this.setRecognitionProgress(0, Number((Number(progress) * 100).toFixed(2)))
+                    this.setRecognitionProgress(Number((Number(progress) * 100).toFixed(2)))
                 }
             },
             (error) => {},
         )
-        const transcription = (await worker.recognize(image)).data.text
-        await successHandler(transcription)
+        return await worker.recognize(image)
     }
-    static setRecognitionProgress(imgIndex, percent) {
-        const progress = document.querySelector(
-            `#image-recognition-form .carousel-index-${imgIndex} .recognition-progress`,
-        )
+    static setRecognitionProgress(percent) {
+        const progress = this.imageRecognitionForm.querySelector(`.picked-image-file .progress`)
         progress.classList.add('active')
         const progressBar = progress.querySelector('.progress-bar')
         progressBar.style.width = `${percent}%`
@@ -385,94 +362,148 @@ class ImageRecognitionController {
             progressBar.classList.remove('progress-bar-animated')
         }
     }
-    static async recognitionImages(images, langs, successHandler) {
-        if (!this.scheduler) {
-            this.scheduler = Tesseract.createScheduler()
+    static selectWordOnRecognitionRect(word, selectedRect) {
+        console.log('>>> word selected >>>', word)
+        const rects = this.layer.find('Rect')
+        for (const rect of rects) {
+            rect.stroke('red')
+            rect.strokeWidth(2)
         }
-        await Promise.all(
-            Array(Math.floor(images.length / 2))
-                .fill(0)
-                .map(() => {
-                    return (async () => {
-                        this.scheduler.addWorker(
-                            await this.createWorker(
-                                langs,
-                                () => {},
-                                () => {},
-                            ),
-                        )
-                    })()
-                }),
-        )
-        await new Promise((resolve, reject) => {
-            console.log('>>> add job schedule >>>', this.scheduler.addJob)
-            let count = 0
-            for (const img of images) {
-                this.scheduler
-                    .addJob('recognize', img)
-                    .then((res) => {
-                        successHandler(res.data.text)
+        selectedRect.stroke('blue')
+        selectedRect.strokeWidth(3)
+        this.layer.draw()
+        const mousePos = this.stage.getPointerPosition()
+        const recognitionPopover = document.getElementById('recognition-result-popover')
+        this.showPopoverOnSelectWord(false, recognitionPopover)
+        recognitionPopover.style.left = `${mousePos.x}px`
+        recognitionPopover.style.top = `${mousePos.y}px`
+        recognitionPopover.querySelector('.text').textContent = word
+    }
+    static showPopoverOnSelectWord(hidden, popover) {
+        if (popover) {
+            popover.hidden = hidden
+        } else {
+            document.getElementById('recognition-result-popover').hidden = hidden
+        }
+    }
+    static setupRecognitionResult(recognitionResult, imageURL, stageWidth, stageHeight) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                const stage = new Konva.Stage({
+                    container: this.stageId,
+                    width: stageWidth,
+                    height: stageHeight,
+                })
+                const layer = new Konva.Layer()
+                stage.add(layer)
+                const { words } = recognitionResult.data
+                const imageEle = new Image()
+                imageEle.onload = () => {
+                    // Calculate the scale between image size and canvas size
+                    const imgWidth = imageEle.width
+                    const imgHeight = imageEle.height
+                    const canvasWidth = stage.width()
+                    const canvasHeight = stage.height()
+                    const scaleX = canvasWidth / imgWidth
+                    const scaleY = canvasHeight / imgHeight
+                    // Draw the image on Konva
+                    const image = new Konva.Image({
+                        x: 0,
+                        y: 0,
+                        image: imageEle,
+                        width: canvasWidth,
+                        height: canvasHeight,
                     })
-                    .catch((error) => {})
-                    .finally(() => {
-                        count++
-                        if (count === images.length) {
-                            this.scheduler
-                                .terminate()
-                                .then(() => {
-                                    resolve(true)
-                                })
-                                .catch((error) => {
-                                    reject(new BaseCustomError(error.message))
-                                })
-                        }
-                    })
-            }
+                    layer.add(image)
+                    // Draw bounding boxes for detected words
+                    let index = 0
+                    for (const word of words) {
+                        const { bbox } = word // Get bounding box for each word
+                        const rect = new Konva.Rect({
+                            x: bbox.x0 * scaleX,
+                            y: bbox.y0 * scaleY,
+                            width: (bbox.x1 - bbox.x0) * scaleX,
+                            height: (bbox.y1 - bbox.y0) * scaleY,
+                            stroke: 'red',
+                            strokeWidth: 2,
+                            draggable: false,
+                        })
+                        // Add click event to display text when box is clicked
+                        rect.on('click', () => {
+                            this.selectWordOnRecognitionRect(word.text, rect)
+                        })
+                        layer.add(rect)
+                        index++
+                    }
+                    layer.draw()
+                }
+                imageEle.crossOrigin = 'Anonymous' // Để tránh vấn đề CORS nếu hình ảnh từ domain khác
+                imageEle.src = imageURL
+                this.stage = stage
+                this.layer = layer
+                resolve()
+            }, 0)
         })
     }
-    static async recognizeImagesHandler(e) {
+    static async visualizeRecognitionResult(recognitionResult, imageURL) {
+        const imgPreview = document.querySelector('#pre-recognition-img img')
+        const stageWidth = imgPreview.clientWidth
+        const stageHeight = imgPreview.clientHeight
+        this.switchRecognition(`active-${this.stageId}`)
+        await this.setupRecognitionResult(recognitionResult, imageURL, stageWidth, stageHeight)
+    }
+    static setRecognitionSwitchButton(active) {
+        const switchBtn = this.imageRecognitionForm.querySelector('.header .form-switch')
+        switchBtn.classList.remove('active')
+        if (active) {
+            switchBtn.classList.add('active')
+        }
+    }
+    static async recognizeImageHandler(e) {
         e.preventDefault()
-        const pickedImageFiles = this.pickedImageFiles.map(({ imageFile }) => imageFile)
-        const formData = new FormData(document.getElementById('image-recognition-form'))
+        const pickedImage = this.pickedImageFile
+        const formData = new FormData(this.imageRecognitionForm)
         const imageLangs = formData.getAll('image-lang')
-        const submitBtn = document.querySelector('#image-recognition-form .submit-btn')
+        const submitBtn = this.imageRecognitionForm.querySelector('.submit-btn')
         submitBtn.innerHTML = Materials.createHTMLLoading('border')
-        if (pickedImageFiles.length > 1) {
-            this.setTranscriptionsData([])
-            let transcriptionDataIndex = -1
-            try {
-                await this.recognitionImages(
-                    pickedImageFiles,
-                    imageLangs,
-                    async (transcription) => {
-                        transcriptionDataIndex++
-                        this.addTranscriptionsData({ transcription })
-                        if (transcriptionDataIndex === 0) {
-                            this.setTranscription(transcription, transcriptionDataIndex)
-                        }
-                    },
-                )
-            } catch (error) {
-                this.setMessage('Fail to recognize the images')
-            }
-        } else {
-            try {
-                await this.recognitionSingleImage(
-                    pickedImageFiles[0],
-                    imageLangs,
-                    async (transcription) => {
-                        this.setTranscriptionsData([{ transcription }])
-                        this.setTranscription(transcription, 0)
-                    },
-                )
-            } catch (error) {
-                this.setMessage('Fail to recognize the image')
-            }
+        submitBtn.classList.add('loading')
+        let result = null
+        try {
+            result = await this.recognitionSingleImage(pickedImage.imageFile, imageLangs)
+        } catch (error) {
+            this.setMessage('Fail to recognize the image')
+        }
+        if (result) {
+            const transcription = result.data.text
+            this.setRecognitionSwitchButton(true)
+            this.visualizeRecognitionResult(result, pickedImage.imgURL).then(() => {
+                this.setTranscriptionsData({ transcription })
+                this.setTranscription(transcription)
+            })
         }
         submitBtn.innerHTML = 'Recognize'
+        submitBtn.classList.remove('loading')
     }
-    static setTranscription(transcription, index) {
-        this.focusedTranscriptionIndex = index
+    static switchRecognition(switchTo) {
+        const pickedImgFile = this.imageRecognitionForm.querySelector('.picked-image-file')
+        if (switchTo) {
+            pickedImgFile.classList.remove('active-pre-recognition-img', `active-${this.stageId}`)
+            pickedImgFile.classList.add(switchTo)
+        } else {
+            if (pickedImgFile.classList.contains('active-pre-recognition-img')) {
+                pickedImgFile.classList.replace(
+                    'active-pre-recognition-img',
+                    `active-${this.stageId}`,
+                )
+            } else {
+                pickedImgFile.classList.replace(
+                    `active-${this.stageId}`,
+                    'active-pre-recognition-img',
+                )
+            }
+        }
+    }
+    static setTranscription(transcription) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const textBox = this.transcriptionResultEle.querySelector('.text-box')
@@ -501,9 +532,8 @@ class ImageRecognitionController {
         }
     }
     static handleTranscriptionActions(type) {
-        const focusedTranscriptionIndex = this.focusedTranscriptionIndex
-        if (focusedTranscriptionIndex < 0) return
-        const transcription = this.transcriptionsData[focusedTranscriptionIndex].transcription
+        if (!this.transcriptionsData) return
+        const transcription = this.transcriptionsData.transcription
         if (transcription && transcription.length > 0) {
             const resultActions = this.transcriptionResultEle.querySelector('.actions')
             if (type === 'write') {
@@ -528,9 +558,8 @@ class ImageRecognitionController {
         }
     }
 }
-ImageRecognitionController.transcriptionsData = []
-ImageRecognitionController.focusedTranscriptionIndex = -1
-ImageRecognitionController.pickedImageFiles = []
+ImageRecognitionController.transcriptionsData = null
+ImageRecognitionController.pickedImageFile = null
 ImageRecognitionController.imageAllowedExts = [
     { exts: ['jpg', 'jpeg'], magicNumber: 'ffd8ffe0' },
     { exts: ['png'], magicNumber: '89504e47' },
@@ -539,6 +568,9 @@ ImageRecognitionController.imageAllowedExts = [
 ImageRecognitionController.transcriptionResultEle = document.querySelector(
     '#image-recognition-container .transcription-result',
 )
+ImageRecognitionController.imageRecognitionForm = document.getElementById('image-recognition-form')
 ImageRecognitionController.workers = []
-ImageRecognitionController.scheduler = null
 ImageRecognitionController.maxImgsCount = 5
+ImageRecognitionController.stage = null
+ImageRecognitionController.layer = null
+ImageRecognitionController.stageId = 'recognition-result-preview'

@@ -14,13 +14,21 @@
 
                 <section id="image-recognition-container">
                     <form id="image-recognition-form" action="#"
-                        onsubmit="ImageRecognitionController.recognizeImagesHandler(event)">
+                        onsubmit="ImageRecognitionController.recognizeImageHandler(event)">
                         <div class="header">
-                            <h2>Images</h2>
+                            <h2 class="title">Image</h2>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" checked
+                                    id="switch-recognition-input" name="switch-recognition"
+                                    onchange="ImageRecognitionController.switchRecognition()" />
+                                <label class="form-check-label" for="switch-recognition-input">
+                                    Switch
+                                </label>
+                            </div>
                         </div>
 
-                        <div class="upload-box">
-                            <div class="upload-file active">
+                        <div class="upload-box active-upload-file">
+                            <div class="upload-file">
                                 <div class="upload">
                                     <p>Drag & Drop</p>
                                     <span class="supported">JPG, PNG, WEBP, BMP, PBM</span>
@@ -28,30 +36,29 @@
                                 <p class="OR">— OR —</p>
                                 <label class="browse-btn" for="image-file-input">
                                     <i class="bi bi-folder-plus"></i>
-                                    <span>BROWSE FILES</span>
+                                    <span>BROWSE FILE</span>
                                 </label>
                                 <input type="file" id="image-file-input" name="image-file" hidden
-                                    accept=".bmp, .jpg, .png, .pbm, .webp" multiple
+                                    accept=".bmp, .jpg, .png, .pbm, .webp"
                                     onchange="ImageRecognitionController.pickImages(this)" />
                             </div>
-                            <div class="picked-image-files">
-                                <div class="images-preview">
-                                    <div id="images-preview-slider" class="carousel slide">
-                                        <div class="carousel-indicators"></div>
-                                        <div class="carousel-inner slide-images"></div>
-                                        <button class="carousel-control-prev" type="button"
-                                            data-bs-target="#images-preview-slider" data-bs-slide="prev">
-                                            <span class="carousel-control-prev-icon">
-                                                <i class="bi bi-caret-left-fill control-icon"></i>
-                                            </span>
-                                        </button>
-                                        <button class="carousel-control-next" type="button"
-                                            data-bs-target="#images-preview-slider" data-bs-slide="next">
-                                            <span class="carousel-control-next-icon">
-                                                <i class="bi bi-caret-right-fill control-icon"></i>
-                                            </span>
-                                        </button>
-                                    </div>
+                            <div class="picked-image-file active-pre-recognition-img">
+                                <h2 class="image-title">
+                                    <i class="bi bi-file-earmark-image"></i>
+                                    <span class="text"></span>
+                                </h2>
+                                <div id="pre-recognition-img"></div>
+                                <div id="recognition-result-preview"></div>
+                                <div id="recognition-result-popover" hidden>
+                                    <span class="text"></span>
+                                    <span class="close-btn"
+                                        onclick="ImageRecognitionController.showPopoverOnSelectWord(true)">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                    </span>
+                                </div>
+                                <div class="progress w-100 mt-3" role="progressbar">
+                                    <div class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                                        style="width: 0%">0%</div>
                                 </div>
                                 <label class="change-file" for="image-file-input">
                                     <i class="bi bi-arrow-repeat"></i>
@@ -61,7 +68,7 @@
                         </div>
 
                         <div class="langs-select-container">
-                            <h2 class="langs-title">Language for the above image</h2>
+                            <h2 class="title">Language for the above image</h2>
                             <div class="langs">
                                 <div class="form-check">
                                     <input class="form-check-input" name="image-lang" type="checkbox" value="eng"
@@ -115,6 +122,7 @@
                     </form>
 
                     <section class="transcription-result">
+                        <h2 class="title">Transcription result</h2>
                         <div class="text-box" contenteditable>Your transcription would be here...</div>
                         <div class="actions">
                             <button class="action write"
