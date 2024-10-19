@@ -6,4 +6,5 @@ type TGetNotificationsResAPI = {
 type TTranscribeAudiosResAPI = {
     transcription: string | null
     confidence: number
+    paragraphs: TParagraphs[] | null
 }

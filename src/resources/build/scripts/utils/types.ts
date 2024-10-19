@@ -74,3 +74,8 @@ type TNavBarPos = 'sticky' | 'static'
 type TAudioLangs = 'en' | 'vi' | 'en-us'
 
 type TImageLangs = 'eng' | 'vie' | 'jpn' | 'chi_sim' | 'kor' | 'tha'
+
+type TParagraphs = {
+    wordsCount: number
+    sentences: string[]
+}

@@ -45,6 +45,9 @@ class TranscribeAudioController {
     private static readonly transcribedFilesEle = this.transcriptionResultEle.querySelector(
         '.transcribed-files',
     ) as HTMLSelectElement
+    private static readonly form = document.getElementById(
+        'transcribe-audio-form',
+    ) as HTMLFormElement
 
     static setTranscriptionsData(transcriptions: TTranscribeAudioData[]): void {
         this.transcriptionsData = transcriptions
@@ -55,9 +58,7 @@ class TranscribeAudioController {
     }
 
     static setSubmitLoading(loading: boolean): void {
-        const submitBtn = document.querySelector(
-            '#transcribe-audio-form .submit-btn',
-        ) as HTMLElement
+        const submitBtn = this.form.querySelector('.submit-btn') as HTMLElement
         if (loading) {
             submitBtn.classList.add('loading')
             submitBtn.innerHTML = Materials.createHTMLLoading('border')
@@ -73,8 +74,8 @@ class TranscribeAudioController {
         audioId: string,
         status: 'loading' | 'success' | 'error' | 'info',
     ): void {
-        const pickedFile = document.querySelector(
-            `#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item[data-audio-id="${audioId}"]`,
+        const pickedFile = this.form.querySelector(
+            `.upload-box .picked-audio-files .files-list .file-item[data-audio-id="${audioId}"]`,
         ) as HTMLElement
         pickedFile.classList.remove('loading', 'success', 'error', 'info')
         pickedFile.classList.add(status)
@@ -123,9 +124,8 @@ class TranscribeAudioController {
 
         if (!this.validateBeforeSubmit(audios)) return
 
-        const form = document.getElementById('transcribe-audio-form') as HTMLFormElement
-        const formData = new FormData(form)
-        const lang = formData.get('audio-language') as TAudioLangs
+        const formData = new FormData(this.form)
+        const lang = formData.get('audios-language') as TAudioLangs
         this.setMessage(null)
         this.setSubmitLoading(true)
         this.resetDataAndUI()
@@ -157,7 +157,7 @@ class TranscribeAudioController {
                     transcribedCount++
                     if (transcribedCount === audios.length) {
                         this.setSubmitLoading(false)
-                        this.setMessage('All the audios are transcribed!', true)
+                        this.setMessage('Transcribed!', true)
                     }
                 })
         }
@@ -237,11 +237,9 @@ class TranscribeAudioController {
     }
 
     private static setUIForPickedFiles(files: TPickedAudioFile[]): void {
-        document
-            .querySelector('#transcribe-audio-form .upload-box .upload-file')!
-            .classList.remove('active')
-        const pickedFiles = document.querySelector(
-            '#transcribe-audio-form .upload-box .picked-audio-files',
+        this.form.querySelector('.upload-box .upload-file')!.classList.remove('active')
+        const pickedFiles = this.form.querySelector(
+            '.upload-box .picked-audio-files',
         ) as HTMLElement
         pickedFiles.classList.add('active')
         const filesList = pickedFiles.querySelector('.files-list') as HTMLElement
@@ -317,11 +315,10 @@ class ImageRecognitionController {
     private static readonly transcriptionResultEle = document.querySelector(
         '#image-recognition-container .transcription-result',
     ) as HTMLElement
-    private static readonly imageRecognitionForm = document.getElementById(
+    private static readonly form = document.getElementById(
         'image-recognition-form',
     ) as HTMLFormElement
     private static workers: TRecognitionWorker[] = []
-    private static readonly maxImgsCount: number = 5
     private static stage: any | null = null
     private static layer: any | null = null
     private static readonly stageId: string = 'recognition-result-preview'
@@ -407,18 +404,15 @@ class ImageRecognitionController {
     }
 
     private static async validateImages(files: File[]): Promise<void> {
-        if (files.length > this.maxImgsCount) {
-            throw new BaseCustomError('Maximum number of images is ' + this.maxImgsCount)
-        }
         await Promise.all(files.map((file) => ImageRecognitionController.isValidImgType(file)))
     }
 
     private static setUIForPickedFile(image: TPickedImageFile) {
         const imgName = image.imageFile.name
-        this.imageRecognitionForm
+        this.form
             .querySelector('.upload-box')!
             .classList.replace('active-upload-file', 'active-picked-image-file')
-        const pickedImageEle = this.imageRecognitionForm.querySelector(
+        const pickedImageEle = this.form.querySelector(
             '.upload-box .picked-image-file',
         ) as HTMLElement
         pickedImageEle.classList.replace(`active-${this.stageId}`, 'active-pre-recognition-img')
@@ -430,7 +424,7 @@ class ImageRecognitionController {
             0,
             'w-100 mt-3',
         )
-        this.setRecognitionSwitchButton(false)
+        this.setSwitcRecognitionhButton(false)
         document.getElementById('pre-recognition-img')!.innerHTML =
             `<img src="${image.imgURL}" alt="${imgName}" />`
     }
@@ -452,9 +446,7 @@ class ImageRecognitionController {
     }
 
     private static setRecognitionProgress(percent: number): void {
-        const progress = this.imageRecognitionForm.querySelector(
-            `.picked-image-file .progress`,
-        ) as HTMLElement
+        const progress = this.form.querySelector(`.picked-image-file .progress`) as HTMLElement
         progress.classList.add('active')
         const progressBar = progress.querySelector('.progress-bar') as HTMLElement
         progressBar.style.width = `${percent}%`
@@ -465,7 +457,6 @@ class ImageRecognitionController {
     }
 
     private static selectWordOnRecognitionRect(word: string, selectedRect: any): void {
-        console.log('>>> word selected >>>', word)
         const rects = this.layer.find('Rect')
         for (const rect of rects) {
             rect.stroke('red')
@@ -580,22 +571,29 @@ class ImageRecognitionController {
         await this.setupRecognitionResult(recognitionResult, imageURL, stageWidth, stageHeight)
     }
 
-    private static setRecognitionSwitchButton(active: boolean): void {
-        const switchBtn = this.imageRecognitionForm.querySelector(
-            '.header .form-switch',
-        ) as HTMLElement
+    private static setSwitcRecognitionhButton(active: boolean): void {
+        const switchBtn = this.form.querySelector('.header .form-switch') as HTMLElement
         switchBtn.classList.remove('active')
         if (active) {
             switchBtn.classList.add('active')
         }
     }
 
+    private static validateBeforeRecognize(pickedImage: TPickedImageFile): boolean {
+        if (!pickedImage) {
+            this.setMessage('Please pick a file!')
+            return false
+        }
+        return true
+    }
+
     static async recognizeImageHandler(e: SubmitEvent): Promise<void> {
         e.preventDefault()
         const pickedImage = this.pickedImageFile!
-        const formData = new FormData(this.imageRecognitionForm)
+        if (!this.validateBeforeRecognize(pickedImage)) return
+        const formData = new FormData(this.form)
         const imageLangs = formData.getAll('image-lang') as TImageLangs[]
-        const submitBtn = this.imageRecognitionForm.querySelector('.submit-btn') as HTMLElement
+        const submitBtn = this.form.querySelector('.submit-btn') as HTMLElement
         submitBtn.innerHTML = Materials.createHTMLLoading('border')
         submitBtn.classList.add('loading')
         let result: NSTesseract.RecognizeResult | null = null
@@ -606,7 +604,7 @@ class ImageRecognitionController {
         }
         if (result) {
             const transcription = result.data.text
-            this.setRecognitionSwitchButton(true)
+            this.setSwitcRecognitionhButton(true)
             this.visualizeRecognitionResult(result, pickedImage.imgURL).then(() => {
                 this.setTranscriptionsData({ transcription })
                 this.setTranscription(transcription)
@@ -617,9 +615,7 @@ class ImageRecognitionController {
     }
 
     static switchRecognition(switchTo?: string): void {
-        const pickedImgFile = this.imageRecognitionForm.querySelector(
-            '.picked-image-file',
-        ) as HTMLElement
+        const pickedImgFile = this.form.querySelector('.picked-image-file') as HTMLElement
         if (switchTo) {
             pickedImgFile.classList.remove('active-pre-recognition-img', `active-${this.stageId}`)
             pickedImgFile.classList.add(switchTo)

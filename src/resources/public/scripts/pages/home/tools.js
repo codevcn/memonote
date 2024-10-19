@@ -8,7 +8,7 @@ class TranscribeAudioController {
         this.transcriptionsData.push(...transcription)
     }
     static setSubmitLoading(loading) {
-        const submitBtn = document.querySelector('#transcribe-audio-form .submit-btn')
+        const submitBtn = this.form.querySelector('.submit-btn')
         if (loading) {
             submitBtn.classList.add('loading')
             submitBtn.innerHTML = Materials.createHTMLLoading('border')
@@ -20,8 +20,8 @@ class TranscribeAudioController {
         }
     }
     static setTranscribeAudioStatus(audioId, status) {
-        const pickedFile = document.querySelector(
-            `#transcribe-audio-form .upload-box .picked-audio-files .files-list .file-item[data-audio-id="${audioId}"]`,
+        const pickedFile = this.form.querySelector(
+            `.upload-box .picked-audio-files .files-list .file-item[data-audio-id="${audioId}"]`,
         )
         pickedFile.classList.remove('loading', 'success', 'error', 'info')
         pickedFile.classList.add(status)
@@ -64,9 +64,8 @@ class TranscribeAudioController {
         e.preventDefault()
         const audios = this.pickedAudioFiles
         if (!this.validateBeforeSubmit(audios)) return
-        const form = document.getElementById('transcribe-audio-form')
-        const formData = new FormData(form)
-        const lang = formData.get('audio-language')
+        const formData = new FormData(this.form)
+        const lang = formData.get('audios-language')
         this.setMessage(null)
         this.setSubmitLoading(true)
         this.resetDataAndUI()
@@ -97,7 +96,7 @@ class TranscribeAudioController {
                     transcribedCount++
                     if (transcribedCount === audios.length) {
                         this.setSubmitLoading(false)
-                        this.setMessage('All the audios are transcribed!', true)
+                        this.setMessage('Transcribed!', true)
                     }
                 })
         }
@@ -166,12 +165,8 @@ class TranscribeAudioController {
         LayoutController.toast('error', 'Please pick a file')
     }
     static setUIForPickedFiles(files) {
-        document
-            .querySelector('#transcribe-audio-form .upload-box .upload-file')
-            .classList.remove('active')
-        const pickedFiles = document.querySelector(
-            '#transcribe-audio-form .upload-box .picked-audio-files',
-        )
+        this.form.querySelector('.upload-box .upload-file').classList.remove('active')
+        const pickedFiles = this.form.querySelector('.upload-box .picked-audio-files')
         pickedFiles.classList.add('active')
         const filesList = pickedFiles.querySelector('.files-list')
         filesList.innerHTML = ''
@@ -238,6 +233,7 @@ TranscribeAudioController.transcriptionResultEle = document.querySelector(
 )
 TranscribeAudioController.transcribedFilesEle =
     _a.transcriptionResultEle.querySelector('.transcribed-files')
+TranscribeAudioController.form = document.getElementById('transcribe-audio-form')
 class ImageRecognitionController {
     static setTranscriptionsData(transcription) {
         this.transcriptionsData = transcription
@@ -314,19 +310,14 @@ class ImageRecognitionController {
         })
     }
     static async validateImages(files) {
-        if (files.length > this.maxImgsCount) {
-            throw new BaseCustomError('Maximum number of images is ' + this.maxImgsCount)
-        }
         await Promise.all(files.map((file) => ImageRecognitionController.isValidImgType(file)))
     }
     static setUIForPickedFile(image) {
         const imgName = image.imageFile.name
-        this.imageRecognitionForm
+        this.form
             .querySelector('.upload-box')
             .classList.replace('active-upload-file', 'active-picked-image-file')
-        const pickedImageEle = this.imageRecognitionForm.querySelector(
-            '.upload-box .picked-image-file',
-        )
+        const pickedImageEle = this.form.querySelector('.upload-box .picked-image-file')
         pickedImageEle.classList.replace(`active-${this.stageId}`, 'active-pre-recognition-img')
         const imgTitle = pickedImageEle.querySelector('.image-title .text')
         imgTitle.textContent = imgName
@@ -336,7 +327,7 @@ class ImageRecognitionController {
             0,
             'w-100 mt-3',
         )
-        this.setRecognitionSwitchButton(false)
+        this.setSwitcRecognitionhButton(false)
         document.getElementById('pre-recognition-img').innerHTML =
             `<img src="${image.imgURL}" alt="${imgName}" />`
     }
@@ -353,7 +344,7 @@ class ImageRecognitionController {
         return await worker.recognize(image)
     }
     static setRecognitionProgress(percent) {
-        const progress = this.imageRecognitionForm.querySelector(`.picked-image-file .progress`)
+        const progress = this.form.querySelector(`.picked-image-file .progress`)
         progress.classList.add('active')
         const progressBar = progress.querySelector('.progress-bar')
         progressBar.style.width = `${percent}%`
@@ -363,7 +354,6 @@ class ImageRecognitionController {
         }
     }
     static selectWordOnRecognitionRect(word, selectedRect) {
-        console.log('>>> word selected >>>', word)
         const rects = this.layer.find('Rect')
         for (const rect of rects) {
             rect.stroke('red')
@@ -452,19 +442,27 @@ class ImageRecognitionController {
         this.switchRecognition(`active-${this.stageId}`)
         await this.setupRecognitionResult(recognitionResult, imageURL, stageWidth, stageHeight)
     }
-    static setRecognitionSwitchButton(active) {
-        const switchBtn = this.imageRecognitionForm.querySelector('.header .form-switch')
+    static setSwitcRecognitionhButton(active) {
+        const switchBtn = this.form.querySelector('.header .form-switch')
         switchBtn.classList.remove('active')
         if (active) {
             switchBtn.classList.add('active')
         }
     }
+    static validateBeforeRecognize(pickedImage) {
+        if (!pickedImage) {
+            this.setMessage('Please pick a file!')
+            return false
+        }
+        return true
+    }
     static async recognizeImageHandler(e) {
         e.preventDefault()
         const pickedImage = this.pickedImageFile
-        const formData = new FormData(this.imageRecognitionForm)
+        if (!this.validateBeforeRecognize(pickedImage)) return
+        const formData = new FormData(this.form)
         const imageLangs = formData.getAll('image-lang')
-        const submitBtn = this.imageRecognitionForm.querySelector('.submit-btn')
+        const submitBtn = this.form.querySelector('.submit-btn')
         submitBtn.innerHTML = Materials.createHTMLLoading('border')
         submitBtn.classList.add('loading')
         let result = null
@@ -475,7 +473,7 @@ class ImageRecognitionController {
         }
         if (result) {
             const transcription = result.data.text
-            this.setRecognitionSwitchButton(true)
+            this.setSwitcRecognitionhButton(true)
             this.visualizeRecognitionResult(result, pickedImage.imgURL).then(() => {
                 this.setTranscriptionsData({ transcription })
                 this.setTranscription(transcription)
@@ -485,7 +483,7 @@ class ImageRecognitionController {
         submitBtn.classList.remove('loading')
     }
     static switchRecognition(switchTo) {
-        const pickedImgFile = this.imageRecognitionForm.querySelector('.picked-image-file')
+        const pickedImgFile = this.form.querySelector('.picked-image-file')
         if (switchTo) {
             pickedImgFile.classList.remove('active-pre-recognition-img', `active-${this.stageId}`)
             pickedImgFile.classList.add(switchTo)
@@ -568,9 +566,8 @@ ImageRecognitionController.imageAllowedExts = [
 ImageRecognitionController.transcriptionResultEle = document.querySelector(
     '#image-recognition-container .transcription-result',
 )
-ImageRecognitionController.imageRecognitionForm = document.getElementById('image-recognition-form')
+ImageRecognitionController.form = document.getElementById('image-recognition-form')
 ImageRecognitionController.workers = []
-ImageRecognitionController.maxImgsCount = 5
 ImageRecognitionController.stage = null
 ImageRecognitionController.layer = null
 ImageRecognitionController.stageId = 'recognition-result-preview'

@@ -1608,6 +1608,11 @@ bold - bold
     font-size: 1rem;
     font-weight: bold;
 }
+#transcribe-audio-container .transcription-result .separators .btn {
+    padding: 5px 10px;
+    line-height: 1;
+    font-size: 0.9rem;
+}
 #transcribe-audio-container .transcription-result .transcribed-files {
     width: 100%;
     padding: 10px;
@@ -1629,6 +1634,7 @@ bold - bold
     overflow-y: auto;
     padding: 10px;
     width: 100%;
+    white-space: pre-wrap;
 }
 #transcribe-audio-container .transcription-result .text-box .spinner {
     height: 24px;

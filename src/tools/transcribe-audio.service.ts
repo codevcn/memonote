@@ -4,7 +4,7 @@ import path, { join } from 'path'
 import { createClient, DeepgramClient } from '@deepgram/sdk'
 import { createReadStream, ReadStream } from 'fs'
 import { readFile, unlink } from 'fs/promises'
-import type { TTranscribeAudioFile, TTranscribeAudio } from './types.js'
+import type { TTranscribeAudioFile, TTranscribeAudio, TParagraphs } from './types.js'
 import { BaseCustomException } from '../utils/exception/custom.exception.js'
 import { EAudioMessages } from './messages.js'
 import { EAudioFiles, EAudioLangs } from './constants.js'
@@ -14,12 +14,6 @@ import multer from 'multer'
 import type { Request, Response } from 'express'
 import { NoteUniqueNameDTO } from '../note/DTOs.js'
 import { validateJson } from '../utils/helpers.js'
-
-const test = [
-    'Anh sẽ chỉ cho các bạn một cách để phát hiện và vô hiệu hóa các camera quay lén Mà chỉ cần sử dụng mỗi camera điện thoại thôi chứ không cần thêm thiết bị thứ ba Camera quay lén lên nó có hai loại Một loại là trang bị thêm đèn hồng ngoại để nhìn vào đêm Còn một loại lại không có đèn hồng ngoại nên chỉ nhìn được khi có đủ ánh sáng Với cái loại mà dùng đèn hồng ngoại thì mình chỉ cần dùng camera iPhone Đầu tiên là mình tắt thiết điện đi kéo cửa sổ vào để cho phòng khoảng băng tối Sau đó đứng ở những vị trí mà nghi ngờ là sẽ bị quay nén ở vị trí đấy Dùng camera iPhone ở chế độ thường lia xung quanh để kiểm tra xem có con mắt nào đang hướng về tôi hay không Nếu mà nó chớp chớp chớp đỏ thì đấy chính là cái chỗ phát ra tia hồng ngoại Nhìn anh thấy này nó chớp không? Có Đấy! Nhưng mà mắt thường thì sẽ không nhìn thấy Ơ nhờ! Thấy thật luôn! Còn đây là camera iPhone nó bắt được tia hồng ngoại Mà bên cạnh cái đèn đấy thường nó sẽ có camera Phương pháp này thì sẽ không phát hiện được những camera không trang bị thêm đèn hồng ngoại nhưng mà như thế thì không cần tại vì tắt đèn đi là vội hóa được nó rồi',
-    'Một thằng con trai mà không gái gú, rượu chè, thuốc lá là do nó không có tiền mua những cái đấy. May mắn là tôi được đẻ ra trong một gia đình khá giả. Chữ khá ở đây nó là giả đấy. Trong tình yêu được cái câu Em là tất cả cuộc đời anh nó không thực sự lãng mạn đến thế vì nếu ngoài em ra anh chả có gì thì gay to đấy. Bằng chứng cho việc một người thực sự nghèo là sở hữu sổ hộ nghèo, thứ mà bây giờ chủ yếu là dùng để xin húp trước. Có thể ví người nghèo giống như chủ nghĩa hư vô, vì nói cách khác là ví họ như không có gì cả. Một anh nhà giàu chơi xe tăng từng nói thế này: Dù giàu hay nghèo thì chết cũng chỉ có 2m đất, cơm cũng ngày ba bữa là đủ, nhà đẹp hay xấu, chui vào ngủ là được. Câu trên mà người giàu nói thì được kính phục, nể trọng. Người nghèo nó thì bị coi là không có chí tiến thủ. Như đã nói trong video đơn giản hóa YouTube thì tôi chỉ ước là làm YouTube có một ngày nghèo thôi chứ ngày nào cũng nghèo mệt lắm Tại vì nghèo thì thường đi đôi với nhiều thứ, nghèo đi kèm với đói, ăn xin thì đói ăn đói mặc, nghệ sĩ thì đói fame, nghèo còn đi đôi với bẩn. Sự nghèo đói là nguồn cảm hứng sáng tác cho nhiều tác phẩm nghệ thuật và là nguồn content bẩn vô tận của các tik tok Nghèo thì còn đi đôi với rách Minh chứng là các anh có tên như này thì nói lên tất cả Anh Jack này thì nghèo vật chất nhưng giàu nhân cách, còn anh Jack này thì rất giàu vật chất Nhưng mà bần cùng thì sinh đạo tặc Vậy nên trong xã hội người nghèo thường bị nó là không đáng tin cậy và hay bị nghi ngờ Nhưng mà trừ tôi ra vì khi tôi bảo là tôi nghèo thì không ai nghi ngờ điều đấy cả Giấu được giàu chứ không ai giấu được nghèo Đúng thật là Thái Công có thể chẳng biết bạn giấu tiền ở đâu nhưng mà thằng trộm kiểu gì cũng biết',
-    '',
-]
 
 @Injectable()
 export class TranscribeAudioService {
@@ -98,8 +92,19 @@ export class TranscribeAudioService {
         if (error) {
             throw error
         }
-        const { transcript, confidence } = result.results.channels[0].alternatives[0]
-        return { transcription: transcript, confidence }
+        const transcription = result.results.channels[0].alternatives[0]
+        let paragraphs: TParagraphs[] | null = null
+        if (transcription.paragraphs) {
+            paragraphs = transcription.paragraphs.paragraphs.map((para) => ({
+                wordsCount: para.num_words,
+                sentences: para.sentences.map((sen) => sen.text),
+            }))
+        }
+        return {
+            transcription: transcription.transcript,
+            confidence: transcription.confidence,
+            paragraphs,
+        }
     }
 
     private async transcribeAudios(

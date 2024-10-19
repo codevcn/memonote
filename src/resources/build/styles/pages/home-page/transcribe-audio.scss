@@ -76,6 +76,14 @@ $mmn-upload-files-n-result-gap: 50px;
             @include regular-title;
         }
 
+        .separators {
+            .btn {
+                padding: 5px 10px;
+                line-height: 1;
+                font-size: 0.9rem;
+            }
+        }
+
         .transcribed-files {
             width: 100%;
             padding: 10px;
@@ -99,6 +107,7 @@ $mmn-upload-files-n-result-gap: 50px;
             overflow-y: auto;
             padding: 10px;
             width: 100%;
+            white-space: pre-wrap;
 
             .spinner {
                 height: 24px;

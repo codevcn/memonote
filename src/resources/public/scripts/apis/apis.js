@@ -23,5 +23,21 @@ const requestLangAPI = (langCode) => axiosClient.post(`/lang/request-lang`, { la
 const fetchArticleAPI = () =>
     axiosClient.get(`/article/fetch-article/${pageData.noteId}`, { responseType: 'blob' })
 // tools
-const transcribeAudioAPI = (formDataWithFile) =>
-    axiosClient.post('/tools/transcribe-audio/' + getNoteUniqueNameFromURL(), formDataWithFile)
+// const transcribeAudioAPI = (
+//     formDataWithFile: FormData,
+// ): Promise<TAxiosHTTPRes<TTranscribeAudiosResAPI>> =>
+//     axiosClient.post('/tools/transcribe-audio/' + getNoteUniqueNameFromURL(), formDataWithFile)
+const transcribeAudioAPI = async (formDataWithFile) => {
+    await new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(true)
+        }, 2000)
+    })
+    return {
+        data: {
+            confidence: 0.99,
+            paragraphs: [{ sentences: ['anh la', 'mot', 'thang ngoc'], wordsCount: 5 }],
+            transcription: 'anh la mot thang ngoc',
+        },
+    }
+}
