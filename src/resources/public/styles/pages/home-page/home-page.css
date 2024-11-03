@@ -549,9 +549,6 @@ bold - bold
     width: 1.5rem;
 }
 
-#note-settings-modal {
-    z-index: 1400;
-}
 #note-settings-modal .modal-dialog .modal-content .modal-header {
     padding: 10px 20px;
 }
@@ -1553,13 +1550,33 @@ bold - bold
 
 #settings-form-tools .form-content .tools-list {
     display: flex;
-    justify-content: center;
     align-items: center;
     margin-top: 20px;
+}
+#settings-form-tools .form-content .tools-list .tool-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+    padding: 20px 10px;
+}
+#settings-form-tools .form-content .tools-list .tool-item:hover {
+    background-color: rgba(211, 211, 211, 0.49);
+}
+#settings-form-tools .form-content .tools-list .tool-item .tool-item-icon {
+    border-radius: 50%;
+}
+#settings-form-tools .form-content .tools-list .tool-item .tool-item-icon i {
+    font-size: 4rem;
 }
 #settings-form-tools .form-content .tools-list .tool-item .tool-item-info {
     display: flex;
     column-gap: 5px;
+}
+#settings-form-tools .form-content .tools-list .tool-item .tool-item-info .text {
+    margin-top: 10px;
+    text-align: center;
 }
 
 #transcribe-audio-message {
@@ -1667,6 +1684,18 @@ bold - bold
 #transcribe-audio-container .transcription-result .actions .action:hover {
     background-color: #fff;
     color: #333;
+}
+@media screen and (max-width: 992px) {
+    #transcribe-audio-container {
+        display: block;
+    }
+    #transcribe-audio-container .transcription-result {
+        margin-top: 30px;
+        width: 100%;
+    }
+    #transcribe-audio-container #transcribe-audio-form {
+        width: 100%;
+    }
 }
 
 #transcribe-audio-form {

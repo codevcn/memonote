@@ -51,7 +51,7 @@
                             <%= t('home-page.settings.changeModes.Realtime_mode_label',i18nLang) %>
                         </label>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.changeModes.Realtime_mode_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.changeModes.Realtime_mode_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -65,7 +65,7 @@
                             <%= t('home-page.settings.changeModes.Notify_edited_label',i18nLang) %>
                         </label>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.changeModes.Notify_edited_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.changeModes.Notify_edited_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -79,7 +79,7 @@
                             <%= t('home-page.settings.changeModes.Night_mode_label',i18nLang) %>
                         </label>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.changeModes.Night_mode_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.changeModes.Night_mode_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -153,7 +153,7 @@
                             <%= t('home-page.settings.password.Logout_all_users',i18nLang) %>
                         </label>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.password.Logout_all_users_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.password.Logout_all_users_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -219,7 +219,7 @@
                             <%= t('home-page.settings.userInterface.Notify_edited_styling_title',i18nLang) %>
                         </span>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.userInterface.Notify_edited_styling_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.userInterface.Notify_edited_styling_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -239,7 +239,7 @@
                             <%= t('home-page.settings.userInterface.Change_text_font_title',i18nLang) %>
                         </span>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.userInterface.Change_text_font_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.userInterface.Change_text_font_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -258,7 +258,7 @@
                             <%= t('home-page.settings.userInterface.Nav_bar_position',i18nLang) %>
                         </span>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.userInterface.Nav_bar_position_tooltip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.userInterface.Nav_bar_position_tooltip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -296,7 +296,7 @@
                             <%= t('home-page.settings.language.Change_language_label',i18nLang) %>
                         </span>
                         <span data-bs-toggle="tooltip" data-bs-placement="bottom"
-                            title="<%= t('home-page.settings.language.Change_language_tootlip',i18nLang) %>"
+                            data-bs-title="<%= t('home-page.settings.language.Change_language_tootlip',i18nLang) %>"
                             class="details-btn">
                             <i class="bi bi-info-circle-fill"></i>
                         </span>
@@ -341,7 +341,7 @@
 
                         <button class="editor normal" onclick="EditorsController.switchEditorsHandler('normal')">
                             <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn picked-btn"
-                                title="<%= t('home-page.settings.editors.Picked',i18nLang) %>">
+                                data-bs-title="<%= t('home-page.settings.editors.Picked',i18nLang) %>">
                                 <i class="bi bi-check-circle-fill"></i>
                             </span>
                             <span>
@@ -354,7 +354,7 @@
                         </button>
                         <button class="editor rich" onclick="EditorsController.switchEditorsHandler('rich')">
                             <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn picked-btn"
-                                title="<%= t('home-page.settings.editors.Picked',i18nLang) %>">
+                                data-bs-title="<%= t('home-page.settings.editors.Picked',i18nLang) %>">
                                 <i class="bi bi-check-circle-fill"></i>
                             </span>
                             <span>
@@ -381,17 +381,23 @@
             </div>
             <div class="form-content">
                 <div class="tools-list">
-                    <div class="tool-item transcript-audio">
-                        <button data-bs-toggle="modal" data-bs-target="#transcribe-audio-modal">trans</button>
-                        <button data-bs-toggle="modal" data-bs-target="#image-recognition-modal">image</button>
-                        <!-- <i class="bi bi-vinyl-fill"></i>
+                    <div data-bs-toggle="modal" class="tool-item transcribe-audio"
+                        data-bs-target="#transcribe-audio-modal">
+                        <div class="tool-item-icon">
+                            <i class="bi bi-soundwave"></i>
+                        </div>
                         <div class="tool-item-info">
-                            <span>Transcript Audio</span>
-                            <span data-bs-toggle="tooltip" data-bs-placement="bottom" class="details-btn picked-btn"
-                                title="Transcript a recorded audio to text. Click for more details!">
-                                <i class="bi bi-info-circle-fill"></i>
-                            </span>
-                        </div> -->
+                            <span class="text">Transcribe Audio</span>
+                        </div>
+                    </div>
+                    <div data-bs-toggle="modal" class="tool-item image-recognition"
+                        data-bs-target="#image-recognition-modal">
+                        <div class="tool-item-icon">
+                            <i class="bi bi-image-fill"></i>
+                        </div>
+                        <div class="tool-item-info">
+                            <span class="text">Image Recognition</span>
+                        </div>
                     </div>
                 </div>
             </div>

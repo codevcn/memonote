@@ -15,4 +15,5 @@ export enum EAudioLangs {
     ENGLISH = 'en',
     ENGLISH_US = 'en-us',
     VIETNAMESE = 'vi',
+    MULTI = 'multi',
 }

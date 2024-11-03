@@ -104,6 +104,18 @@
     background-color: #fff;
     color: #333;
 }
+@media screen and (max-width: 992px) {
+    #transcribe-audio-container {
+        display: block;
+    }
+    #transcribe-audio-container .transcription-result {
+        margin-top: 30px;
+        width: 100%;
+    }
+    #transcribe-audio-container #transcribe-audio-form {
+        width: 100%;
+    }
+}
 
 #transcribe-audio-form {
     display: flex;

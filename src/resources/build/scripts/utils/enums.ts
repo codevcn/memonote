@@ -23,11 +23,6 @@ enum EEditorModes {
     EDIT_MODE = 'edit-mode',
 }
 
-enum ELangCodes {
-    EN = 'en',
-    VI = 'vi',
-}
-
 enum ENotificationTypes {
     SET_PASSWORD = 'password.set',
     REMOVE_PASSWORD = 'password.remove',

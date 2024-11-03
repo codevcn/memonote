@@ -71,7 +71,7 @@ type TNotifData = TNotif & {
 
 type TNavBarPos = 'sticky' | 'static'
 
-type TAudioLangs = 'en' | 'vi' | 'en-us'
+type TAudioLangs = 'en' | 'vi' | 'en-us' | 'multi'
 
 type TImageLangs = 'eng' | 'vie' | 'jpn' | 'chi_sim' | 'kor' | 'tha'
 

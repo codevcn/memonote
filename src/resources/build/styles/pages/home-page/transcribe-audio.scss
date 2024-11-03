@@ -1,4 +1,5 @@
 @use '../../global/colors';
+@use '../../global/responsive';
 
 $mmn-upload-files-n-result-gap: 50px;
 
@@ -146,6 +147,19 @@ $mmn-upload-files-n-result-gap: 50px;
                     color: colors.$mmn-regular-black-cl;
                 }
             }
+        }
+    }
+
+    @media screen and (max-width: responsive.$bootstrap-large-breakpoint) {
+        display: block;
+
+        .transcription-result {
+            margin-top: 30px;
+            width: 100%;
+        }
+
+        #transcribe-audio-form {
+            width: 100%;
         }
     }
 }

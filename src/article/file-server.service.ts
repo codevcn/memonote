@@ -62,6 +62,7 @@ export class FileServerService {
     }
 
     async cleanupImages(currentURLList: string[], notedId: string): Promise<void> {
+        console.log('>>> currentURLList:', currentURLList)
         const objectId = new Types.ObjectId(notedId)
         const article = await this.articleModel.findOne({ note: objectId }, { currentImages: true })
         if (!article) {

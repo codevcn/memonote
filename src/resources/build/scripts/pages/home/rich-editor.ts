@@ -356,16 +356,19 @@ class RichEditorController {
     static publishArticleHandler(): void {
         this.setLoading(true)
         this.getRichEditorContent().then((articleContent) => {
-            if (!RichEditorController.validateNoteContent(articleContent)) return
-            const imgs = RichEditorController.getImgSrcList(articleContent)
+            if (!this.validateNoteContent(articleContent)) {
+                this.setLoading(false)
+                return
+            }
+            const imgs = this.getImgSrcList(articleContent)
             const { noteId } = pageData
-            RichEditorController.updateImagesInArticle(imgs, noteId)
+            this.updateImagesInArticle(imgs, noteId)
                 .then(() => {
                     const chunks = convertStringToChunks(
                         articleContent,
                         EArticleChunk.SIZE_PER_CHUNK,
                     )
-                    RichEditorController.publishArticleInChunks(
+                    this.publishArticleInChunks(
                         chunks,
                         {
                             noteUniqueName: getNoteUniqueNameFromURL(),
@@ -384,12 +387,14 @@ class RichEditorController {
                 .catch((error: BaseCustomError) => {
                     LayoutController.toast('error', error.message)
                 })
-            this.setLoading(false)
+                .finally(() => {
+                    this.setLoading(false)
+                })
         })
     }
 
     static updateImagesInArticle(imgs: string[], noteId: string): Promise<boolean> {
-        if (imgs && imgs.length > 0) {
+        if (imgs) {
             return new Promise((resolve, reject) => {
                 articleSocket.emitWithoutTimeout<TPublishArticleAsImgs>(
                     EArticleEvents.PUBLISH_ARTICLE,

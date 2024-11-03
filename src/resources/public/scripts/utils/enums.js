@@ -24,11 +24,6 @@ var EEditorModes
     EEditorModes['VIEW_MODE'] = 'view-mode'
     EEditorModes['EDIT_MODE'] = 'edit-mode'
 })(EEditorModes || (EEditorModes = {}))
-var ELangCodes
-;(function (ELangCodes) {
-    ELangCodes['EN'] = 'en'
-    ELangCodes['VI'] = 'vi'
-})(ELangCodes || (ELangCodes = {}))
 var ENotificationTypes
 ;(function (ENotificationTypes) {
     ENotificationTypes['SET_PASSWORD'] = 'password.set'
