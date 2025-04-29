@@ -1,5 +1,6 @@
+import type { CheckAliveQueryDTO } from './DTOs.js'
 import type { THealthcheckRes } from './types.js'
 
 export interface IHealthcheckController {
-    checkServerAlive: () => Promise<THealthcheckRes>
+    checkServerAlive: (query: CheckAliveQueryDTO) => Promise<THealthcheckRes>
 }
