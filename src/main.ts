@@ -31,7 +31,7 @@ async function bootstrap() {
     // exception filter
     app.useGlobalFilters(new HttpExceptionFilter(new HttpExceptionValidation()))
 
-    await app.listen(PORT || 8080, HOSTNAME || '0.0.0.0')
+    await app.listen(PORT || 8080, '0.0.0.0')
     console.log(`>>> Server is working on port: ${PORT}`)
 }
 bootstrap()
